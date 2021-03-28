@@ -40,14 +40,13 @@ interface Creds{
 export default async (req: NextApiRequest, resolve: NextApiResponse) => {
   const { userToken, eventData } : {userToken: any, eventData: CalendarEventData} = req.body;
 
-  //const token = await firebaseAdmin.auth().verifyIdToken(userToken);
-  //const user = await firebaseAdmin.auth().getUser(token.uid);
+  const token = await firebaseAdmin.auth().verifyIdToken(userToken);
+  const user = await firebaseAdmin.auth().getUser(token.uid);
 
   // Verify user and that user has custom claim "authorization" to edit the calendar
   if (
-    //user.emailVerified &&
-    //user.customClaims?.authorization
-    true
+    user.emailVerified &&
+    user.customClaims?.authorization
   ) {
     if (req.method === 'POST') {
       try {
