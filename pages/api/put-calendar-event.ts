@@ -61,7 +61,7 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
         resolve.status(200).send("Success");
       } catch(err) {
         resolve.status(400).send("Bad request: " + err);
-      }      
+      }
     } else {
       resolve.status(400).send("Invalid request method");
     }
@@ -114,8 +114,8 @@ async function addOrUpdateEvent(calendar: any, update: boolean, updateEventId: s
         calendarId: 'primary',
         eventId: updateEventId,
         requestBody: {
-          'end': { 'dateTime': event.EndDate, 'timeZone': event.Timezone },
-          'start': { 'dateTime': event.StartDate, 'timeZone': event.Timezone},
+          'end': { 'dateTime': event.EndDate.toISOString(), 'timeZone': event.Timezone },
+          'start': { 'dateTime': event.StartDate.toISOString(), 'timeZone': event.Timezone},
           'recurrence' : event.Recurrence,
           'description' : event.Description
         },
@@ -125,8 +125,8 @@ async function addOrUpdateEvent(calendar: any, update: boolean, updateEventId: s
       const res = await calendar.events.insert({
         calendarId: 'primary',
         requestBody: {
-          'end': { 'dateTime': event.EndDate, 'timeZone': event.Timezone },
-          'start': { 'dateTime': event.StartDate, 'timeZone': event.Timezone},
+          'end': { 'dateTime': event.EndDate.toISOString(), 'timeZone': event.Timezone },
+          'start': { 'dateTime': event.StartDate.toISOString(), 'timeZone': event.Timezone},
           'recurrence' : event.Recurrence,
           'description' : event.Description,
           'location': event.Location,
