@@ -58,7 +58,7 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
       // https://docs.nylas.com/docs/manage-calendar-events-with-nodejs to modify
       // Google Calendar on slweb@uw.edu account
       try {
-        const fcontent = await fsPromises.readFile('../../credentials.json');
+        const fcontent = await fsPromises.readFile('credentials.json');
         const auth = authorize(JSON.parse(fcontent.toString()));
         const {update, updateEventId}: {update: boolean,
           updateEventId: string | null} = await checkEvent(auth, eventData);
@@ -85,7 +85,7 @@ async function authorize(credentials: Creds) {
   const oAuth2Client = new google.auth.OAuth2(
     client_id, client_secret, redirect_uris[0]);
   try {
-    let data = await (await fsPromises.readFile(TOKEN_PATH)).toString();
+    let data = (await fsPromises.readFile(TOKEN_PATH)).toString();
     oAuth2Client.setCredentials(JSON.parse(data));
     return oAuth2Client;
   } catch(err) {
