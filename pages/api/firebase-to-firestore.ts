@@ -16,38 +16,28 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
   locations.forEach(async (location) => {
     const response = await firebaseAdmin.database().ref("/Locations/" + location).once("value");
     const locationData = response.val();
+    const locationObj = {};
 
     Object.keys(locationData).forEach(organization => {
+
       locationData[organization].forEach((event : any) => {
+        const eventObj = {};
+        
         Object.keys(event).forEach((field : string) => {
           const data : string | string[] = event[field];
-          console.log(field);
-          console.log(data);
+          // console.log(field);
+          // console.log(data);
+          eventObj[field] = data;
+        });
 
-          // Upload to firestore
-          
-          /*
-            Ex: 
-            Seattle - collection (each location is a separate collection)
-              Covid Vaccine Site - document
-                - name: string
-                - organization: string
-                - description: string
-                - order: string[]
-                - timestamp: Date
-                - [field: string]: string (These are all the other fields)
-          */
-
-          // const eventObj = {
-          //   name:
-
-
-          // }
-          // firestore().collection(location).add(eventObj)
-
-
-        })
-      })
-    })
-  })
+        eventObj["timestamp"] = new Date();
+        eventObj["organization"] = organization;
+        
+        // Upload to firestore          
+        let setDoc = firebaseAdmin.firestore().collection(location).doc().set(eventObj);          
+      });
+      locationObj[organization] = true;
+    });
+    let setDoc = firebaseAdmin.firestore().collection("cache").doc(location).set(locationObj);    
+  });
 };
