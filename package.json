@@ -24,6 +24,7 @@
     "firebase": "^7.17.2",
     "firebase-admin": "^9.5.0",
     "framer-motion": "^2.7.5",
+    "googleapis": "^68.0.0",
     "memory-cache": "^0.2.0",
     "micro": "^9.3.4",
     "micro-cors": "^0.1.1",
