@@ -67,6 +67,8 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
       } catch(err) {
         resolve.status(400).send("Bad request: " + err);
       }      
+    } else {
+      resolve.status(400).send("Invalid request method");
     }
   } else {
     resolve.status(400).send("Error: Unauthorized User");
