@@ -1,15 +1,11 @@
-import { NextApiRequest, NextApiResponse, GetServerSideProps } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 import { firebaseAdmin } from "../../firebaseAdmin";
-import { promises as fsPromises } from 'fs';;
-import * as readline from "readline";
+import { promises as fsPromises } from 'fs';
 import { google } from "googleapis";
-import { Token, TokenClass } from "typescript";
-import { GoogleOAuthAccessToken } from "firebase-admin";
-import { oauth2 } from "googleapis/build/src/apis/oauth2";
-import { useCallback } from "react";
+import * as readline from "readline";
 
 const SCOPES = ['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/calendar.events'];
-const TOKEN_PATH = 'token.json';
+const TOKEN_PATH = '../../token.json';
 
 export const config = {
   api: {
@@ -57,21 +53,21 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
     user.emailVerified &&
     user.customClaims?.authorization
   ) {
-
-    // TODO: use something like
-    // https://docs.nylas.com/docs/manage-calendar-events-with-nodejs to modify
-    // Google Calendar on slweb@uw.edu account
-    try {
-      const fcontent = await fsPromises.readFile('credentials.json');
-      const auth = authorize(JSON.parse(fcontent.toString()));
-      const {update, updateEventId}: {update: boolean,
-        updateEventId: string | null} = await checkEvent(auth, eventData);
-      const res = await addOrUpdateEvent(auth, update, updateEventId, eventData);
-      resolve.status(200).send("Success");
-    } catch(err) {
-      resolve.status(400).send("Bad request: " + err);
+    if (req.method === 'POST') {
+      // TODO: use something like
+      // https://docs.nylas.com/docs/manage-calendar-events-with-nodejs to modify
+      // Google Calendar on slweb@uw.edu account
+      try {
+        const fcontent = await fsPromises.readFile('../../credentials.json');
+        const auth = authorize(JSON.parse(fcontent.toString()));
+        const {update, updateEventId}: {update: boolean,
+          updateEventId: string | null} = await checkEvent(auth, eventData);
+        const res = await addOrUpdateEvent(auth, update, updateEventId, eventData);
+        resolve.status(200).send("Success");
+      } catch(err) {
+        resolve.status(400).send("Bad request: " + err);
+      }      
     }
-
   } else {
     resolve.status(400).send("Error: Unauthorized User");
   }
