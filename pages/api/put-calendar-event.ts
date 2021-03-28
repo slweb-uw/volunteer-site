@@ -2,10 +2,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { firebaseAdmin } from "../../firebaseAdmin";
 import { promises as fsPromises } from 'fs';
 import { google } from "googleapis";
-import * as readline from "readline";
 
 const SCOPES = ['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/calendar.events'];
-const TOKEN_PATH = '../../token.json';
+const TOKEN_PATH = '../../calendarApi.json';
 
 export const config = {
   api: {
@@ -19,8 +18,8 @@ interface CalendarEventData {
   Description: string;
   Organization: string;
   Location: string;
-  StartDate: string;    // format according to RFC5545
-  EndDate: string;      // format according to RFC5545
+  StartDate: Date;    // format according to RFC5545, use toISOString() in actual call
+  EndDate: Date;      // format according to RFC5545, use toISOString() in actual call
   Timezone: string;     // Formatted as an IANA Time Zone Database name, e.g. "Europe/Zurich"
   Recurrence: string[]; // format according to RFC5545
 }
@@ -58,11 +57,14 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
       // https://docs.nylas.com/docs/manage-calendar-events-with-nodejs to modify
       // Google Calendar on slweb@uw.edu account
       try {
-        const fcontent = await fsPromises.readFile('credentials.json');
-        const auth = authorize(JSON.parse(fcontent.toString()));
+        const auth = JSON.parse((await fsPromises.readFile(TOKEN_PATH)).toString());
+        const calendar = google.calendar({
+          version: 'v3',
+          auth: auth.key
+        });
         const {update, updateEventId}: {update: boolean,
-          updateEventId: string | null} = await checkEvent(auth, eventData);
-        await addOrUpdateEvent(auth, update, updateEventId, eventData);
+          updateEventId: string | null} = await checkEvent(calendar, eventData);
+        await addOrUpdateEvent(calendar, update, updateEventId, eventData);
         resolve.status(200).send("Success");
       } catch(err) {
         resolve.status(400).send("Bad request: " + err);
@@ -76,62 +78,11 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
 };
 
 /**
- * Create an OAuth2 client with the given credentials, and then execute the
- * given callback function.
- * @param {Object} credentials The authorization client credentials.
- */
-async function authorize(credentials: Creds) {
-  const {client_secret, client_id, redirect_uris} = credentials.installed;
-  const oAuth2Client = new google.auth.OAuth2(
-    client_id, client_secret, redirect_uris[0]);
-  try {
-    let data = (await fsPromises.readFile(TOKEN_PATH)).toString();
-    oAuth2Client.setCredentials(JSON.parse(data));
-    return oAuth2Client;
-  } catch(err) {
-    return getAccessToken(oAuth2Client);
-  }
-};
-
-/**
- * Get and store new token after prompting for user authorization, and then
- * execute the given callback with the authorized OAuth2 client.
- * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
- */
-function getAccessToken(oAuth2Client: any) {
-  const authUrl = oAuth2Client.generateAuthUrl({
-    access_type: 'offline',
-    scope: SCOPES,
-  });
-  console.log('Authorize this app by visiting this url:', authUrl);
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-  rl.question('Enter the code from that page here: ', (code: any) => {
-    rl.close();
-    oAuth2Client.getToken(code, async (err: any, token: any) => {
-      if (err) return console.error('Error retrieving access token', err);
-      oAuth2Client.setCredentials(token);
-      try {
-        // Store the token to disk for later program executions
-        await fsPromises.writeFile(TOKEN_PATH, JSON.stringify(token));
-        console.log('Token stored to', TOKEN_PATH);
-      } catch(err) {
-        console.log(err)
-      }
-    });
-  });
-  return oAuth2Client;
-}
-
-/**
  * check if the given event already exists in the calendar.
- * @param {google.auth.OAuth2} auth The OAuth2 client to get token for.
+ * @param {calendar_v3.Calendar} calendar The OAuth2 client to get token for.
  * @param {CalendarEventData} event Event realated information.
  */
-async function checkEvent(auth: any, event: CalendarEventData) {
-  const calendar = google.calendar({version: "v3", auth});
+async function checkEvent(calendar: any, event: CalendarEventData) {
   try {
     const res = await calendar.events.list({
       calendarId: 'primary',
@@ -157,14 +108,13 @@ async function checkEvent(auth: any, event: CalendarEventData) {
 
 /**
  * check if the given event already exsits in the calendar.
- * @param {google.auth.OAuth2} auth The OAuth2 client to get token for.
+ * @param {calendar_v3.Calendar} calendar The OAuth2 client to get token for.
  * @param {boolean} update Check if we need to update an exist event or add a new event instead
  * @param {string | null} updateEventId The Id of the event which need to be updated or null if no event.
  * @param {CalendarEventData} event Event realated information.
  */
-async function addOrUpdateEvent(auth: any, update: boolean, updateEventId: string | null,
+async function addOrUpdateEvent(calendar: any, update: boolean, updateEventId: string | null,
   event: CalendarEventData) {
-  const calendar = google.calendar({version: "v3", auth});
   try {
     if (update && updateEventId) {
       const res = await calendar.events.update({
