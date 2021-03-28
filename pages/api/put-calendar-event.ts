@@ -26,10 +26,7 @@ interface CalendarEventData {
 
 // Credential object.
 interface Creds{
-  installed: {client_id: string, project_id: string,
-              auth_uri: string, token_uri: string,
-              auth_provider_x509_cert_url: string,
-              client_secret: string, redirect_uris: string[]}
+  key: string
 }
 
 // Put new event
@@ -53,11 +50,8 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
     user.customClaims?.authorization
   ) {
     if (req.method === 'POST') {
-      // TODO: use something like
-      // https://docs.nylas.com/docs/manage-calendar-events-with-nodejs to modify
-      // Google Calendar on slweb@uw.edu account
       try {
-        const auth = JSON.parse((await fsPromises.readFile(TOKEN_PATH)).toString());
+        const auth: Creds = JSON.parse((await fsPromises.readFile(TOKEN_PATH)).toString());
         const calendar = google.calendar({
           version: 'v3',
           auth: auth.key
