@@ -62,7 +62,7 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
         const auth = authorize(JSON.parse(fcontent.toString()));
         const {update, updateEventId}: {update: boolean,
           updateEventId: string | null} = await checkEvent(auth, eventData);
-        const res = await addOrUpdateEvent(auth, update, updateEventId, eventData);
+        await addOrUpdateEvent(auth, update, updateEventId, eventData);
         resolve.status(200).send("Success");
       } catch(err) {
         resolve.status(400).send("Bad request: " + err);
