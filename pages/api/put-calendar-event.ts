@@ -12,18 +12,6 @@ export const config = {
   },
 };
 
-// The data of the event which needs to be passed in during the api call.
-interface CalendarEventData {
-  Name: string;
-  Description: string;
-  Organization: string;
-  Location: string;
-  StartDate: string;    // format according to RFC5545, use toISOString() before send the api request
-  EndDate: string;      // format according to RFC5545, use toISOString() before send the api request
-  Timezone: string;     // Formatted as an IANA Time Zone Database name, e.g. "Europe/Zurich"
-  Recurrence?: string[]; // format according to RFC5545
-}
-
 // Credential object.
 interface Creds {
   type: string;
@@ -67,8 +55,7 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
         const {update, updateEventId}: {update: boolean,
           updateEventId: string | null} = await checkEvent(jwtClient, eventData);
         const res = await addOrUpdateEvent(jwtClient, update, updateEventId, eventData);
-        console.log(res);
-        resolve.status(200).send("Success");
+        resolve.status(200).send("Success:" + res);
       } catch(err) {
         resolve.status(400).send("Bad request: " + err);
       }
@@ -161,3 +148,26 @@ function createRequestBody(event: CalendarEventData, update: boolean) {
   }
   return result;
 }
+
+/**
+ * the following is a simple test script for the above api.
+ * comment out the firbase verification part before running the following script.
+ * Use node to run the following script.
+"use strict";
+exports.__esModule = true;
+var http_1 = require("http");
+var start = new Date(500000000000);
+var end = new Date(500009000000);
+var data = { Name: "test", Description: "https://www.google.com", Organization: "test", Location: "test", StartDate: start.toISOString(), EndDate: end.toISOString(), Timezone: "America/Los_Angeles" };
+var req = http_1.request({
+    host: 'localhost',
+    port: '3000',
+    path: '/api/put-calendar-event',
+    method: 'POST'
+}, function (response) { console.log(response.statusMessage); response.on('data', function (chunk) { console.log('body:' + chunk); }); });
+req.write(JSON.stringify({
+    userToken: "test",
+    eventData: data
+}));
+req.end();
+ */
