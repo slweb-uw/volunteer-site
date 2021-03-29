@@ -3,7 +3,8 @@ import { firebaseAdmin } from "../../firebaseAdmin";
 import { promises as fsPromises } from 'fs';
 import { google } from "googleapis";
 
-const TOKEN_PATH = 'calendarApi.json';
+const CREDS_PATH = 'calendarSecret.json';
+const SCOPES = ['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/calendar.events'];
 
 export const config = {
   api: {
@@ -17,15 +18,24 @@ interface CalendarEventData {
   Description: string;
   Organization: string;
   Location: string;
-  StartDate: Date;    // format according to RFC5545, use toISOString() in actual call
-  EndDate: Date;      // format according to RFC5545, use toISOString() in actual call
+  StartDate: string;    // format according to RFC5545, use toISOString() before send the api request
+  EndDate: string;      // format according to RFC5545, use toISOString() before send the api request
   Timezone: string;     // Formatted as an IANA Time Zone Database name, e.g. "Europe/Zurich"
-  Recurrence: string[]; // format according to RFC5545
+  Recurrence?: string[]; // format according to RFC5545
 }
 
 // Credential object.
-interface Creds{
-  key: string
+interface Creds {
+  type: string;
+  project_id: string;
+  private_key_id: string;
+  private_key: string;
+  client_email: string;
+  client_id: string;
+  auth_uri: string;
+  token_uri: string;
+  auth_provider_x509_cert_url: string;
+  client_x509_cert_url: string;
 }
 
 // Put new event
@@ -38,7 +48,7 @@ interface Creds{
 // location, and recurrence
 
 export default async (req: NextApiRequest, resolve: NextApiResponse) => {
-  const { userToken, eventData } : {userToken: any, eventData: CalendarEventData} = req.body;
+  const { userToken, eventData } : {userToken: any, eventData: CalendarEventData} = JSON.parse(req.body);
 
   const token = await firebaseAdmin.auth().verifyIdToken(userToken);
   const user = await firebaseAdmin.auth().getUser(token.uid);
@@ -50,14 +60,14 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
   ) {
     if (req.method === 'POST') {
       try {
-        const auth: Creds = JSON.parse((await fsPromises.readFile(TOKEN_PATH)).toString());
-        const calendar = google.calendar({
-          version: 'v3',
-          auth: auth.key
-        });
+        const fcontent: Creds = JSON.parse((await fsPromises.readFile(CREDS_PATH)).toString());
+        const jwtClient = new google.auth.JWT(fcontent.client_email, null, fcontent.private_key,
+          SCOPES);
+        const _ = await jwtClient.authorize();
         const {update, updateEventId}: {update: boolean,
-          updateEventId: string | null} = await checkEvent(calendar, eventData);
-        await addOrUpdateEvent(calendar, update, updateEventId, eventData);
+          updateEventId: string | null} = await checkEvent(jwtClient, eventData);
+        const res = await addOrUpdateEvent(jwtClient, update, updateEventId, eventData);
+        console.log(res);
         resolve.status(200).send("Success");
       } catch(err) {
         resolve.status(400).send("Bad request: " + err);
@@ -72,13 +82,14 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
 
 /**
  * check if the given event already exists in the calendar.
- * @param {calendar_v3.Calendar} calendar The OAuth2 client to get token for.
- * @param {CalendarEventData} event Event realated information.
+ * @param {JWT} auth JWT object.
+ * @param {CalendarEventData} event Event related information.
  */
-async function checkEvent(calendar: any, event: CalendarEventData) {
+async function checkEvent(auth: any, event: CalendarEventData) {
+  const calendar = google.calendar({version: "v3", auth});
   try {
     const res = await calendar.events.list({
-      calendarId: 'primary',
+      calendarId: 'slweb@uw.edu',
       q: event.Name,
     });
     const events: any = res.data.items;
@@ -95,48 +106,58 @@ async function checkEvent(calendar: any, event: CalendarEventData) {
     }
     return {update, updateEventId};
   } catch(err) {
-    throw new Error(err);
+    return {update: false, updateEventId: null};
   }
 }
 
 /**
- * check if the given event already exsits in the calendar.
- * @param {calendar_v3.Calendar} calendar The OAuth2 client to get token for.
- * @param {boolean} update Check if we need to update an exist event or add a new event instead
+ * add or update an event into the google calender.
+ * @param {JWT} auth JWT object.
+ * @param {boolean} update Check if we need to update an exist event or add a new event instead.
  * @param {string | null} updateEventId The Id of the event which need to be updated or null if no event.
- * @param {CalendarEventData} event Event realated information.
+ * @param {CalendarEventData} event Event related information.
  */
-async function addOrUpdateEvent(calendar: any, update: boolean, updateEventId: string | null,
+async function addOrUpdateEvent(auth: any, update: boolean, updateEventId: string | null,
   event: CalendarEventData) {
+  const calendar = google.calendar({version: "v3", auth});
   try {
+    let body = createRequestBody(event, update);
     if (update && updateEventId) {
       const res = await calendar.events.update({
-        calendarId: 'primary',
+        calendarId: 'slweb@uw.edu',
         eventId: updateEventId,
-        requestBody: {
-          'end': { 'dateTime': event.EndDate.toISOString(), 'timeZone': event.Timezone },
-          'start': { 'dateTime': event.StartDate.toISOString(), 'timeZone': event.Timezone},
-          'recurrence' : event.Recurrence,
-          'description' : event.Description
-        },
+        requestBody: body,
       });
       return res;
     } else {
       const res = await calendar.events.insert({
-        calendarId: 'primary',
-        requestBody: {
-          'end': { 'dateTime': event.EndDate.toISOString(), 'timeZone': event.Timezone },
-          'start': { 'dateTime': event.StartDate.toISOString(), 'timeZone': event.Timezone},
-          'recurrence' : event.Recurrence,
-          'description' : event.Description,
-          'location': event.Location,
-          'summary': event.Name,
-          'organizer': { 'displayName': event.Organization }
-        }
+        calendarId: 'slweb@uw.edu',
+        requestBody: body,
       });
       return res
     }
   } catch(err) {
-    throw new Error(err)
+    throw new Error("Error from change:" + err);
   }
+}
+
+/** 
+ * construct the request body for addOrUpdateEvent function.
+ * @param {CalendarEventData} event Event data.
+ * @param {boolean} update Check if this is a update request body or insert event request body
+ */
+function createRequestBody(event: CalendarEventData, update: boolean) {
+  let result: object = {};
+  result['end'] = { 'dateTime': event.EndDate, 'timeZone': event.Timezone };
+  result['start'] = { 'dateTime': event.StartDate, 'timeZone': event.Timezone};
+  result['description'] = event.Description;
+  if (!update) {
+    result['location'] = event.Location;
+    result['summary'] = event.Name;
+    result['organizer'] = { 'displayName': event.Organization }
+  } 
+  if (event.Recurrence) {
+    result['recurrence'] = event.Recurrence;
+  }
+  return result;
 }
