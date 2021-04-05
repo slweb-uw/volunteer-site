@@ -2,9 +2,9 @@
 /// <reference types="next/types/global" />
 
 interface EventData {
-  Name: string;
-  Description: string;
-  Organization: string;
+  Title: string;
+  ["Project Description"]: string;
+  organization: string;
   Order?: string[];
   Timestamp: Date;
   [Field: string]: string;

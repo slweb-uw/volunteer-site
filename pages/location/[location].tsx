@@ -9,8 +9,13 @@ import {
   Select,
   MenuItem,
   withStyles,
+  Grid,
+  Button,
 } from "@material-ui/core";
 import { withSnackbar } from "notistack";
+import EventCard from "../../components/eventCard";
+import BootstrapInput from "components/bootstrapInput";
+import Link from "next/link";
 
 interface Props {
   classes?: any;
@@ -26,6 +31,7 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
     setCursor,
   ] = useState<firebaseClient.firestore.QueryDocumentSnapshot>(); // cursor to last document loaded
   const [filter, setFilter] = useState<string | undefined>();
+  const [showLoadButton, setShowLoadButton] = useState<boolean>(true);
   const [sortField, setSortField] = useState<string>("timestamp");
 
   useEffect(() => {
@@ -71,6 +77,7 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
     });
     setCursor(next.docs[next.docs.length - 1]);
     setEvents((prevEvents) => [...prevEvents, ...eventsToAdd]);
+    setShowLoadButton(eventsToAdd.length === 10);
   };
 
   // Clear events and replace with 10 events using given filter and sort field
@@ -99,6 +106,7 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
     });
     setCursor(next.docs[next.docs.length - 1]);
     setEvents(newEvents);
+    setShowLoadButton(newEvents.length === 10);
   };
 
   // Filter events by given category, updates events
@@ -114,43 +122,84 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   };
 
   return (
-    <div>
+    <div className={classes.page}>
       <CssBaseline />
       <Typography variant="h3">Opportunities in {location}</Typography>
 
-      <Typography display="inline">View: </Typography>
-      <Select
-        value={filter}
-        onChange={(e) => {
-          filterByCategory(e.target.value as string | undefined);
-        }}
-        displayEmpty
-      >
-        <MenuItem>All</MenuItem>
-        <MenuItem value={"Clinical"}>Clinical</MenuItem>
-        <MenuItem value={"Advocacy"}>Advocacy</MenuItem>
-      </Select>
+      <div style={{ marginTop: "2em", marginBottom: "2em" }}>
+        <Typography display="inline">
+          <b>Filters</b>{" "}
+        </Typography>
+        <span style={{ marginLeft: "1em" }}>
+          <Typography display="inline">Category: </Typography>
+          <Select
+            value={filter}
+            onChange={(e) => {
+              filterByCategory(e.target.value as string | undefined);
+            }}
+            style={{ width: 200 }}
+            displayEmpty
+            input={<BootstrapInput />}
+          >
+            <MenuItem>Show All</MenuItem>
+            <MenuItem value={"Clinical"}>Clinical</MenuItem>
+            <MenuItem value={"Advocacy"}>Advocacy</MenuItem>
+          </Select>
+        </span>
+        <span style={{ marginLeft: "1em" }}>
+          <Typography display="inline">Sort By: </Typography>
+          <Select
+            value={sortField}
+            onChange={(e) => {
+              changeSortField(e.target.value as string);
+            }}
+            style={{ width: 200 }}
+            input={<BootstrapInput />}
+          >
+            <MenuItem value={"timestamp"}>Date Added</MenuItem>
+            <MenuItem value={"Title"}>Title</MenuItem>
+          </Select>
+        </span>
+      </div>
 
-      <Typography display="inline">Sort By:</Typography>
-      <Select
-        value={sortField}
-        onChange={(e) => {
-          changeSortField(e.target.value as string);
-        }}
-        displayEmpty
+      <Typography
+        variant="h6"
+        style={{ textAlign: "center", marginBottom: "3em", color: "#85754D" }}
       >
-        <MenuItem value={"timestamp"}>Date Added</MenuItem>
-        <MenuItem value={"Title"}>Title</MenuItem>
-      </Select>
+        <b>
+          Make sure you have read and reviewed the{" "}
+          <i>
+            <Link href={"/onboarding/" + location}>
+              <a style={{ color: "#85754D" }}>Onboarding Instructions</a>
+            </Link>
+          </i>{" "}
+          before signing up for an opportunity!
+        </b>
+      </Typography>
 
-      <div className={classes.page}>
-        {events.map(
-          (event) => (
-            <div>{event["Title"]}</div>
-          ) // TODO: event modal using event
+      <div style={{ paddingBottom: "4em" }}>
+        <Grid container spacing={6}>
+          {events.map((event) => (
+            <Grid item xs={6}>
+              <EventCard event={event} />
+            </Grid>
+          ))}
+        </Grid>
+        {showLoadButton && (
+          <div style={{ textAlign: "center" }}>
+            <Button
+              variant="outlined"
+              onClick={loadEvents}
+              style={{
+                marginTop: "2em",
+              }}
+            >
+              <Typography variant="h6">
+                <b>Load more</b>
+              </Typography>
+            </Button>
+          </div>
         )}
-
-        <button onClick={loadEvents}>Load more</button>
       </div>
     </div>
   );
@@ -160,9 +209,10 @@ const styles = createStyles({
   page: {
     marginLeft: "auto",
     marginRight: "auto",
-    maxWidth: 1000,
+    maxWidth: 1500,
     width: "95%",
     paddingTop: "2em",
+    paddingBottom: "5em",
   },
 });
 
