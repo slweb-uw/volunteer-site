@@ -3,59 +3,180 @@ import {
   withStyles,
   createStyles,
   Typography,
+  Grid,
+  NoSsr,
 } from "@material-ui/core";
-import Link from 'next/link';
+import Link from "next/link";
 
 import { firebaseClient } from "firebaseClient";
-interface Props {
-  classes?: any;
-}
 
-const App: React.FC<Props> = ({ classes }) => {
+const App: React.FC<{}> = () => {
   // Page where customers can check their order status
 
   useEffect(() => {
-    firebaseClient.analytics().logEvent('home_page_visit');
+    firebaseClient.analytics().logEvent("home_page_visit");
   }, []);
 
   return (
-    <div>
-      <div className={classes.page}>
+    <div
+      style={{
+        marginLeft: "auto",
+        marginRight: "auto",
+        maxWidth: 1500,
+        width: "95%",
+        paddingTop: "4em",
+      }}
+    >
+      <div style={{ textAlign: "center", marginBottom: "7em" }}>
+        <Typography variant="h4" gutterBottom style={{ color: "#4B2E83" }}>
+          {
+            "Welcome to Service Learning at the UW School of Medicine/WWAMI & UW Health Sciences"
+          }
+        </Typography>
+        <Typography variant="h6" gutterBottom>
+          <i>
+            Choose a location to find Service Learning opportunities in that
+            area
+          </i>
+        </Typography>
+      </div>
 
-      {/* TODO: turn links into cards */}
-
-      <Link href="/Seattle"><Typography>Seattle</Typography></Link>
-      <Link href="/Spokane"><Typography>Spokane</Typography></Link>
-      <Link href="/Alaska"><Typography>Alaska</Typography></Link>
-      <Link href="/Wyoming"><Typography>Wyoming</Typography></Link>
-      <Link href="/Montana"><Typography>Idaho</Typography></Link>
-
-      {/* Idaho wants to use own website, but card should look the same */}
-      <a href="/Idaho"><Typography>Idaho</Typography></a>
-
+      <Grid container spacing={4}>
+        <Grid item xs={6} sm={4} lg>
+          <div
+            style={{
+              marginLeft: "auto",
+              marginRight: "auto",
+              textAlign: "center",
+            }}
+          >
+            <Link href="/location/Seattle">
+              <div style={{ cursor: "pointer" }}>
+                <img src="/Seattle.png" />
+                <Typography>Seattle</Typography>
+              </div>
+            </Link>
+          </div>
+        </Grid>
+        <Grid item xs={6} sm={4} lg>
+          <div
+            style={{
+              marginLeft: "auto",
+              marginRight: "auto",
+              textAlign: "center",
+            }}
+          >
+            <Link href="/location/Spokane">
+              <div style={{ cursor: "pointer" }}>
+                <img src="/Spokane.png" />
+                <Typography>Spokane</Typography>
+              </div>
+            </Link>
+          </div>
+        </Grid>
+        <Grid item xs={6} sm={4} lg>
+          <div
+            style={{
+              marginLeft: "auto",
+              marginRight: "auto",
+              textAlign: "center",
+            }}
+          >
+            <Link href="/location/Alaska">
+              <div style={{ cursor: "pointer" }}>
+                <img src="/Alaska.png" />
+                <Typography>Alaska</Typography>
+              </div>
+            </Link>
+          </div>
+        </Grid>
+        <Grid item xs={6} sm={4} lg>
+          <div
+            style={{
+              marginLeft: "auto",
+              marginRight: "auto",
+              textAlign: "center",
+            }}
+          >
+            <Link href="/location/Wyoming">
+              <div style={{ cursor: "pointer" }}>
+                <img src="/Wyoming.png" />
+                <Typography>Wyoming</Typography>
+              </div>
+            </Link>
+          </div>
+        </Grid>
+        <Grid item xs={6} sm={4} lg>
+          <div
+            style={{
+              marginLeft: "auto",
+              marginRight: "auto",
+              textAlign: "center",
+            }}
+          >
+            {/* Idaho wants to use own website, but card should look the same */}
+            <a href="/Idaho" style={{ textDecoration: "none", color: "black" }}>
+              <div style={{ cursor: "pointer" }}>
+                <img src="/Idaho.png" />
+                <Typography>Idaho</Typography>
+              </div>
+            </a>
+          </div>
+        </Grid>
+      </Grid>
+      <div
+        style={{
+          backgroundColor: "#E8E3D3",
+          marginTop: "8em",
+          paddingTop: "5em",
+          paddingBottom: "5em",
+          verticalAlign: "middle",
+        }}
+      >
+        <Grid container spacing={4}>
+          <Grid item xs={12} md={6} lg={4}>
+            <div
+              style={{
+                marginLeft: "auto",
+                marginRight: "auto",
+                textAlign: "center",
+              }}
+            >
+              <img
+                style={{
+                  width: "80%",
+                }}
+                src="/serveWithUs.png"
+                alt="doctor caring for mom with child"
+              />
+            </div>
+          </Grid>
+          <Grid item xs={12} md={6} lg={8}>
+            <div
+              style={{
+                width: "80%",
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+            >
+              <Typography gutterBottom variant="h4">
+                Serve With Us
+              </Typography>
+              <Typography>
+                Volunteering with our programs is a wonderful way to practice
+                your clinical and teaching skills, make a difference in our
+                community and form meaningful connections. We invite you to
+                explore our opportunities for providers and students alike. We
+                are very flexible and try to make it easy to work around busy
+                schedules. There is no required hourly commitment. Simply sign
+                up when you have the time!
+              </Typography>
+            </div>
+          </Grid>
+        </Grid>
       </div>
     </div>
   );
 };
 
-const styles = (theme: any) =>
-  createStyles({
-    page: {
-      width: "90%",
-      maxWidth: 600,
-      marginLeft: "auto",
-      marginRight: "auto",
-      [theme.breakpoints.up("sm")]: {
-        position: "absolute",
-        marginTop: 0,
-        marginBottom: 0,
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
-      },
-      marginTop: "6em",
-      marginBottom: '6em'
-    },
-  });
-
-export default withStyles(styles)(App);
+export default App;

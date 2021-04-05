@@ -3,6 +3,7 @@ import { AuthProvider } from "../auth";
 import React from "react";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core";
 import { SnackbarProvider } from "notistack";
+import Layout from "components/layout";
 
 // Global Theme
 const theme = createMuiTheme({
@@ -13,14 +14,13 @@ const theme = createMuiTheme({
     background: {
       default: "#F7F7F7",
     },
-    primary: { 500: '#6415ff' },
-    secondary: { main: '#6415ff' },
+    primary: { 500: "#6415ff" },
+    secondary: { main: "#6415ff" },
   },
 });
 
 function MyApp({ Component, pageProps }: AppProps) {
   React.useEffect(() => {
-    // Remove the server-side injected CSS.
     const jssStyles = document.querySelector("#jss-server-side");
     if (jssStyles && jssStyles.parentElement) {
       jssStyles.parentElement.removeChild(jssStyles);
@@ -37,8 +37,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       <SnackbarProvider maxSnack={3}>
         <AuthProvider>
           <MuiThemeProvider theme={theme}>
-            {/* TODO: Navbar component wrapper here */}
-            <Component {...pageProps} />
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
           </MuiThemeProvider>
         </AuthProvider>
       </SnackbarProvider>
