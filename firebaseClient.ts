@@ -1,4 +1,5 @@
 import * as firebaseClient from "firebase/app";
+import "firebase/firestore";
 import "firebase/database";
 import "firebase/auth";
 import "firebase/analytics";

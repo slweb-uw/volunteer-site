@@ -1,84 +1,67 @@
 import React, { useEffect, useState } from "react";
-import { firebaseAdmin } from "../../firebaseAdmin";
 import { firebaseClient } from "../../firebaseClient";
 import { useRouter } from "next/router";
-
-import { GetServerSidePropsContext, NextPage } from "next";
+import { NextPage } from "next";
 import {
   createStyles,
   CssBaseline,
   Typography,
+  Select,
+  MenuItem,
   withStyles,
 } from "@material-ui/core";
 import { withSnackbar } from "notistack";
 
-// Get initial set of events for location
-export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-  try {
-    const { location } = ctx.query; // string of current location (ex: "Seattle")
-    const events: EventData[] = [];
-    // First 10 documents, without any filtering, and set that to events
-    const querySnapshot = await firebaseAdmin
-      .firestore()
-      .collection("/" + location)
-      .orderBy("timestamp", "desc")
-      .limit(12)
-      .get();
-    querySnapshot.docs.forEach((document) => {
-      events.push(document.data() as EventData);
-    });
-    const cursor = querySnapshot.docs[querySnapshot.docs.length - 1];
-    return { props: { propEvents: events, propsCursor: cursor } };
-  } catch (err) {
-    console.log(err);
-    ctx.res.writeHead(400);
-    ctx.res.end();
-    return { props: {} as never };
-  }
-};
-
 interface Props {
-  propEvents: EventData[];
-  propsCursor: firebaseClient.firestore.QueryDocumentSnapshot;
   classes?: any;
   enqueueSnackbar: (message: string) => void;
 }
 
-const Location: NextPage<Props> = ({
-  propEvents,
-  propsCursor,
-  classes,
-  enqueueSnackbar,
-}) => {
+const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   const router = useRouter();
   const { location } = router.query; // string of current location (ex: "Seattle")
-  const [events, setEvents] = useState<EventData[]>(propEvents); // list of loaded events
+  const [events, setEvents] = useState<EventData[]>([]); // list of loaded events
   const [
     cursor,
     setCursor,
-  ] = useState<firebaseClient.firestore.QueryDocumentSnapshot>(propsCursor); // cursor to last document loaded
-  const [filter, setFilter] = useState<string | null>(null);
+  ] = useState<firebaseClient.firestore.QueryDocumentSnapshot>(); // cursor to last document loaded
+  const [filter, setFilter] = useState<string | undefined>();
   const [sortField, setSortField] = useState<string>("timestamp");
 
   useEffect(() => {
     firebaseClient.analytics().logEvent("location_page_visit");
-  });
+  }, []);
+
+  useEffect(() => {
+    // Load initial events
+    if (location) {
+      reloadEvents(undefined, "timestamp");
+    }
+  }, [router]);
+
+  const getOrder = (curSort: string) => {
+    return curSort === "timestamp" ? "desc" : "asc";
+  };
 
   // Append more events from Firestore onto this page from position of cursor
   const loadEvents = async () => {
+    if (cursor === null) {
+      return;
+    }
+    const order = getOrder(sortField);
     const next = filter
       ? await firebaseClient // There is a category filter, apply it
           .firestore()
           .collection("/" + location)
           .where("organization", "==", filter)
-          .orderBy(sortField, "desc")
+          .orderBy(sortField, order)
           .startAfter(cursor)
           .limit(10)
           .get()
       : await firebaseClient // There is no filter
           .firestore()
           .collection("/" + location)
-          .orderBy(sortField, "desc")
+          .orderBy(sortField, order)
           .startAfter(cursor)
           .limit(10)
           .get();
@@ -87,28 +70,27 @@ const Location: NextPage<Props> = ({
       eventsToAdd.push(document.data() as EventData);
     });
     setCursor(next.docs[next.docs.length - 1]);
-    setEvents((prevEvents) => {
-      eventsToAdd.forEach((event) => {
-        prevEvents.push(event);
-      });
-      return prevEvents;
-    });
+    setEvents((prevEvents) => [...prevEvents, ...eventsToAdd]);
   };
 
   // Clear events and replace with 10 events using given filter and sort field
-  const reloadEvents = async (curFilter: string | null, curSort: string) => {
+  const reloadEvents = async (
+    curFilter: string | undefined,
+    curSort: string
+  ) => {
+    const order = getOrder(curSort);
     const next = curFilter
       ? await firebaseClient
           .firestore()
           .collection("/" + location)
           .where("organization", "==", curFilter)
-          .orderBy(curSort, "desc")
+          .orderBy(curSort, order)
           .limit(10)
           .get()
       : await firebaseClient
           .firestore()
           .collection("/" + location)
-          .orderBy(curSort, "desc")
+          .orderBy(curSort, order)
           .limit(10)
           .get();
     const newEvents: EventData[] = [];
@@ -120,7 +102,7 @@ const Location: NextPage<Props> = ({
   };
 
   // Filter events by given category, updates events
-  const filterByCategory = async (newFilter: string) => {
+  const filterByCategory = async (newFilter: string | undefined) => {
     setFilter(newFilter);
     reloadEvents(newFilter, sortField);
   };
@@ -134,11 +116,37 @@ const Location: NextPage<Props> = ({
   return (
     <div>
       <CssBaseline />
-      <Typography variant="h2">{location}</Typography>
+      <Typography variant="h3">Opportunities in {location}</Typography>
+
+      <Typography display="inline">View: </Typography>
+      <Select
+        value={filter}
+        onChange={(e) => {
+          filterByCategory(e.target.value as string | undefined);
+        }}
+        displayEmpty
+      >
+        <MenuItem>All</MenuItem>
+        <MenuItem value={"Clinical"}>Clinical</MenuItem>
+        <MenuItem value={"Advocacy"}>Advocacy</MenuItem>
+      </Select>
+
+      <Typography display="inline">Sort By:</Typography>
+      <Select
+        value={sortField}
+        onChange={(e) => {
+          changeSortField(e.target.value as string);
+        }}
+        displayEmpty
+      >
+        <MenuItem value={"timestamp"}>Date Added</MenuItem>
+        <MenuItem value={"Title"}>Title</MenuItem>
+      </Select>
+
       <div className={classes.page}>
         {events.map(
           (event) => (
-            <div>{JSON.stringify(event)}</div>
+            <div>{event["Title"]}</div>
           ) // TODO: event modal using event
         )}
 
