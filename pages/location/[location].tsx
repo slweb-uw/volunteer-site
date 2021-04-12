@@ -73,7 +73,11 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
           .get();
     const eventsToAdd: EventData[] = [];
     next.docs.forEach((document) => {
-      eventsToAdd.push(document.data() as EventData);
+      let eventDoc = document.data() as EventData;
+      eventDoc.id = document.id; // adds event id to the EventData object
+
+      eventsToAdd.push(eventDoc);
+      // eventsToAdd.push(document.data() as EventData);
     });
     setCursor(next.docs[next.docs.length - 1]);
     setEvents((prevEvents) => [...prevEvents, ...eventsToAdd]);
@@ -102,7 +106,11 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
           .get();
     const newEvents: EventData[] = [];
     next.docs.forEach((document) => {
-      newEvents.push(document.data() as EventData);
+      let eventDoc = document.data() as EventData;
+      eventDoc.id = document.id; // adds event id to the EventData object
+
+      // newEvents.push(document.data() as EventData);
+      newEvents.push(eventDoc);
     });
     setCursor(next.docs[next.docs.length - 1]);
     setEvents(newEvents);

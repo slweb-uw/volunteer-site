@@ -5,6 +5,8 @@ import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 
+import Link from 'next/link'
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -36,12 +38,14 @@ const EventCard: React.FC<Props> = (props) => {
       variant="outlined"
       style={{ borderRadius: 10 }}
     >
+      <Link href="/">
       <CardMedia
         component="img"
         className={classes.cover}
         src={props.event["imageURL"] ?? "/beigeSquare.png"}
         alt={"Image for" + props.event.Title}
       />
+      </Link>
       <div className={classes.details}>
         <CardContent className={classes.content}>
           <Typography component="h6" variant="h6">
