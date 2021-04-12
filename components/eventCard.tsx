@@ -7,6 +7,7 @@ import Typography from "@material-ui/core/Typography";
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    cursor: "pointer",
     display: "flex",
   },
   details: {
@@ -25,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
 
 interface Props {
   event: EventData;
+  handleClick: React.MouseEventHandler<HTMLDivElement> | undefined;
 }
 
 const EventCard: React.FC<Props> = (props) => {
@@ -35,6 +37,7 @@ const EventCard: React.FC<Props> = (props) => {
       className={classes.root}
       variant="outlined"
       style={{ borderRadius: 10 }}
+      onClick={props.handleClick}
     >
       <CardMedia
         component="img"
