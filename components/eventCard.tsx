@@ -32,13 +32,14 @@ interface Props {
 const EventCard: React.FC<Props> = (props) => {
   const classes = useStyles();
 
+  let link = "/event/" + props.event.id;
   return (
     <Card
       className={classes.root}
       variant="outlined"
       style={{ borderRadius: 10 }}
     >
-      <Link href="/">
+      <Link href={link}>
       <CardMedia
         component="img"
         className={classes.cover}
