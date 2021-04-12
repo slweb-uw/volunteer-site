@@ -49,7 +49,7 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
     if (req.method === 'POST') {
       try {
         const fcontent: Creds = JSON.parse((await fsPromises.readFile(CREDS_PATH)).toString());
-        const jwtClient = new google.auth.JWT(fcontent.client_email, null, fcontent.private_key,
+        const jwtClient = new google.auth.JWT(fcontent.client_email, undefined, fcontent.private_key,
           SCOPES);
         const _ = await jwtClient.authorize();
         const {update, updateEventId}: {update: boolean,
@@ -134,7 +134,7 @@ async function addOrUpdateEvent(auth: any, update: boolean, updateEventId: strin
  * @param {boolean} update Check if this is a update request body or insert event request body
  */
 function createRequestBody(event: CalendarEventData, update: boolean) {
-  let result: object = {};
+  let result: any = {};
   result['end'] = { 'dateTime': event.EndDate, 'timeZone': event.Timezone };
   result['start'] = { 'dateTime': event.StartDate, 'timeZone': event.Timezone};
   result['description'] = event.Description;
