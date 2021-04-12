@@ -16,12 +16,12 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
   locations.forEach(async (location) => {
     const response = await firebaseAdmin.database().ref("/Locations/" + location).once("value");
     const locationData = response.val();
-    const locationObj = {};
+    const locationObj : any = {};
 
     Object.keys(locationData).forEach(organization => {
 
       locationData[organization].forEach((event : any) => {
-        const eventObj = {};
+        const eventObj : any = {};
         
         Object.keys(event).forEach((field : string) => {
           const data : string | string[] = event[field];
