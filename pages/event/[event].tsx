@@ -7,7 +7,7 @@ import {
     CssBaseline,
     Typography,
     Select,
-    MenuItem,
+    Divider,
     withStyles,
     Grid,
     Button,
@@ -50,17 +50,21 @@ const Event:NextPage<Props> = ({ classes }) => {
     return (
         <div className={classes.page}>
             <CssBaseline />
-            <Typography variant="h5">{data.Title}</Typography>
+            <Typography variant="h5" style={{ fontWeight:600 }}>{data.Title}</Typography>
 
             <Grid container>
                 <Grid item xs={6}>
-                    top level 
+                    <img src={data.imageURL} 
+                    style={{ height:400, width:"auto", margin:"1rem"}} 
+                    />
                 </Grid>
                 <Grid item xs={6}>
                     top level
                 </Grid>
 
             </Grid>
+
+            <Divider></Divider>
 
             <Grid container spacing={6}>
                 <Grid item xs={6}>
