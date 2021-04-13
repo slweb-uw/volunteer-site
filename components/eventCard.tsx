@@ -34,7 +34,7 @@ interface Props {
 const EventCard: React.FC<Props> = (props) => {
   const classes = useStyles();
 
-  let link = "/event/" + props.event.id;
+  console.log(props);
   return (
     <Card
       className={classes.root}
@@ -42,14 +42,12 @@ const EventCard: React.FC<Props> = (props) => {
       style={{ borderRadius: 10 }}
       onClick={props.handleClick}
     >
-      <Link href={link}>
       <CardMedia
         component="img"
         className={classes.cover}
         src={props.event["imageURL"] ?? "/beigeSquare.png"}
         alt={"Image for" + props.event.Title}
       />
-      </Link>
       <div className={classes.details}>
         <CardContent className={classes.content}>
           <Typography component="h6" variant="h6">

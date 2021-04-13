@@ -74,6 +74,11 @@ export default function EventModal(props: {
 }) {
   const { open, event, handleClose } = props;
 
+  let eventLink = "/"
+  if (event) {
+    eventLink = "/event/" + event.id;
+  }
+  
   return (
     <Dialog
       onClose={handleClose}
@@ -121,7 +126,7 @@ export default function EventModal(props: {
               </div>
             )}
             <div style={{ marginTop: "2em" }}>
-              <Link href="/">
+              <Link href={eventLink}>
                 <Button
                   autoFocus
                   onClick={handleClose}
