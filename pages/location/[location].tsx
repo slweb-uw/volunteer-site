@@ -16,6 +16,7 @@ import { withSnackbar } from "notistack";
 import EventCard from "../../components/eventCard";
 import BootstrapInput from "components/bootstrapInput";
 import Link from "next/link";
+import EventModal from "components/eventModal";
 
 interface Props {
   classes?: any;
@@ -32,6 +33,8 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   ] = useState<firebaseClient.firestore.QueryDocumentSnapshot>(); // cursor to last document loaded
   const [filter, setFilter] = useState<string | undefined>();
   const [showLoadButton, setShowLoadButton] = useState<boolean>(true);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [selectedEvent, setSelectedEvent] = useState<EventData>();
   const [sortField, setSortField] = useState<string>("timestamp");
 
   useEffect(() => {
@@ -134,6 +137,12 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
       <CssBaseline />
       <Typography variant="h3">Opportunities in {location}</Typography>
 
+      <EventModal
+        open={modalOpen}
+        event={selectedEvent}
+        handleClose={() => setModalOpen(false)}
+      />
+
       <div style={{ marginTop: "2em", marginBottom: "2em" }}>
         <Typography display="inline">
           <b>Filters</b>{" "}
@@ -188,8 +197,14 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
       <div style={{ paddingBottom: "4em" }}>
         <Grid container spacing={6}>
           {events.map((event) => (
-            <Grid item xs={6}>
-              <EventCard event={event} />
+            <Grid item xs={12} lg={6}>
+              <EventCard
+                event={event}
+                handleClick={() => {
+                  setModalOpen(true);
+                  setSelectedEvent(event);
+                }}
+              />
             </Grid>
           ))}
         </Grid>
@@ -217,6 +232,7 @@ const styles = createStyles({
   page: {
     marginLeft: "auto",
     marginRight: "auto",
+    minHeight: 1000,
     maxWidth: 1500,
     width: "95%",
     paddingTop: "2em",
