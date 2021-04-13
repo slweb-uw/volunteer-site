@@ -34,7 +34,6 @@ interface Props {
 const EventCard: React.FC<Props> = (props) => {
   const classes = useStyles();
 
-  console.log(props);
   return (
     <Card
       className={classes.root}

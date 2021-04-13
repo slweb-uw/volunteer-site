@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { firebaseClient } from "../../firebaseClient";
 import { useState, useEffect } from "react";
+import { NextPage } from "next";
 
 import {
   createStyles,
@@ -24,8 +25,6 @@ const Event: NextPage<Props> = ({ classes }) => {
 
   const [data, setData] = useState({});
 
-  // let currEvent: EventData = (); // data for the current event being displayed on the page
-
   useEffect(() => {
     // Load initial events
     if (event) {
@@ -40,15 +39,7 @@ const Event: NextPage<Props> = ({ classes }) => {
       .doc("" + event)
       .get(); // queries data
     setData(next.data());
-    console.log(data);
   };
-
-  // full page is two grid containers
-  //  grid one (top half)
-  // container grid two (bottom half) row :
-  // two column grid containers
-  // each has 3 items (each item is a heading a description)
-  //
 
   return (
     <div className={classes.page}>
@@ -75,17 +66,17 @@ const Event: NextPage<Props> = ({ classes }) => {
             <Grid item>
               <Grid container direction="row" spacing={10}>
                 <Grid item>
-                  <Typography variant="h6">Location</Typography>
-                  <Typography variant="body">{data.Location}</Typography>
+                  <Typography variant="h6" style={{ fontWeight: 600 }}>Location</Typography>
+                  <Typography variant="body1">{data.Location}</Typography>
                 </Grid>
                 <Grid item>
-                  <Typography variant="h6">Date and Time</Typography>
-                  <Typography variant="body"></Typography>
+                  <Typography variant="h6" style={{ fontWeight: 600 }}>Date and Time</Typography>
+                  <Typography variant="body1"></Typography>
                 </Grid>
               </Grid>
             </Grid>
             <Grid item>
-              <Typography variant="h6">
+              <Typography variant="h6" style={{ fontWeight: 600 }}>
                 Contact Information & Cancellation Policy
               </Typography>
               <Typography>
@@ -93,7 +84,7 @@ const Event: NextPage<Props> = ({ classes }) => {
               </Typography>
             </Grid>
             <Grid item>
-              <Typography variant="h6">Types of Volunteers Needed</Typography>
+              <Typography variant="h6" style={{ fontWeight: 600 }}>Types of Volunteers Needed</Typography>
               <Typography>{data["Types of Volunteers Needed"]}</Typography>
             </Grid>
             <Grid item>
@@ -116,15 +107,15 @@ const Event: NextPage<Props> = ({ classes }) => {
         <Grid item xs={6}>
           <Grid container direction="column" spacing={3}>
             <Grid item>
-              <Typography variant="h6">Project Description</Typography>
+              <Typography variant="h6" style={{ fontWeight: 600 }}>Project Description</Typography>
               <Typography>{data["Project Description"]}</Typography>
             </Grid>
             <Grid item>
-              <Typography variant="h6">Clinic Flow</Typography>
+              <Typography variant="h6" style={{ fontWeight: 600 }}>Clinic Flow</Typography>
               <Typography>{data["Clinic Flow"]}</Typography>
             </Grid>
             <Grid item>
-              <Typography variant="h6">Parking Directions</Typography>
+              <Typography variant="h6" style={{ fontWeight: 600 }}>Parking Directions</Typography>
               <Typography>{data["Parking and Directions"]}</Typography>
             </Grid>
           </Grid>
@@ -132,15 +123,15 @@ const Event: NextPage<Props> = ({ classes }) => {
         <Grid item xs={6}>
           <Grid container direction="column" spacing={3}>
             <Grid item>
-              <Typography variant="h6">Tips and Reminders</Typography>
+              <Typography variant="h6" style={{ fontWeight: 600 }}>Tips and Reminders</Typography>
               <Typography>{data["Tips and Reminders"]}</Typography>
             </Grid>
             <Grid item>
-              <Typography variant="h6">Required Trainings</Typography>
+              <Typography variant="h6" style={{ fontWeight: 600 }}>Required Trainings</Typography>
               <Typography>{data["Required Trainings"]}</Typography>
             </Grid>
             <Grid item>
-              <Typography variant="h6">Provider Information</Typography>
+              <Typography variant="h6" style={{ fontWeight: 600 }}>Provider Information</Typography>
               <Typography>{data["Provider Information"]}</Typography>
             </Grid>
           </Grid>
