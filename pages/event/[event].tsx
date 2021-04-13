@@ -50,12 +50,12 @@ const Event:NextPage<Props> = ({ classes }) => {
     return (
         <div className={classes.page}>
             <CssBaseline />
-            <Typography variant="h5" style={{ fontWeight:600 }}>{data.Title}</Typography>
+            <Typography variant="h5" style={{ fontWeight:900 }}>{data.Title}</Typography>
 
             <Grid container>
                 <Grid item xs={6}>
                     <img src={data.imageURL} 
-                    style={{ height:400, width:"auto", margin:"1rem"}} 
+                    style={{ height:350, width:"auto", margin:"1rem", borderRadius:"10px"}} 
                     />
                 </Grid>
                 <Grid item xs={6}>
