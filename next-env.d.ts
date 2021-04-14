@@ -8,6 +8,7 @@ interface EventData {
   Order?: string[];
   Timestamp: Date;
   [Field: string]: string;
+  id: string;
 }
 
 // The data of the event which needs to be passed in during the api call.

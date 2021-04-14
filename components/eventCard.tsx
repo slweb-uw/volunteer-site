@@ -5,6 +5,8 @@ import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 
+import Link from 'next/link'
+
 const useStyles = makeStyles((theme) => ({
   root: {
     cursor: "pointer",
