@@ -75,9 +75,6 @@ export default function EventModal(props: {
   handleClose: any;
 }) {
   const { open, event, handleClose } = props;
-
-  
-  
   const router = useRouter();
 
   const { location } = router.query; // string of current location (ex: "Seattle")

@@ -19,7 +19,6 @@ interface Props {
 }
 
 const Event: NextPage<Props> = ({ classes }) => {
-  // todo: location ??
   const router = useRouter();
   const { event, location } = router.query; // current event id and location 
 
@@ -94,7 +93,7 @@ const Event: NextPage<Props> = ({ classes }) => {
                 variant="contained"
                 style={{ marginRight: "1em", marginBottom: "2em" }}
               >
-                Sign up >
+                Sign up {'>'}
               </Button>
             </Grid>
           </Grid>
