@@ -22,7 +22,9 @@ const Event: NextPage<Props> = ({ classes }) => {
   const router = useRouter();
   const { event, location } = router.query; // current event id and location 
 
-  const [data, setData] = useState({});
+  // const [data, setData] = useState({});
+
+  const [eventData, setEventData] = useState<EventData>();
 
   useEffect(() => {
     // Load initial events
@@ -34,30 +36,33 @@ const Event: NextPage<Props> = ({ classes }) => {
   const loadEventData = async () => {
     const next = await firebaseClient
       .firestore()
-      .collection(location)
+      .collection("" + location)
       .doc("" + event)
       .get(); // queries data
-    setData(next.data());
+    // setData(next.data() as any);
+    setEventData(next.data() as EventData)
   };
+
+  // console.log(eventData);
 
   return (
     <div className={classes.page}>
       <CssBaseline />
       <Typography variant="h5" style={{ fontWeight: 900 }}>
-        {data.Title}
+        {eventData?.Title}
       </Typography>
 
       <Grid container spacing={6}>
         <Grid item xs={6}>
           <img
-            src={data.imageURL ?? "/beigeSquare.png"}
+            src={eventData?.imageURL ?? "/beigeSquare.png"}
             style={{
               height: 350,
               width: "auto",
               margin: "1rem",
               borderRadius: "10px",
             }}
-            alt={"Image for " + data.Title}
+            alt={"Image for " + eventData?.Title}
           />
         </Grid>
         <Grid item xs={6}>
@@ -66,11 +71,11 @@ const Event: NextPage<Props> = ({ classes }) => {
               <Grid container direction="row" spacing={10}>
                 <Grid item>
                   <Typography variant="h6" style={{ fontWeight: 600 }}>Location</Typography>
-                  <Typography variant="body1">{data.Location}</Typography>
+                  <Typography variant="body1">{eventData?.Location}</Typography>
                 </Grid>
                 <Grid item>
                   <Typography variant="h6" style={{ fontWeight: 600 }}>Date and Time</Typography>
-                  <Typography variant="body1">{data["Date and Time"]}</Typography>
+                  <Typography variant="body1">{eventData?.["Date and Time"]}</Typography>
                 </Grid>
               </Grid>
             </Grid>
@@ -79,12 +84,12 @@ const Event: NextPage<Props> = ({ classes }) => {
                 Contact Information & Cancellation Policy
               </Typography>
               <Typography>
-                {data["Contact Information and Cancellation Policy"]}
+                {eventData?.["Contact Information and Cancellation Policy"]}
               </Typography>
             </Grid>
             <Grid item>
               <Typography variant="h6" style={{ fontWeight: 600 }}>Types of Volunteers Needed</Typography>
-              <Typography>{data["Types of Volunteers Needed"]}</Typography>
+              <Typography>{eventData?.["Types of Volunteers Needed"]}</Typography>
             </Grid>
             <Grid item>
               <Button
@@ -107,15 +112,15 @@ const Event: NextPage<Props> = ({ classes }) => {
           <Grid container direction="column" spacing={3}>
             <Grid item>
               <Typography variant="h6" style={{ fontWeight: 600 }}>Project Description</Typography>
-              <Typography>{data["Project Description"]}</Typography>
+              <Typography>{eventData?.["Project Description"]}</Typography>
             </Grid>
             <Grid item>
               <Typography variant="h6" style={{ fontWeight: 600 }}>Clinic Flow</Typography>
-              <Typography>{data["Clinic Flow"]}</Typography>
+              <Typography>{eventData?.["Clinic Flow"]}</Typography>
             </Grid>
             <Grid item>
               <Typography variant="h6" style={{ fontWeight: 600 }}>Parking Directions</Typography>
-              <Typography>{data["Parking and Directions"]}</Typography>
+              <Typography>{eventData?.["Parking and Directions"]}</Typography>
             </Grid>
           </Grid>
         </Grid>
@@ -123,15 +128,15 @@ const Event: NextPage<Props> = ({ classes }) => {
           <Grid container direction="column" spacing={3}>
             <Grid item>
               <Typography variant="h6" style={{ fontWeight: 600 }}>Tips and Reminders</Typography>
-              <Typography>{data["Tips and Reminders"]}</Typography>
+              <Typography>{eventData?.["Tips and Reminders"]}</Typography>
             </Grid>
             <Grid item>
               <Typography variant="h6" style={{ fontWeight: 600 }}>Required Trainings</Typography>
-              <Typography>{data["Required Trainings"]}</Typography>
+              <Typography>{eventData?.["Required Trainings"]}</Typography>
             </Grid>
             <Grid item>
               <Typography variant="h6" style={{ fontWeight: 600 }}>Provider Information</Typography>
-              <Typography>{data["Provider Information"]}</Typography>
+              <Typography>{eventData?.["Provider Information"]}</Typography>
             </Grid>
           </Grid>
         </Grid>
