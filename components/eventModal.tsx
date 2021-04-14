@@ -16,6 +16,8 @@ import Typography from "@material-ui/core/Typography";
 import { Grid } from "@material-ui/core";
 import Link from "next/link";
 
+import { useRouter } from 'next/router';
+
 const styles = (theme: Theme) =>
   createStyles({
     root: {
@@ -74,11 +76,17 @@ export default function EventModal(props: {
 }) {
   const { open, event, handleClose } = props;
 
+  
+  
+  const router = useRouter();
+
+  const { location } = router.query; // string of current location (ex: "Seattle")
+
   let eventLink = "/"
   if (event) {
-    eventLink = "/event/" + event.id;
+    eventLink = "/" + location + "/" + event.id;
   }
-  
+
   return (
     <Dialog
       onClose={handleClose}

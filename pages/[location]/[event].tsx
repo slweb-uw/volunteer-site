@@ -21,7 +21,7 @@ interface Props {
 const Event: NextPage<Props> = ({ classes }) => {
   // todo: location ??
   const router = useRouter();
-  const { event } = router.query; // current event id
+  const { event, location } = router.query; // current event id and location 
 
   const [data, setData] = useState({});
 
@@ -35,7 +35,7 @@ const Event: NextPage<Props> = ({ classes }) => {
   const loadEventData = async () => {
     const next = await firebaseClient
       .firestore()
-      .collection("Seattle")
+      .collection(location)
       .doc("" + event)
       .get(); // queries data
     setData(next.data());
@@ -48,7 +48,7 @@ const Event: NextPage<Props> = ({ classes }) => {
         {data.Title}
       </Typography>
 
-      <Grid container>
+      <Grid container spacing={6}>
         <Grid item xs={6}>
           <img
             src={data.imageURL ?? "/beigeSquare.png"}
@@ -62,7 +62,7 @@ const Event: NextPage<Props> = ({ classes }) => {
           />
         </Grid>
         <Grid item xs={6}>
-          <Grid container direction="column" spacing={8}>
+          <Grid container direction="column" spacing={6}>
             <Grid item>
               <Grid container direction="row" spacing={10}>
                 <Grid item>
@@ -71,7 +71,7 @@ const Event: NextPage<Props> = ({ classes }) => {
                 </Grid>
                 <Grid item>
                   <Typography variant="h6" style={{ fontWeight: 600 }}>Date and Time</Typography>
-                  <Typography variant="body1"></Typography>
+                  <Typography variant="body1">{data["Date and Time"]}</Typography>
                 </Grid>
               </Grid>
             </Grid>
@@ -92,7 +92,7 @@ const Event: NextPage<Props> = ({ classes }) => {
                 autoFocus
                 color="secondary"
                 variant="contained"
-                style={{ marginRight: "1em", marginBottom: "1em" }}
+                style={{ marginRight: "1em", marginBottom: "2em" }}
               >
                 Sign up >
               </Button>
@@ -103,7 +103,7 @@ const Event: NextPage<Props> = ({ classes }) => {
 
       <Divider></Divider>
 
-      <Grid container spacing={6}>
+      <Grid container spacing={6} style={{ marginTop:"2em" }}>
         <Grid item xs={6}>
           <Grid container direction="column" spacing={3}>
             <Grid item>
@@ -146,7 +146,7 @@ const styles = createStyles({
     marginLeft: "auto",
     marginRight: "auto",
     maxWidth: 1500,
-    width: "95%",
+    width: "90%",
     paddingTop: "2em",
     paddingBottom: "5em",
   },
