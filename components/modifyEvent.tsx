@@ -16,10 +16,10 @@ const ModifyEvent: React.FC<Props> = (Props) => {
                 Name: Props.event.Title,
                 Description: Props.event['Project Description'],
                 Organization: Props.event.organization,
-                Location: Props.event['location'],
+                Location: Props.event['Location'],
                 StartDate: Props.event.Timestamp.toISOString(),
-                EndDate: Props.event['endDate'],
-                Timezone: Props.event['timezone']
+                EndDate: Props.event['EndDate'],
+                Timezone: Props.event['Timezone']
             };
             //TODO: check recurrence
 
