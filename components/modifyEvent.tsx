@@ -154,7 +154,7 @@ const CalendarModifyEvent: React.FC<Props> = (Props) => {
                 },
                 (error) => {
                     setIsLoaded(true);
-                    setError(error);
+                    setError(error.message);
                 }
             )
         }, [])
@@ -173,7 +173,7 @@ const CalendarModifyEvent: React.FC<Props> = (Props) => {
         <DialogTitle id="calendar-event-dialog">{"Calendar Event: " + calendarEvent.Name}</DialogTitle>
         <DialogContent>
           <DialogContentText id="calendar-event-description">
-              Error: {error?.['message']}
+              Error: {error}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
