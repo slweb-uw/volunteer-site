@@ -38,30 +38,27 @@ const CalendarModifyEvent: React.FC<Props> = (Props) => {
     const [isLoaded, setIsLoaded] = useState(false);
     const [resp, setResp] = useState("");
     const calendarApiPath = '/api/put-calendar-event';
-    if (!Props.delete) {
-        useEffect(() => {
-            fetch(DOMAIN + calendarApiPath, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(calendarEvent),
-            })
-            .then(
-                (res: any) => {
+    //TODO: Placeholder for delete calendar api
+    //TODO: change the api route based on the passin Props
+    useEffect(() => {
+        fetch(DOMAIN + calendarApiPath, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(calendarEvent),
+        })
+        .then(
+            (res: any) => {
+            setIsLoaded(true);
+            setResp(res);
+            },
+            (error) => {
                 setIsLoaded(true);
-                setResp(res);
-                },
-                (error) => {
-                    setIsLoaded(true);
-                    setError(error.message);
-                }
-            )
-        }, [])
-    } else {
-        //TODO: Placeholder for delete calendar api
-        //TODO: change the api route based on the passin Props
-    }
+                setError(error.message);
+            }
+        )
+    }, [])
     if (error) {
         return (
         <Dialog
