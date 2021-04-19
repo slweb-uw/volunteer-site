@@ -7,15 +7,22 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
+// get domain with protocol prefix like https://www.google.com
 const DOMAIN = window.location.protocol + '//' + window.location.hostname;
 
 interface Props {
     event: EventData;
-    delete: Boolean;
-    handleClose: any;
-    open: boolean;
+    delete: Boolean;  // determine if the given event needs to be deleted or not
+    handleClose: any; // for material-ui/core/Dialog
+    open: boolean;    // for material-ui/core/Dialog
 }
 
+/**
+ * This React component will add/update/delete based on the given EventData
+ * to edit the corresponding event on the Google calendar
+ * @param Props See Props interface
+ * @returns JSX.Element
+ */
 const CalendarModifyEvent: React.FC<Props> = (Props) => {
     const calendarEvent: CalendarEventData = {
         Name: Props.event.Title,
@@ -30,9 +37,9 @@ const CalendarModifyEvent: React.FC<Props> = (Props) => {
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [resp, setResp] = useState("");
+    const calendarApiPath = '/api/put-calendar-event';
     if (!Props.delete) {
         useEffect(() => {
-            let calendarApiPath = '/api/put-calendar-event';
             fetch(DOMAIN + calendarApiPath, {
                 method: 'POST',
                 headers: {
@@ -53,6 +60,7 @@ const CalendarModifyEvent: React.FC<Props> = (Props) => {
         }, [])
     } else {
         //TODO: Placeholder for delete calendar api
+        //TODO: change the api route based on the passin Props
     }
     if (error) {
         return (
