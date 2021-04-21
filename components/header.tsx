@@ -38,7 +38,7 @@ const Header: React.FC<{}> = (props) => {
       </Link>
       <div style={{ marginRight: "3em", display: 'flex'}}>
         <NavLink href="/"><StyledLink>Home</StyledLink></NavLink>
-        <NavLink href="/404"><StyledLink>Training</StyledLink></NavLink>
+        <NavLink href="/training"><StyledLink>Training</StyledLink></NavLink>
         <NavLink href="/resources"><StyledLink>Resources</StyledLink></NavLink>
         <NavLink href="/protocol"><StyledLink>Protocol</StyledLink></NavLink>
         <NavLink href="/donations"><StyledLink>Donations</StyledLink></NavLink>
