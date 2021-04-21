@@ -6,7 +6,8 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles({
   active: {
     fontWeight: 600,
-    borderBottom: 'solid white .2em',
+    paddingBottom: '4px',
+    borderBottom: 'solid white .18em',
   },
 });
 
