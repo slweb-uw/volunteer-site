@@ -55,12 +55,11 @@ const EventForm = () => {
   const [VolunteerType, setVolunteerType] = useState('');
   const [calResp, setCalResp] = useState('');
   const [calError, setCalError] = useState('');
-  const DOMAIN = window.location.protocol + '//' + window.location.hostname;
+  const DOMAIN = "http:" + '//' + "localhost:3000";
   const calendarApiPath = '/api/put-calendar-event';
 
   const handleSubmit = e => {
     e.preventDefault();
-    console.log(Name, Description);
     const calEvent: CalendarEventData = {
       Name: Name,
       Description: Description,
@@ -68,15 +67,11 @@ const EventForm = () => {
       Location: Location,
       StartDate: StartDate, 
       EndDate: EndDate,
-      Timezone: Timezone, 
-      Recurrence: [Recurrence]
+      Timezone: Timezone
     }
     fetch(DOMAIN + calendarApiPath, {
       method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(calEvent),
+      body: JSON.stringify({eventData: calEvent}),
     })
     .then(
       (res: any) => {
@@ -171,7 +166,6 @@ const EventForm = () => {
       <TextField
         label="Recurrence"
         variant="filled"
-        required
         value={Recurrence}
         onChange={e => setRecurrence(e.target.value)}
       />
