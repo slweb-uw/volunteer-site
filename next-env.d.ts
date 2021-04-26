@@ -35,9 +35,9 @@ interface CalendarEventData {
   //Description: string; --> Project Description
   //Organization: string;
   //Location: string;
-  id: string; // document's id
-  VolunteerType: string;
-  TimeStamp: Date;
-  [Field: string]: string;
+  id?: string; // document's id
+  VolunteerType?: string;
+  TimeStamp?: Date;
+  //[Field?: string]: string;
   Order?: string[];
 }
