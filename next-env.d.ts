@@ -13,6 +13,7 @@ interface EventData {
 
 // The data of the event which needs to be passed in during the api call.
 interface CalendarEventData {
+  //calendar fields
   Name: string;
   Description: string;
   Organization: string;
@@ -28,4 +29,15 @@ interface CalendarEventData {
   // recurrence example: ["RRULE:FREQ=WEEKLY;BYDAY:TU,SU;UNTIL=20110617T065959Z"], This means repeat weekly(Tuesday and Sunday) until the above time.
   // Note that DTSTART and DTEND lines are not allowed in this field.
   Recurrence?: string[]; 
+
+  //Event Fields:
+  //Name: string;  --> Title
+  //Description: string; --> Project Description
+  //Organization: string;
+  //Location: string;
+  id: string; // document's id
+  VolunteerType: string;
+  TimeStamp: Date;
+  [Field: string]: string;
+  Order?: string[];
 }

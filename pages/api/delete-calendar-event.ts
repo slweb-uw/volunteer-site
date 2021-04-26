@@ -26,7 +26,7 @@ interface Creds {
   client_x509_cert_url: string;
 }
 
-// Put new event
+// Delete event
 // 1. Check if event already exists
 // 2. If event already exists update event
 //    2a. If eventData is empty, delete event. Else replace data with this
@@ -53,7 +53,7 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
           SCOPES);
         const _ = await jwtClient.authorize();
         const deleteEventId = await checkEvent(jwtClient, eventData);
-        const res = await addOrUpdateEvent(jwtClient, deleteEventId, eventData);
+        const res = await deleteEvent(jwtClient, deleteEventId, eventData);
         resolve.status(200).send("Success:" + res);
       } catch(err) {
         resolve.status(400).send("Bad request: " + err);
@@ -101,7 +101,7 @@ async function checkEvent(auth: any, event: CalendarEventData) {
  * @param {string | null} deleteEventId The Id of the event which need to be deleted or null if no event.
  * @param {CalendarEventData} event Event related information.
  */
-async function addOrUpdateEvent(auth: any, deleteEventId: string | null,
+async function deleteEvent(auth: any, deleteEventId: string | null,
   event: CalendarEventData) {
   const calendar = google.calendar({version: "v3", auth});
   try {
