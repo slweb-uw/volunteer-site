@@ -1,4 +1,6 @@
 import React, { useEffect } from "react";
+import EventForm from "../components/eventForm";
+import { Modal, Form, makeStyles } from '@material-ui/core';
 import {
   withStyles,
   createStyles,
@@ -9,6 +11,25 @@ import {
 import Link from "next/link";
 
 import { firebaseClient } from "firebaseClient";
+
+
+
+// function SimpleModal() {
+//   const classes = useStyles();
+//   // getModalStyle is not a pure function, we roll the style only on the first render
+//   const [modalStyle] = React.useState(getModalStyle);
+//   const [open, setOpen] = React.useState(false);
+
+//   const handleOpen = () => {
+//     setOpen(true);
+//   };
+
+//   const handleClose = () => {
+//     setOpen(false);
+//   };
+// }
+
+
 
 const App: React.FC<{}> = () => {
   // Page where customers can check their order status
@@ -41,7 +62,10 @@ const App: React.FC<{}> = () => {
         </Typography>
       </div>
 
-      <Grid container spacing={4}>
+        <EventForm />
+
+
+      {/* <Grid container spacing={4}>
         <Grid item xs={6} sm={4} lg>
           <div
             style={{
@@ -115,7 +139,7 @@ const App: React.FC<{}> = () => {
             }}
           >
             {/* Idaho wants to use own website, but card should look the same */}
-            <a href="/Idaho" style={{ textDecoration: "none", color: "black" }}>
+            {/* <a href="/Idaho" style={{ textDecoration: "none", color: "black" }}>
               <div style={{ cursor: "pointer" }}>
                 <img src="/Idaho.png" />
                 <Typography>Idaho</Typography>
@@ -170,11 +194,11 @@ const App: React.FC<{}> = () => {
                 are very flexible and try to make it easy to work around busy
                 schedules. There is no required hourly commitment. Simply sign
                 up when you have the time!
-              </Typography>
+             </Typography>
             </div>
           </Grid>
         </Grid>
-      </div>
+      </div>   */}
     </div>
   );
 };
