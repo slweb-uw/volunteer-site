@@ -53,15 +53,41 @@ const EventForm = () => {
   const [Timezone, setTimezone] = useState('');
   const [Recurrence, setRecurrence] = useState('');
   const [VolunteerType, setVolunteerType] = useState('');
+  const [calResp, setCalResp] = useState('');
+  const [calError, setCalError] = useState('');
+  const DOMAIN = window.location.protocol + '//' + window.location.hostname;
+  const calendarApiPath = '/api/put-calendar-event';
 
   const handleSubmit = e => {
     e.preventDefault();
     console.log(Name, Description);
-    
-
-
-
-
+    const calEvent: CalendarEventData = {
+      Name: Name,
+      Description: Description,
+      Organization: Organization,
+      Location: Location,
+      StartDate: StartDate, 
+      EndDate: EndDate,
+      Timezone: Timezone, 
+      Recurrence: [Recurrence]
+    }
+    fetch(DOMAIN + calendarApiPath, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(calEvent),
+    })
+    .then(
+      (res: any) => {
+      // setIsLoaded(true); may needed later
+      setCalResp("Calendar updated success.");
+      },
+      (error) => {
+          // setIsLoaded(true);
+          setCalError(error.message);
+      }
+    )
     handleClose();
   };
 
