@@ -36,16 +36,16 @@ interface Creds {
 // location, and recurrence
 
 export default async (req: NextApiRequest, resolve: NextApiResponse) => {
-  const { userToken, eventData } : {userToken: any, eventData: CalendarEventData} = JSON.parse(req.body);
+  const { eventData } : {eventData: CalendarEventData} = JSON.parse(req.body);
 
-  const token = await firebaseAdmin.auth().verifyIdToken(userToken);
-  const user = await firebaseAdmin.auth().getUser(token.uid);
+  // const token = await firebaseAdmin.auth().verifyIdToken(userToken);
+  // const user = await firebaseAdmin.auth().getUser(token.uid);
 
   // Verify user and that user has custom claim "authorization" to edit the calendar
-  if (
-    user.emailVerified &&
-    user.customClaims?.authorization
-  ) {
+  // if (
+  //   user.emailVerified &&
+  //   user.customClaims?.authorization
+  // ) {
     if (req.method === 'POST') {
       try {
         const fcontent: Creds = JSON.parse((await fsPromises.readFile(CREDS_PATH)).toString());
@@ -61,10 +61,10 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
       }
     } else {
       resolve.status(400).send("Invalid request method");
-    }
-  } else {
-    resolve.status(400).send("Error: Unauthorized User");
-  }
+    };
+  // } else {
+  //   resolve.status(400).send("Error: Unauthorized User");
+  // }
 };
 
 /**
