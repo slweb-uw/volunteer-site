@@ -1,193 +1,271 @@
 import React, { useState } from 'react';
-import { makeStyles, Modal } from '@material-ui/core';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
+import 'antd/dist/antd.css';
+import { Button, Modal, Form, Input, Radio, DatePicker, Select, Space } from 'antd';
+import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+const { RangePicker } = DatePicker;
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: theme.spacing(2),
-    width: 400,
-    position: 'absolute',
-    '& .MuiTextField-root': {
-      margin: theme.spacing(1),
-      width: '300px',
+const rangeConfig = {
+  rules: [
+    {
+      type: 'array',
+      required: true,
+      message: 'Please select time!',
     },
-    '& .MuiButtonBase-root': {
-      margin: theme.spacing(2),
-    },
-    alignItemsAndJustifyContent: {
-        width: 500,
-        height: 80,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'pink',
-    },
-  },
-  modal: {
-    display: 'flex',
-    flexDirection: 'width',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    width: 400,
-    backgroundColor: "#ffffff",
-    border: '2px solid #000',
-    // boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
-  }
-}));
+  ],
+};
 
-const EventForm = () => {
-  // create state variables for each input
-  const [Name, setName] = useState('');
-  const [Description, setDescription] = useState('');
-  const [Organization, setOrganization] = useState('');
-  const [Location, setLocation] = useState('');
-  const [StartDate, setStartDate] = useState('');
-  const [EndDate, setEndDate] = useState('');
-  const [Timezone, setTimezone] = useState('');
-  const [Recurrence, setRecurrence] = useState('');
-  const [VolunteerType, setVolunteerType] = useState('');
-  const [calResp, setCalResp] = useState('');
-  const [calError, setCalError] = useState('');
-  const DOMAIN = "http:" + '//' + "localhost:3000";
-  const calendarApiPath = '/api/put-calendar-event';
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    const calEvent: CalendarEventData = {
-      Name: Name,
-      Description: Description,
-      Organization: Organization,
-      Location: Location,
-      StartDate: StartDate, 
-      EndDate: EndDate,
-      Timezone: Timezone
-    }
-    fetch(DOMAIN + calendarApiPath, {
-      method: 'POST',
-      body: JSON.stringify({eventData: calEvent}),
-    })
-    .then(
-      (res: any) => {
-      // setIsLoaded(true); may needed later
-      setCalResp("Calendar updated success.");
-      },
-      (error) => {
-          // setIsLoaded(true);
-          setCalError(error.message);
-      }
-    )
-    handleClose();
-  };
-
-    const classes = useStyles();
-  // getModalStyle is not a pure function, we roll the style only on the first render
-//   const [modalStyle] = React.useState(getModalStyle);
-  const [open, setOpen] = React.useState(false);
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
+  const [form] = Form.useForm();
 
 
   return (
-      <div>
-          <button type="button" onClick={handleOpen}>
-        Open Modal
-      </button>
-      <Modal
-        className={classes.modal}
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
+    <Modal
+      visible={visible}
+      title="Create New Event"
+      okText="Create"
+      cancelText="Cancel"
+      onCancel={onCancel}
+      onOk={() => {
+        form
+          .validateFields()
+          .then((values) => {
+            form.resetFields();
+            onCreate(values);
+          })
+          .catch((info) => {
+            console.log('Validate Failed:', info);
+          });
+      }}
+    >
+      <Form
+        form={form}
+        layout="vertical"
+        name="form_in_modal"
+      >
+
+        <Form.Item
+          name="Name"
+          label="Event Name"
+          rules={[
+            {
+              required: true,
+              message: 'Please input the name of the event!', //shows upon incompletion
+            },
+          ]}
         >
-    
-    <form className={classes.root} onSubmit={handleSubmit}>
-      <TextField
-        label="Name"
-        variant="filled"
-        required
-        value={Name}
-        onChange={e => setName(e.target.value)}
-      />
-      <TextField
-        label="Description"
-        variant="filled"
-        required
-        value={Description}
-        onChange={e => setDescription(e.target.value)}
-      />
-      <TextField
-        label="Organization"
-        variant="filled"
-        required
-        value={Organization}
-        onChange={e => setOrganization(e.target.value)}
-      />
-      <TextField
-        label="Location"
-        variant="filled"
-        required
-        value={Location}
-        onChange={e => setLocation(e.target.value)}
-      />
-      <TextField
-        label="StartDate"
-        variant="filled"
-        required
-        value={StartDate}
-        onChange={e => setStartDate(e.target.value)}
-      />
-      <TextField
-        label="EndDate"
-        variant="filled"
-        required
-        value={EndDate}
-        onChange={e => setEndDate(e.target.value)}
-      />      
-      <TextField
-        label="Timezone"
-        variant="filled"
-        required
-        value={Timezone}
-        onChange={e => setTimezone(e.target.value)}
-      />
-      <TextField
-        label="Recurrence"
-        variant="filled"
-        value={Recurrence}
-        onChange={e => setRecurrence(e.target.value)}
-      />
-      <TextField
-        label="VolunteerType"
-        variant="filled"
-        required
-        value={VolunteerType}
-        onChange={e => setVolunteerType(e.target.value)}
-      />      
-      <div>
-        <Button variant="contained" onClick={handleClose}>
-          Cancel
-        </Button>
-        <Button type="submit" variant="contained" color="primary">
-          Submit
-        </Button>
-      </div>
-    </form>
-          </Modal>
-          </div>
+          <Input />
+        </Form.Item>
+
+        <Form.Item name="Description" label="Description" rules={[
+            {
+              required: true,
+              message: 'Please input a description of the event!', //shows upon incompletion
+            },
+          ]}>
+          <Input type="textarea" />
+        </Form.Item>
+
+        <Form.Item
+          name="Organization"
+          label="Organization"
+          rules={[
+            {
+              required: true,
+              message: 'Please input the name of the organization!', //shows upon incompletion
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          name="Location"
+          label="Location"
+          rules={[
+            {
+              required: true,
+              message: 'Please select the location of the event!', //shows upon incompletion
+            },
+          ]}
+        >
+          <Select>
+            <Select.Option value="Alaska">Alaska</Select.Option>
+            <Select.Option value="Idaho">Idaho</Select.Option>
+            <Select.Option value="Montana">Montana</Select.Option>
+            <Select.Option value="Seattle">Seattle</Select.Option>
+            <Select.Option value="Spokane">Spokane</Select.Option>
+            <Select.Option value="Wyoming">Wyoming</Select.Option>
+          </Select>        
+        </Form.Item>
+
+        <Form.Item name="DateObject" label="Date/Time" rules={[
+            {
+              required: true,
+              message: 'Please input the date and time of the event!', //shows upon incompletion
+            },
+          ]} {...rangeConfig} >
+          <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />
+        </Form.Item>
+
+        <Form.Item
+          name="Timezone"
+          label="Timezone"
+          rules={[
+            {
+              required: true,
+              message: 'Please input the timezone of the event!', //shows upon incompletion
+            },
+          ]}
+        >
+          <Select>
+            <Select.Option value="America/Los_Angeles">America/Los_Angeles</Select.Option>
+            <Select.Option value="America/Anchorage">America/Anchorage</Select.Option>
+            <Select.Option value="America/Juneau">America/Juneau</Select.Option>
+            <Select.Option value="America/Sitka">America/Sitka</Select.Option>
+            <Select.Option value="America/Yakutat">America/Yakutat</Select.Option>
+            <Select.Option value="America/Nome">America/Nome</Select.Option>
+            <Select.Option value="America/Adak">America/Adak</Select.Option>
+            <Select.Option value="America/Metlakatla">America/Metlakatla</Select.Option>
+            <Select.Option value="Pacific/Honolulu">Pacific/Honolulu</Select.Option>
+            <Select.Option value="America/Phoenix">America/Phoenix</Select.Option>
+            <Select.Option value="America/Boise">America/Boise</Select.Option>
+            <Select.Option value="America/Denver">America/Denver</Select.Option>
+            <Select.Option value="America/North_Dakota/Center">America/North_Dakota/Center</Select.Option>
+            <Select.Option value="America/North_Dakota/New_Salem">America/North_Dakota/New_Salem</Select.Option>
+            <Select.Option value="America/North_Dakota/Beulah">America/North_Dakota/Beulah</Select.Option>
+            <Select.Option value="America/Menominee">America/Menominee</Select.Option>
+            <Select.Option value="America/Indiana/Knox">America/Indiana/Knox</Select.Option>
+            <Select.Option value="America/Indiana/Tell_City">America/Indiana/Tell_City</Select.Option>
+            <Select.Option value="America/Chicago">America/Chicago</Select.Option>
+            <Select.Option value="America/Indiana/Vevay">America/Indiana/Vevay</Select.Option>
+            <Select.Option value="America/Indiana/Petersburg">America/Indiana/Petersburg</Select.Option>
+            <Select.Option value="America/Indiana/Marengo">America/Indiana/Marengo</Select.Option>
+            <Select.Option value="America/Indiana/Winamac">America/Indiana/Winamac</Select.Option>
+            <Select.Option value="America/Indiana/Vincennes">America/Indiana/Vincennes</Select.Option>
+            <Select.Option value="America/Indiana/Indianapolis">America/Indiana/Indianapolis</Select.Option>
+            <Select.Option value="America/Kentucky/Monticello">America/Kentucky/Monticello</Select.Option>
+            <Select.Option value="America/Kentucky/Louisville">America/Kentucky/Louisville</Select.Option>
+            <Select.Option value="America/Detroit">America/Detroit</Select.Option>
+            <Select.Option value="America/New_York">America/New_York</Select.Option>
+          </Select>        
+        </Form.Item>
+
+        <Form.Item name="Recurrence" label="Event Recurrence" >
+          <Input /> {/*TODO: find out what this needs to take form of */}
+        </Form.Item>
+
+        <Form.Item name="VolunteerType" label="Volunteer Type" >
+          <Input />
+        </Form.Item>
+
+        <Form.List name="users">
+        {(fields, { add, remove }) => (
+          <>
+            {fields.map(({ key, name, fieldKey, ...restField }) => (
+              <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+                <Form.Item
+                  {...restField}
+                  name={[name, 'detailKey']}
+                  fieldKey={[fieldKey, 'detailKey']}
+                  rules={[{ required: true, message: 'Missing detail name' }]}
+                >
+                  <Input placeholder="Detail Name (i.e. Parking Directions)" />
+                </Form.Item>
+                <Form.Item
+                  {...restField}
+                  name={[name, 'detailValue']}
+                  fieldKey={[fieldKey, 'detailValue']}
+                  rules={[{ required: true, message: 'Missing detail value' }]}
+                >
+                  <Input placeholder="Detail Value (i.e. Park at level 2)" />
+                </Form.Item>
+                <MinusCircleOutlined onClick={() => remove(name)} />
+              </Space>
+            ))}
+            <Form.Item>
+              <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                Add field
+              </Button>
+            </Form.Item>
+          </>
+        )}
+      </Form.List>
+
+      </Form>
+    </Modal>
   );
 };
 
-export default EventForm;
+const CollectionsPage = () => {
+  const [visible, setVisible] = useState(false);
+  const DOMAIN = "http:" + '//' + "localhost:3000";
+  const calendarApiPath = '/api/put-calendar-event';
+  
+  const onCreate = (values) => {
+    const rangeTimeValue = values['DateObject'];
+    const dateValue = {
+      ...values,
+      'DateObject': [
+        rangeTimeValue[0].format('YYYY-MM-DDTHH:mm:ss'),
+        rangeTimeValue[1].format('YYYY-MM-DDTHH:mm:ss'),
+      ]
+    };
+
+    console.log('Received values of form: ', values);
+    console.log('YURRRR: ', dateValue);
+
+    
+    let startTime = dateValue.DateObject[0] + 'Z';
+    let endTime = dateValue.DateObject[1] + 'Z';
+    console.log(startTime);
+    console.log(endTime);
+    
+    const calEvent: CalendarEventData = {
+        Name: values.Name,
+        Description: values.Description,
+        Organization: values.Organization,
+        Location: values.Location,
+        StartDate: startTime,
+        EndDate: endTime,
+        Timezone: values.Timezone
+    }
+    fetch(DOMAIN + calendarApiPath, {
+        method: 'POST',
+        body: JSON.stringify({ eventData: calEvent }),
+    })
+        .then(
+            (res: any) => {
+                // setIsLoaded(true); may needed later
+                console.log("Calendar updated success.");
+            },
+            (error) => {
+                // setIsLoaded(true);
+                console.log(error.message);
+            }
+        )
+    setVisible(false);
+  };
+
+  return (
+    <div>
+      <Button
+        type="primary"
+        onClick={() => {
+          setVisible(true);
+        }}
+      >
+        Add Event
+      </Button>
+      <CollectionCreateForm
+        visible={visible}
+        onCreate={onCreate}
+        onCancel={() => {
+          setVisible(false);
+        }}
+      />
+    </div>
+  );
+};
+
+export default CollectionsPage;

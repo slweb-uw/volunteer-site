@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import EventForm from "../components/eventForm";
+import CollectionsPage from "../components/eventForm";
 import { Modal, Form, makeStyles } from '@material-ui/core';
 import {
   withStyles,
@@ -11,25 +11,6 @@ import {
 import Link from "next/link";
 
 import { firebaseClient } from "firebaseClient";
-
-
-
-// function SimpleModal() {
-//   const classes = useStyles();
-//   // getModalStyle is not a pure function, we roll the style only on the first render
-//   const [modalStyle] = React.useState(getModalStyle);
-//   const [open, setOpen] = React.useState(false);
-
-//   const handleOpen = () => {
-//     setOpen(true);
-//   };
-
-//   const handleClose = () => {
-//     setOpen(false);
-//   };
-// }
-
-
 
 const App: React.FC<{}> = () => {
   // Page where customers can check their order status
@@ -62,8 +43,9 @@ const App: React.FC<{}> = () => {
         </Typography>
       </div>
 
-        <EventForm />
-
+      <div style={{ textAlign: "center", marginBottom: "8em" }}>
+      <CollectionsPage />
+      </div>
 
       {/* <Grid container spacing={4}>
         <Grid item xs={6} sm={4} lg>
