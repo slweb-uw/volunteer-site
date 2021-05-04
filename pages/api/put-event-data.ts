@@ -21,19 +21,22 @@ export const config = {
 //  Should also have a way to add new fields and delete them
 
 export default async (req: NextApiRequest, resolve: NextApiResponse) => {
-  const { userToken, eventData } : {userToken: any, eventData: CalendarEventData} = JSON.parse(req.body);
+  const { eventData } : {eventData: CalendarEventData} = JSON.parse(req.body);
 
-  const token = await firebaseAdmin.auth().verifyIdToken(userToken);
-  const user = await firebaseAdmin.auth().getUser(token.uid);
+  // const token = await firebaseAdmin.auth().verifyIdToken(userToken);
+  // const user = await firebaseAdmin.auth().getUser(token.uid);
 
   // Verify user and that user has custom claim "authorization" to edit events
-  if (
-    user.emailVerified &&
-    user.customClaims?.authorization
-  ) {
+  // if (
+  //   user.emailVerified &&
+  //   user.customClaims?.authorization
+  // ) {
     if (req.method === 'POST') {
       try {
-        DocumentReference document = firebaseAdmin.firestore().collection(event.Location).doc(event.id)
+        let document = null;
+        if (eventData.id != null) {
+          document = firebaseAdmin.firestore().collection(eventData.Location).doc(eventData.id)
+        }
         const {update, updateEventId}: {update: boolean,
           updateEventId: string | null} = await checkEvent(eventData, document);
         const res = await addOrUpdateEvent(update, updateEventId, eventData, document);
@@ -44,9 +47,9 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
     } else {
       resolve.status(400).send("Invalid request method");
     }
-  } else {
-    resolve.status(400).send("Error: Unauthorized User");
-  }
+  // } else {
+  //   resolve.status(400).send("Error: Unauthorized User");
+  // }
 };
 
 /**
@@ -76,26 +79,29 @@ async function checkEvent(event: CalendarEventData, document: DocumentReference)
  * @param {CalendarEventData} event Event related information.
  */
 async function addOrUpdateEvent(update: boolean, updateEventId: string | null,
-  event: CalendarEventData, document: DocumentReference) {
+  event: CalendarEventData, document: any) {
   try {
-    let body = createRequestBody(event, update);
+    const body = createRequestBody(event, update);
     if (update && updateEventId) {
       document.update({ body })
       return body;
     } else {
-      const res = await calendar.events.insert({
-        calendarId: 'slweb@uw.edu',
-        requestBody: body,
-      });
-      DocumentReference document = firebaseAdmin.firestore().collection(event.Location).doc();
+      // const res = await calendar.events.insert({
+      //   calendarId: 'slweb@uw.edu',
+      //   requestBody: body,
+      // });
+      document = firebaseAdmin.firestore().collection(event.Location).doc();
       body["id"] = document.id;
+      console.log(body);
       document.set(body);
 
       // check if this event is part of a new organization not existing in current cache of orgs.
-      DocumentReference orgs = firebaseAdmin.firestore().collection("cache").doc(event.Location);
-      if (orgs.getBoolean(event.organization) == null) {
-        orgs.update({ event.organization: true });
-      }
+      const orgs = firebaseAdmin.firestore().collection("cache").doc(event.Location);
+      //TODO FIX THIS
+      // if (orgs.getBoolean(event.organization) == null) {
+      //   let newOrg = event.location;
+      //   orgs.update({ newOrg: true });
+      // }
       return body;
     }
   } catch(err) {
@@ -126,7 +132,9 @@ function createRequestBody(event: CalendarEventData, update: boolean) {
   // for the fields in CalendarEventData
   // take the fields that apply to firestore and add to result object
   // then look at the fields that user created and add that to result object
-  result['Title'] = event.name;
+  
+  // name ; description ; organization ; location (not city name); Types of volunteer ; link ; 
+  result['Title'] = event.Name;
 
   return result;
 }
