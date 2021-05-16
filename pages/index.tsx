@@ -8,6 +8,7 @@ import {
 } from "@material-ui/core";
 import Link from "next/link";
 
+import styles from '../styles/Home.module.css';
 import { firebaseClient } from "firebaseClient";
 
 const App: React.FC<{}> = () => {
@@ -22,13 +23,14 @@ const App: React.FC<{}> = () => {
       style={{
         marginLeft: "auto",
         marginRight: "auto",
-        maxWidth: 1500,
-        width: "95%",
-        paddingTop: "4em",
       }}
     >
-      <div style={{ textAlign: "center", marginBottom: "7em" }}>
-        <Typography variant="h4" gutterBottom style={{ color: "#4B2E83" }}>
+      <div id={styles["image-container"]}>
+        <div id={styles.background}>
+          <div id={styles["triangle-topleft"]}></div>
+          <div id={styles["triangle-bottomleft"]}></div>
+          <div id={styles.text} style={{margin: "10px"}}>
+          <Typography variant="h4" gutterBottom style={{ color: "#4B2E83" }}>
           {
             "Welcome to Service Learning at the UW School of Medicine/WWAMI & UW Health Sciences"
           }
@@ -39,8 +41,29 @@ const App: React.FC<{}> = () => {
             area
           </i>
         </Typography>
+            <a>Find Opportunities</a>
+          </div>
+        </div>
       </div>
+      {/* <div style={{ position: "relative" }}> */}
 
+        {/* <img src="./home-overlay.png" style={{}}></img>
+        <img src="./home-overlay2.png"></img>
+        <img src="./homepage.png" style={{}}></img> */}
+        {/* <Typography variant="h4" gutterBottom style={{ color: "#4B2E83" }}>
+          {
+            "Welcome to Service Learning at the UW School of Medicine/WWAMI & UW Health Sciences"
+          }
+        </Typography>
+        <Typography variant="h6" gutterBottom>
+          <i>
+            Choose a location to find Service Learning opportunities in that
+            area
+          </i>
+        </Typography>
+      </div> */}
+
+      {/** 
       <Grid container spacing={4}>
         <Grid item xs={6} sm={4} lg>
           <div
@@ -114,7 +137,7 @@ const App: React.FC<{}> = () => {
               textAlign: "center",
             }}
           >
-            {/* Idaho wants to use own website, but card should look the same */}
+            Idaho wants to use own website, but card should look the same 
             <a href="/Idaho" style={{ textDecoration: "none", color: "black" }}>
               <div style={{ cursor: "pointer" }}>
                 <img src="/Idaho.png" />
@@ -124,6 +147,7 @@ const App: React.FC<{}> = () => {
           </div>
         </Grid>
       </Grid>
+    */}
       <div
         style={{
           backgroundColor: "#E8E3D3",

@@ -1,0 +1,44 @@
+#image-container {
+    height: 100%;
+    /*position: absolute;*/
+}
+#background {
+    background-image: url("https://www.uwmedicine.org/sites/stevie/files/2020-02/Casa%203_w-blur.jpg");
+    background-size: cover;
+    background-position: center;
+    height: 661px;
+    position: relative;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+#triangle-topleft {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    border-top: 661px solid #FFFFFF95;
+    border-right: 100px solid transparent;
+}
+
+#triangle-bottomleft {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 0;
+    border-bottom: 661px solid #FFFFFF95;
+    border-right: 100px solid transparent;
+}
+
+#text {
+    display: flex;
+    position: absolute;
+    justify-content: center;
+    flex-direction: column;
+    height: 100%;
+}
+
