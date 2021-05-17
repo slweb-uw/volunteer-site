@@ -260,7 +260,6 @@ const CollectionsPage = () => {
             // return Promise.all(res.map((response: any) => {
             //     return response.json();
             // }));
-            console.log("yesss");
         // }).then((data: any) => {
         //     // Log the data to the console
         //     // You would do something with both sets of data here
@@ -269,7 +268,6 @@ const CollectionsPage = () => {
             // if there's an error, log it
             console.log(error);
         });
-
         setVisible(false);
     };
 
@@ -282,7 +280,7 @@ const CollectionsPage = () => {
                 }}
             >
                 Add Event
-      </Button>
+            </Button>
             <CollectionCreateForm
                 visible={visible}
                 onCreate={onCreate}
