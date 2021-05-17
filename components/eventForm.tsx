@@ -108,48 +108,48 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
                     <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />
                 </Form.Item>
 
-                <Form.Item
-                    name="Timezone"
-                    label="Timezone"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input the timezone of the event!', //shows upon incompletion
-                        },
-                    ]}
-                >
-                    <Select>
-                        <Select.Option value="America/Los_Angeles">America/Los_Angeles</Select.Option>
-                        <Select.Option value="America/Anchorage">America/Anchorage</Select.Option>
-                        <Select.Option value="America/Juneau">America/Juneau</Select.Option>
-                        <Select.Option value="America/Sitka">America/Sitka</Select.Option>
-                        <Select.Option value="America/Yakutat">America/Yakutat</Select.Option>
-                        <Select.Option value="America/Nome">America/Nome</Select.Option>
-                        <Select.Option value="America/Adak">America/Adak</Select.Option>
-                        <Select.Option value="America/Metlakatla">America/Metlakatla</Select.Option>
-                        <Select.Option value="Pacific/Honolulu">Pacific/Honolulu</Select.Option>
-                        <Select.Option value="America/Phoenix">America/Phoenix</Select.Option>
-                        <Select.Option value="America/Boise">America/Boise</Select.Option>
-                        <Select.Option value="America/Denver">America/Denver</Select.Option>
-                        <Select.Option value="America/North_Dakota/Center">America/North_Dakota/Center</Select.Option>
-                        <Select.Option value="America/North_Dakota/New_Salem">America/North_Dakota/New_Salem</Select.Option>
-                        <Select.Option value="America/North_Dakota/Beulah">America/North_Dakota/Beulah</Select.Option>
-                        <Select.Option value="America/Menominee">America/Menominee</Select.Option>
-                        <Select.Option value="America/Indiana/Knox">America/Indiana/Knox</Select.Option>
-                        <Select.Option value="America/Indiana/Tell_City">America/Indiana/Tell_City</Select.Option>
-                        <Select.Option value="America/Chicago">America/Chicago</Select.Option>
-                        <Select.Option value="America/Indiana/Vevay">America/Indiana/Vevay</Select.Option>
-                        <Select.Option value="America/Indiana/Petersburg">America/Indiana/Petersburg</Select.Option>
-                        <Select.Option value="America/Indiana/Marengo">America/Indiana/Marengo</Select.Option>
-                        <Select.Option value="America/Indiana/Winamac">America/Indiana/Winamac</Select.Option>
-                        <Select.Option value="America/Indiana/Vincennes">America/Indiana/Vincennes</Select.Option>
-                        <Select.Option value="America/Indiana/Indianapolis">America/Indiana/Indianapolis</Select.Option>
-                        <Select.Option value="America/Kentucky/Monticello">America/Kentucky/Monticello</Select.Option>
-                        <Select.Option value="America/Kentucky/Louisville">America/Kentucky/Louisville</Select.Option>
-                        <Select.Option value="America/Detroit">America/Detroit</Select.Option>
-                        <Select.Option value="America/New_York">America/New_York</Select.Option>
-                    </Select>
-                </Form.Item>
+//                <Form.Item
+//                    name="Timezone"
+//                    label="Timezone"
+//                    rules={[
+//                        {
+//                            required: true,
+//                            message: 'Please input the timezone of the event!', //shows upon incompletion
+//                        },
+//                    ]}
+//                >
+//                    <Select>
+//                        <Select.Option value="America/Los_Angeles">America/Los_Angeles</Select.Option>
+//                        <Select.Option value="America/Anchorage">America/Anchorage</Select.Option>
+//                        <Select.Option value="America/Juneau">America/Juneau</Select.Option>
+//                        <Select.Option value="America/Sitka">America/Sitka</Select.Option>
+//                        <Select.Option value="America/Yakutat">America/Yakutat</Select.Option>
+//                        <Select.Option value="America/Nome">America/Nome</Select.Option>
+//                        <Select.Option value="America/Adak">America/Adak</Select.Option>
+//                        <Select.Option value="America/Metlakatla">America/Metlakatla</Select.Option>
+//                        <Select.Option value="Pacific/Honolulu">Pacific/Honolulu</Select.Option>
+//                        <Select.Option value="America/Phoenix">America/Phoenix</Select.Option>
+//                        <Select.Option value="America/Boise">America/Boise</Select.Option>
+//                        <Select.Option value="America/Denver">America/Denver</Select.Option>
+//                        <Select.Option value="America/North_Dakota/Center">America/North_Dakota/Center</Select.Option>
+//                        <Select.Option value="America/North_Dakota/New_Salem">America/North_Dakota/New_Salem</Select.Option>
+//                        <Select.Option value="America/North_Dakota/Beulah">America/North_Dakota/Beulah</Select.Option>
+//                        <Select.Option value="America/Menominee">America/Menominee</Select.Option>
+//                        <Select.Option value="America/Indiana/Knox">America/Indiana/Knox</Select.Option>
+//                        <Select.Option value="America/Indiana/Tell_City">America/Indiana/Tell_City</Select.Option>
+//                        <Select.Option value="America/Chicago">America/Chicago</Select.Option>
+//                        <Select.Option value="America/Indiana/Vevay">America/Indiana/Vevay</Select.Option>
+//                        <Select.Option value="America/Indiana/Petersburg">America/Indiana/Petersburg</Select.Option>
+//                        <Select.Option value="America/Indiana/Marengo">America/Indiana/Marengo</Select.Option>
+//                        <Select.Option value="America/Indiana/Winamac">America/Indiana/Winamac</Select.Option>
+//                        <Select.Option value="America/Indiana/Vincennes">America/Indiana/Vincennes</Select.Option>
+//                        <Select.Option value="America/Indiana/Indianapolis">America/Indiana/Indianapolis</Select.Option>
+//                        <Select.Option value="America/Kentucky/Monticello">America/Kentucky/Monticello</Select.Option>
+//                        <Select.Option value="America/Kentucky/Louisville">America/Kentucky/Louisville</Select.Option>
+//                        <Select.Option value="America/Detroit">America/Detroit</Select.Option>
+//                        <Select.Option value="America/New_York">America/New_York</Select.Option>
+//                    </Select>
+//                </Form.Item>
 
                 <Form.Item name="Recurrence" label="Event Recurrence" >
                     <Input /> {/*TODO: find out what this needs to take form of */}
@@ -229,7 +229,7 @@ const CollectionsPage = () => {
             Location: values.Location,
             StartDate: startTime,
             EndDate: endTime,
-            Timezone: values.Timezone
+            Timezone: "GMT"
         }
         // fetch(DOMAIN + eventApiPath, {
         //     method: 'POST',
