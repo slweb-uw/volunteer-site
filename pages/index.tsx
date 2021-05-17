@@ -30,7 +30,7 @@ const App: React.FC<{}> = () => {
           <div id={styles["triangle-topleft"]}></div>
           <div id={styles["triangle-bottomleft"]}></div>
           <div id={styles.text} style={{margin: "10px"}}>
-          <Typography variant="h4" gutterBottom style={{ color: "#4B2E83" }}>
+          <Typography variant="h4" gutterBottom style={{ fontSize: "2.5rem", width: "50%", marginLeft: "3rem", color: "#4B2E83"}}>
           {
             "Welcome to Service Learning at the UW School of Medicine/WWAMI & UW Health Sciences"
           }
@@ -45,109 +45,16 @@ const App: React.FC<{}> = () => {
           </div>
         </div>
       </div>
-      {/* <div style={{ position: "relative" }}> */}
+      {/* <div style={{
+        marginLeft: "auto",
+        marginRight: "auto",
+        width: "95%",
+        maxWidth: 1500
+      }}> */}
+        <div>
 
-        {/* <img src="./home-overlay.png" style={{}}></img>
-        <img src="./home-overlay2.png"></img>
-        <img src="./homepage.png" style={{}}></img> */}
-        {/* <Typography variant="h4" gutterBottom style={{ color: "#4B2E83" }}>
-          {
-            "Welcome to Service Learning at the UW School of Medicine/WWAMI & UW Health Sciences"
-          }
-        </Typography>
-        <Typography variant="h6" gutterBottom>
-          <i>
-            Choose a location to find Service Learning opportunities in that
-            area
-          </i>
-        </Typography>
-      </div> */}
+        </div>
 
-      {/** 
-      <Grid container spacing={4}>
-        <Grid item xs={6} sm={4} lg>
-          <div
-            style={{
-              marginLeft: "auto",
-              marginRight: "auto",
-              textAlign: "center",
-            }}
-          >
-            <Link href="/location/Seattle">
-              <div style={{ cursor: "pointer" }}>
-                <img src="/Seattle.png" />
-                <Typography>Seattle</Typography>
-              </div>
-            </Link>
-          </div>
-        </Grid>
-        <Grid item xs={6} sm={4} lg>
-          <div
-            style={{
-              marginLeft: "auto",
-              marginRight: "auto",
-              textAlign: "center",
-            }}
-          >
-            <Link href="/location/Spokane">
-              <div style={{ cursor: "pointer" }}>
-                <img src="/Spokane.png" />
-                <Typography>Spokane</Typography>
-              </div>
-            </Link>
-          </div>
-        </Grid>
-        <Grid item xs={6} sm={4} lg>
-          <div
-            style={{
-              marginLeft: "auto",
-              marginRight: "auto",
-              textAlign: "center",
-            }}
-          >
-            <Link href="/location/Alaska">
-              <div style={{ cursor: "pointer" }}>
-                <img src="/Alaska.png" />
-                <Typography>Alaska</Typography>
-              </div>
-            </Link>
-          </div>
-        </Grid>
-        <Grid item xs={6} sm={4} lg>
-          <div
-            style={{
-              marginLeft: "auto",
-              marginRight: "auto",
-              textAlign: "center",
-            }}
-          >
-            <Link href="/location/Wyoming">
-              <div style={{ cursor: "pointer" }}>
-                <img src="/Wyoming.png" />
-                <Typography>Wyoming</Typography>
-              </div>
-            </Link>
-          </div>
-        </Grid>
-        <Grid item xs={6} sm={4} lg>
-          <div
-            style={{
-              marginLeft: "auto",
-              marginRight: "auto",
-              textAlign: "center",
-            }}
-          >
-            Idaho wants to use own website, but card should look the same 
-            <a href="/Idaho" style={{ textDecoration: "none", color: "black" }}>
-              <div style={{ cursor: "pointer" }}>
-                <img src="/Idaho.png" />
-                <Typography>Idaho</Typography>
-              </div>
-            </a>
-          </div>
-        </Grid>
-      </Grid>
-    */}
       <div
         style={{
           backgroundColor: "#E8E3D3",
@@ -168,7 +75,7 @@ const App: React.FC<{}> = () => {
             >
               <img
                 style={{
-                  width: "80%",
+                  width: "70%",
                 }}
                 src="/serveWithUs.png"
                 alt="doctor caring for mom with child"
@@ -178,7 +85,7 @@ const App: React.FC<{}> = () => {
           <Grid item xs={12} md={6} lg={8}>
             <div
               style={{
-                width: "80%",
+                width: "70%",
                 marginLeft: "auto",
                 marginRight: "auto",
               }}
@@ -198,6 +105,77 @@ const App: React.FC<{}> = () => {
             </div>
           </Grid>
         </Grid>
+      </div>
+
+      <div
+        style={{
+          marginTop: "3em",
+          paddingTop: "3em",
+          paddingBottom: "5em",
+          verticalAlign: "middle"
+        }}
+      >
+        <Grid container spacing={4}>
+          <Grid item xs={12} md={6} lg={8}>
+            <div
+              style={{
+                width: "70%",
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+            >
+              <Typography gutterBottom variant="h4" style={{paddingBottom: "1em"}}>
+                About Us
+              </Typography>
+              <Typography>
+              The UW School of Medicine's Service Learning program strives to enrich medical education by providing our students with opportunities to hone their skills while addressing the health needs of our underserved communities. We seek to foster the joy of service in our students who are preparing for lives of civic and social responsibility in an increasingly diverse and complex global society.
+              </Typography>
+              <Typography>
+              These goals could not be achieved without strong community partnerships, dedicated supervising providers, and collaboration with the other six health sciences schools.
+              </Typography>
+              <Typography>
+              Please take a moment to glance through the amazing clinical and mentoring projects on this website that have been developed by our students over the past ten years.
+              </Typography>
+            </div>
+          </Grid>
+          <Grid item xs={12} md={6} lg={4}>
+            <div
+              style={{
+                marginLeft: "auto",
+                marginRight: "auto",
+                textAlign: "center",
+              }}
+            >
+              <img
+                style={{
+                  width: "70%",
+                }}
+                src="/aboutUs.png"
+                alt="doctor caring for mom with child"
+              />
+            </div>
+          </Grid>
+        </Grid>
+      </div>
+      <div style={{
+          backgroundColor: "#E8E3D3",
+          marginTop: "8em",
+          paddingTop: "5em",
+          paddingBottom: "5em",
+          verticalAlign: "middle",
+        }}>
+          <Grid container sm={6}>
+            <Grid>
+              <div>hi</div>
+              <div>hello hello</div>
+            </Grid>
+            <Grid>
+              <div>hi</div>
+              <div>hello hello</div>
+              </Grid>
+
+          </Grid>
+
       </div>
     </div>
   );
