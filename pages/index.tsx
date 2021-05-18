@@ -31,19 +31,21 @@ const App: React.FC<{}> = () => {
         marginRight: "auto",
       }}
     >
-      {/** top level div, background imager and header*/}
+      {/** Cover image and header*/}
       <div className={classes.container}>
         <div className={classes.background}>
           <div className={classes.triangletop}></div>
           <div className={classes.trianglebottom}></div>
-          <div className={classes.text} style={{ margin: "10px" }}>
+          <div
+            className={classes.text}
+            style={{ margin: "10px", marginLeft: "4rem" }}
+          >
             <Typography
               variant="h4"
               gutterBottom
               style={{
                 fontSize: "2.5rem",
-                width: "50%",
-                marginLeft: "3rem",
+                width: "60%",
                 color: "#4B2E83",
                 fontWeight: 700,
               }}
@@ -55,7 +57,7 @@ const App: React.FC<{}> = () => {
             <Typography
               variant="subtitle1"
               gutterBottom
-              style={{ fontSize: "1.2rem", marginLeft: "3rem" }}
+              style={{ fontSize: "1.2rem" }}
             >
               Choose a location to find Service Learning opportunities in that
               area
@@ -63,7 +65,7 @@ const App: React.FC<{}> = () => {
             <Button
               color="primary"
               variant="contained"
-              style={{ marginLeft: "3em", width: "15%" }}
+              style={{ width: "15%" }}
             >
               Find Opportunities {">"}
             </Button>
@@ -71,62 +73,110 @@ const App: React.FC<{}> = () => {
         </div>
       </div>
 
-      <div
-        style={{
-          margin: "2em",
-          width: "95%",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <Card
-          variant="outlined"
-          style={{ borderRadius: 10, margin: "1em", height: "auto" }}
+      <div style={{ textAlign: "center", margin: "2em" }}>
+        <Typography
+          gutterBottom
+          variant="h4"
+          style={{ fontWeight: 700, paddingBottom: "0.5em" }}
         >
-          <CardMedia
-            component="img"
-            src="./home1.png"
-            style={{ height: "200px", width: "auto" }}
-          ></CardMedia>
-          <CardContent>
-            <Typography>Welcome</Typography>
-            <hr></hr>
-            <Typography>Find Opportunities</Typography>
-          </CardContent>
-        </Card>
-        <Card variant="outlined" style={{ borderRadius: 10, margin: "1em" }}>
-          <CardMedia
-            component="img"
-            src="./home2.png"
-            style={{ height: "200px", width: "auto" }}
-          ></CardMedia>
-          <CardContent>
-            <Typography>Welcome</Typography>
-            <hr></hr>
-            <Typography>Onboarding</Typography>
-            <hr></hr>
-            <Typography>Find Opportunities</Typography>
-          </CardContent>
-        </Card>
-        <Card variant="outlined" style={{ borderRadius: 10, margin: "1em" }}>
-          <CardMedia
-            component="img"
-            src="./home3.png"
-            style={{ height: "200px", width: "280px" }}
-          ></CardMedia>
-          <CardContent>
-            <Typography>Become a Partner</Typography>
-          </CardContent>
-        </Card>
-      </div>
+          Get Started
+        </Typography>
+        <div
+          style={{
+            margin: "2em",
+            width: "95%",
+            display: "flex",
+            justifyContent: "center",
+            textAlign: "left",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Typography style={{ fontSize: "1.3rem", fontWeight: 700 }}>
+              Students
+            </Typography>
+            <Card
+              variant="outlined"
+              style={{ borderRadius: 10, margin: "1em", height: "auto" }}
+            >
+              <CardMedia
+                component="img"
+                src="./home1.png"
+                style={{ height: "200px", width: "auto" }}
+              ></CardMedia>
+              <CardContent>
+                <Typography>Welcome</Typography>
+                <hr></hr>
+                <Typography>Find Opportunities</Typography>
+              </CardContent>
+            </Card>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Typography style={{ fontSize: "1.3rem", fontWeight: 700 }}>
+              Volunteer Providers
+            </Typography>
 
+            <Card
+              variant="outlined"
+              style={{ borderRadius: 10, margin: "1em" }}
+            >
+              <CardMedia
+                component="img"
+                src="./home2.png"
+                style={{ height: "200px", width: "auto" }}
+              ></CardMedia>
+              <CardContent>
+                <Typography>Welcome</Typography>
+                <hr></hr>
+                <Typography>Onboarding</Typography>
+                <hr></hr>
+                <Typography>Find Opportunities</Typography>
+              </CardContent>
+            </Card>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Typography style={{ fontSize: "1.3rem", fontWeight: 700 }}>
+              Community Partners
+            </Typography>
+
+            <Card
+              variant="outlined"
+              style={{ borderRadius: 10, margin: "1em" }}
+            >
+              <CardMedia
+                component="img"
+                src="./home3.png"
+                style={{ height: "200px", width: "280px" }}
+              ></CardMedia>
+              <CardContent>
+                <Typography>Become a Partner</Typography>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
       {/** Serve With Us section*/}
       <div
         style={{
           backgroundColor: "#E8E3D3",
-          marginTop: "8em",
-          paddingTop: "5em",
-          paddingBottom: "5em",
+          padding: "5em",
           verticalAlign: "middle",
         }}
       >
@@ -141,9 +191,9 @@ const App: React.FC<{}> = () => {
             >
               <img
                 style={{
-                  width: "70%",
+                  width: "20rem",
                 }}
-                src="/serveWithUs.png"
+                src="/serve.png"
                 alt="doctor caring for mom with child"
               />
             </div>
@@ -151,7 +201,6 @@ const App: React.FC<{}> = () => {
           <Grid item xs={12} md={6} lg={8}>
             <div
               style={{
-                width: "70%",
                 marginLeft: "auto",
                 marginRight: "auto",
               }}
@@ -180,8 +229,7 @@ const App: React.FC<{}> = () => {
       {/** About Us section*/}
       <div
         style={{
-          marginTop: "2em",
-          paddingBottom: "3em",
+          padding: "5em",
           verticalAlign: "middle",
         }}
       >
@@ -189,7 +237,6 @@ const App: React.FC<{}> = () => {
           <Grid item xs={12} md={6} lg={8}>
             <div
               style={{
-                width: "70%",
                 marginLeft: "auto",
                 marginRight: "auto",
               }}
@@ -232,9 +279,9 @@ const App: React.FC<{}> = () => {
             >
               <img
                 style={{
-                  width: "70%",
+                  width: "25rem",
                 }}
-                src="/aboutUs.png"
+                src="/aboutUs2.png"
                 alt="doctor caring for mom with child"
               />
             </div>
@@ -340,7 +387,7 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
   },
   background: {
-    backgroundImage: "url(./homepage.png)",
+    backgroundImage: "url(./homeNew.png)",
     backgroundSize: "cover",
     backgroundPosition: "center",
     height: "661px",
