@@ -73,6 +73,7 @@ const App: React.FC<{}> = () => {
         </div>
       </div>
 
+      {/** Get started section, contains three cards -- students, volunteer providers, community partners */}
       <div style={{ textAlign: "center", margin: "2em" }}>
         <Typography
           gutterBottom
@@ -110,9 +111,15 @@ const App: React.FC<{}> = () => {
                 style={{ height: "200px", width: "auto" }}
               ></CardMedia>
               <CardContent>
-                <Typography>Welcome</Typography>
+                <div className={classes.cardlinks}>
+                  <Typography>Welcome</Typography>
+                  <Typography>&gt;</Typography>
+                </div>
                 <hr></hr>
-                <Typography>Find Opportunities</Typography>
+                <div className={classes.cardlinks}>
+                  <Typography>Find Opportunities</Typography>
+                  <Typography>&gt;</Typography>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -137,11 +144,20 @@ const App: React.FC<{}> = () => {
                 style={{ height: "200px", width: "auto" }}
               ></CardMedia>
               <CardContent>
-                <Typography>Welcome</Typography>
+                <div className={classes.cardlinks}>
+                  <Typography>Welcome</Typography>
+                  <Typography>&gt;</Typography>
+                </div>
                 <hr></hr>
-                <Typography>Onboarding</Typography>
+                <div className={classes.cardlinks}>
+                  <Typography>Onboarding</Typography>
+                  <Typography>&gt;</Typography>
+                </div>
                 <hr></hr>
-                <Typography>Find Opportunities</Typography>
+                <div className={classes.cardlinks}>
+                  <Typography>Find Opportunities</Typography>
+                  <Typography>&gt;</Typography>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -166,7 +182,10 @@ const App: React.FC<{}> = () => {
                 style={{ height: "200px", width: "280px" }}
               ></CardMedia>
               <CardContent>
-                <Typography>Become a Partner</Typography>
+                <div className={classes.cardlinks}>
+                  <Typography>Become a Partner</Typography>
+                  <Typography>&gt;</Typography>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -257,11 +276,13 @@ const App: React.FC<{}> = () => {
                 and social responsibility in an increasingly diverse and complex
                 global society.
               </Typography>
+              <br></br>
               <Typography>
                 These goals could not be achieved without strong community
                 partnerships, dedicated supervising providers, and collaboration
                 with the other six health sciences schools.
               </Typography>
+              <br></br>
               <Typography>
                 Please take a moment to glance through the amazing clinical and
                 mentoring projects on this website that have been developed by
@@ -382,6 +403,7 @@ const App: React.FC<{}> = () => {
   );
 };
 
+
 const useStyles = makeStyles((theme) => ({
   container: {
     height: "100%",
@@ -421,6 +443,11 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     flexDirection: "column",
     height: "100%",
+  },
+  cardlinks: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 }));
 
