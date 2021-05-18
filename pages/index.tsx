@@ -5,19 +5,20 @@ import {
   Typography,
   Grid,
   NoSsr,
+  makeStyles,
+  Button,
 } from "@material-ui/core";
 import Link from "next/link";
 
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
-import styles from "../styles/Home.module.css";
 import { firebaseClient } from "firebaseClient";
-
-import HomeCard from "../components/homeCard";
 
 const App: React.FC<{}> = () => {
   // Page where customers can check their order status
+
+  const classes = useStyles();
 
   useEffect(() => {
     firebaseClient.analytics().logEvent("home_page_visit");
@@ -31,11 +32,11 @@ const App: React.FC<{}> = () => {
       }}
     >
       {/** top level div, background imager and header*/}
-      <div id={styles["image-container"]}>
-        <div id={styles.background}>
-          <div id={styles["triangle-topleft"]}></div>
-          <div id={styles["triangle-bottomleft"]}></div>
-          <div id={styles.text} style={{ margin: "10px" }}>
+      <div className={classes.container}>
+        <div className={classes.background}>
+          <div className={classes.triangletop}></div>
+          <div className={classes.trianglebottom}></div>
+          <div className={classes.text} style={{ margin: "10px" }}>
             <Typography
               variant="h4"
               gutterBottom
@@ -51,13 +52,21 @@ const App: React.FC<{}> = () => {
                 "Welcome to Service Learning at the UW School of Medicine/WWAMI & UW Health Sciences"
               }
             </Typography>
-            <Typography variant="h6" gutterBottom>
-              <i>
-                Choose a location to find Service Learning opportunities in that
-                area
-              </i>
+            <Typography
+              variant="subtitle1"
+              gutterBottom
+              style={{ fontSize: "1.2rem", marginLeft: "3rem" }}
+            >
+              Choose a location to find Service Learning opportunities in that
+              area
             </Typography>
-            <a>Find Opportunities</a>
+            <Button
+              color="primary"
+              variant="contained"
+              style={{ marginLeft: "3em", width: "15%" }}
+            >
+              Find Opportunities {">"}
+            </Button>
           </div>
         </div>
       </div>
@@ -67,11 +76,18 @@ const App: React.FC<{}> = () => {
           margin: "2em",
           width: "95%",
           display: "flex",
-          justifyContent: "center"
+          justifyContent: "center",
         }}
       >
-        <Card variant="outlined" style={{ borderRadius: 10, margin: "1em", height: "auto" }}>
-          <CardMedia component="img" src="./home1.png" style={{ height: "200px", width: "auto" }}></CardMedia>
+        <Card
+          variant="outlined"
+          style={{ borderRadius: 10, margin: "1em", height: "auto" }}
+        >
+          <CardMedia
+            component="img"
+            src="./home1.png"
+            style={{ height: "200px", width: "auto" }}
+          ></CardMedia>
           <CardContent>
             <Typography>Welcome</Typography>
             <hr></hr>
@@ -79,7 +95,11 @@ const App: React.FC<{}> = () => {
           </CardContent>
         </Card>
         <Card variant="outlined" style={{ borderRadius: 10, margin: "1em" }}>
-          <CardMedia component="img" src="./home2.png" style={{ height: "200px", width: "auto" }}></CardMedia>
+          <CardMedia
+            component="img"
+            src="./home2.png"
+            style={{ height: "200px", width: "auto" }}
+          ></CardMedia>
           <CardContent>
             <Typography>Welcome</Typography>
             <hr></hr>
@@ -89,9 +109,13 @@ const App: React.FC<{}> = () => {
           </CardContent>
         </Card>
         <Card variant="outlined" style={{ borderRadius: 10, margin: "1em" }}>
-          <CardMedia component="img" src="./home3.png" style={{ height: "200px", width: "280px" }}></CardMedia>
+          <CardMedia
+            component="img"
+            src="./home3.png"
+            style={{ height: "200px", width: "280px" }}
+          ></CardMedia>
           <CardContent>
-          <Typography>Become a Partner</Typography>
+            <Typography>Become a Partner</Typography>
           </CardContent>
         </Card>
       </div>
@@ -132,7 +156,11 @@ const App: React.FC<{}> = () => {
                 marginRight: "auto",
               }}
             >
-              <Typography gutterBottom variant="h4">
+              <Typography
+                gutterBottom
+                variant="h4"
+                style={{ fontWeight: 700, paddingBottom: "0.5em" }}
+              >
                 Serve With Us
               </Typography>
               <Typography>
@@ -152,8 +180,7 @@ const App: React.FC<{}> = () => {
       {/** About Us section*/}
       <div
         style={{
-          marginTop: "3em",
-          paddingTop: "3em",
+          marginTop: "2em",
           paddingBottom: "3em",
           verticalAlign: "middle",
         }}
@@ -170,7 +197,7 @@ const App: React.FC<{}> = () => {
               <Typography
                 gutterBottom
                 variant="h4"
-                style={{ paddingBottom: "1em" }}
+                style={{ fontWeight: 700, paddingBottom: "0.5em" }}
               >
                 About Us
               </Typography>
@@ -223,7 +250,11 @@ const App: React.FC<{}> = () => {
           verticalAlign: "middle",
         }}
       >
-        <Typography gutterBottom variant="h4" style={{ paddingBottom: "1em" }}>
+        <Typography
+          gutterBottom
+          variant="h4"
+          style={{ fontWeight: 700, marginLeft: "2em" }}
+        >
           Contact Us
         </Typography>
         <Grid container spacing={6} style={{ marginTop: "2em" }}>
@@ -235,23 +266,29 @@ const App: React.FC<{}> = () => {
                     <img src="./profile-icon.png" alt="profile icon" />
                   </Grid>
                   <Grid item>
-                    <Typography variant="h6" style={{ width: "60%" }}>
-                      Leonora Clarke, Service Learning Manager, UW School of
-                      Medicine
+                    <Typography style={{ fontSize: "1.2rem" }}>
+                      Leonora Clarke, Service Learning Manager
+                    </Typography>
+                    <Typography style={{ fontSize: "1.2rem" }}>
+                      UW School of Medicine
                     </Typography>
                   </Grid>
                 </Grid>
               </Grid>
               <Grid item>
-                <Grid container direction="column">
+                <Grid
+                  container
+                  direction="column"
+                  style={{ marginLeft: "5em" }}
+                >
                   <Grid item>
-                    <Typography variant="h6">clarkel@uw.edu</Typography>
+                    <Typography>clarkel@uw.edu</Typography>
                   </Grid>
                   <Grid item>
-                    <Typography variant="h6">206-685-2009</Typography>
+                    <Typography>206-685-2009</Typography>
                   </Grid>
                   <Grid item>
-                    <Typography variant="h6">
+                    <Typography>
                       Health Sciences Building, Suite A-300
                     </Typography>
                   </Grid>
@@ -267,24 +304,26 @@ const App: React.FC<{}> = () => {
                     <img src="./mail-icon.png" alt="mail icon" />
                   </Grid>
                   <Grid item>
-                    <Typography variant="h6" style={{ fontWeight: 600 }}>
+                    <Typography style={{ fontSize: "1.2rem" }}>
                       Mailing Address
                     </Typography>
                   </Grid>
                 </Grid>
               </Grid>
               <Grid item>
-                <Grid container direction="column">
+                <Grid
+                  container
+                  direction="column"
+                  style={{ marginLeft: "5em" }}
+                >
                   <Grid item>
-                    <Typography variant="h6">
-                      1959 NE. Pacific Ave. Suite A-300
-                    </Typography>
+                    <Typography>1959 NE. Pacific Ave. Suite A-300</Typography>
                   </Grid>
                   <Grid item>
-                    <Typography variant="h6">Box 356340</Typography>
+                    <Typography>Box 356340</Typography>
                   </Grid>
                   <Grid item>
-                    <Typography variant="h6">Seattle, WA 98195</Typography>
+                    <Typography>Seattle, WA 98195</Typography>
                   </Grid>
                 </Grid>
               </Grid>
@@ -295,5 +334,47 @@ const App: React.FC<{}> = () => {
     </div>
   );
 };
+
+const useStyles = makeStyles((theme) => ({
+  container: {
+    height: "100%",
+  },
+  background: {
+    backgroundImage: "url(./homepage.png)",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    height: "661px",
+    position: "relative",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+  },
+  triangletop: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "50%",
+    height: "100%",
+    borderTop: "661px solid #FFFFFF95",
+    borderRight: "100px solid transparent",
+  },
+  trianglebottom: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "50%",
+    height: 0,
+    borderBottom: "661px solid #FFFFFF95",
+    borderRight: "100px solid transparent",
+  },
+  text: {
+    display: "flex",
+    position: "absolute",
+    justifyContent: "center",
+    flexDirection: "column",
+    height: "100%",
+  },
+}));
 
 export default App;
