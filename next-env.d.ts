@@ -26,7 +26,7 @@ interface CalendarEventData {
   // https://tools.ietf.org/html/rfc5545#section-3.8.5)
   // Date example(UTC): 20110617T065959Z
   // The above indicates: Year:2011, Month: 06, Day: 17, Hour: 06(range: 00-23), Minite: 59, Second: 59
-  // recurrence example: ["RRULE:FREQ=WEEKLY;BYDAY:TU,SU;UNTIL=20110617T065959Z"], This means repeat weekly(Tuesday and Sunday) until the above time.
+  // recurrence example: ["RRULE:FREQ=WEEKLY;BYDAY=TU,SU;UNTIL=20110618T065959Z"], This means repeat weekly(Tuesday and Sunday) until the above time.
   // Note that DTSTART and DTEND lines are not allowed in this field.
   Recurrence?: string[]; 
 
