@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import 'antd/dist/antd.css';
-import { Button, Modal, Form, Input, Radio, DatePicker, Select, Space } from 'antd';
+import { Button, Modal, Form, Input, Radio, DatePicker, Select, Space, Tabs, Checkbox } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+const { TabPane } = Tabs;
 const { RangePicker } = DatePicker;
 
 const rangeConfig = {
@@ -14,24 +15,105 @@ const rangeConfig = {
     ],
 };
 
+interface Props {
+    visible: any,
+    onCreate: any,
+    onCancel: any
+}
 
-const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
+const CollectionCreateForm: React.FC<Props> = (Props) => {
     const [form] = Form.useForm();
+    const [recEndDate, setRecEndDate] = useState(null);
+    const [tabNum, setTabNum] = useState(1);
+    const [interval, setInterval] = useState(null);
+    const [weekday, setWeekday] = useState(null);
+    const [month, setMonth] = useState(null);
+    const [monthday, setMonthday] = useState(null);
+
+    const weekdayOptions = [
+        { label: "Monday", value: "MO" },
+        { label: "Tuesday", value: "TU" },
+        { label: "Wednesday", value: "WE" },
+        { label: "Thursday", value: "TH" },
+        { label: "Friday", value: "FR" },
+        { label: "Saturday", value: "SA" },
+        { label: "Sunday", value: "SU" }
+    ];
+    const monthOptions = [
+        { label: "1", value: "1" },
+        { label: "2", value: "2" },
+        { label: "3", value: "3" },
+        { label: "4", value: "4" },
+        { label: "5", value: "5" },
+        { label: "6", value: "6" },
+        { label: "7", value: "7" },
+        { label: "8", value: "8" },
+        { label: "9", value: "9" },
+        { label: "10", value: "10" },
+        { label: "11", value: "11" },
+        { label: "12", value: "12" },
+    ];
+    const monthdayOptions = [
+        { label: "1", value: "1" },
+        { label: "2", value: "2" },
+        { label: "3", value: "3" },
+        { label: "4", value: "4" },
+        { label: "5", value: "5" },
+        { label: "6", value: "6" },
+        { label: "7", value: "7" },
+        { label: "8", value: "8" },
+        { label: "9", value: "9" },
+        { label: "10", value: "10" },
+        { label: "11", value: "11" },
+        { label: "12", value: "12" },
+        { label: "13", value: "13" },
+        { label: "14", value: "14" },
+        { label: "15", value: "15" },
+        { label: "16", value: "16" },
+        { label: "17", value: "17" },
+        { label: "18", value: "18" },
+        { label: "19", value: "19" },
+        { label: "20", value: "20" },
+        { label: "21", value: "21" },
+        { label: "22", value: "22" },
+        { label: "23", value: "23" },
+        { label: "24", value: "24" },
+        { label: "25", value: "25" },
+        { label: "26", value: "26" },
+        { label: "27", value: "27" },
+        { label: "28", value: "28" },
+        { label: "29", value: "29" },
+        { label: "30", value: "30" },
+        { label: "31", value: "31" }
+    ];
+
+    React.useEffect(() => {
+        form.setFieldsValue({
+            Recurrence: {
+                recEndDate,
+                tabNum,
+                interval,
+                weekday,
+                month,
+                monthday
+            }
+        });
+      }, [recEndDate, tabNum, interval, weekday, month, monthday]);
 
 
     return (
         <Modal
-            visible={visible}
+            visible={Props.visible}
             title="Create New Event"
             okText="Create"
             cancelText="Cancel"
-            onCancel={onCancel}
+            onCancel={Props.onCancel}
             onOk={() => {
                 form
                     .validateFields()
                     .then((values) => {
                         form.resetFields();
-                        onCreate(values);
+                        Props.onCreate(values);
                     })
                     .catch((info) => {
                         console.log('Validate Failed:', info);
@@ -150,13 +232,75 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
                         <Select.Option value="America/New_York">America/New_York</Select.Option>
                     </Select>
                 </Form.Item> */}
+                <Form.Item name="Recurrence" label="Event Recurrence"
+                    initialValue={{
+                    recEndDate,
+                    tabNum,
+                    interval,
+                    weekday,
+                    month,
+                    monthday
+                }}>
+                    <Tabs defaultActiveKey="1" onChange={ (v: any)=> setTabNum(v) }>
+                        <TabPane tab="Daily" key="1">
+                            <Space>
+                            Reapeat Every
+                            <Select style={{ width: 120 }} onChange={ (v: any)=> setInterval(v)}>
+                                <Select.Option value="1">1</Select.Option>
+                                <Select.Option value="2">2</Select.Option>
+                                <Select.Option value="3">3</Select.Option>
+                                <Select.Option value="4">4</Select.Option>
+                                <Select.Option value="5">5</Select.Option>
+                                <Select.Option value="6">6</Select.Option>
+                            </Select>
+                            Day
+                            </Space>
+                            <br />
+                            <br />
+                            <Space>
+                            Recurrence End Date:
+                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onOk={ (v: any)=> setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
+                            </Space>
+                        </TabPane>
+                        <TabPane tab="Weekly" key="2">
+                            <Checkbox.Group options={weekdayOptions} onChange={(v: any) => setWeekday(v)}/>
+                            <br />
+                            <br />
+                            <Space>
+                            Recurrence End Date:
+                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onOk={(v: any) => setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
+                            </Space>
+                        </TabPane>
+                        <TabPane tab="Monthly" key="3">
+                            Month day:
+                            <Checkbox.Group options={monthdayOptions} onChange={(v: any) => setMonthday(v)}/>
+                            <br />
+                            <br />
+                            <Space>
+                            Recurrence End Date:
+                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onOk={(v: any) => setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
+                            </Space>
+                        </TabPane>
+                        <TabPane tab="Yearly" key="4">
+                            Month:
+                            <Checkbox.Group options={monthOptions} onChange={(v: any) => setMonth(v)}/>
+                            <br />
+                            <br />
+                            Month day:
+                            <Checkbox.Group options={monthdayOptions} onChange={(v: any) => setMonthday(v)}/>
+                            <br />
+                            <br />
+                            <Space>
+                            Recurrence End Date:
+                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onOk={(v: any) => setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
 
-                <Form.Item name="Recurrence" label="Event Recurrence" >
-                    <Input /> {/*TODO: find out what this needs to take form of */}
+                            </Space>
+                        </TabPane>
+                    </Tabs>
                 </Form.Item>
 
                 <Form.Item name="VolunteerType" label="Volunteer Type" >
-                    <Input />
+                    <Input onChange={ (v: any)=>{console.log(interval)} }/>
                 </Form.Item>
 
                 <Form.List name="users">
@@ -164,7 +308,8 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel }) => {
                         <>
                             {fields.map(({ key, name, fieldKey, ...restField }) => (
                                 <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
-                                    <Form.Item
+                               onthly
+     <Form.Item
                                         {...restField}
                                         name={[name, 'detailKey']}
                                         fieldKey={[fieldKey, 'detailKey']}
@@ -205,20 +350,11 @@ const CollectionsPage = () => {
 
     const onCreate = (values) => {
         const rangeTimeValue = values['DateObject'];
-        const dateValue = {
-            ...values,
-            'DateObject': [
-                rangeTimeValue[0].format('YYYY-MM-DDTHH:mm:ss'),
-                rangeTimeValue[1].format('YYYY-MM-DDTHH:mm:ss'),
-            ]
-        };
-
         console.log('Received values of form: ', values);
-        console.log('YURRRR: ', dateValue);
 
 
-        let startTime = dateValue.DateObject[0] + 'Z';
-        let endTime = dateValue.DateObject[1] + 'Z';
+        let startTime = rangeTimeValue[0].toISOString();
+        let endTime = rangeTimeValue[1].toISOString();
         console.log(startTime);
         console.log(endTime);
 
@@ -230,6 +366,27 @@ const CollectionsPage = () => {
             StartDate: startTime,
             EndDate: endTime,
             Timezone: "GMT"
+        }
+        
+        if (values.Recurrence.recEndDate) {
+            let rec = [];
+            switch(values.Recurrence.tabNum) {
+                case "1":
+                    rec.push(`RRULE:FREQ=DAILY;INTERVAL=${values.Recurrence.interval};UNTIL=${values.Recurrence.recEndDate}`);
+                    break;
+                case "2":
+                    rec.push(`RRULE:FREQ=WEEKLY;BYDAY=${values.Recurrence.weekday};UNTIL=${values.Recurrence.recEndDate}`);
+                    break;
+                case "3":
+                    rec.push(`RRULE:FREQ=MONTHLY;BYMONTHDAY=${values.Recurrence.monthday};UNTIL=${values.Recurrence.recEndDate}`);
+                    break;
+                case "4":
+                    rec.push(`RRULE:FREQ=YEARLY;BYMONTH=${values.Recurrence.month};BYMONTHDAY=${values.Recurrence.monthday};UNTIL=${values.Recurrence.recEndDate}`);
+                    break;
+                default:
+                    break;
+            }
+            calEvent.Recurrence = rec;
         }
         // fetch(DOMAIN + eventApiPath, {
         //     method: 'POST',
