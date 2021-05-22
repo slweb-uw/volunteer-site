@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import 'antd/dist/antd.css';
-import { Button, Modal, Form, Input, Radio, DatePicker, Select, Space, Tabs, Checkbox } from 'antd';
+import { Button, Modal, Form, Input, Radio, Col, Row, DatePicker, Select, Space, Tabs, Checkbox } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 const { TabPane } = Tabs;
 const { RangePicker } = DatePicker;
@@ -105,6 +105,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
         <Modal
             visible={Props.visible}
             title="Create New Event"
+            width={900}
             okText="Create"
             cancelText="Cancel"
             onCancel={Props.onCancel}
@@ -131,7 +132,8 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                 layout="vertical"
                 name="form_in_modal"
             >
-
+                <Row gutter={[16, 16]}>
+                <Col span={12}>
                 <Form.Item
                     name="Name"
                     label="Event Name"
@@ -304,7 +306,8 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                         </TabPane>
                     </Tabs>
                 </Form.Item>
-
+                </Col>
+                <Col span={12}>
                 <Form.Item name="VolunteerType" label="Volunteer Type" >
                     <Input onChange={ (v: any)=>{console.log(interval)} }/>
                 </Form.Item>
@@ -342,7 +345,8 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                         </>
                     )}
                 </Form.List>
-
+            </Col>
+            </Row>
             </Form>
         </Modal>
     );
