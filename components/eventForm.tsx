@@ -114,6 +114,12 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                     .then((values) => {
                         form.resetFields();
                         Props.onCreate(values);
+                        setRecEndDate(null);
+                        setTabNum(1);
+                        setInterval(null);
+                        setWeekday(null);
+                        setMonth(null);
+                        setMonthday(null);
                     })
                     .catch((info) => {
                         console.log('Validate Failed:', info);
