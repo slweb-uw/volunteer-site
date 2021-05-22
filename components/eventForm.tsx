@@ -306,7 +306,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                 </Form.Item>
 
                 <Form.Item name="VolunteerType" label="Volunteer Type" >
-                    <Input onChange={ (v: any)=>{console.log(interval)} }/>
+                    <Input onChange={ (v: any)=>{console.log(interval); } }/>
                 </Form.Item>
 
                 <Form.List name="users">
@@ -315,7 +315,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                             {fields.map(({ key, name, fieldKey, ...restField }) => (
                                 <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
                                onthly
-     <Form.Item
+                            <Form.Item
                                         {...restField}
                                         name={[name, 'detailKey']}
                                         fieldKey={[fieldKey, 'detailKey']}
@@ -337,11 +337,15 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                             <Form.Item>
                                 <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
                                     Add field
-              </Button>
+                                </Button>
                             </Form.Item>
                         </>
                     )}
                 </Form.List>
+
+                <Form.Item name="Field Ordering" label="Field Ordering" >
+                    {/* <Ordering /> */}
+                </Form.Item>
 
             </Form>
         </Modal>
@@ -394,20 +398,6 @@ const CollectionsPage = () => {
             }
             calEvent.Recurrence = rec;
         }
-        // fetch(DOMAIN + eventApiPath, {
-        //     method: 'POST',
-        //     body: JSON.stringify({ eventData: calEvent }),
-        // })
-        //     .then(
-        //         (res: any) => {
-        //             // setIsLoaded(true); may needed later
-        //             console.log("Calendar updated success.");
-        //         },
-        //         (error) => {
-        //             // setIsLoaded(true);
-        //             console.log(error.message);
-        //         }
-        //     )
 
         Promise.all([
             fetch(DOMAIN + calendarApiPath, {
