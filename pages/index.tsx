@@ -65,7 +65,7 @@ const App: React.FC<{}> = () => {
             <Button
               color="primary"
               variant="contained"
-              style={{ width: "15%" }}
+              style={{ width: "200px" }}
             >
               Find Opportunities {">"}
             </Button>
@@ -74,7 +74,7 @@ const App: React.FC<{}> = () => {
       </div>
 
       {/** Get started section, contains three cards -- students, volunteer providers, community partners */}
-      <div style={{ textAlign: "center", margin: "2em" }}>
+      <div style={{ textAlign: "center", margin: "2em"}}>
         <Typography
           gutterBottom
           variant="h4"
@@ -87,6 +87,7 @@ const App: React.FC<{}> = () => {
             margin: "2em",
             width: "95%",
             display: "flex",
+            flexWrap: "wrap",
             justifyContent: "center",
             textAlign: "left",
           }}
@@ -325,8 +326,8 @@ const App: React.FC<{}> = () => {
         >
           Contact Us
         </Typography>
-        <Grid container spacing={6} style={{ marginTop: "2em" }}>
-          <Grid item xs={6}>
+        <Grid container spacing={6} xs={12} sm={12} style={{ marginTop: "2em" }}>
+          <Grid item >
             <Grid container direction="column" spacing={3}>
               <Grid item>
                 <Grid container direction="row" spacing={4}>
@@ -364,7 +365,7 @@ const App: React.FC<{}> = () => {
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item>
             <Grid container direction="column" spacing={3}>
               <Grid item>
                 <Grid container direction="row" spacing={4}>
@@ -448,7 +449,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-  },
+  }
 }));
 
 export default App;
