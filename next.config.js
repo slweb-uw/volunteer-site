@@ -5,6 +5,7 @@ module.exports = {
       config.node = {
         fs: "empty",
         module: "empty",
+        tls: "empty",
       };
     }
 

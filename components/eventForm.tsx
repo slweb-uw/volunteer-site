@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import 'antd/dist/antd.css';
 import { Button, Modal, Form, Input, Radio, Col, Row, DatePicker, Select, Space, Tabs, Checkbox } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import { firebaseAdmin } from "../firebaseAdmin";
+
 const { TabPane } = Tabs;
 const { RangePicker } = DatePicker;
 
@@ -21,6 +23,11 @@ interface Props {
     onCancel: any
 }
 
+const printOrganizations = async () => {
+    let doc = await firebaseAdmin.firestore().collection('cache').doc('Alaska').get()
+    console.log(doc.data())
+}
+
 const CollectionCreateForm: React.FC<Props> = (Props) => {
     const [form] = Form.useForm();
     const [recEndDate, setRecEndDate] = useState(null);
@@ -29,6 +36,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
     const [weekday, setWeekday] = useState(null);
     const [month, setMonth] = useState(null);
     const [monthday, setMonthday] = useState(null);
+    const [city, setCity] = useState(null);
 
     const weekdayOptions = [
         { label: "Monday", value: "MO" },
@@ -95,10 +103,11 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                 interval,
                 weekday,
                 month,
-                monthday
+                monthday,
+                city
             }
         });
-      }, [recEndDate, tabNum, interval, weekday, month, monthday]);
+      }, [recEndDate, tabNum, interval, weekday, month, monthday, city]);
 
 
     return (
@@ -121,6 +130,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                         setWeekday(null);
                         setMonth(null);
                         setMonthday(null);
+                        setCity(null);
                     })
                     .catch((info) => {
                         console.log('Validate Failed:', info);
@@ -157,19 +167,6 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                 </Form.Item>
 
                 <Form.Item
-                    name="Organization"
-                    label="Organization"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input the name of the organization!', //shows upon incompletion
-                        },
-                    ]}
-                >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item
                     name="Location"
                     label="Location"
                     rules={[
@@ -179,7 +176,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                         },
                     ]}
                 >
-                    <Select>
+                    <Select onChange={(v: any) => setCity(v)}>
                         <Select.Option value="Alaska">Alaska</Select.Option>
                         <Select.Option value="Idaho">Idaho</Select.Option>
                         <Select.Option value="Montana">Montana</Select.Option>
@@ -189,57 +186,80 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                     </Select>
                 </Form.Item>
 
-                <Form.Item name="DateObject" label="Date/Time" rules={[
-                    {
-                        required: true,
-                        message: 'Please input the date and time of the event!', //shows upon incompletion
-                    },
-                ]} {...rangeConfig} >
+                <Form.Item
+                    name="Organization"
+                    label="Organization (select Location first)"
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input the name of the organization!', //shows upon incompletion
+                        },
+                    ]}
+                >
+                    <Input disabled={!form.getFieldValue('Location')} 
+                    // onChange={printOrganizations}
+                    />
+                </Form.Item>
+
+                <Form.Item name="TypesOfVolunteersNeeded" label="Types of Volunteers Needed" >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item name="ContactInformationAndCancellationPolicy" label="Contact Information and Cancellation Policy" >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item name="WebsiteLink" label="Website Link" >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item name="SignupLink" label="Sign-up Link" >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item name="ParkingAndDirections" label="Parking and Directions" >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item name="ProviderInformation" label="Provider Information" >
+                    <Input />
+                </Form.Item>
+
+                </Col>
+                <Col span={12}>
+
+                <Form.Item name="ClinicFlow" label="Clinic Flow" >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item name="ClinicSchedule" label="Clinic Schedule" >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item name="HSGradStudentInformation" label="HS Grad Student Information" >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item name="ProjectSpecificTraining" label="Project Specific Training" >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item name="ServicesProvided" label="Services Provided" >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item name="TipsAndReminders" label="Tips and Reminders" >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item name="UndergraduateInformation" label="Undergraduate Information" >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item name="DateObject" label="Date/Time" >
                     <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />
                 </Form.Item>
 
-                {/* <Form.Item
-                   name="Timezone"
-                   label="Timezone"
-                   rules={[
-                       {
-                           required: true,
-                           message: 'Please input the timezone of the event!', //shows upon incompletion
-                       },
-                   ]}
-               >
-                    <Select>
-                        <Select.Option value="America/Los_Angeles">America/Los_Angeles</Select.Option>
-                        <Select.Option value="America/Anchorage">America/Anchorage</Select.Option>
-                        <Select.Option value="America/Juneau">America/Juneau</Select.Option>
-                        <Select.Option value="America/Sitka">America/Sitka</Select.Option>
-                        <Select.Option value="America/Yakutat">America/Yakutat</Select.Option>
-                        <Select.Option value="America/Nome">America/Nome</Select.Option>
-                        <Select.Option value="America/Adak">America/Adak</Select.Option>
-                        <Select.Option value="America/Metlakatla">America/Metlakatla</Select.Option>
-                        <Select.Option value="Pacific/Honolulu">Pacific/Honolulu</Select.Option>
-                        <Select.Option value="America/Phoenix">America/Phoenix</Select.Option>
-                        <Select.Option value="America/Boise">America/Boise</Select.Option>
-                        <Select.Option value="America/Denver">America/Denver</Select.Option>
-                        <Select.Option value="America/North_Dakota/Center">America/North_Dakota/Center</Select.Option>
-                        <Select.Option value="America/North_Dakota/New_Salem">America/North_Dakota/New_Salem</Select.Option>
-                        <Select.Option value="America/North_Dakota/Beulah">America/North_Dakota/Beulah</Select.Option>
-                        <Select.Option value="America/Menominee">America/Menominee</Select.Option>
-                        <Select.Option value="America/Indiana/Knox">America/Indiana/Knox</Select.Option>
-                        <Select.Option value="America/Indiana/Tell_City">America/Indiana/Tell_City</Select.Option>
-                        <Select.Option value="America/Chicago">America/Chicago</Select.Option>
-                        <Select.Option value="America/Indiana/Vevay">America/Indiana/Vevay</Select.Option>
-                        <Select.Option value="America/Indiana/Petersburg">America/Indiana/Petersburg</Select.Option>
-                        <Select.Option value="America/Indiana/Marengo">America/Indiana/Marengo</Select.Option>
-                        <Select.Option value="America/Indiana/Winamac">America/Indiana/Winamac</Select.Option>
-                        <Select.Option value="America/Indiana/Vincennes">America/Indiana/Vincennes</Select.Option>
-                        <Select.Option value="America/Indiana/Indianapolis">America/Indiana/Indianapolis</Select.Option>
-                        <Select.Option value="America/Kentucky/Monticello">America/Kentucky/Monticello</Select.Option>
-                        <Select.Option value="America/Kentucky/Louisville">America/Kentucky/Louisville</Select.Option>
-                        <Select.Option value="America/Detroit">America/Detroit</Select.Option>
-                        <Select.Option value="America/New_York">America/New_York</Select.Option>
-                    </Select>
-                </Form.Item> */}
                 <Form.Item name="Recurrence" label="Event Recurrence"
                     initialValue={{
                     recEndDate,
@@ -306,11 +326,6 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                         </TabPane>
                     </Tabs>
                 </Form.Item>
-                </Col>
-                <Col span={12}>
-                <Form.Item name="VolunteerType" label="Volunteer Type" >
-                    <Input onChange={ (v: any)=>{console.log(interval); } }/>
-                </Form.Item>
 
                 <Form.List name="users">
                     {(fields, { add, remove }) => (
@@ -347,9 +362,9 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                 </Form.List>
 <<<<<<< HEAD
 
-                <Form.Item name="Field Ordering" label="Field Ordering" >
-                    {/* <Ordering /> */}
-                </Form.Item>
+                {/* <Form.Item name="Field Ordering" label="Field Ordering" >
+                    <Ordering />
+                </Form.Item> */}
 
 =======
             </Col>
@@ -366,7 +381,7 @@ const CollectionsPage = () => {
     const calendarApiPath = '/api/put-calendar-event';
     const eventApiPath = '/api/put-event-data';
 
-    const onCreate = (values) => {
+    const onCreate = async (values) => {
         const rangeTimeValue = values['DateObject'];
         console.log('Received values of form: ', values);
 
@@ -407,6 +422,26 @@ const CollectionsPage = () => {
             calEvent.Recurrence = rec;
         }
 
+        const firestoreEvent: CalendarEventData = {
+            Title: values.Name,
+            ProjectDescription: values.Description,
+            Location: values.Location,
+            Organization: values.Organization,
+            TypesOfVolunteersNeeded: values.TypesOfVolunteersNeeded,
+            ClinicFlow: values.ClinicFlow,
+            ClinicSchedule: values.ClinicSchedule,
+            ContactInformationAndCancellationPolicy: values.ContactInformationAndCancellationPolicy,
+            HSGradStudentInformation: values.HSGradStudentInformation,
+            ParkingAndDirections: values.ParkingAndDirections,
+            ProjectSpecificTraining: values.ProjectSpecificTraining,
+            ProviderInformation: values.ProviderInformation,
+            ServicesProvided: values.ServicesProvided,
+            SignupLink: values.SignupLink,
+            TipsAndReminders: values.TipsAndReminders,
+            UndergraduateInformation: values.UndergraduateInformation,
+            WebsiteLink: values.WebsiteLink
+        }
+
         Promise.all([
             fetch(DOMAIN + calendarApiPath, {
                 method: 'POST',
@@ -414,7 +449,7 @@ const CollectionsPage = () => {
             }),
             fetch(DOMAIN + eventApiPath, {
                 method: 'POST',
-                body: JSON.stringify({ eventData: calEvent }),
+                body: JSON.stringify({ eventData: firestoreEvent }),
             })
         ]).then((res: any) => {
             // Get a JSON object from each of the responses

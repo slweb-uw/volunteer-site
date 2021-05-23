@@ -31,12 +31,10 @@ interface CalendarEventData {
   Recurrence?: string[]; 
 
   //Event Fields:
-  //Name: string;  --> Title
-  //Description: string; --> Project Description
-  //Organization: string;
-  //Location: string;
+  Title: string;
+  ["Project Description"]: string;
   id?: string; // document's id
-  VolunteerType?: string;
+  ["Types of Volunteers Needed"]?: string;
   TimeStamp?: Date;
   //[Field?: string]: string;
   Order?: string[];
