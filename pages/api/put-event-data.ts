@@ -68,6 +68,7 @@ async function checkEvent(event: CalendarEventData, document: DocumentReference)
     }
     return {update, updateEventId};
   } catch(err) {
+    console.log("error error2");
     return {update: false, updateEventId: null}
   }
 }
@@ -105,6 +106,7 @@ async function addOrUpdateEvent(update: boolean, updateEventId: string | null,
       return body;
     }
   } catch(err) {
+    console.log("error error3");
     throw new Error("Error from change:" + err);
   }
 }
@@ -125,7 +127,10 @@ function createRequestBody(event: CalendarEventData, update: boolean) {
   // } 
 
   // for (val property in event) {
-  //   result[property] = event[property]
+  //   console.log(property);
+  //   if (event.property != null) {
+  //     result[property] = event[property]    
+  //   }
   // }
 
   //TODO: do another way
@@ -133,8 +138,50 @@ function createRequestBody(event: CalendarEventData, update: boolean) {
   // take the fields that apply to firestore and add to result object
   // then look at the fields that user created and add that to result object
   
-  // name ; description ; organization ; location (not city name); Types of volunteer ; link ; 
-  result['Title'] = event.Name;
+  result['Title'] = event.Title;
+  result['Project Description'] = event.ProjectDescription;
+  result['Location'] = event.Location;
+  result['Organization'] = event.Organization;
+  if (event.TypesOfVolunteersNeeded != null) {
+    result['Types of Volunteers Needed'] = event.TypesOfVolunteersNeeded;
+  }
+  if (event.ClinicFlow != null) {  
+  result["Clinic Flow"] = event.ClinicFlow;
+  }
+  if (event.ClinicSchedule != null) {
+  result['Clinic Schedule'] = event.ClinicSchedule;
+  }
+  if (event.ContactInformationAndCancellationPolicy != null) {
+  result['Contact Information and Cancellation Policy'] = event.ContactInformationAndCancellationPolicy;
+  }
+  if (event.HSGradStudentInformation != null) {
+  result['HS Grad Student Information'] = event.HSGradStudentInformation;
+  }
+  if (event.ParkingAndDirections != null) {
+  result['Parking and Directions'] = event.ParkingAndDirections;
+  }
+  if (event.ProjectSpecificTraining != null) {
+  result['Project Specific Training'] = event.ProjectSpecificTraining;
+  }
+  if (event.ProviderInformation != null) {
+  result['Provider Information'] = event.ProviderInformation;
+  }
+  if (event.ServicesProvided != null) {
+  result['Services Provided'] = event.ServicesProvided;
+  }
+  if (event.SignupLink != null) {
+  result['Sign-up Link'] = event.SignupLink;
+  }
+  if (event.TipsAndReminders != null) {
+  result['Tips and Reminders'] = event.TipsAndReminders;
+  }
+  if (event.UndergraduateInformation != null) {
+  result['Undergraduate Information'] = event.UndergraduateInformation;
+  }
+  if (event.WebsiteLink != null) {
+  result['Website Link'] = event.WebsiteLink;
+  }
+  result['timestamp'] = new Date().toISOString();
 
   return result;
 }
