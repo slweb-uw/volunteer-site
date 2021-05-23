@@ -383,10 +383,12 @@ const CollectionsPage = () => {
         console.log('Received values of form: ', values);
 
 
-        let startTime = rangeTimeValue[0].toISOString();
-        let endTime = rangeTimeValue[1].toISOString();
-        console.log(startTime);
-        console.log(endTime);
+        let startTime = null;
+        let endTime = null;
+        if (rangeTimeValue) {
+            startTime = rangeTimeValue[0].toISOString();
+            endTime = rangeTimeValue[1].toISOString();
+        }
 
         const calEvent: CalendarEventData = {
             Name: values.Name,
@@ -440,10 +442,14 @@ const CollectionsPage = () => {
         }
 
         Promise.all([
-            fetch(DOMAIN + calendarApiPath, {
-                method: 'POST',
-                body: JSON.stringify({ eventData: calEvent }),
-            }),
+            () => { 
+                if (calEvent.StartDate) {
+                    fetch(DOMAIN + calendarApiPath, {
+                        method: 'POST',
+                        body: JSON.stringify({ eventData: calEvent }),
+                    })
+                }
+            },
             fetch(DOMAIN + eventApiPath, {
                 method: 'POST',
                 body: JSON.stringify({ eventData: firestoreEvent }),
