@@ -119,68 +119,17 @@ async function addOrUpdateEvent(update: boolean, updateEventId: string | null,
 function createRequestBody(event: CalendarEventData, update: boolean) {
   let result: any = {};
   // result['description'] = event.Description;
-  // result['name'] = event.Name;
-  // result['']
   // if (!update) {
   //   result['location'] = event.Location;
   //   result['organization'] = { 'displayName': event.Organization }
   // } 
 
-  // for (val property in event) {
-  //   console.log(property);
-  //   if (event.property != null) {
-  //     result[property] = event[property]    
-  //   }
-  // }
+  Object.keys(event).forEach((element) => {
+    if (event[element] != null) {
+      result[element] = event[element];
+    }
+  });
 
-  //TODO: do another way
-  // for the fields in CalendarEventData
-  // take the fields that apply to firestore and add to result object
-  // then look at the fields that user created and add that to result object
-  
-  result['Title'] = event.Title;
-  result['Project Description'] = event.ProjectDescription;
-  result['Location'] = event.Location;
-  result['Organization'] = event.Organization;
-  if (event.TypesOfVolunteersNeeded != null) {
-    result['Types of Volunteers Needed'] = event.TypesOfVolunteersNeeded;
-  }
-  if (event.ClinicFlow != null) {  
-  result["Clinic Flow"] = event.ClinicFlow;
-  }
-  if (event.ClinicSchedule != null) {
-  result['Clinic Schedule'] = event.ClinicSchedule;
-  }
-  if (event.ContactInformationAndCancellationPolicy != null) {
-  result['Contact Information and Cancellation Policy'] = event.ContactInformationAndCancellationPolicy;
-  }
-  if (event.HSGradStudentInformation != null) {
-  result['HS Grad Student Information'] = event.HSGradStudentInformation;
-  }
-  if (event.ParkingAndDirections != null) {
-  result['Parking and Directions'] = event.ParkingAndDirections;
-  }
-  if (event.ProjectSpecificTraining != null) {
-  result['Project Specific Training'] = event.ProjectSpecificTraining;
-  }
-  if (event.ProviderInformation != null) {
-  result['Provider Information'] = event.ProviderInformation;
-  }
-  if (event.ServicesProvided != null) {
-  result['Services Provided'] = event.ServicesProvided;
-  }
-  if (event.SignupLink != null) {
-  result['Sign-up Link'] = event.SignupLink;
-  }
-  if (event.TipsAndReminders != null) {
-  result['Tips and Reminders'] = event.TipsAndReminders;
-  }
-  if (event.UndergraduateInformation != null) {
-  result['Undergraduate Information'] = event.UndergraduateInformation;
-  }
-  if (event.WebsiteLink != null) {
-  result['Website Link'] = event.WebsiteLink;
-  }
   result['timestamp'] = new Date().toISOString();
 
   return result;

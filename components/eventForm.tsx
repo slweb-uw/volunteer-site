@@ -145,7 +145,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                 <Row gutter={[16, 16]}>
                 <Col span={12}>
                 <Form.Item
-                    name="Name"
+                    name="Title"
                     label="Event Name"
                     rules={[
                         {
@@ -157,7 +157,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                     <Input />
                 </Form.Item>
 
-                <Form.Item name="Description" label="Description" rules={[
+                <Form.Item name="Project Description" label="Description" rules={[
                     {
                         required: true,
                         message: 'Please input a description of the event!', //shows upon incompletion
@@ -201,58 +201,58 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                     />
                 </Form.Item>
 
-                <Form.Item name="TypesOfVolunteersNeeded" label="Types of Volunteers Needed" >
+                <Form.Item name="Types of Volunteers Needed" label="Types of Volunteers Needed" >
                     <Input />
                 </Form.Item>
 
-                <Form.Item name="ContactInformationAndCancellationPolicy" label="Contact Information and Cancellation Policy" >
+                <Form.Item name="Contact Information and Cancellation Policy" label="Contact Information and Cancellation Policy" >
                     <Input />
                 </Form.Item>
 
-                <Form.Item name="WebsiteLink" label="Website Link" >
+                <Form.Item name="Website Link" label="Website Link" >
                     <Input />
                 </Form.Item>
 
-                <Form.Item name="SignupLink" label="Sign-up Link" >
+                <Form.Item name="Sign-up Link" label="Sign-up Link" >
                     <Input />
                 </Form.Item>
 
-                <Form.Item name="ParkingAndDirections" label="Parking and Directions" >
+                <Form.Item name="Parking and Directions" label="Parking and Directions" >
                     <Input />
                 </Form.Item>
 
-                <Form.Item name="ProviderInformation" label="Provider Information" >
+                <Form.Item name="Provider Information" label="Provider Information" >
                     <Input />
                 </Form.Item>
 
                 </Col>
                 <Col span={12}>
 
-                <Form.Item name="ClinicFlow" label="Clinic Flow" >
+                <Form.Item name="Clinic Flow" label="Clinic Flow" >
                     <Input />
                 </Form.Item>
 
-                <Form.Item name="ClinicSchedule" label="Clinic Schedule" >
+                <Form.Item name="Clinic Schedule" label="Clinic Schedule" >
                     <Input />
                 </Form.Item>
 
-                <Form.Item name="HSGradStudentInformation" label="HS Grad Student Information" >
+                <Form.Item name="HS Grad Student Information" label="HS Grad Student Information" >
                     <Input />
                 </Form.Item>
 
-                <Form.Item name="ProjectSpecificTraining" label="Project Specific Training" >
+                <Form.Item name="Project Specific Training" label="Project Specific Training" >
                     <Input />
                 </Form.Item>
 
-                <Form.Item name="ServicesProvided" label="Services Provided" >
+                <Form.Item name="Services Provided" label="Services Provided" >
                     <Input />
                 </Form.Item>
 
-                <Form.Item name="TipsAndReminders" label="Tips and Reminders" >
+                <Form.Item name="Tips and Reminders" label="Tips and Reminders" >
                     <Input />
                 </Form.Item>
 
-                <Form.Item name="UndergraduateInformation" label="Undergraduate Information" >
+                <Form.Item name="Undergraduate Information" label="Undergraduate Information" >
                     <Input />
                 </Form.Item>
 
@@ -332,7 +332,6 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                         <>
                             {fields.map(({ key, name, fieldKey, ...restField }) => (
                                 <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
-                               onthly
                             <Form.Item
                                         {...restField}
                                         name={[name, 'detailKey']}
@@ -391,8 +390,8 @@ const CollectionsPage = () => {
         }
 
         const calEvent: CalendarEventData = {
-            Name: values.Name,
-            Description: values.Description,
+            Name: values.Title,
+            Description: values.["Project Description"],
             Organization: values.Organization,
             Location: values.Location,
             StartDate: startTime,
@@ -421,25 +420,12 @@ const CollectionsPage = () => {
             calEvent.Recurrence = rec;
         }
 
-        const firestoreEvent: CalendarEventData = {
-            Title: values.Name,
-            ProjectDescription: values.Description,
-            Location: values.Location,
-            Organization: values.Organization,
-            TypesOfVolunteersNeeded: values.TypesOfVolunteersNeeded,
-            ClinicFlow: values.ClinicFlow,
-            ClinicSchedule: values.ClinicSchedule,
-            ContactInformationAndCancellationPolicy: values.ContactInformationAndCancellationPolicy,
-            HSGradStudentInformation: values.HSGradStudentInformation,
-            ParkingAndDirections: values.ParkingAndDirections,
-            ProjectSpecificTraining: values.ProjectSpecificTraining,
-            ProviderInformation: values.ProviderInformation,
-            ServicesProvided: values.ServicesProvided,
-            SignupLink: values.SignupLink,
-            TipsAndReminders: values.TipsAndReminders,
-            UndergraduateInformation: values.UndergraduateInformation,
-            WebsiteLink: values.WebsiteLink
-        }
+        const firestoreEvent: CalendarEventData = {}
+        Object.keys(values).forEach((element) => {
+            if (element != "Recurrence" && element != "DateObject") {
+                firestoreEvent[element] = values[element];
+            }
+        });
 
         Promise.all([
             () => { 
