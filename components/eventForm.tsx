@@ -327,7 +327,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                     </Tabs>
                 </Form.Item>
 
-                <Form.List name="users">
+                <Form.List name="addNewFields">
                     {(fields, { add, remove }) => (
                         <>
                             {fields.map(({ key, name, fieldKey, ...restField }) => (
@@ -422,8 +422,13 @@ const CollectionsPage = () => {
 
         const firestoreEvent: CalendarEventData = {}
         Object.keys(values).forEach((element) => {
-            if (element != "Recurrence" && element != "DateObject") {
+            if (element != "Recurrence" && element != "DateObject" && element != "addNewFields") {
                 firestoreEvent[element] = values[element];
+            }
+            if (element == "addNewFields") {
+                values[element].forEach(newField => {
+                        firestoreEvent[newField.detailKey] = newField.detailValue;
+                    })
             }
         });
 
