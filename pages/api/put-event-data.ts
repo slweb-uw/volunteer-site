@@ -102,14 +102,10 @@ async function addOrUpdateEvent(update: boolean, updateEventId: string | null,
       document = firebaseAdmin.firestore().collection("cache").doc(event.Location);
 
 
-      console.log("YUUUUUUUUUUUUUUUUUUUUUUUH");
       let organizations = document.get().then((snapshot) => {
           const data = snapshot.data()
-          console.log(data);
       });
-      console.log(event.Organization);
       if (!Object.keys(organizations).includes(event.Organization)) {
-        console.log("isn't in cache");
         let key = event.Organization;
         let res = { [key]: true };
         document.set(res, { merge:true });
