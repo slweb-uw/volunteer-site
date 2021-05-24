@@ -316,17 +316,16 @@ const App: React.FC<{}> = () => {
         style={{
           backgroundColor: "#E8E3D3",
           padding: "2em 5em 3em 5em",
-          verticalAlign: "middle",
         }}
       >
         <Typography
           gutterBottom
           variant="h4"
-          style={{ fontWeight: 700, marginLeft: "2em" }}
+          style={{ fontWeight: 700, marginLeft: "2em", textAlign: "center" }}
         >
           Contact Us
         </Typography>
-        <Grid container spacing={6} xs={12} sm={12} style={{ marginTop: "2em" }}>
+        <Grid container spacing={6} xs={12} sm={12} style={{ marginTop: "2em", display: "flex", justifyContent: "center"}}>
           <Grid item >
             <Grid container direction="column" spacing={3}>
               <Grid item>
@@ -411,14 +410,14 @@ const useStyles = makeStyles((theme) => ({
   },
   background: {
     backgroundImage: "url(./homeNew.png)",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
+    backgroundSize: "auto",
+    backgroundPosition: "right center",
+    backgroundRepeat: "no-repeat",
     height: "661px",
     position: "relative",
     top: 0,
     right: 0,
     bottom: 0,
-    left: 0,
   },
   triangletop: {
     position: "absolute",
