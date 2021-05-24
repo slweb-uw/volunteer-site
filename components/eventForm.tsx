@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import 'antd/dist/antd.css';
 import { Button, Modal, Form, Input, Radio, Col, Row, DatePicker, Select, Space, Tabs, Checkbox } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { firebaseAdmin } from "../firebaseAdmin";
+import { firebaseClient } from "../firebaseClient";
+import OrganizationDropdown from "./organizationDropdown";
 
 const { TabPane } = Tabs;
 const { RangePicker } = DatePicker;
@@ -23,9 +24,14 @@ interface Props {
     onCancel: any
 }
 
-const printOrganizations = async () => {
-    let doc = await firebaseAdmin.firestore().collection('cache').doc('Alaska').get()
-    console.log(doc.data())
+const getOrganizations = async (city) => {
+    try {
+        let doc = await firebaseClient.firestore().collection('cache').doc(city).get()
+        return doc.data();
+    } catch (e) {
+        console.log(e);
+    }
+    return null;
 }
 
 const CollectionCreateForm: React.FC<Props> = (Props) => {
@@ -37,6 +43,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
     const [month, setMonth] = useState(null);
     const [monthday, setMonthday] = useState(null);
     const [city, setCity] = useState(null);
+    const [orgo, setOrgo] = useState(null);
 
     const weekdayOptions = [
         { label: "Monday", value: "MO" },
@@ -104,10 +111,11 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                 weekday,
                 month,
                 monthday,
-                city
+                city,
+                orgo
             }
         });
-      }, [recEndDate, tabNum, interval, weekday, month, monthday, city]);
+      }, [recEndDate, tabNum, interval, weekday, month, monthday, city, orgo]);
 
 
     return (
@@ -176,9 +184,8 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                         },
                     ]}
                 >
-                    <Select onChange={(v: any) => setCity(v)}>
+                    <Select onChange={(v: any) => setCity(v) }>
                         <Select.Option value="Alaska">Alaska</Select.Option>
-                        <Select.Option value="Idaho">Idaho</Select.Option>
                         <Select.Option value="Montana">Montana</Select.Option>
                         <Select.Option value="Seattle">Seattle</Select.Option>
                         <Select.Option value="Spokane">Spokane</Select.Option>
@@ -189,16 +196,8 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                 <Form.Item
                     name="Organization"
                     label="Organization (select Location first)"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input the name of the organization!', //shows upon incompletion
-                        },
-                    ]}
                 >
-                    <Input disabled={!form.getFieldValue('Location')} 
-                    // onChange={printOrganizations}
-                    />
+                    <OrganizationDropdown orgs={getOrganizations} city={city} setOrgo={setOrgo} />                  
                 </Form.Item>
 
                 <Form.Item name="Types of Volunteers Needed" label="Types of Volunteers Needed" >
@@ -224,6 +223,39 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                 <Form.Item name="Provider Information" label="Provider Information" >
                     <Input />
                 </Form.Item>
+
+                <Form.List name="addNewFields">
+                    {(fields, { add, remove }) => (
+                        <>
+                            {fields.map(({ key, name, fieldKey, ...restField }) => (
+                                <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+                            <Form.Item
+                                        {...restField}
+                                        name={[name, 'detailKey']}
+                                        fieldKey={[fieldKey, 'detailKey']}
+                                        rules={[{ required: true, message: 'Missing detail name' }]}
+                                    >
+                                        <Input placeholder="Detail Name (i.e. Parking Directions)" />
+                                    </Form.Item>
+                                    <Form.Item
+                                        {...restField}
+                                        name={[name, 'detailValue']}
+                                        fieldKey={[fieldKey, 'detailValue']}
+                                        rules={[{ required: true, message: 'Missing detail value' }]}
+                                    >
+                                        <Input placeholder="Detail Value (i.e. Park at level 2)" />
+                                    </Form.Item>
+                                    <MinusCircleOutlined onClick={() => remove(name)} />
+                                </Space>
+                            ))}
+                            <Form.Item>
+                                <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                                    Add field
+                                </Button>
+                            </Form.Item>
+                        </>
+                    )}
+                </Form.List>
 
                 </Col>
                 <Col span={12}>
@@ -327,41 +359,8 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                     </Tabs>
                 </Form.Item>
 
-                <Form.List name="addNewFields">
-                    {(fields, { add, remove }) => (
-                        <>
-                            {fields.map(({ key, name, fieldKey, ...restField }) => (
-                                <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
-                            <Form.Item
-                                        {...restField}
-                                        name={[name, 'detailKey']}
-                                        fieldKey={[fieldKey, 'detailKey']}
-                                        rules={[{ required: true, message: 'Missing detail name' }]}
-                                    >
-                                        <Input placeholder="Detail Name (i.e. Parking Directions)" />
-                                    </Form.Item>
-                                    <Form.Item
-                                        {...restField}
-                                        name={[name, 'detailValue']}
-                                        fieldKey={[fieldKey, 'detailValue']}
-                                        rules={[{ required: true, message: 'Missing detail value' }]}
-                                    >
-                                        <Input placeholder="Detail Value (i.e. Park at level 2)" />
-                                    </Form.Item>
-                                    <MinusCircleOutlined onClick={() => remove(name)} />
-                                </Space>
-                            ))}
-                            <Form.Item>
-                                <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                                    Add field
-                                </Button>
-                            </Form.Item>
-                        </>
-                    )}
-                </Form.List>
-
                 {/* <Form.Item name="Field Ordering" label="Field Ordering" >
-                    <Ordering />
+                    <Input onChange={(v: any) => console.log(orgo) }/>
                 </Form.Item> */}
 
             </Col>
@@ -379,7 +378,7 @@ const CollectionsPage = () => {
 
     const onCreate = async (values) => {
         const rangeTimeValue = values['DateObject'];
-        console.log('Received values of form: ', values);
+        // console.log('Received values of form: ', values);
 
 
         let startTime = null;
@@ -422,13 +421,16 @@ const CollectionsPage = () => {
 
         const firestoreEvent: CalendarEventData = {}
         Object.keys(values).forEach((element) => {
-            if (element != "Recurrence" && element != "DateObject" && element != "addNewFields") {
+            if (element != "Recurrence" && element != "DateObject" && element != "addNewFields" && element != "Organization") {
                 firestoreEvent[element] = values[element];
             }
-            if (element == "addNewFields") {
+            if (element == "addNewFields" && values[element] != null) {
                 values[element].forEach(newField => {
                         firestoreEvent[newField.detailKey] = newField.detailValue;
                     })
+            }
+            if (element == "Organization") {
+                firestoreEvent[element] = values.Recurrence["orgo"];
             }
         });
 
@@ -482,4 +484,31 @@ const CollectionsPage = () => {
     );
 };
 
-export default CollectionsPage;
+class EventForm extends React.Component {
+    state = {
+        loading: true
+    };
+
+    componentDidMount() {
+        this.waitForFirstRender().then(() => {
+            this.setState({ loading: false });
+        });
+    }
+    
+    waitForFirstRender = () => {
+        return new Promise(resolve => setTimeout(() => resolve(), 200));
+    }
+    
+    render() {
+        if (this.state.loading) {
+            return null;
+        }
+
+        return(
+            <CollectionsPage />
+        );
+    }
+}
+
+
+export default EventForm;
