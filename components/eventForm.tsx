@@ -36,6 +36,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
     const [weekday, setWeekday] = useState(null);
     const [month, setMonth] = useState(null);
     const [monthday, setMonthday] = useState(null);
+    const [add, setAdd] = useState(false);
     const [city, setCity] = useState(null);
 
     const weekdayOptions = [
@@ -96,18 +97,20 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
     ];
 
     React.useEffect(() => {
-        form.setFieldsValue({
-            Recurrence: {
-                recEndDate,
-                tabNum,
-                interval,
-                weekday,
-                month,
-                monthday,
-                city
+        let recurrencesFields = form.getFieldValue("recurrences");
+        if (add && (recEndDate != null)) {
+            let ind = recurrencesFields.length - 1
+            recurrencesFields[ind] = {
+                    recEndDate,
+                    tabNum,
+                    interval,
+                    weekday,
+                    month,
+                    monthday
             }
-        });
-      }, [recEndDate, tabNum, interval, weekday, month, monthday, city]);
+            setRecEndDate(null);
+        }
+      }, [add, recEndDate]);
 
 
     return (
@@ -130,6 +133,8 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                         setWeekday(null);
                         setMonth(null);
                         setMonthday(null);
+                        setAdd(false);
+                        setDel(false);
                         setCity(null);
                     })
                     .catch((info) => {
@@ -259,74 +264,127 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                 <Form.Item name="DateObject" label="Date/Time" >
                     <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />
                 </Form.Item>
+                <Form.List name="recurrences" initialValue={[]}>
+                    {(fields, { add, remove }) => (
+                        <>
+                            {fields.map(({name, key, ...restField}) => (
+                    <Form.Item name={name} key={key} {...restField} label="Event Recurrence">
+                        <Tabs defaultActiveKey="1">
+                            <TabPane tab="Daily" key="1">
+                                <Space>
+                                Reapeat Every
+                                <Select style={{ width: 120 }} onChange={ (v: any)=> setInterval(v)}>
+                                    <Select.Option value="1">1</Select.Option>
+                                    <Select.Option value="2">2</Select.Option>
+                                    <Select.Option value="3">3</Select.Option>
+                                    <Select.Option value="4">4</Select.Option>:
+￼
+                                    <Select.Option value="5">5</Select.Option>
+                                    <Select.Option value="6">6</Select.Option>
+                                </Select>
+                                Day
+                                </Space>
+                                <br />
+                                <br />
+                                <Space>
+                                Recurrence End Date:
+                                <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onOk={ (v: any)=> setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
+                                </Space>
+                            </TabPane>
+                            <TabPane tab="Weekly" key="2">
+                                <Checkbox.Group options={weekdayOptions} onChange={(v: any) => setWeekday(v)}/>
+                                <br />
+                                <br />
+                                <Space>
+                                Recurrence End Date:
+                                <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onOk={(v: any) => setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
+                                </Space>
+                            </TabPane>
+                            <TabPane tab="Monthly" key="3">
+                                Month day:
+                                <Checkbox.Group options={monthdayOptions} onChange={(v: any) => setMonthday(v)}/>
+                                <br />
+                                <br />
+                                <Space>
+                                Recurrence End Date:
+                                <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onOk={(v: any) => setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
+                                </Space>
+                            </TabPane>
+                            <TabPane tab="Yearly" key="4">
+                                Month:
+                                <Checkbox.Group options={monthOptions} onChange={(v: any) => setMonth(v)}/>
+                                <br />
+                                <br />
+                                Month day:
+                                <Checkbox.Group options={monthdayOptions} onChange={(v: any) => setMonthday(v)}/>
+                                <br />
+                                <br />
+                                <Space>
+                                Recurrence End Date:
+                                <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onOk={(v: any) => setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
 
-                <Form.Item name="Recurrence" label="Event Recurrence"
-                    initialValue={{
-                    recEndDate,
-                    tabNum,
-                    interval,
-                    weekday,
-                    month,
-                    monthday
-                }}>
-                    <Tabs defaultActiveKey="1" onChange={ (v: any)=> setTabNum(v) }>
-                        <TabPane tab="Daily" key="1">
-                            <Space>
-                            Reapeat Every
-                            <Select style={{ width: 120 }} onChange={ (v: any)=> setInterval(v)}>
-                                <Select.Option value="1">1</Select.Option>
-                                <Select.Option value="2">2</Select.Option>
-                                <Select.Option value="3">3</Select.Option>
-                                <Select.Option value="4">4</Select.Option>
-                                <Select.Option value="5">5</Select.Option>
-                                <Select.Option value="6">6</Select.Option>
-                            </Select>
-                            Day
-                            </Space>
-                            <br />
-                            <br />
-                            <Space>
-                            Recurrence End Date:
-                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onOk={ (v: any)=> setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
-                            </Space>
-                        </TabPane>
-                        <TabPane tab="Weekly" key="2">
-                            <Checkbox.Group options={weekdayOptions} onChange={(v: any) => setWeekday(v)}/>
-                            <br />
-                            <br />
-                            <Space>
-                            Recurrence End Date:
-                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onOk={(v: any) => setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
-                            </Space>
-                        </TabPane>
-                        <TabPane tab="Monthly" key="3">
-                            Month day:
-                            <Checkbox.Group options={monthdayOptions} onChange={(v: any) => setMonthday(v)}/>
-                            <br />
-                            <br />
-                            <Space>
-                            Recurrence End Date:
-                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onOk={(v: any) => setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
-                            </Space>
-                        </TabPane>
-                        <TabPane tab="Yearly" key="4">
-                            Month:
-                            <Checkbox.Group options={monthOptions} onChange={(v: any) => setMonth(v)}/>
-                            <br />
-                            <br />
-                            Month day:
-                            <Checkbox.Group options={monthdayOptions} onChange={(v: any) => setMonthday(v)}/>
-                            <br />
-                            <br />
-                            <Space>
-                            Recurrence End Date:
-                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onOk={(v: any) => setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
+                                </Space>
+                            </TabPane>
+                        </Tabs>
+                        <MinusCircleOutlined onClick={() => remove(name)} />
+                    </Form.Item>
+                 ))}
+                    <Form.Item>
+                        <Button type="dashed" onClick={() => {add(); setAdd(true);}} block icon={<PlusOutlined />}>
+                            Add Recurrence
+                        </Button>
+                    </Form.Item>
+               </>
+                )}   
+                </Form.List>
+                        {/*
+                <Form.List name="recurrences">
+                    {(fields, { add, remove }, { errors }) => (
+                    <>
+                        {fields.map((field) => (
+                      if (values.recurrences.recEndDate) {
+            let rec = [];
+            switch(values.Recurrence.tabNum) {
+                case "1":
+                    rec.push(`RRULE:FREQ=DAILY;INTERVAL=${values.Recurrence.interval};UNTIL=${values.Recurrence.recEndDate}`);
+                    break;
+                case "2":
+                    rec.push(`RRULE:FREQ=WEEKLY;BYDAY=${values.Recurrence.weekday};UNTIL=${values.Recurrence.recEndDate}`);
+                    break;
+                case "3":
+                    rec.push(`RRULE:FREQ=MONTHLY;BYMONTHDAY=${values.Recurrence.monthday};UNTIL=${values.Recurrence.recEndDate}`);
+                    break;
+                case "4":
+                    rec.push(`RRULE:FREQ=YEARLY;BYMONTH=${values.Recurrence.month};BYMONTHDAY=${values.Recurrence.monthday};UNTIL=${values.Recurrence.recEndDate}`);
+                    break;
+                default:
+                    break;
+           <Form.Item
+                            required={false}
+                            key={field.key}
+                            label="test"
+                        >
+                            <Form.Item
+                            
+                            >
+                            <Tabs>
 
-                            </Space>
-                        </TabPane>
-                    </Tabs>
-                </Form.Item>
-
+                            </Tabs>
+                            </Form.Item>
+                            <MinusCircleOutlined
+                                onClick={() => remove(field.name)}
+                            />
+                        </Form.Item>
+                        ))}
+                        <Form.Item>
+                        <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                            Add field
+                        </Button>
+                        </Form.Item>
+                    </>
+                    )}
+                </Form.List>
+                        */}
                 <Form.List name="users">
                     {(fields, { add, remove }) => (
                         <>
@@ -399,25 +457,27 @@ const CollectionsPage = () => {
             EndDate: endTime,
             Timezone: "GMT"
         }
-        
-        if (values.Recurrence.recEndDate) {
-            let rec = [];
-            switch(values.Recurrence.tabNum) {
-                case "1":
-                    rec.push(`RRULE:FREQ=DAILY;INTERVAL=${values.Recurrence.interval};UNTIL=${values.Recurrence.recEndDate}`);
-                    break;
-                case "2":
-                    rec.push(`RRULE:FREQ=WEEKLY;BYDAY=${values.Recurrence.weekday};UNTIL=${values.Recurrence.recEndDate}`);
-                    break;
-                case "3":
-                    rec.push(`RRULE:FREQ=MONTHLY;BYMONTHDAY=${values.Recurrence.monthday};UNTIL=${values.Recurrence.recEndDate}`);
-                    break;
-                case "4":
-                    rec.push(`RRULE:FREQ=YEARLY;BYMONTH=${values.Recurrence.month};BYMONTHDAY=${values.Recurrence.monthday};UNTIL=${values.Recurrence.recEndDate}`);
-                    break;
-                default:
-                    break;
+       
+        let rec = [];
+        for (let i of values.recurrences) {
+            if (i !== undefined && i.recEndDate) {
+                switch(i.tabNum) {
+                    case "1":
+                        rec.push(`RRULE:FREQ=DAILY;INTERVAL=${i.interval};UNTIL=${i.recEndDate}`);
+                        break;
+                    case "2":
+                        rec.push(`RRULE:FREQ=WEEKLY;BYDAY=${i.weekday};UNTIL=${i.recEndDate}`);
+                        break;
+                    case "3":
+                        rec.push(`RRULE:FREQ=MONTHLY;BYMONTHDAY=${i.monthday};UNTIL=${i.recEndDate}`);
+                        break;
+                    case "4":
+                        rec.push(`RRULE:FREQ=YEARLY;BYMONTH=${i.month};BYMONTHDAY=${i.monthday};UNTIL=${i.recEndDate}`);
+                        break;
+                    default:
+                        break;
             }
+        }
             calEvent.Recurrence = rec;
         }
 
