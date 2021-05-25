@@ -5,7 +5,6 @@ import {
   Modal,
   Form,
   Input,
-  Radio,
   Col,
   Row,
   DatePicker,
@@ -65,7 +64,7 @@ const generateLabelValuePairs = (
 const CollectionCreateForm: React.FC<Props> = (Props) => {
   const [form] = Form.useForm();
   const [recEndDate, setRecEndDate] = useState(null);
-  const [tabNum, setTabNum] = useState(1);
+  const [tabNum, setTabNum] = useState("1");
   const [interval, setInterval] = useState(null);
   const [weekday, setWeekday] = useState(null);
   const [month, setMonth] = useState(null);
@@ -127,7 +126,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
             form.resetFields();
             Props.onCreate(values);
             setRecEndDate(null);
-            setTabNum(1);
+            setTabNum("1");
             setInterval(null);
             setWeekday(null);
             setMonth(null);
@@ -324,7 +323,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                     <>
                         {fields.map(({name, key, ...restField}) => (
                 <Form.Item name={name} key={key} {...restField} label="Event Recurrence">
-                    <Tabs defaultActiveKey="1">
+                    <Tabs defaultActiveKey="1" onChange={(v) => setTabNum(v)}>
                         <TabPane tab="Daily" key="1">
                             <Space>
                             Reapeat Every
@@ -432,28 +431,28 @@ const CollectionsPage = () => {
       EndDate: endTime,
       Timezone: "GMT",
     };
-      let rec = [];
-      for (let i of values.recurrences) {
-          if (i !== undefined && i.recEndDate) {
-              switch(i.tabNum) {
-                  case "1":
-                      rec.push(`RRULE:FREQ=DAILY;INTERVAL=${i.interval};UNTIL=${i.recEndDate}`);
-                      break;
-                  case "2":
-                      rec.push(`RRULE:FREQ=WEEKLY;BYDAY=${i.weekday};UNTIL=${i.recEndDate}`);
-                      break;
-                  case "3":
-                      rec.push(`RRULE:FREQ=MONTHLY;BYMONTHDAY=${i.monthday};UNTIL=${i.recEndDate}`);
-                      break;
-                  case "4":
-                      rec.push(`RRULE:FREQ=YEARLY;BYMONTH=${i.month};BYMONTHDAY=${i.monthday};UNTIL=${i.recEndDate}`);
-                      break;
-                  default:
-                      break;
-          }
-      }
-          calEvent.Recurrence = rec;
-      }
+    let rec = [];
+    for (let i of values.recurrences) {
+        if (i.recEndDate) {
+            switch(i.tabNum) {
+                case "1":
+                    rec.push(`RRULE:FREQ=DAILY;INTERVAL=${i.interval};UNTIL=${i.recEndDate}`);
+                    break;
+                case "2":
+                    rec.push(`RRULE:FREQ=WEEKLY;BYDAY=${i.weekday};UNTIL=${i.recEndDate}`);
+                    break;
+                case "3":
+                    rec.push(`RRULE:FREQ=MONTHLY;BYMONTHDAY=${i.monthday};UNTIL=${i.recEndDate}`);
+                    break;
+                case "4":
+                    rec.push(`RRULE:FREQ=YEARLY;BYMONTH=${i.month};BYMONTHDAY=${i.monthday};UNTIL=${i.recEndDate}`);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    calEvent.Recurrence = rec;
 
     // TODO: Do this in a way that doesn't make the linter complain
     const firestoreEvent: CalendarEventData = {};

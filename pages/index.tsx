@@ -3,6 +3,7 @@ import { Typography, Grid } from "@material-ui/core";
 import Link from "next/link";
 
 import { firebaseClient } from "firebaseClient";
+import EventForm from "components/eventForm";
 
 const App: React.FC<{}> = () => {
   // Page where customers can check their order status
@@ -35,6 +36,7 @@ const App: React.FC<{}> = () => {
         </Typography>
       </div>
 
+      <EventForm/>
       <Grid container spacing={4}>
         <Grid item xs={6} sm={4} lg>
           <div

@@ -49,41 +49,41 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
 
   // Verify user
   if (user.email === "slweb@uw.edu" || user.email === "slwebuw@gmail.com") {
-    if (req.method === "POST") {
-      try {
-        const fcontent: Creds = JSON.parse(
-          (await fsPromises.readFile(CREDS_PATH)).toString()
-        );
-        const jwtClient = new google.auth.JWT(
-          fcontent.client_email,
-          undefined,
-          fcontent.private_key,
-          SCOPES
-        );
-        const _ = await jwtClient.authorize();
-        const {
-          update,
-          updateEventId,
-        }: { update: boolean; updateEventId: string | null } = await checkEvent(
-          jwtClient,
-          eventData
-        );
-        const res = await addOrUpdateEvent(
-          jwtClient,
-          update,
-          updateEventId,
-          eventData
-        );
-        resolve.status(200).send("Success:" + res);
-      } catch (err) {
-        resolve.status(400).send("Bad request: " + err);
+      if (req.method === "POST") {
+        try {
+          const fcontent: Creds = JSON.parse(
+            (await fsPromises.readFile(CREDS_PATH)).toString()
+          );
+          const jwtClient = new google.auth.JWT(
+            fcontent.client_email,
+            undefined,
+            fcontent.private_key,
+            SCOPES
+          );
+          const _ = await jwtClient.authorize();
+          const {
+            update,
+            updateEventId,
+          }: { update: boolean; updateEventId: string | null } = await checkEvent(
+            jwtClient,
+            eventData
+          );
+          const res = await addOrUpdateEvent(
+            jwtClient,
+            update,
+            updateEventId,
+            eventData
+          );
+          resolve.status(200).send("Success:" + res);
+        } catch (err) {
+          resolve.status(400).send("Bad request: " + err);
+        }
+      } else {
+        resolve.status(400).send("Invalid request method");
       }
     } else {
-      resolve.status(400).send("Invalid request method");
+      resolve.status(400).send("Error: Unauthorized User");
     }
-  } else {
-    resolve.status(400).send("Error: Unauthorized User");
-  }
 };
 
 /**
@@ -196,4 +196,4 @@ req.write(JSON.stringify({
     eventData: data
 }));
 req.end();
- */
+*/
