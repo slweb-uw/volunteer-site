@@ -489,15 +489,19 @@ const CollectionsPage = () => {
           firestoreEvent[element] = values.Location[2];
       }
     });
+    const calendarPromise = async(calEvent: any, userToken: any) => {
+      if (calEvent.StartDate) {
+        fetch(DOMAIN + calendarApiPath, {
+        method: "POST",
+        body: JSON.stringify({ eventData: calEvent, userToken }),
+        })
+      }};
     firebaseClient
       .auth()
       .currentUser?.getIdToken()
       .then((userToken) => {
         Promise.all([
-          fetch(DOMAIN + calendarApiPath, {
-            method: "POST",
-            body: JSON.stringify({ eventData: calEvent, userToken }),
-          }),
+          calendarPromise(calEvent, userToken),
           fetch(DOMAIN + eventApiPath, {
             method: "POST",
             body: JSON.stringify({ eventData: firestoreEvent, userToken }),
