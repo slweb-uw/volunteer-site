@@ -16,6 +16,7 @@ import {
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { firebaseClient } from "../firebaseClient";
 import OrganizationDropdown from "./organizationDropdown";
+import VolunteerType from "./volunteerType";
 
 const { TabPane } = Tabs;
 const { RangePicker } = DatePicker;
@@ -204,6 +205,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
               name="Types of Volunteers Needed"
               label="Types of Volunteers Needed"
             >
+              <VolunteerType setVolunteer={setVolunteer} />
             </Form.Item>
 
             <Form.Item
@@ -487,23 +489,15 @@ const CollectionsPage = () => {
           firestoreEvent[element] = values.Location[2];
       }
     });
-
-    console.log("YUUUUUUUUUUUUUUUUH");
-    console.log(firestoreEvent);
-
     firebaseClient
       .auth()
       .currentUser?.getIdToken()
       .then((userToken) => {
         Promise.all([
-          () => {
-            // if (calEvent.StartDate) {
-              fetch(DOMAIN + calendarApiPath, {
-                method: "POST",
-                body: JSON.stringify({ eventData: calEvent, userToken }),
-              });
-            // }
-          },
+          fetch(DOMAIN + calendarApiPath, {
+            method: "POST",
+            body: JSON.stringify({ eventData: calEvent, userToken }),
+          }),
           fetch(DOMAIN + eventApiPath, {
             method: "POST",
             body: JSON.stringify({ eventData: firestoreEvent, userToken }),
