@@ -17,6 +17,7 @@ import {
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { firebaseClient } from "../firebaseClient";
 import OrganizationDropdown from "./organizationDropdown";
+import VolunteerType from "./volunteerType";
 
 const { TabPane } = Tabs;
 const { RangePicker } = DatePicker;
@@ -73,6 +74,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
   const [add, setAdd] = useState(false);
   const [city, setCity] = useState(null);
   const [orgo, setOrgo] = useState(null);
+  const [volunteer, setVolunteer] = useState(null);
 
   const weekdayOptions = [
     { label: "Monday", value: "MO" },
@@ -108,9 +110,10 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
     Location: [
         city,
         orgo,
+        volunteer
     ]
     });
-  }, [city, orgo]);
+  }, [city, orgo, volunteer]);
 
   return (
     <Modal
@@ -202,7 +205,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
               name="Types of Volunteers Needed"
               label="Types of Volunteers Needed"
             >
-              <Input />
+              <VolunteerType setVolunteer={setVolunteer} />
             </Form.Item>
 
             <Form.Item
@@ -463,7 +466,8 @@ const CollectionsPage = () => {
         element != "addNewFields" &&
         element != "Organization" &&
         element != "Location" &&
-        element != "recurrences"
+        element != "recurrences" &&
+        element != "Types of Volunteers Needed"
       ) {
         firestoreEvent[element] = values[element];
       }
@@ -480,9 +484,14 @@ const CollectionsPage = () => {
       if (element == "Location") {
         //   firestoreEvent[element] = values.Location["city"];
           firestoreEvent[element] = values.Location[0];
-
+      }
+      if (element == "Types of Volunteers Needed") {
+          firestoreEvent[element] = values.Location[2];
       }
     });
+
+    console.log("YUUUUUUUUUUUUUUUUH");
+    console.log(firestoreEvent);
 
     firebaseClient
       .auth()
@@ -490,12 +499,12 @@ const CollectionsPage = () => {
       .then((userToken) => {
         Promise.all([
           () => {
-            if (calEvent.StartDate) {
+            // if (calEvent.StartDate) {
               fetch(DOMAIN + calendarApiPath, {
                 method: "POST",
                 body: JSON.stringify({ eventData: calEvent, userToken }),
               });
-            }
+            // }
           },
           fetch(DOMAIN + eventApiPath, {
             method: "POST",
