@@ -244,6 +244,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
             setMonth(null);
             setMonthday(null);
             setCity(null);
+            setAdd(false);
           })
           .catch((info) => {
             console.log("Validate Failed:", info);
