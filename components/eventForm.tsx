@@ -1183,7 +1183,8 @@ const CollectionsPage = () => {
         element != "DateObject" &&
         element != "addNewFields" &&
         element != "Organization" &&
-        element != "Location"
+        element != "Location" &&
+        element != "recurrences"
       ) {
         firestoreEvent[element] = values[element];
       }
