@@ -271,7 +271,8 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
 
             <Form.Item
               name="Organization"
-              label="Organization (select Location first)"
+              // label="* Organization (select Location first)"
+              label={<><label style={{ color: "red" }}>∗</label><label>&nbsp;Organization (select Location first)</label></>}
             >
               <OrganizationDropdown
                 orgs={getOrganizations}
