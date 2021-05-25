@@ -16,7 +16,6 @@ import {
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { firebaseClient } from "../firebaseClient";
 import OrganizationDropdown from "./organizationDropdown";
-import VolunteerType from "./volunteerType";
 
 const { TabPane } = Tabs;
 const { RangePicker } = DatePicker;
@@ -205,7 +204,6 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
               name="Types of Volunteers Needed"
               label="Types of Volunteers Needed"
             >
-              <VolunteerType setVolunteer={setVolunteer} />
             </Form.Item>
 
             <Form.Item
