@@ -93,11 +93,18 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
         weekday,
         month,
         monthday,
+      }
+    });
+  }, [recEndDate, tabNum, interval, weekday, month, monthday]);
+
+  React.useEffect(() => {
+    form.setFieldsValue({
+    Location: [
         city,
         orgo,
-      },
+    ]
     });
-  }, [recEndDate, tabNum, interval, weekday, month, monthday, city, orgo]);
+  }, [city, orgo]);
 
   return (
     <Modal
@@ -428,7 +435,8 @@ const CollectionsPage = () => {
 
   const onCreate = async (values: any) => {
     // TODO: clean up organization and this check
-    if (!values.Recurrence["orgo"]) {
+    // if (!values.Location["orgo"]) {
+    if (!values.Location[1]) {
       alert("Please select an organization for your event.");
       return;
     }
@@ -489,7 +497,8 @@ const CollectionsPage = () => {
         element != "Recurrence" &&
         element != "DateObject" &&
         element != "addNewFields" &&
-        element != "Organization"
+        element != "Organization" &&
+        element != "Location"
       ) {
         firestoreEvent[element] = values[element];
       }
@@ -499,7 +508,14 @@ const CollectionsPage = () => {
         });
       }
       if (element == "Organization") {
-        firestoreEvent[element] = values.Recurrence["orgo"];
+        // firestoreEvent[element] = values.Location["orgo"];
+        firestoreEvent[element] = values.Location[1];
+
+      }
+      if (element == "Location") {
+        //   firestoreEvent[element] = values.Location["city"];
+          firestoreEvent[element] = values.Location[0];
+
       }
     });
 

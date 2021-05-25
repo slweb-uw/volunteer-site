@@ -31,7 +31,7 @@ interface CalendarEventData {
   Recurrence?: string[]; 
 
   //Event Fields:
-  Title: string;
+  Title?: string;
   ["Project Description"]: string;
   id?: string; // document's id
   ["Types of Volunteers Needed"]?: string;
