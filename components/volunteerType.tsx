@@ -14,7 +14,7 @@ const volunteerTypes = [
     "School of Public Health",
     "School of Social Work",
     "MEDEX",
-    "PT/OT/P&amp;O",
+    "PT/OT/P&O",
 ]
 
 export default class VolunteerType extends React.Component {     
