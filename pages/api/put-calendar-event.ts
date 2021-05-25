@@ -49,7 +49,7 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
 
   // Verify user
   if (user.email === "slweb@uw.edu" || user.email === "slwebuw@gmail.com") {
-      if (req.method === "POST" && eventData.StartDate) {
+      if (req.method === "POST") {
         try {
           const fcontent: Creds = JSON.parse(
             (await fsPromises.readFile(CREDS_PATH)).toString()
