@@ -1132,8 +1132,7 @@ const CollectionsPage = () => {
     const firestoreEvent: CalendarEventData = {};
     Object.keys(values).forEach((element) => {
       if (
-        element != "Recurrence" &&
-        element != "DateObject" &&
+        // element != "DateObject" &&
         element != "addNewFields" &&
         element != "Organization"
       ) {
@@ -1149,10 +1148,13 @@ const CollectionsPage = () => {
 
       }
       if (element == "Location") {
-          firestoreEvent[element] = values.Location[0];
+        firestoreEvent[element] = values.Location[0];
       }
       if (element == "Types of Volunteers Needed") {
-          firestoreEvent[element] = values.Location[2];
+        firestoreEvent[element] = values.Location[2];
+      }
+      if (element == "recurrences") {
+        firestoreEvent[element] = rec;
       }
     });
     const calendarPromise = async(calEvent: any, userToken: any) => {
