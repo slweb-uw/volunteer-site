@@ -36,6 +36,7 @@
     "notistack": "^1.0.0",
     "react": "^17.0.1",
     "react-dom": "^16.13.1",
+    "rrule": "^2.6.8",
     "styled-components": "^5.2.3",
     "superjson": "^1.7.3",
     "typescript": "^3.9.7"

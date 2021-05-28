@@ -17,6 +17,7 @@ import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { firebaseClient } from "../firebaseClient";
 import OrganizationDropdown from "./organizationDropdown";
 import VolunteerType from "./volunteerType";
+import { rrulestr } from 'rrule';
 
 const { TabPane } = Tabs;
 const { RangePicker } = DatePicker;
@@ -434,7 +435,7 @@ const CollectionsPage = () => {
       EndDate: endTime,
       Timezone: "GMT",
     };
-    let rec = [];
+    let rec: string[] = [];
     for (let i of values.recurrences) {
         if (i.recEndDate) {
             switch(i.tabNum) {
@@ -456,6 +457,12 @@ const CollectionsPage = () => {
         }
     }
     calEvent.Recurrence = rec;
+    let recReadable: string[] = [];
+    for (let i of rec) {
+      if (i) {
+        recReadable.push(rrulestr(i).toText());
+      }
+    }
 
     // TODO: Do this in a way that doesn't make the linter complain
     const firestoreEvent: CalendarEventData = {};
@@ -486,7 +493,7 @@ const CollectionsPage = () => {
         firestoreEvent[element] = values.Location[2];
       }
       if (element == "recurrences") {
-        firestoreEvent[element] = rec;
+        firestoreEvent[element] = recReadable;
       }
     });
     const calendarPromise = async(calEvent: any, userToken: any) => {
