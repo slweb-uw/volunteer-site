@@ -327,7 +327,13 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                 {(fields, { add, remove }) => (
                     <>
                         {fields.map(({name, key, ...restField}) => (
-                <Form.Item name={name} key={key} {...restField} label="Event Recurrence">
+                <Form.Item name={name} key={key} {...restField} label="Event Recurrence"
+                rules={[
+                {
+                  required: true,
+                  message: "All fields in recurrences are required", //shows upon incompletion
+                },
+              ]}>
                     <Tabs defaultActiveKey="1" onChange={(v) => setTabNum(v)}>
                         <TabPane tab="Daily" key="1">
                             <Space>
