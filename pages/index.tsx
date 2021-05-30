@@ -35,7 +35,6 @@ const App: React.FC<{}> = () => {
           </i>
         </Typography>
       </div>
-      <EventForm />
       <Grid container spacing={4}>
         <Grid item xs={6} sm={4} lg>
           <div
