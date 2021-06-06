@@ -27,9 +27,9 @@ const Donations: NextPage<Props> = ({ classes }) => {
               marginRight: "auto",
             }}
           >
-            <Typography>Consider a Gift to the</Typography>
-            <Typography>UWSOM Medicine Service Learning Fund</Typography>
-            <Typography>
+            <Typography style={{ paddingBottom: "0.5rem", fontStyle: "italic" }}>Consider a Gift to the</Typography>
+            <Typography variant="h5" style={{ paddingBottom: "0.5rem", fontWeight: 700 }}>UWSOM Medicine Service Learning Fund</Typography>
+            <Typography style={{ paddingBottom: "0.5rem", fontWeight: 700, fontStyle: "italic" }}>
               Your donation will help sustain our efforts!
             </Typography>
             <Typography>
@@ -38,7 +38,7 @@ const Donations: NextPage<Props> = ({ classes }) => {
               example projects that were funded by donations or how it has had a
               positive impact on the community
             </Typography>
-            <Button>Make a Gift Today! {">"} </Button>
+            <Button variant="contained" color="secondary" style={{ marginTop: "2rem", marginBottom: "2rem", fontWeight: 700, padding: "1rem", fontSize: "1.2rem" }}>Make a Gift Today! {">"} </Button>
           </div>
         </Grid>
         <Grid item xs={12} md={6} lg={4}>
