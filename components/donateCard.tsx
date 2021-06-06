@@ -54,7 +54,7 @@ const DonateCard: React.FC<Props> = (props) => {
           <Typography variant="subtitle1" gutterBottom>
             {props.description}
           </Typography>
-          <Button>Donate {'>'}</Button>
+          <Button style={{marginTop: "2rem"}} variant="contained" color="secondary">Donate {'>'}</Button>
         </CardContent>
       </div>
     </Card>
