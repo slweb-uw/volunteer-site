@@ -45,6 +45,9 @@ const Event: NextPage<Props> = ({ classes }) => {
 
   // console.log(eventData);
 
+  let buttonText = (eventData?.["Website Link"]) ? "Sign up >" : "No sign up links available yet"
+  
+
   return (
     <div className={classes.page}>
       <CssBaseline />
@@ -97,8 +100,10 @@ const Event: NextPage<Props> = ({ classes }) => {
                 color="secondary"
                 variant="contained"
                 style={{ marginRight: "1em", marginBottom: "2em" }}
+                href={eventData?.["Website Link"]}
+                disabled={!eventData?.["Website Link"]}
               >
-                Sign up {'>'}
+                {buttonText}
               </Button>
             </Grid>
           </Grid>
