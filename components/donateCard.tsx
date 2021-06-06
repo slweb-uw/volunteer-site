@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 interface Props {
   title: String;
   description: String;
-  donate: String;
+  donate: string;
   img: string;
 }
 
@@ -54,7 +54,7 @@ const DonateCard: React.FC<Props> = (props) => {
           <Typography variant="subtitle1" gutterBottom>
             {props.description}
           </Typography>
-          <Button style={{marginTop: "2rem"}} variant="contained" color="secondary">Donate {'>'}</Button>
+          <Button style={{marginTop: "2rem"}} variant="contained" color="secondary" target="_blank" href={props.donate}>Donate {'>'}</Button>
         </CardContent>
       </div>
     </Card>
