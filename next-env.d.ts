@@ -32,7 +32,7 @@ interface CalendarEventData {
 
   //Event Fields:
   Title?: string;
-  ["Project Description"]: string;
+  ["Project Description"]?: string;
   id?: string; // document's id
   ["Types of Volunteers Needed"]?: string;
   TimeStamp?: Date;
