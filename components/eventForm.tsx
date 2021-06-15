@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-import React, { useState } from 'react';
-import 'antd/dist/antd.css';
-import { Button, Modal, Form, Input, Radio, Col, Row, DatePicker, Select, Space, Tabs, Checkbox } from 'antd';
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-<<<<<<< HEAD
-=======
-=======
 import React, { useState } from "react";
 import "antd/dist/antd.css";
 import {
@@ -23,12 +15,9 @@ import {
   Checkbox,
 } from "antd";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
->>>>>>> 6bae32d (Authentication and minor clean up)
 import { firebaseClient } from "../firebaseClient";
 import OrganizationDropdown from "./organizationDropdown";
-import VolunteerType from "./volunteerType";
 
->>>>>>> fbca987 (eventForm v1 complete)
 const { TabPane } = Tabs;
 const { RangePicker } = DatePicker;
 
@@ -48,9 +37,6 @@ interface Props {
   onCancel: any;
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 const getOrganizations = async (city) => {
     try {
         let doc = await firebaseClient.firestore().collection('cache').doc(city).get()
@@ -60,7 +46,6 @@ const getOrganizations = async (city) => {
     }
     return null;
 }
-=======
 const getOrganizations = async (city: string) => {
   try {
     let doc = await firebaseClient
@@ -85,11 +70,8 @@ const generateLabelValuePairs = (
   }
   return ret;
 };
->>>>>>> 6bae32d (Authentication and minor clean up)
 
->>>>>>> fbca987 (eventForm v1 complete)
 const CollectionCreateForm: React.FC<Props> = (Props) => {
-<<<<<<< HEAD
     const [form] = Form.useForm();
     const [recEndDate, setRecEndDate] = useState(null);
     const [tabNum, setTabNum] = useState(1);
@@ -159,7 +141,6 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
     ];
 
     React.useEffect(() => {
-<<<<<<< HEAD
         let recurrencesFields = form.getFieldValue("recurrences");
         if (add && (recEndDate != null)) {
             let ind = recurrencesFields.length - 1
@@ -174,10 +155,8 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
             setRecEndDate(null);
         }
       }, [add, recEndDate]);
-=======
         form.setFieldsValue({
             Recurrence: {
-=======
   const [form] = Form.useForm();
   const [recEndDate, setRecEndDate] = useState(null);
   const [tabNum, setTabNum] = useState(1);
@@ -187,7 +166,6 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
   const [monthday, setMonthday] = useState(null);
   const [city, setCity] = useState(null);
   const [orgo, setOrgo] = useState(null);
-  const [volunteer, setVolunteer] = useState(null);
 
   const weekdayOptions = [
     { label: "Monday", value: "MO" },
@@ -209,19 +187,11 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
         weekday,
         month,
         monthday,
-      }
-    });
-  }, [recEndDate, tabNum, interval, weekday, month, monthday]);
-
-  React.useEffect(() => {
-    form.setFieldsValue({
-    Location: [
         city,
         orgo,
-        volunteer
-    ]
+      },
     });
-  }, [city, orgo, volunteer]);
+  }, [recEndDate, tabNum, interval, weekday, month, monthday, city, orgo]);
 
   return (
     <Modal
@@ -244,7 +214,6 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
             setMonth(null);
             setMonthday(null);
             setCity(null);
-            setAdd(false);
           })
           .catch((info) => {
             console.log("Validate Failed:", info);
@@ -314,7 +283,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
               name="Types of Volunteers Needed"
               label="Types of Volunteers Needed"
             >
-              <VolunteerType setVolunteer={setVolunteer} />
+              <Input />
             </Form.Item>
 
             <Form.Item
@@ -435,22 +404,17 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
               name="Recurrence"
               label="Event Recurrence"
               initialValue={{
->>>>>>> 6bae32d (Authentication and minor clean up)
                 recEndDate,
                 tabNum,
                 interval,
                 weekday,
                 month,
                 monthday,
-<<<<<<< HEAD
                 city,
                 orgo
             }
         });
       }, [recEndDate, tabNum, interval, weekday, month, monthday, city, orgo]);
->>>>>>> fbca987 (eventForm v1 complete)
-
-
     return (
         <Modal
             visible={Props.visible}
@@ -532,11 +496,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                         },
                     ]}
                 >
-<<<<<<< HEAD
-                    <Select>
-=======
                     <Select onChange={(v: any) => setCity(v) }>
->>>>>>> fbca987 (eventForm v1 complete)
                         <Select.Option value="Alaska">Alaska</Select.Option>
                         <Select.Option value="Montana">Montana</Select.Option>
                         <Select.Option value="Seattle">Seattle</Select.Option>
@@ -545,14 +505,6 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                     </Select>
                 </Form.Item>
 
-<<<<<<< HEAD
-                <Form.Item name="DateObject" label="Date/Time" rules={[
-                    {
-                        required: true,
-                        message: 'Please input the date and time of the event!', //shows upon incompletion
-                    },
-                ]} {...rangeConfig} >
-=======
                 <Form.Item
                     name="Organization"
                     label="Organization (select Location first)"
@@ -649,7 +601,6 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                 </Form.Item>
 
                 <Form.Item name="DateObject" label="Date/Time" >
->>>>>>> fbca987 (eventForm v1 complete)
                     <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />
                 </Form.Item>
                 <Form.List name="recurrences" initialValue={[]}>
@@ -983,8 +934,6 @@ const CollectionsPage = () => {
             calEvent.Recurrence = rec;
         }
 
-<<<<<<< HEAD
-=======
         const firestoreEvent: CalendarEventData = {}
         Object.keys(values).forEach((element) => {
             if (element != "Recurrence" && element != "DateObject" && element != "addNewFields" && element != "Organization") {
@@ -1000,7 +949,6 @@ const CollectionsPage = () => {
             }
         });
 
->>>>>>> fbca987 (eventForm v1 complete)
         Promise.all([
             fetch(DOMAIN + calendarApiPath, {
                 method: 'POST',
@@ -1011,7 +959,6 @@ const CollectionsPage = () => {
                 body: JSON.stringify({ eventData: calEvent }),
             })
         ]).then((res: any) => {
-=======
               }}
             >
               <Tabs defaultActiveKey="1" onChange={(v: any) => setTabNum(v)}>
@@ -1124,8 +1071,7 @@ const CollectionsPage = () => {
 
   const onCreate = async (values: any) => {
     // TODO: clean up organization and this check
-    // if (!values.Location["orgo"]) {
-    if (!values.Location[1]) {
+    if (!values.Recurrence["orgo"]) {
       alert("Please select an organization for your event.");
       return;
     }
@@ -1186,10 +1132,7 @@ const CollectionsPage = () => {
         element != "Recurrence" &&
         element != "DateObject" &&
         element != "addNewFields" &&
-        element != "Organization" &&
-        element != "Location" &&
-        element != "recurrences" &&
-        element != "Types of Volunteers Needed"
+        element != "Organization"
       ) {
         firestoreEvent[element] = values[element];
       }
@@ -1199,21 +1142,9 @@ const CollectionsPage = () => {
         });
       }
       if (element == "Organization") {
-        // firestoreEvent[element] = values.Location["orgo"];
-        firestoreEvent[element] = values.Location[1];
-
-      }
-      if (element == "Location") {
-        //   firestoreEvent[element] = values.Location["city"];
-          firestoreEvent[element] = values.Location[0];
-      }
-      if (element == "Types of Volunteers Needed") {
-          firestoreEvent[element] = values.Location[2];
+        firestoreEvent[element] = values.Recurrence["orgo"];
       }
     });
-
-    console.log("YUUUUUUUUUUUUUUUUH");
-    console.log(firestoreEvent);
 
     firebaseClient
       .auth()
@@ -1221,12 +1152,12 @@ const CollectionsPage = () => {
       .then((userToken) => {
         Promise.all([
           () => {
-            // if (calEvent.StartDate) {
+            if (calEvent.StartDate) {
               fetch(DOMAIN + calendarApiPath, {
                 method: "POST",
                 body: JSON.stringify({ eventData: calEvent, userToken }),
               });
-            // }
+            }
           },
           fetch(DOMAIN + eventApiPath, {
             method: "POST",
@@ -1234,7 +1165,6 @@ const CollectionsPage = () => {
           }),
         ])
           .then((res: any) => {
->>>>>>> 6bae32d (Authentication and minor clean up)
             // Get a JSON object from each of the responses
             // return Promise.all(res.map((response: any) => {
             //     return response.json();
