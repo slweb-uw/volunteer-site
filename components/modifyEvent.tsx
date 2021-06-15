@@ -7,11 +7,15 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
+<<<<<<< HEAD
 // get domain with protocol prefix like https://www.google.com
+=======
+>>>>>>> c92d2d3 (initial code for calendarEventModify react component)
 const DOMAIN = window.location.protocol + '//' + window.location.hostname;
 
 interface Props {
     event: EventData;
+<<<<<<< HEAD
     delete: Boolean;  // determine if the given event needs to be deleted or not
     handleClose: any; // for material-ui/core/Dialog
     open: boolean;    // for material-ui/core/Dialog
@@ -23,6 +27,13 @@ interface Props {
  * @param Props See Props interface
  * @returns JSX.Element
  */
+=======
+    delete: Boolean;
+    handleClose: any;
+    open: boolean;
+}
+
+>>>>>>> c92d2d3 (initial code for calendarEventModify react component)
 const CalendarModifyEvent: React.FC<Props> = (Props) => {
     const calendarEvent: CalendarEventData = {
         Name: Props.event.Title,
@@ -37,6 +48,7 @@ const CalendarModifyEvent: React.FC<Props> = (Props) => {
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [resp, setResp] = useState("");
+<<<<<<< HEAD
     const calendarApiPath = '/api/put-calendar-event';
     //TODO: Placeholder for delete calendar api
     //TODO: change the api route based on the passin Props
@@ -103,6 +115,76 @@ const CalendarModifyEvent: React.FC<Props> = (Props) => {
       </Dialog>
         );
     } else {
+=======
+    if (!Props.delete) {
+        useEffect(() => {
+            let calendarApiPath = '/api/put-calendar-event';
+            fetch(DOMAIN + calendarApiPath, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(calendarEvent),
+            })
+            .then(
+                (res: any) => {
+                setIsLoaded(true);
+                setResp(res);
+                },
+                (error) => {
+                    setIsLoaded(true);
+                    setError(error);
+                }
+            )
+        }, [])
+    } else {
+        //TODO: Placeholder for delete calendar api
+    }
+    if (error) {
+        return (
+        <Dialog
+        open={Props.open}
+        onClose={Props.handleClose}
+        aria-labelledby="calendar-event-dialog"
+        aria-describedby="calendar-event-description"
+      >
+        <DialogTitle id="calendar-event-dialog">{"Calendar Event: " + calendarEvent.Name}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="calendar-event-description">
+              Error: {error?.['message']}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={Props.handleClose} color="primary" autoFocus>
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+        );
+    } else if (isLoaded) {
+        return (
+        <Dialog
+        open={Props.open}
+        onClose={Props.handleClose}
+        aria-labelledby="calendar-event-dialog"
+        aria-describedby="calendar-event-description"
+      >
+        <DialogTitle id="calendar-event-dialog">{"Calendar Event: " + calendarEvent.Name}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="calendar-event-description">
+              Loading...
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={Props.handleClose} color="primary" autoFocus>
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
+        );
+    } else {
+>>>>>>> c92d2d3 (initial code for calendarEventModify react component)
         return (
         <Dialog
         open={Props.open}
@@ -131,4 +213,8 @@ const CalendarModifyEvent: React.FC<Props> = (Props) => {
     }
 };
 
+<<<<<<< HEAD
 export default CalendarModifyEvent;
+=======
+export default CalendarModifyEvent;
+>>>>>>> c92d2d3 (initial code for calendarEventModify react component)
