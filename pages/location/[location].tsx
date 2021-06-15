@@ -189,6 +189,19 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
             <MenuItem value={"Title"}>Title</MenuItem>
           </Select>
         </span>
+        <div style={{ textAlign: "right" }}>
+          <Button
+              variant="contained"
+              color="primary"
+              style={{
+                marginTop: "2em",
+              }}
+            >
+              <Typography variant="h6">
+                <Link href="/calendar" ><div style={{ color: "white" }}>See Calendar</div></Link> 
+              </Typography>
+          </Button>
+        </div>
       </div>
 
       <Typography
