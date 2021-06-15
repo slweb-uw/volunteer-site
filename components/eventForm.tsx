@@ -17,6 +17,7 @@ import {
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { firebaseClient } from "../firebaseClient";
 import OrganizationDropdown from "./organizationDropdown";
+import VolunteerType from "./volunteerType";
 
 const { TabPane } = Tabs;
 const { RangePicker } = DatePicker;
@@ -284,6 +285,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
               label="Types of Volunteers Needed"
             >
               <Input />
+              <VolunteerType setVolunteer={setVolunteer} />
             </Form.Item>
 
             <Form.Item
@@ -1145,20 +1147,15 @@ const CollectionsPage = () => {
         firestoreEvent[element] = values.Recurrence["orgo"];
       }
     });
-
     firebaseClient
       .auth()
       .currentUser?.getIdToken()
       .then((userToken) => {
         Promise.all([
-          () => {
-            if (calEvent.StartDate) {
-              fetch(DOMAIN + calendarApiPath, {
-                method: "POST",
-                body: JSON.stringify({ eventData: calEvent, userToken }),
-              });
-            }
-          },
+          fetch(DOMAIN + calendarApiPath, {
+            method: "POST",
+            body: JSON.stringify({ eventData: calEvent, userToken }),
+          }),
           fetch(DOMAIN + eventApiPath, {
             method: "POST",
             body: JSON.stringify({ eventData: firestoreEvent, userToken }),
