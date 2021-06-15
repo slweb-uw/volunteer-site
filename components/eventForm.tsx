@@ -1073,7 +1073,7 @@ const CollectionsPage = () => {
 
   const onCreate = async (values: any) => {
     // TODO: clean up organization and this check
-    if (!values.Recurrence["orgo"]) {
+    if (!values.Location[1]) {
       alert("Please select an organization for your event.");
       return;
     }
@@ -1144,7 +1144,14 @@ const CollectionsPage = () => {
         });
       }
       if (element == "Organization") {
-        firestoreEvent[element] = values.Recurrence["orgo"];
+        firestoreEvent[element] = values.Location[1];
+
+      }
+      if (element == "Location") {
+          firestoreEvent[element] = values.Location[0];
+      }
+      if (element == "Types of Volunteers Needed") {
+          firestoreEvent[element] = values.Location[2];
       }
     });
     firebaseClient
