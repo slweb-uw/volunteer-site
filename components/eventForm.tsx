@@ -18,6 +18,7 @@ import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { firebaseClient } from "../firebaseClient";
 import OrganizationDropdown from "./organizationDropdown";
 import VolunteerType from "./volunteerType";
+import { rrulestr } from 'rrule';
 
 const { TabPane } = Tabs;
 const { RangePicker } = DatePicker;
@@ -1098,34 +1099,33 @@ const CollectionsPage = () => {
       EndDate: endTime,
       Timezone: "GMT",
     };
-
-    if (values.Recurrence.recEndDate) {
-      let rec = [];
-      switch (values.Recurrence.tabNum) {
-        case "1":
-          rec.push(
-            `RRULE:FREQ=DAILY;INTERVAL=${values.Recurrence.interval};UNTIL=${values.Recurrence.recEndDate}`
-          );
-          break;
-        case "2":
-          rec.push(
-            `RRULE:FREQ=WEEKLY;BYDAY=${values.Recurrence.weekday};UNTIL=${values.Recurrence.recEndDate}`
-          );
-          break;
-        case "3":
-          rec.push(
-            `RRULE:FREQ=MONTHLY;BYMONTHDAY=${values.Recurrence.monthday};UNTIL=${values.Recurrence.recEndDate}`
-          );
-          break;
-        case "4":
-          rec.push(
-            `RRULE:FREQ=YEARLY;BYMONTH=${values.Recurrence.month};BYMONTHDAY=${values.Recurrence.monthday};UNTIL=${values.Recurrence.recEndDate}`
-          );
-          break;
-        default:
-          break;
+    let rec: string[] = [];
+    for (let i of values.recurrences) {
+        if (i.recEndDate) {
+            switch(i.tabNum) {
+                case "1":
+                    rec.push(`RRULE:FREQ=DAILY;INTERVAL=${i.interval};UNTIL=${i.recEndDate}`);
+                    break;
+                case "2":
+                    rec.push(`RRULE:FREQ=WEEKLY;BYDAY=${i.weekday};UNTIL=${i.recEndDate}`);
+                    break;
+                case "3":
+                    rec.push(`RRULE:FREQ=MONTHLY;BYMONTHDAY=${i.monthday};UNTIL=${i.recEndDate}`);
+                    break;
+                case "4":
+                    rec.push(`RRULE:FREQ=YEARLY;BYMONTH=${i.month};BYMONTHDAY=${i.monthday};UNTIL=${i.recEndDate}`);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    calEvent.Recurrence = rec;
+    let recReadable: string[] = [];
+    for (let i of rec) {
+      if (i) {
+        recReadable.push(rrulestr(i).toText());
       }
-      calEvent.Recurrence = rec;
     }
 
     // TODO: Do this in a way that doesn't make the linter complain
@@ -1154,7 +1154,7 @@ const CollectionsPage = () => {
         firestoreEvent[element] = values.Location[2];
       }
       if (element == "recurrences") {
-        firestoreEvent[element] = rec;
+        firestoreEvent[element] = recReadable;
       }
     });
     const calendarPromise = async(calEvent: any, userToken: any) => {
