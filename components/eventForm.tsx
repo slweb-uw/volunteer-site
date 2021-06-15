@@ -90,19 +90,6 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
     ];
 
     React.useEffect(() => {
-<<<<<<< HEAD
-        form.setFieldsValue({
-            Recurrence: {
-                recEndDate,
-                tabNum,
-                interval,
-                weekday,
-                month,
-                monthday
-            }
-        });
-      }, [recEndDate, tabNum, interval, weekday, month, monthday]);
-=======
         let recurrencesFields = form.getFieldValue("recurrences");
         if (add && (recEndDate != null)) {
             let ind = recurrencesFields.length - 1
@@ -117,7 +104,6 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
             setRecEndDate(null);
         }
       }, [add, recEndDate]);
->>>>>>> 8946436 (multi recurrence)
 
 
     return (
@@ -140,12 +126,9 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                         setWeekday(null);
                         setMonth(null);
                         setMonthday(null);
-<<<<<<< HEAD
-=======
                         setAdd(false);
                         setDel(false);
                         setCity(null);
->>>>>>> 8946436 (multi recurrence)
                     })
                     .catch((info) => {
                         console.log('Validate Failed:', info);
@@ -160,7 +143,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                 <Row gutter={[16, 16]}>
                 <Col span={12}>
                 <Form.Item
-                    name="Title"
+                    name="Name"
                     label="Event Name"
                     rules={[
                         {
@@ -172,7 +155,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                     <Input />
                 </Form.Item>
 
-                <Form.Item name="Project Description" label="Description" rules={[
+                <Form.Item name="Description" label="Description" rules={[
                     {
                         required: true,
                         message: 'Please input a description of the event!', //shows upon incompletion
@@ -214,86 +197,12 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                     </Select>
                 </Form.Item>
 
-<<<<<<< HEAD
                 <Form.Item name="DateObject" label="Date/Time" rules={[
                     {
                         required: true,
                         message: 'Please input the date and time of the event!', //shows upon incompletion
                     },
                 ]} {...rangeConfig} >
-=======
-                <Form.Item
-                    name="Organization"
-                    label="Organization (select Location first)"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input the name of the organization!', //shows upon incompletion
-                        },
-                    ]}
-                >
-                    <Input disabled={!form.getFieldValue('Location')} 
-                    // onChange={printOrganizations}
-                    />
-                </Form.Item>
-
-                <Form.Item name="Types of Volunteers Needed" label="Types of Volunteers Needed" >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item name="Contact Information and Cancellation Policy" label="Contact Information and Cancellation Policy" >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item name="Website Link" label="Website Link" >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item name="Sign-up Link" label="Sign-up Link" >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item name="Parking and Directions" label="Parking and Directions" >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item name="Provider Information" label="Provider Information" >
-                    <Input />
-                </Form.Item>
-
-                </Col>
-                <Col span={12}>
-
-                <Form.Item name="Clinic Flow" label="Clinic Flow" >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item name="Clinic Schedule" label="Clinic Schedule" >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item name="HS Grad Student Information" label="HS Grad Student Information" >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item name="Project Specific Training" label="Project Specific Training" >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item name="Services Provided" label="Services Provided" >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item name="Tips and Reminders" label="Tips and Reminders" >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item name="Undergraduate Information" label="Undergraduate Information" >
-                    <Input />
-                </Form.Item>
-
-                <Form.Item name="DateObject" label="Date/Time" >
->>>>>>> a94a6a5 (auto handle objects)
                     <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />
                 </Form.Item>
                 <Form.List name="recurrences" initialValue={[]}>
@@ -355,7 +264,6 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                                 Recurrence End Date:
                                 <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onOk={(v: any) => setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
 
-<<<<<<< HEAD
                 {/* <Form.Item
                    name="Timezone"
                    label="Timezone"
@@ -469,7 +377,6 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                 <Form.Item name="VolunteerType" label="Volunteer Type" >
                     <Input onChange={ (v: any)=>{console.log(interval); } }/>
                 </Form.Item>
-=======
                                 </Space>
                             </TabPane>
                         </Tabs>
@@ -515,7 +422,6 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                             
                             >
                             <Tabs>
->>>>>>> 8946436 (multi recurrence)
 
                             </Tabs>
                             </Form.Item>
@@ -538,6 +444,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                         <>
                             {fields.map(({ key, name, fieldKey, ...restField }) => (
                                 <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+                               onthly
                             <Form.Item
                                         {...restField}
                                         name={[name, 'detailKey']}
@@ -594,8 +501,8 @@ const CollectionsPage = () => {
         console.log(endTime);
 
         const calEvent: CalendarEventData = {
-            Name: values.Title,
-            Description: values.["Project Description"],
+            Name: values.Name,
+            Description: values.Description,
             Organization: values.Organization,
             Location: values.Location,
             StartDate: startTime,
@@ -623,18 +530,8 @@ const CollectionsPage = () => {
                         break;
             }
         }
-<<<<<<< HEAD
             calEvent.Recurrence = rec;
         }
-=======
-
-        const firestoreEvent: CalendarEventData = {}
-        Object.keys(values).forEach((element) => {
-            if (element != "Recurrence" && element != "DateObject") {
-                firestoreEvent[element] = values[element];
-            }
-        });
->>>>>>> a94a6a5 (auto handle objects)
 
         Promise.all([
             fetch(DOMAIN + calendarApiPath, {
