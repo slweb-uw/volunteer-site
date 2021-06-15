@@ -1,10 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { firebaseAdmin } from "../../firebaseAdmin";
-import { promises as fsPromises } from 'fs';
+import { promises as fsPromises } from "fs";
 import { google } from "googleapis";
 
-const CREDS_PATH = 'calendarSecret.json';
-const SCOPES = ['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/calendar.events'];
+const CREDS_PATH = "calendarSecret.json";
+const SCOPES = [
+  "https://www.googleapis.com/auth/calendar",
+  "https://www.googleapis.com/auth/calendar.events",
+];
 
 export const config = {
   api: {
@@ -36,35 +39,51 @@ interface Creds {
 // location, and recurrence
 
 export default async (req: NextApiRequest, resolve: NextApiResponse) => {
-  const { eventData } : {eventData: CalendarEventData} = JSON.parse(req.body);
+  const {
+    eventData,
+    userToken,
+  }: { eventData: CalendarEventData; userToken: string } = JSON.parse(req.body);
 
-  // const token = await firebaseAdmin.auth().verifyIdToken(userToken);
-  // const user = await firebaseAdmin.auth().getUser(token.uid);
+  const token = await firebaseAdmin.auth().verifyIdToken(userToken);
+  const user = await firebaseAdmin.auth().getUser(token.uid);
 
-  // Verify user and that user has custom claim "authorization" to edit the calendar
-  // if (
-  //   user.emailVerified &&
-  //   user.customClaims?.authorization
-  // ) {
-    if (req.method === 'POST') {
+  // Verify user
+  if (user.email === "slweb@uw.edu" || user.email === "slwebuw@gmail.com") {
+    if (req.method === "POST") {
       try {
-        const fcontent: Creds = JSON.parse((await fsPromises.readFile(CREDS_PATH)).toString());
-        const jwtClient = new google.auth.JWT(fcontent.client_email, undefined, fcontent.private_key,
-          SCOPES);
+        const fcontent: Creds = JSON.parse(
+          (await fsPromises.readFile(CREDS_PATH)).toString()
+        );
+        const jwtClient = new google.auth.JWT(
+          fcontent.client_email,
+          undefined,
+          fcontent.private_key,
+          SCOPES
+        );
         const _ = await jwtClient.authorize();
-        const {update, updateEventId}: {update: boolean,
-          updateEventId: string | null} = await checkEvent(jwtClient, eventData);
-        const res = await addOrUpdateEvent(jwtClient, update, updateEventId, eventData);
+        const {
+          update,
+          updateEventId,
+        }: { update: boolean; updateEventId: string | null } = await checkEvent(
+          jwtClient,
+          eventData
+        );
+        const res = await addOrUpdateEvent(
+          jwtClient,
+          update,
+          updateEventId,
+          eventData
+        );
         resolve.status(200).send("Success:" + res);
-      } catch(err) {
+      } catch (err) {
         resolve.status(400).send("Bad request: " + err);
       }
     } else {
       resolve.status(400).send("Invalid request method");
-    };
-  // } else {
-  //   resolve.status(400).send("Error: Unauthorized User");
-  // }
+    }
+  } else {
+    resolve.status(400).send("Error: Unauthorized User");
+  }
 };
 
 /**
@@ -73,10 +92,10 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
  * @param {CalendarEventData} event Event related information.
  */
 async function checkEvent(auth: any, event: CalendarEventData) {
-  const calendar = google.calendar({version: "v3", auth});
+  const calendar = google.calendar({ version: "v3", auth });
   try {
     const res = await calendar.events.list({
-      calendarId: 'slweb@uw.edu',
+      calendarId: "slweb@uw.edu",
       q: event.Name,
     });
     const events: any = res.data.items;
@@ -84,16 +103,19 @@ async function checkEvent(auth: any, event: CalendarEventData) {
     let updateEventId: string | null = null;
     if (events.length) {
       events.forEach((content: any, index: number) => {
-        if (content.summary === event.Name && content.location === event.Location
-          && content.organizer.displayName === event.Organization) {
+        if (
+          content.summary === event.Name &&
+          content.location === event.Location &&
+          content.organizer.displayName === event.Organization
+        ) {
           update = true;
           updateEventId = content.id;
         }
-      })
+      });
     }
-    return {update, updateEventId};
-  } catch(err) {
-    return {update: false, updateEventId: null};
+    return { update, updateEventId };
+  } catch (err) {
+    return { update: false, updateEventId: null };
   }
 }
 
@@ -104,47 +126,51 @@ async function checkEvent(auth: any, event: CalendarEventData) {
  * @param {string | null} updateEventId The Id of the event which need to be updated or null if no event.
  * @param {CalendarEventData} event Event related information.
  */
-async function addOrUpdateEvent(auth: any, update: boolean, updateEventId: string | null,
-  event: CalendarEventData) {
-  const calendar = google.calendar({version: "v3", auth});
+async function addOrUpdateEvent(
+  auth: any,
+  update: boolean,
+  updateEventId: string | null,
+  event: CalendarEventData
+) {
+  const calendar = google.calendar({ version: "v3", auth });
   try {
     let body = createRequestBody(event, update);
     if (update && updateEventId) {
       const res = await calendar.events.update({
-        calendarId: 'slweb@uw.edu',
+        calendarId: "slweb@uw.edu",
         eventId: updateEventId,
         requestBody: body,
       });
       return res;
     } else {
       const res = await calendar.events.insert({
-        calendarId: 'slweb@uw.edu',
+        calendarId: "slweb@uw.edu",
         requestBody: body,
       });
-      return res
+      return res;
     }
-  } catch(err) {
+  } catch (err) {
     throw new Error("Error from change:" + err);
   }
 }
 
-/** 
+/**
  * construct the request body for addOrUpdateEvent function.
  * @param {CalendarEventData} event Event data.
  * @param {boolean} update Check if this is a update request body or insert event request body
  */
 function createRequestBody(event: CalendarEventData, update: boolean) {
   let result: any = {};
-  result['end'] = { 'dateTime': event.EndDate, 'timeZone': event.Timezone };
-  result['start'] = { 'dateTime': event.StartDate, 'timeZone': event.Timezone};
-  result['description'] = event.Description;
+  result["end"] = { dateTime: event.EndDate, timeZone: event.Timezone };
+  result["start"] = { dateTime: event.StartDate, timeZone: event.Timezone };
+  result["description"] = event.Description;
   if (!update) {
-    result['location'] = event.Location;
-    result['summary'] = event.Name;
-    result['organizer'] = { 'displayName': event.Organization }
-  } 
+    result["location"] = event.Location;
+    result["summary"] = event.Name;
+    result["organizer"] = { displayName: event.Organization };
+  }
   if (event.Recurrence) {
-    result['recurrence'] = event.Recurrence;
+    result["recurrence"] = event.Recurrence;
   }
   return result;
 }
