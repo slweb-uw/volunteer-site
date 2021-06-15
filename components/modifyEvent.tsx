@@ -8,13 +8,18 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 // get domain with protocol prefix like https://www.google.com
 =======
 >>>>>>> c92d2d3 (initial code for calendarEventModify react component)
+=======
+// get domain with protocol prefix like https://www.google.com
+>>>>>>> 12c2d80 (add some commens and todos)
 const DOMAIN = window.location.protocol + '//' + window.location.hostname;
 
 interface Props {
     event: EventData;
+<<<<<<< HEAD
 <<<<<<< HEAD
     delete: Boolean;  // determine if the given event needs to be deleted or not
     handleClose: any; // for material-ui/core/Dialog
@@ -34,6 +39,19 @@ interface Props {
 }
 
 >>>>>>> c92d2d3 (initial code for calendarEventModify react component)
+=======
+    delete: Boolean;  // determine if the given event needs to be deleted or not
+    handleClose: any; // for material-ui/core/Dialog
+    open: boolean;    // for material-ui/core/Dialog
+}
+
+/**
+ * This React component will add/update/delete based on the given EventData
+ * to edit the corresponding event on the Google calendar
+ * @param Props See Props interface
+ * @returns JSX.Element
+ */
+>>>>>>> 12c2d80 (add some commens and todos)
 const CalendarModifyEvent: React.FC<Props> = (Props) => {
     const calendarEvent: CalendarEventData = {
         Name: Props.event.Title,
@@ -48,6 +66,7 @@ const CalendarModifyEvent: React.FC<Props> = (Props) => {
     const [error, setError] = useState(null);
     const [isLoaded, setIsLoaded] = useState(false);
     const [resp, setResp] = useState("");
+<<<<<<< HEAD
 <<<<<<< HEAD
     const calendarApiPath = '/api/put-calendar-event';
     //TODO: Placeholder for delete calendar api
@@ -116,9 +135,11 @@ const CalendarModifyEvent: React.FC<Props> = (Props) => {
         );
     } else {
 =======
+=======
+    const calendarApiPath = '/api/put-calendar-event';
+>>>>>>> 12c2d80 (add some commens and todos)
     if (!Props.delete) {
         useEffect(() => {
-            let calendarApiPath = '/api/put-calendar-event';
             fetch(DOMAIN + calendarApiPath, {
                 method: 'POST',
                 headers: {
@@ -139,6 +160,7 @@ const CalendarModifyEvent: React.FC<Props> = (Props) => {
         }, [])
     } else {
         //TODO: Placeholder for delete calendar api
+        //TODO: change the api route based on the passin Props
     }
     if (error) {
         return (
