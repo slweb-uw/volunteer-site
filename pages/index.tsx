@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import CollectionsPage from "../components/eventForm";
+import EventForm from "../components/eventForm";
 import { Modal, Form, makeStyles } from '@material-ui/core';
 import {
   withStyles,
@@ -44,7 +44,7 @@ const App: React.FC<{}> = () => {
       </div>
 
       <div style={{ textAlign: "center", marginBottom: "8em" }}>
-      <CollectionsPage />
+      <EventForm />
       </div>
 
       {/* <Grid container spacing={4}>

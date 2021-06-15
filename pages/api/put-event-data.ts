@@ -96,13 +96,24 @@ async function addOrUpdateEvent(update: boolean, updateEventId: string | null,
       console.log(body);
       document.set(body);
 
+
+
       // check if this event is part of a new organization not existing in current cache of orgs.
-      const orgs = firebaseAdmin.firestore().collection("cache").doc(event.Location);
-      //TODO FIX THIS
-      // if (orgs.getBoolean(event.organization) == null) {
-      //   let newOrg = event.location;
-      //   orgs.update({ newOrg: true });
-      // }
+      document = firebaseAdmin.firestore().collection("cache").doc(event.Location);
+
+
+      console.log("YUUUUUUUUUUUUUUUUUUUUUUUH");
+      let organizations = document.get().then((snapshot) => {
+          const data = snapshot.data()
+          console.log(data);
+      });
+      console.log(event.Organization);
+      if (!Object.keys(organizations).includes(event.Organization)) {
+        console.log("isn't in cache");
+        let key = event.Organization;
+        let res = { [key]: true };
+        document.set(res, { merge:true });
+      }
       return body;
     }
   } catch(err) {

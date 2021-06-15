@@ -2,6 +2,12 @@ import React, { useState } from 'react';
 import 'antd/dist/antd.css';
 import { Button, Modal, Form, Input, Radio, Col, Row, DatePicker, Select, Space, Tabs, Checkbox } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+<<<<<<< HEAD
+=======
+import { firebaseClient } from "../firebaseClient";
+import OrganizationDropdown from "./organizationDropdown";
+
+>>>>>>> fbca987 (eventForm v1 complete)
 const { TabPane } = Tabs;
 const { RangePicker } = DatePicker;
 
@@ -21,6 +27,19 @@ interface Props {
     onCancel: any
 }
 
+<<<<<<< HEAD
+=======
+const getOrganizations = async (city) => {
+    try {
+        let doc = await firebaseClient.firestore().collection('cache').doc(city).get()
+        return doc.data();
+    } catch (e) {
+        console.log(e);
+    }
+    return null;
+}
+
+>>>>>>> fbca987 (eventForm v1 complete)
 const CollectionCreateForm: React.FC<Props> = (Props) => {
     const [form] = Form.useForm();
     const [recEndDate, setRecEndDate] = useState(null);
@@ -31,6 +50,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
     const [monthday, setMonthday] = useState(null);
     const [add, setAdd] = useState(false);
     const [city, setCity] = useState(null);
+    const [orgo, setOrgo] = useState(null);
 
     const weekdayOptions = [
         { label: "Monday", value: "MO" },
@@ -90,6 +110,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
     ];
 
     React.useEffect(() => {
+<<<<<<< HEAD
         let recurrencesFields = form.getFieldValue("recurrences");
         if (add && (recEndDate != null)) {
             let ind = recurrencesFields.length - 1
@@ -104,6 +125,21 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
             setRecEndDate(null);
         }
       }, [add, recEndDate]);
+=======
+        form.setFieldsValue({
+            Recurrence: {
+                recEndDate,
+                tabNum,
+                interval,
+                weekday,
+                month,
+                monthday,
+                city,
+                orgo
+            }
+        });
+      }, [recEndDate, tabNum, interval, weekday, month, monthday, city, orgo]);
+>>>>>>> fbca987 (eventForm v1 complete)
 
 
     return (
@@ -187,9 +223,12 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                         },
                     ]}
                 >
+<<<<<<< HEAD
                     <Select>
+=======
+                    <Select onChange={(v: any) => setCity(v) }>
+>>>>>>> fbca987 (eventForm v1 complete)
                         <Select.Option value="Alaska">Alaska</Select.Option>
-                        <Select.Option value="Idaho">Idaho</Select.Option>
                         <Select.Option value="Montana">Montana</Select.Option>
                         <Select.Option value="Seattle">Seattle</Select.Option>
                         <Select.Option value="Spokane">Spokane</Select.Option>
@@ -197,12 +236,111 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                     </Select>
                 </Form.Item>
 
+<<<<<<< HEAD
                 <Form.Item name="DateObject" label="Date/Time" rules={[
                     {
                         required: true,
                         message: 'Please input the date and time of the event!', //shows upon incompletion
                     },
                 ]} {...rangeConfig} >
+=======
+                <Form.Item
+                    name="Organization"
+                    label="Organization (select Location first)"
+                >
+                    <OrganizationDropdown orgs={getOrganizations} city={city} setOrgo={setOrgo} />                  
+                </Form.Item>
+
+                <Form.Item name="Types of Volunteers Needed" label="Types of Volunteers Needed" >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item name="Contact Information and Cancellation Policy" label="Contact Information and Cancellation Policy" >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item name="Website Link" label="Website Link" >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item name="Sign-up Link" label="Sign-up Link" >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item name="Parking and Directions" label="Parking and Directions" >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item name="Provider Information" label="Provider Information" >
+                    <Input />
+                </Form.Item>
+
+                <Form.List name="addNewFields">
+                    {(fields, { add, remove }) => (
+                        <>
+                            {fields.map(({ key, name, fieldKey, ...restField }) => (
+                                <Space key={key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+                            <Form.Item
+                                        {...restField}
+                                        name={[name, 'detailKey']}
+                                        fieldKey={[fieldKey, 'detailKey']}
+                                        rules={[{ required: true, message: 'Missing detail name' }]}
+                                    >
+                                        <Input placeholder="Detail Name (i.e. Parking Directions)" />
+                                    </Form.Item>
+                                    <Form.Item
+                                        {...restField}
+                                        name={[name, 'detailValue']}
+                                        fieldKey={[fieldKey, 'detailValue']}
+                                        rules={[{ required: true, message: 'Missing detail value' }]}
+                                    >
+                                        <Input placeholder="Detail Value (i.e. Park at level 2)" />
+                                    </Form.Item>
+                                    <MinusCircleOutlined onClick={() => remove(name)} />
+                                </Space>
+                            ))}
+                            <Form.Item>
+                                <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                                    Add field
+                                </Button>
+                            </Form.Item>
+                        </>
+                    )}
+                </Form.List>
+
+                </Col>
+                <Col span={12}>
+
+                <Form.Item name="Clinic Flow" label="Clinic Flow" >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item name="Clinic Schedule" label="Clinic Schedule" >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item name="HS Grad Student Information" label="HS Grad Student Information" >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item name="Project Specific Training" label="Project Specific Training" >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item name="Services Provided" label="Services Provided" >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item name="Tips and Reminders" label="Tips and Reminders" >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item name="Undergraduate Information" label="Undergraduate Information" >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item name="DateObject" label="Date/Time" >
+>>>>>>> fbca987 (eventForm v1 complete)
                     <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />
                 </Form.Item>
                 <Form.List name="recurrences" initialValue={[]}>
@@ -476,6 +614,9 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                 <Form.Item name="Field Ordering" label="Field Ordering" >
                     {/* <Ordering /> */}
                 </Form.Item>
+                {/* <Form.Item name="Field Ordering" label="Field Ordering" >
+                    <Input onChange={(v: any) => console.log(orgo) }/>
+                </Form.Item> */}
 
             </Col>
             </Row>
@@ -492,7 +633,7 @@ const CollectionsPage = () => {
 
     const onCreate = (values) => {
         const rangeTimeValue = values['DateObject'];
-        console.log('Received values of form: ', values);
+        // console.log('Received values of form: ', values);
 
 
         let startTime = rangeTimeValue[0].toISOString();
@@ -533,6 +674,24 @@ const CollectionsPage = () => {
             calEvent.Recurrence = rec;
         }
 
+<<<<<<< HEAD
+=======
+        const firestoreEvent: CalendarEventData = {}
+        Object.keys(values).forEach((element) => {
+            if (element != "Recurrence" && element != "DateObject" && element != "addNewFields" && element != "Organization") {
+                firestoreEvent[element] = values[element];
+            }
+            if (element == "addNewFields" && values[element] != null) {
+                values[element].forEach(newField => {
+                        firestoreEvent[newField.detailKey] = newField.detailValue;
+                    })
+            }
+            if (element == "Organization") {
+                firestoreEvent[element] = values.Recurrence["orgo"];
+            }
+        });
+
+>>>>>>> fbca987 (eventForm v1 complete)
         Promise.all([
             fetch(DOMAIN + calendarApiPath, {
                 method: 'POST',
@@ -579,4 +738,31 @@ const CollectionsPage = () => {
     );
 };
 
-export default CollectionsPage;
+class EventForm extends React.Component {
+    state = {
+        loading: true
+    };
+
+    componentDidMount() {
+        this.waitForFirstRender().then(() => {
+            this.setState({ loading: false });
+        });
+    }
+    
+    waitForFirstRender = () => {
+        return new Promise(resolve => setTimeout(() => resolve(), 200));
+    }
+    
+    render() {
+        if (this.state.loading) {
+            return null;
+        }
+
+        return(
+            <CollectionsPage />
+        );
+    }
+}
+
+
+export default EventForm;
