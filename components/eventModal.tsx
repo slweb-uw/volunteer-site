@@ -18,6 +18,10 @@ import Link from "next/link";
 
 import { useRouter } from 'next/router';
 
+import EventForm from "components/modifyEventForm";
+import { useAuth } from "auth";
+
+
 const styles = (theme: Theme) =>
   createStyles({
     root: {
@@ -73,8 +77,9 @@ export default function EventModal(props: {
   open: boolean;
   event: EventData | undefined;
   handleClose: any;
+  handleModify: any;
 }) {
-  const { open, event, handleClose } = props;
+  const { open, event, handleClose, handleModify } = props;
   const router = useRouter();
 
   const { location } = router.query; // string of current location (ex: "Seattle")
@@ -83,6 +88,22 @@ export default function EventModal(props: {
   if (event) {
     eventLink = "/" + location + "/" + event.id;
   }
+
+  const { user } = useAuth();
+
+  // const handleModify = () => {
+  //   handleClose();
+  //   return(
+  //     // {user &&
+  //     //   (user.email === "slweb@uw.edu" ||
+  //     //     user.email === "slwebuw@gmail.com") && (
+  //     //     <div style={{ paddingBottom: "2em" }}>
+  //           // <EventForm />
+  //     //     </div>
+  //     //   )}
+  //     <CollectionCreateForm/>
+  //   );
+  // }
 
   return (
     <Dialog
@@ -156,6 +177,13 @@ export default function EventModal(props: {
                     Sign-up Link
                   </Button>
                 </a>
+              )}
+              {user &&
+              (user.email === "slweb@uw.edu" ||
+                user.email === "slwebuw@gmail.com") && (
+                <div style={{ paddingBottom: "2em" }}>
+                  <EventForm/>
+                </div>
               )}
             </div>
           </Grid>

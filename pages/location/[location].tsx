@@ -39,6 +39,7 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   const [selectedEvent, setSelectedEvent] = useState<EventData>();
   const [sortField, setSortField] = useState<string>("timestamp");
 
+
   useEffect(() => {
     firebaseClient.analytics().logEvent("location_page_visit");
   }, []);
