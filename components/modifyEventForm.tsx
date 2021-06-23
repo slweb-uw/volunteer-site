@@ -88,6 +88,8 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
   const monthOptions = generateLabelValuePairs(12);
   const monthdayOptions = generateLabelValuePairs(31);
 
+  const eventData = Props.eventData;
+
   React.useEffect(() => {
     let recurrencesFields = form.getFieldValue("recurrences");
     if (add && (recEndDate != null)) {
@@ -115,12 +117,15 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
     });
   }, [city, orgo, volunteer]);
 
+  console.log(eventData);
+
   return (
     <Modal
       visible={Props.visible}
-      title="Create New Event"
+      title="Modify Event"
       width={900}
-      okText="Create"
+      zIndex={1300}
+      okText="Update"
       cancelText="Cancel"
       onCancel={Props.onCancel}
       onOk={() => {
@@ -156,7 +161,7 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
                 },
               ]}
             >
-              <Input />
+              <Input defaultValue={eventData.Title ? eventData.Title : null}/>
             </Form.Item>
 
             <Form.Item
@@ -169,7 +174,7 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
                 },
               ]}
             >
-              <Input type="textarea" />
+              <Input type="textarea" defaultValue={eventData["Project Description"] ? eventData["Project Description"] : null}/>
             </Form.Item>
 
             <Form.Item
@@ -182,7 +187,7 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
                 },
               ]}
             >
-              <Select onChange={(v: any) => setCity(v)}>
+              <Select defaultValue={eventData.Location ? eventData.Location : null} onChange={(v: any) => setCity(v)}>
                 <Select.Option value="Alaska">Alaska</Select.Option>
                 <Select.Option value="Montana">Montana</Select.Option>
                 <Select.Option value="Seattle">Seattle</Select.Option>
@@ -193,13 +198,13 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
 
             <Form.Item
               name="Organization"
-              // label="* Organization (select Location first)"
               label={<><label style={{ color: "red" }}>∗</label><label>&nbsp;Organization (select Location first)</label></>}
             >
               <OrganizationDropdown
                 orgs={getOrganizations}
                 city={city}
                 setOrgo={setOrgo}
+                eventData={eventData}
               />
             </Form.Item>
 
@@ -207,33 +212,33 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
               name="Types of Volunteers Needed"
               label="Types of Volunteers Needed"
             >
-              <VolunteerType setVolunteer={setVolunteer} />
+              <VolunteerType setVolunteer={setVolunteer} eventData={eventData} />
             </Form.Item>
 
             <Form.Item
               name="Contact Information and Cancellation Policy"
               label="Contact Information and Cancellation Policy"
             >
-              <Input />
+              <Input defaultValue={eventData["Contact Information and Cancellation Policy"] ? eventData["Contact Information and Cancellation Policy"] : null}/>
             </Form.Item>
 
             <Form.Item name="Website Link" label="Website Link">
-              <Input />
+              <Input defaultValue={eventData["Website Link"] ? eventData["Website Link"] : null}/>
             </Form.Item>
 
             <Form.Item name="Sign-up Link" label="Sign-up Link">
-              <Input />
+              <Input defaultValue={eventData["Sign-up Link"] ? eventData["Sign-up Link"] : null}/>
             </Form.Item>
 
             <Form.Item
               name="Parking and Directions"
               label="Parking and Directions"
             >
-              <Input />
+              <Input defaultValue={eventData["Parking and Directions"] ? eventData["Parking and Directions"] : null}/>
             </Form.Item>
 
             <Form.Item name="Provider Information" label="Provider Information">
-              <Input />
+              <Input defaultValue={eventData["Provider Information"] ? eventData["Provider Information"] : null}/>
             </Form.Item>
 
             <Form.List name="addNewFields">
@@ -284,40 +289,40 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
           </Col>
           <Col span={12}>
             <Form.Item name="Clinic Flow" label="Clinic Flow">
-              <Input />
+              <Input defaultValue={eventData["Clinic Flow"] ? eventData["Clinic Flow"] : null}/>
             </Form.Item>
 
             <Form.Item name="Clinic Schedule" label="Clinic Schedule">
-              <Input />
+              <Input defaultValue={eventData["Clinic Schedule"] ? eventData["Clinic Schedule"] : null}/>
             </Form.Item>
 
             <Form.Item
               name="HS Grad Student Information"
               label="HS Grad Student Information"
             >
-              <Input />
+              <Input defaultValue={eventData["HS Grad Student Information"] ? eventData["HS Grad Student Information"] : null}/>
             </Form.Item>
 
             <Form.Item
               name="Project Specific Training"
               label="Project Specific Training"
             >
-              <Input />
+              <Input defaultValue={eventData["Project Specific Training"] ? eventData["Project Specific Training"] : null}/>
             </Form.Item>
 
             <Form.Item name="Services Provided" label="Services Provided">
-              <Input />
+              <Input defaultValue={eventData["Services Provided"] ? eventData["Services Provided"] : null}/>
             </Form.Item>
 
             <Form.Item name="Tips and Reminders" label="Tips and Reminders">
-              <Input />
+              <Input defaultValue={eventData["Tips and Reminders"] ? eventData["Tips and Reminders"] : null}/>
             </Form.Item>
 
             <Form.Item
               name="Undergraduate Information"
               label="Undergraduate Information"
             >
-              <Input />
+              <Input defaultValue={eventData["Undergraduate Information"] ? eventData["Undergraduate Information"] : null}/>
             </Form.Item>
 
             <Form.Item name="DateObject" label="Date/Time">
@@ -409,7 +414,7 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
   );
 };
 
-export const CollectionsPage = () => {
+export const CollectionsPage = (props) => {
   const [visible, setVisible] = useState(false);
   const DOMAIN = "http:" + "//" + "localhost:3000";
   const calendarApiPath = "/api/put-calendar-event";
@@ -554,12 +559,13 @@ export const CollectionsPage = () => {
         onCancel={() => {
           setVisible(false);
         }}
+        eventData={props.eventData}
       />
     </div>
   );
 };
 
-class EventForm extends React.Component {
+class ModifyEventForm extends React.Component {
   state = {
     loading: true,
   };
@@ -573,8 +579,8 @@ class EventForm extends React.Component {
       return null;
     }
 
-    return <CollectionsPage/>;
+    return <CollectionsPage eventData={this.props.eventData}/>;
   }
 }
 
-export default EventForm;
+export default ModifyEventForm;

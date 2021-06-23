@@ -17,13 +17,20 @@ const volunteerTypes = [
     "PT/OT/P&O",
 ]
 
-export default class VolunteerType extends React.Component {     
+export default class VolunteerType extends React.Component {   
+    constructor(props) {
+        super(props);
+    }   
+
     render() {
+        const varHolder = ["Types of Volunteers Needed"];
         for (let volunteer of volunteerTypes) {
             children.push(<Option key={volunteer}>{volunteer}</Option>);
         }
         return (
-            <Select onChange={(v: any) => this.props.setVolunteer(v) }
+            <Select 
+                defaultValue={this.props.eventData?.varHolder ? this.props.eventData?.varHolder : []} 
+                onChange={(v: any) => this.props.setVolunteer(v) }
                 mode="multiple"
                 allowClear
                 style={{ width: '100%' }}

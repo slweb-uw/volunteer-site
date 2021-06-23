@@ -18,7 +18,7 @@ import Link from "next/link";
 
 import { useRouter } from 'next/router';
 
-import EventForm from "components/modifyEventForm";
+import ModifyEventForm from "components/modifyEventForm";
 import { useAuth } from "auth";
 
 
@@ -98,7 +98,7 @@ export default function EventModal(props: {
   //     //   (user.email === "slweb@uw.edu" ||
   //     //     user.email === "slwebuw@gmail.com") && (
   //     //     <div style={{ paddingBottom: "2em" }}>
-  //           // <EventForm />
+  //           // <ModifyEventForm />
   //     //     </div>
   //     //   )}
   //     <CollectionCreateForm/>
@@ -182,7 +182,7 @@ export default function EventModal(props: {
               (user.email === "slweb@uw.edu" ||
                 user.email === "slwebuw@gmail.com") && (
                 <div style={{ paddingBottom: "2em" }}>
-                  <EventForm/>
+                  <ModifyEventForm eventData={event}/>
                 </div>
               )}
             </div>
