@@ -112,6 +112,7 @@ export default function EventModal(props: {
       open={open}
       fullWidth={true}
       maxWidth={"lg"}
+      disableEnforceFocus={true}
     >
       <DialogTitle id="event-dialog" onClose={handleClose}>
         <b>{event?.Title}</b>
@@ -182,7 +183,7 @@ export default function EventModal(props: {
               (user.email === "slweb@uw.edu" ||
                 user.email === "slwebuw@gmail.com") && (
                 <div style={{ paddingBottom: "2em" }}>
-                  <ModifyEventForm eventData={event}/>
+                  <ModifyEventForm eventData={event} handleClose={handleClose} />
                 </div>
               )}
             </div>

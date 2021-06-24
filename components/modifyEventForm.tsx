@@ -148,7 +148,26 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
           });
       }}
     >
-      <Form form={form} layout="vertical" name="form_in_modal">
+      <Form form={form} layout="vertical" name="form_in_modal"
+        initialValues={{
+          ["Title"]: eventData.Title ? eventData.Title : null,
+          ["Project Description"]: eventData["Project Description"] ? eventData["Project Description"].replace(/\n/gi, " ") : null,
+          ["Location"]: eventData.Location ? eventData.Location : null,
+          // ["Organization"]: 
+          ["Contact Information and Cancellation Policy"]: eventData["Contact Information and Cancellation Policy"] ? eventData["Contact Information and Cancellation Policy"].replace(/\n/gi, " ") : null,
+          ["Website Link"]: eventData["Website Link"] ? eventData["Website Link"] : null,
+          ["Sign-up Link"]: eventData["Sign-up Link"] ? eventData["Sign-up Link"] : null,
+          ["Parking and Directions"]: eventData["Parking and Directions"] ? eventData["Parking and Directions"].replace(/\n/gi, " ") : null,
+          ["Provider Information"]: eventData["Provider Information"] ? eventData["Provider Information"].replace(/\n/gi, " ") : null,
+          ["Clinic Flow"]: eventData["Clinic Flow"] ? eventData["Clinic Flow"].replace(/\n/gi, " ") : null,
+          ["Clinic Schedule"]: eventData["Clinic Schedule"] ? eventData["Clinic Schedule"].replace(/\n/gi, " ") : null,
+          ["HS Grad Student Information"]: eventData["HS Grad Student Information"] ? eventData["HS Grad Student Information"].replace(/\n/gi, " ") : null,
+          ["Project Specific Training"]: eventData["Project Specific Training"] ? eventData["Project Specific Training"].replace(/\n/gi, " ") : null,
+          ["Services Provided"]: eventData["Services Provided"] ? eventData["Services Provided"].replace(/\n/gi, " ") : null,
+          ["Tips and Reminders"]: eventData["Tips and Reminders"] ? eventData["Tips and Reminders"].replace(/\n/gi, " ") : null,
+          ["Undergraduate Information"]: eventData["Undergraduate Information"] ? eventData["Undergraduate Information"].replace(/\n/gi, " ") : null
+        }}
+      >
         <Row gutter={[16, 16]}>
           <Col span={12}>
             <Form.Item
@@ -161,7 +180,7 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
                 },
               ]}
             >
-              <Input defaultValue={eventData.Title ? eventData.Title : null}/>
+              <Input value={eventData.Title ? eventData.Title : null}/>
             </Form.Item>
 
             <Form.Item
@@ -174,7 +193,7 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
                 },
               ]}
             >
-              <Input type="textarea" defaultValue={eventData["Project Description"] ? eventData["Project Description"] : null}/>
+              <Input type="textarea" value={eventData["Project Description"] ? eventData["Project Description"].replace(/\n/gi, " ") : null}/>
             </Form.Item>
 
             <Form.Item
@@ -187,7 +206,11 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
                 },
               ]}
             >
-              <Select defaultValue={eventData.Location ? eventData.Location : null} onChange={(v: any) => setCity(v)}>
+              <Select 
+                value={eventData.Location ? eventData.Location : null} 
+                onChange={(v: any) => setCity(v)}
+                getPopupContainer={node => node.parentNode}
+              >
                 <Select.Option value="Alaska">Alaska</Select.Option>
                 <Select.Option value="Montana">Montana</Select.Option>
                 <Select.Option value="Seattle">Seattle</Select.Option>
@@ -219,26 +242,26 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
               name="Contact Information and Cancellation Policy"
               label="Contact Information and Cancellation Policy"
             >
-              <Input defaultValue={eventData["Contact Information and Cancellation Policy"] ? eventData["Contact Information and Cancellation Policy"] : null}/>
+              <Input value={eventData["Contact Information and Cancellation Policy"] ? eventData["Contact Information and Cancellation Policy"].replace(/\n/gi, " ") : null}/>
             </Form.Item>
 
             <Form.Item name="Website Link" label="Website Link">
-              <Input defaultValue={eventData["Website Link"] ? eventData["Website Link"] : null}/>
+              <Input value={eventData["Website Link"] ? eventData["Website Link"] : null}/>
             </Form.Item>
 
             <Form.Item name="Sign-up Link" label="Sign-up Link">
-              <Input defaultValue={eventData["Sign-up Link"] ? eventData["Sign-up Link"] : null}/>
+              <Input value={eventData["Sign-up Link"] ? eventData["Sign-up Link"] : null}/>
             </Form.Item>
 
             <Form.Item
               name="Parking and Directions"
               label="Parking and Directions"
             >
-              <Input defaultValue={eventData["Parking and Directions"] ? eventData["Parking and Directions"] : null}/>
+              <Input value={eventData["Parking and Directions"] ? eventData["Parking and Directions"].replace(/\n/gi, " ") : null}/>
             </Form.Item>
 
             <Form.Item name="Provider Information" label="Provider Information">
-              <Input defaultValue={eventData["Provider Information"] ? eventData["Provider Information"] : null}/>
+              <Input value={eventData["Provider Information"] ? eventData["Provider Information"].replace(/\n/gi, " ") : null}/>
             </Form.Item>
 
             <Form.List name="addNewFields">
@@ -289,40 +312,40 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
           </Col>
           <Col span={12}>
             <Form.Item name="Clinic Flow" label="Clinic Flow">
-              <Input defaultValue={eventData["Clinic Flow"] ? eventData["Clinic Flow"] : null}/>
+              <Input value={eventData["Clinic Flow"] ? eventData["Clinic Flow"].replace(/\n/gi, " ") : null}/>
             </Form.Item>
 
             <Form.Item name="Clinic Schedule" label="Clinic Schedule">
-              <Input defaultValue={eventData["Clinic Schedule"] ? eventData["Clinic Schedule"] : null}/>
+              <Input value={eventData["Clinic Schedule"] ? eventData["Clinic Schedule"].replace(/\n/gi, " ") : null}/>
             </Form.Item>
 
             <Form.Item
               name="HS Grad Student Information"
               label="HS Grad Student Information"
             >
-              <Input defaultValue={eventData["HS Grad Student Information"] ? eventData["HS Grad Student Information"] : null}/>
+              <Input value={eventData["HS Grad Student Information"] ? eventData["HS Grad Student Information"].replace(/\n/gi, " ") : null}/>
             </Form.Item>
 
             <Form.Item
               name="Project Specific Training"
               label="Project Specific Training"
             >
-              <Input defaultValue={eventData["Project Specific Training"] ? eventData["Project Specific Training"] : null}/>
+              <Input value={eventData["Project Specific Training"] ? eventData["Project Specific Training"].replace(/\n/gi, " ") : null}/>
             </Form.Item>
 
             <Form.Item name="Services Provided" label="Services Provided">
-              <Input defaultValue={eventData["Services Provided"] ? eventData["Services Provided"] : null}/>
+              <Input value={eventData["Services Provided"] ? eventData["Services Provided"].replace(/\n/gi, " ") : null}/>
             </Form.Item>
 
             <Form.Item name="Tips and Reminders" label="Tips and Reminders">
-              <Input defaultValue={eventData["Tips and Reminders"] ? eventData["Tips and Reminders"] : null}/>
+              <Input value={eventData["Tips and Reminders"] ? eventData["Tips and Reminders"].replace(/\n/gi, " ") : null}/>
             </Form.Item>
 
             <Form.Item
               name="Undergraduate Information"
               label="Undergraduate Information"
             >
-              <Input defaultValue={eventData["Undergraduate Information"] ? eventData["Undergraduate Information"] : null}/>
+              <Input value={eventData["Undergraduate Information"] ? eventData["Undergraduate Information"].replace(/\n/gi, " ") : null}/>
             </Form.Item>
 
             <Form.Item name="DateObject" label="Date/Time">
@@ -507,6 +530,11 @@ export const CollectionsPage = (props) => {
         firestoreEvent[element] = recReadable;
       }
     });
+    
+    if (props.eventData?.id) {
+      firestoreEvent["id"] = props.eventData.id;
+    }
+
     const calendarPromise = async(calEvent: any, userToken: any) => {
       if (calEvent.StartDate) {
         fetch(DOMAIN + calendarApiPath, {
@@ -547,8 +575,9 @@ export const CollectionsPage = (props) => {
     <div>
       <Button
         type="primary"
-        onClick={() => {
-          setVisible(true);
+        onClick={(e) => {
+          // props.handleClose();
+          setVisible(true);       
         }}
       >
         Modify Event
@@ -579,7 +608,7 @@ class ModifyEventForm extends React.Component {
       return null;
     }
 
-    return <CollectionsPage eventData={this.props.eventData}/>;
+    return <CollectionsPage eventData={this.props.eventData} handleClose={this.props.handleClose} test={this.state.test}/>;
   }
 }
 

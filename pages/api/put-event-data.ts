@@ -104,7 +104,7 @@ async function addOrUpdateEvent(
   try {
     const body = createRequestBody(event, update);
     if (update && updateEventId) {
-      document.update({ body });
+      document.update({ ...body });
       return body;
     } else {
       // const res = await calendar.events.insert({
