@@ -21,6 +21,7 @@ import { rrulestr } from 'rrule';
 
 const { TabPane } = Tabs;
 const { RangePicker } = DatePicker;
+const moment = require('moment');
 
 const rangeConfig = {
   rules: [
@@ -117,6 +118,8 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
     });
   }, [city, orgo, volunteer]);
 
+
+  const now = moment();
   console.log(eventData);
 
   return (
@@ -165,7 +168,10 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
           ["Project Specific Training"]: eventData["Project Specific Training"] ? eventData["Project Specific Training"].replace(/\n/gi, " ") : null,
           ["Services Provided"]: eventData["Services Provided"] ? eventData["Services Provided"].replace(/\n/gi, " ") : null,
           ["Tips and Reminders"]: eventData["Tips and Reminders"] ? eventData["Tips and Reminders"].replace(/\n/gi, " ") : null,
-          ["Undergraduate Information"]: eventData["Undergraduate Information"] ? eventData["Undergraduate Information"].replace(/\n/gi, " ") : null
+          ["Undergraduate Information"]: eventData["Undergraduate Information"] ? eventData["Undergraduate Information"].replace(/\n/gi, " ") : null,
+          
+          //Kaz: below is throwing the error "date1.isAfter is not a function"
+          ["DateObject"]: eventData.DateObject ? [moment(eventData.DateObject[0]), moment(eventData.DateObject[1])] : null
         }}
       >
         <Row gutter={[16, 16]}>
@@ -349,7 +355,12 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
             </Form.Item>
 
             <Form.Item name="DateObject" label="Date/Time">
-              <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />
+              <RangePicker 
+                showTime 
+                format="YYYY-MM-DD HH:mm:ss" 
+                getPopupContainer={node => node.parentNode}
+                value={ eventData.DateObject ? [moment(eventData.DateObject[0]), moment(eventData.DateObject[1])] : null}
+              />
             </Form.Item>
             <Form.List name="recurrences" initialValue={[]}>
                 {(fields, { add, remove }) => (
@@ -518,7 +529,6 @@ export const CollectionsPage = (props) => {
       }
       if (element == "Organization") {
         firestoreEvent[element] = values.Location[1];
-
       }
       if (element == "Location") {
         firestoreEvent[element] = values.Location[0];

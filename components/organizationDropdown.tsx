@@ -53,7 +53,7 @@ export default class OrganizationDropdown extends React.Component {
     const { items, name } = this.state;
     return (
       <Select
-        defaultValue={this.props.eventData?.Organization ? this.props.eventData?.Organization : null}
+        value={this.props.eventData?.Organization ? this.props.eventData?.Organization : null}
         onChange={(v: any) => this.props.setOrgo(v) }
         style={{ width: 240 }}
         placeholder="select Location first"
