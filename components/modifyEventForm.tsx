@@ -171,6 +171,7 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
           ["Tips and Reminders"]: eventData["Tips and Reminders"] ? eventData["Tips and Reminders"].replace(/\n/gi, " ") : null,
           ["Undergraduate Information"]: eventData["Undergraduate Information"] ? eventData["Undergraduate Information"].replace(/\n/gi, " ") : null,
           ["DateObject"]: eventData.DateObject ? [moment(eventData.DateObject[0]), moment(eventData.DateObject[1])] : null,
+          ["recurrences"]: eventData["recurrences original"] ? eventData["recurrences original"] : null,
         }}
       >
         <Row gutter={[16, 16]}>
@@ -361,9 +362,6 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
                 value={ eventData.DateObject ? [moment(eventData.DateObject[0]), moment(eventData.DateObject[1])] : null}
               />
             </Form.Item>
-            {`You need to recreate the old recurrence if you want to keep the old recurrence. The old recurrence is "${eventData.recurrences ? eventData.recurrences : null}"`}.
-            <br />
-            <br />
             <Form.List name="recurrences" initialValue={[]}>
                 {(fields, { add, remove }) => (
                     <>
@@ -539,6 +537,7 @@ export const CollectionsPage = (props) => {
       }
       if (element == "recurrences") {
         firestoreEvent[element] = recReadable;
+        firestoreEvent["recurrences original"] = rec;
       }
     });
     

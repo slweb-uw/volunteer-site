@@ -500,6 +500,7 @@ const CollectionsPage = () => {
       }
       if (element == "recurrences") {
         firestoreEvent[element] = recReadable;
+        firestoreEvent["recurrences original"] = rec;
       }
     });
     const calendarPromise = async(calEvent: any, userToken: any) => {
@@ -521,9 +522,7 @@ const CollectionsPage = () => {
           }),
         ])
           .then((res: any) => {
-            // Get a JSON object from each of the responses
-            // return Promise.all(res.map((response: any) => {
-            //     return response.json();
+            // Get a JSON object from eadoc);
             // }));
             // }).then((data: any) => {
             //     // Log the data to the console
