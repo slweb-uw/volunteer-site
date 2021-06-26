@@ -23,13 +23,12 @@ export default class VolunteerType extends React.Component {
     }   
 
     render() {
-        const varHolder = ["Types of Volunteers Needed"];
         for (let volunteer of volunteerTypes) {
             children.push(<Option key={volunteer}>{volunteer}</Option>);
         }
         return (
             <Select 
-                defaultValue={this.props.eventData?.varHolder ? this.props.eventData?.varHolder : []} 
+                value={this.props.eventData?.["Types of Volunteers Needed"] ? this.props.eventData?.["Types of Volunteers Needed"] : null} 
                 onChange={(v: any) => this.props.setVolunteer(v) }
                 mode="multiple"
                 allowClear

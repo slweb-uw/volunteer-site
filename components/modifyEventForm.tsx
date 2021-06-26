@@ -155,8 +155,9 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
         initialValues={{
           ["Title"]: eventData.Title ? eventData.Title : null,
           ["Project Description"]: eventData["Project Description"] ? eventData["Project Description"].replace(/\n/gi, " ") : null,
-          ["Location"]: eventData.Location ? eventData.Location : null,
+          ["Location"]: eventData["Location"] ? eventData["Location"] : null,
           // ["Organization"]: 
+          ["Types of Volunteers Needed"]: eventData["Types of Volunteers Needed"] ? eventData["Types of Volunteers Needed"] : null,
           ["Contact Information and Cancellation Policy"]: eventData["Contact Information and Cancellation Policy"] ? eventData["Contact Information and Cancellation Policy"].replace(/\n/gi, " ") : null,
           ["Website Link"]: eventData["Website Link"] ? eventData["Website Link"] : null,
           ["Sign-up Link"]: eventData["Sign-up Link"] ? eventData["Sign-up Link"] : null,
@@ -169,8 +170,6 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
           ["Services Provided"]: eventData["Services Provided"] ? eventData["Services Provided"].replace(/\n/gi, " ") : null,
           ["Tips and Reminders"]: eventData["Tips and Reminders"] ? eventData["Tips and Reminders"].replace(/\n/gi, " ") : null,
           ["Undergraduate Information"]: eventData["Undergraduate Information"] ? eventData["Undergraduate Information"].replace(/\n/gi, " ") : null,
-          
-          //Kaz: below is throwing the error "date1.isAfter is not a function"
           ["DateObject"]: eventData.DateObject ? [moment(eventData.DateObject[0]), moment(eventData.DateObject[1])] : null,
         }}
       >
@@ -213,7 +212,7 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
               ]}
             >
               <Select 
-                value={eventData.Location ? eventData.Location : null} 
+                value={eventData?.Location ? eventData?.Location : null} 
                 onChange={(v: any) => setCity(v)}
                 getPopupContainer={node => node.parentNode}
               >
