@@ -28,12 +28,13 @@ export default class VolunteerType extends React.Component {
         }
         return (
             <Select 
-                value={this.props.eventData?.["Types of Volunteers Needed"] ? this.props.eventData?.["Types of Volunteers Needed"] : null} 
+                defaultValue={this.props.eventData?.["Types of Volunteers Needed"] ? this.props.eventData?.["Types of Volunteers Needed"] : []} 
                 onChange={(v: any) => this.props.setVolunteer(v) }
                 mode="multiple"
                 allowClear
                 style={{ width: '100%' }}
                 placeholder="Please select one or more"
+                getPopupContainer={node => node.parentNode}
             >
                 {children}
             </Select>

@@ -193,7 +193,6 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
 
             <Form.Item
               name="Organization"
-              // label="* Organization (select Location first)"
               label={<><label style={{ color: "red" }}>∗</label><label>&nbsp;Organization (select Location first)</label></>}
             >
               <OrganizationDropdown
@@ -474,7 +473,6 @@ const CollectionsPage = () => {
     const firestoreEvent: CalendarEventData = {};
     Object.keys(values).forEach((element) => {
       if (
-        // element != "DateObject" &&
         element != "addNewFields" &&
         element != "Organization" &&
         element != "Location" &&
@@ -504,7 +502,9 @@ const CollectionsPage = () => {
     });
     const calendarPromise = async(calEvent: any, userToken: any) => {
       if (calEvent.StartDate) {
-        fetch(DOMAIN + calendarApiPath, {
+        //TODO: for developing on localhost uncomment below and comment out below after
+        // fetch(DOMAIN + calendarApiPath, {
+        fetch(calendarApiPath, {
         method: "POST",
         body: JSON.stringify({ eventData: calEvent, userToken }),
         })
@@ -515,23 +515,17 @@ const CollectionsPage = () => {
       .then((userToken) => {
         Promise.all([
           calendarPromise(calEvent, userToken),
-          fetch(DOMAIN + eventApiPath, {
+          //TODO: for developing on localhost uncomment below and comment out below after
+          // fetch(DOMAIN + eventApiPath, {
+          fetch(eventApiPath, {
             method: "POST",
             body: JSON.stringify({ eventData: firestoreEvent, userToken }),
           }),
         ])
           .then((res: any) => {
-            // Get a JSON object from each of the responses
-            // return Promise.all(res.map((response: any) => {
-            //     return response.json();
-            // }));
-            // }).then((data: any) => {
-            //     // Log the data to the console
-            //     // You would do something with both sets of data here
-            //     console.log(data);
+            // if needed later
           })
           .catch((error) => {
-            // if there's an error, log it
             console.log(error);
           });
         setVisible(false);

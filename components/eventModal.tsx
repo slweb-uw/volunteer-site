@@ -91,20 +91,6 @@ export default function EventModal(props: {
 
   const { user } = useAuth();
 
-  // const handleModify = () => {
-  //   handleClose();
-  //   return(
-  //     // {user &&
-  //     //   (user.email === "slweb@uw.edu" ||
-  //     //     user.email === "slwebuw@gmail.com") && (
-  //     //     <div style={{ paddingBottom: "2em" }}>
-  //           // <ModifyEventForm />
-  //     //     </div>
-  //     //   )}
-  //     <CollectionCreateForm/>
-  //   );
-  // }
-
   return (
     <Dialog
       onClose={handleClose}

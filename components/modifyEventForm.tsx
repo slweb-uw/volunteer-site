@@ -548,7 +548,9 @@ export const CollectionsPage = (props) => {
 
     const calendarPromise = async(calEvent: any, userToken: any) => {
       if (calEvent.StartDate) {
-        fetch(DOMAIN + calendarApiPath, {
+        //TODO: for developing on localhost uncomment below and comment out below after
+        // fetch(DOMAIN + calendarApiPath, {
+        fetch(calendarApiPath, {
         method: "POST",
         body: JSON.stringify({ eventData: calEvent, userToken }),
         })
@@ -559,23 +561,17 @@ export const CollectionsPage = (props) => {
       .then((userToken) => {
         Promise.all([
           calendarPromise(calEvent, userToken),
-          fetch(DOMAIN + eventApiPath, {
+        //TODO: for developing on localhost uncomment below and comment out below after
+          // fetch(DOMAIN + eventApiPath, {
+          fetch(eventApiPath, {
             method: "POST",
             body: JSON.stringify({ eventData: firestoreEvent, userToken }),
           }),
         ])
           .then((res: any) => {
-            // Get a JSON object from each of the responses
-            // return Promise.all(res.map((response: any) => {
-            //     return response.json();
-            // }));
-            // }).then((data: any) => {
-            //     // Log the data to the console
-            //     // You would do something with both sets of data here
-            //     console.log(data);
+            // if needed later
           })
           .catch((error) => {
-            // if there's an error, log it
             console.log(error);
           });
         setVisible(false);
@@ -587,7 +583,6 @@ export const CollectionsPage = (props) => {
       <Button
         type="primary"
         onClick={(e) => {
-          // props.handleClose();
           setVisible(true);       
         }}
       >
