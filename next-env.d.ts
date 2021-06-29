@@ -38,4 +38,6 @@ interface CalendarEventData {
   TimeStamp?: Date;
   //[Field?: string]: string;
   Order?: string[];
+  recurrences?: string[];
+  ["recurrences original"]?: string[];
 }

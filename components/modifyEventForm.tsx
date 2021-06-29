@@ -21,6 +21,7 @@ import { rrulestr } from 'rrule';
 
 const { TabPane } = Tabs;
 const { RangePicker } = DatePicker;
+const moment = require('moment');
 
 const rangeConfig = {
   rules: [
@@ -63,7 +64,7 @@ const generateLabelValuePairs = (
   return ret;
 };
 
-const CollectionCreateForm: React.FC<Props> = (Props) => {
+export const CollectionCreateForm: React.FC<Props> = (Props) => {
   const [form] = Form.useForm();
   const [recEndDate, setRecEndDate] = useState(null);
   const [tabNum, setTabNum] = useState("1");
@@ -87,6 +88,8 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
   ];
   const monthOptions = generateLabelValuePairs(12);
   const monthdayOptions = generateLabelValuePairs(31);
+
+  const eventData = Props.eventData;
 
   React.useEffect(() => {
     let recurrencesFields = form.getFieldValue("recurrences");
@@ -115,12 +118,17 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
     });
   }, [city, orgo, volunteer]);
 
+
+  const now = moment();
+  console.log(eventData);
+
   return (
     <Modal
       visible={Props.visible}
-      title="Create New Event"
+      title="Modify Event"
       width={900}
-      okText="Create"
+      zIndex={1300}
+      okText="Update"
       cancelText="Cancel"
       onCancel={Props.onCancel}
       onOk={() => {
@@ -143,7 +151,29 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
           });
       }}
     >
-      <Form form={form} layout="vertical" name="form_in_modal">
+      <Form form={form} layout="vertical" name="form_in_modal"
+        initialValues={{
+          ["Title"]: eventData.Title ? eventData.Title : null,
+          ["Project Description"]: eventData["Project Description"] ? eventData["Project Description"].replace(/\n/gi, " ") : null,
+          ["Location"]: eventData["Location"] ? eventData["Location"] : null,
+          // ["Organization"]: 
+          ["Types of Volunteers Needed"]: eventData["Types of Volunteers Needed"] ? eventData["Types of Volunteers Needed"] : null,
+          ["Contact Information and Cancellation Policy"]: eventData["Contact Information and Cancellation Policy"] ? eventData["Contact Information and Cancellation Policy"].replace(/\n/gi, " ") : null,
+          ["Website Link"]: eventData["Website Link"] ? eventData["Website Link"] : null,
+          ["Sign-up Link"]: eventData["Sign-up Link"] ? eventData["Sign-up Link"] : null,
+          ["Parking and Directions"]: eventData["Parking and Directions"] ? eventData["Parking and Directions"].replace(/\n/gi, " ") : null,
+          ["Provider Information"]: eventData["Provider Information"] ? eventData["Provider Information"].replace(/\n/gi, " ") : null,
+          ["Clinic Flow"]: eventData["Clinic Flow"] ? eventData["Clinic Flow"].replace(/\n/gi, " ") : null,
+          ["Clinic Schedule"]: eventData["Clinic Schedule"] ? eventData["Clinic Schedule"].replace(/\n/gi, " ") : null,
+          ["HS Grad Student Information"]: eventData["HS Grad Student Information"] ? eventData["HS Grad Student Information"].replace(/\n/gi, " ") : null,
+          ["Project Specific Training"]: eventData["Project Specific Training"] ? eventData["Project Specific Training"].replace(/\n/gi, " ") : null,
+          ["Services Provided"]: eventData["Services Provided"] ? eventData["Services Provided"].replace(/\n/gi, " ") : null,
+          ["Tips and Reminders"]: eventData["Tips and Reminders"] ? eventData["Tips and Reminders"].replace(/\n/gi, " ") : null,
+          ["Undergraduate Information"]: eventData["Undergraduate Information"] ? eventData["Undergraduate Information"].replace(/\n/gi, " ") : null,
+          ["DateObject"]: eventData.DateObject ? [moment(eventData.DateObject[0]), moment(eventData.DateObject[1])] : null,
+          ["recurrences"]: eventData["recurrences original"] ? eventData["recurrences original"] : null,
+        }}
+      >
         <Row gutter={[16, 16]}>
           <Col span={12}>
             <Form.Item
@@ -156,7 +186,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                 },
               ]}
             >
-              <Input />
+              <Input value={eventData.Title ? eventData.Title : null}/>
             </Form.Item>
 
             <Form.Item
@@ -169,7 +199,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                 },
               ]}
             >
-              <Input type="textarea" />
+              <Input type="textarea" value={eventData["Project Description"] ? eventData["Project Description"].replace(/\n/gi, " ") : null}/>
             </Form.Item>
 
             <Form.Item
@@ -182,7 +212,11 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                 },
               ]}
             >
-              <Select onChange={(v: any) => setCity(v)}>
+              <Select 
+                value={eventData?.Location ? eventData?.Location : null} 
+                onChange={(v: any) => setCity(v)}
+                getPopupContainer={node => node.parentNode}
+              >
                 <Select.Option value="Alaska">Alaska</Select.Option>
                 <Select.Option value="Montana">Montana</Select.Option>
                 <Select.Option value="Seattle">Seattle</Select.Option>
@@ -199,6 +233,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                 orgs={getOrganizations}
                 city={city}
                 setOrgo={setOrgo}
+                eventData={eventData}
               />
             </Form.Item>
 
@@ -206,33 +241,33 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
               name="Types of Volunteers Needed"
               label="Types of Volunteers Needed"
             >
-              <VolunteerType setVolunteer={setVolunteer} />
+              <VolunteerType setVolunteer={setVolunteer} eventData={eventData} />
             </Form.Item>
 
             <Form.Item
               name="Contact Information and Cancellation Policy"
               label="Contact Information and Cancellation Policy"
             >
-              <Input />
+              <Input value={eventData["Contact Information and Cancellation Policy"] ? eventData["Contact Information and Cancellation Policy"].replace(/\n/gi, " ") : null}/>
             </Form.Item>
 
             <Form.Item name="Website Link" label="Website Link">
-              <Input />
+              <Input value={eventData["Website Link"] ? eventData["Website Link"] : null}/>
             </Form.Item>
 
             <Form.Item name="Sign-up Link" label="Sign-up Link">
-              <Input />
+              <Input value={eventData["Sign-up Link"] ? eventData["Sign-up Link"] : null}/>
             </Form.Item>
 
             <Form.Item
               name="Parking and Directions"
               label="Parking and Directions"
             >
-              <Input />
+              <Input value={eventData["Parking and Directions"] ? eventData["Parking and Directions"].replace(/\n/gi, " ") : null}/>
             </Form.Item>
 
             <Form.Item name="Provider Information" label="Provider Information">
-              <Input />
+              <Input value={eventData["Provider Information"] ? eventData["Provider Information"].replace(/\n/gi, " ") : null}/>
             </Form.Item>
 
             <Form.List name="addNewFields">
@@ -283,44 +318,49 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
           </Col>
           <Col span={12}>
             <Form.Item name="Clinic Flow" label="Clinic Flow">
-              <Input />
+              <Input value={eventData["Clinic Flow"] ? eventData["Clinic Flow"].replace(/\n/gi, " ") : null}/>
             </Form.Item>
 
             <Form.Item name="Clinic Schedule" label="Clinic Schedule">
-              <Input />
+              <Input value={eventData["Clinic Schedule"] ? eventData["Clinic Schedule"].replace(/\n/gi, " ") : null}/>
             </Form.Item>
 
             <Form.Item
               name="HS Grad Student Information"
               label="HS Grad Student Information"
             >
-              <Input />
+              <Input value={eventData["HS Grad Student Information"] ? eventData["HS Grad Student Information"].replace(/\n/gi, " ") : null}/>
             </Form.Item>
 
             <Form.Item
               name="Project Specific Training"
               label="Project Specific Training"
             >
-              <Input />
+              <Input value={eventData["Project Specific Training"] ? eventData["Project Specific Training"].replace(/\n/gi, " ") : null}/>
             </Form.Item>
 
             <Form.Item name="Services Provided" label="Services Provided">
-              <Input />
+              <Input value={eventData["Services Provided"] ? eventData["Services Provided"].replace(/\n/gi, " ") : null}/>
             </Form.Item>
 
             <Form.Item name="Tips and Reminders" label="Tips and Reminders">
-              <Input />
+              <Input value={eventData["Tips and Reminders"] ? eventData["Tips and Reminders"].replace(/\n/gi, " ") : null}/>
             </Form.Item>
 
             <Form.Item
               name="Undergraduate Information"
               label="Undergraduate Information"
             >
-              <Input />
+              <Input value={eventData["Undergraduate Information"] ? eventData["Undergraduate Information"].replace(/\n/gi, " ") : null}/>
             </Form.Item>
 
             <Form.Item name="DateObject" label="Date/Time">
-              <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />
+              <RangePicker 
+                showTime 
+                format="YYYY-MM-DD HH:mm:ss" 
+                getPopupContainer={node => node.parentNode}
+                value={ eventData.DateObject ? [moment(eventData.DateObject[0]), moment(eventData.DateObject[1])] : null}
+              />
             </Form.Item>
             <Form.List name="recurrences" initialValue={[]}>
                 {(fields, { add, remove }) => (
@@ -337,12 +377,11 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                         <TabPane tab="Daily" key="1">
                             <Space>
                             Reapeat Every
-                            <Select style={{ width: 120 }} onChange={ (v: any)=> setInterval(v)}>
+                            <Select getPopupContainer={node => node.parentNode} style={{ width: 120 }} onChange={ (v: any)=> setInterval(v)}>
                                 <Select.Option value="1">1</Select.Option>
                                 <Select.Option value="2">2</Select.Option>
                                 <Select.Option value="3">3</Select.Option>
-                                <Select.Option value="4">4</Select.Option>:
-￼
+                                <Select.Option value="4">4</Select.Option>
                                 <Select.Option value="5">5</Select.Option>
                                 <Select.Option value="6">6</Select.Option>
                             </Select>
@@ -352,7 +391,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                             <br />
                             <Space>
                             Recurrence End Date:
-                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onOk={ (v: any)=> setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
+                            <DatePicker showTime getPopupContainer={node => node.parentNode} format="YYYY-MM-DD HH:mm:ss" onOk={ (v: any)=> setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
                             </Space>
                         </TabPane>
                         <TabPane tab="Weekly" key="2">
@@ -361,7 +400,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                             <br />
                             <Space>
                             Recurrence End Date:
-                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onOk={(v: any) => setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
+                            <DatePicker showTime getPopupContainer={node => node.parentNode} format="YYYY-MM-DD HH:mm:ss" onOk={(v: any) => setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
                             </Space>
                         </TabPane>
                         <TabPane tab="Monthly" key="3">
@@ -371,7 +410,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                             <br />
                             <Space>
                             Recurrence End Date:
-                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onOk={(v: any) => setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
+                            <DatePicker showTime getPopupContainer={node => node.parentNode} format="YYYY-MM-DD HH:mm:ss" onOk={(v: any) => setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
                             </Space>
                         </TabPane>
                         <TabPane tab="Yearly" key="4">
@@ -385,7 +424,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                             <br />
                             <Space>
                             Recurrence End Date:
-                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onOk={(v: any) => setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
+                            <DatePicker showTime getPopupContainer={node => node.parentNode} format="YYYY-MM-DD HH:mm:ss" onOk={(v: any) => setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
 
                             </Space>
                         </TabPane>
@@ -408,7 +447,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
   );
 };
 
-const CollectionsPage = () => {
+export const CollectionsPage = (props) => {
   const [visible, setVisible] = useState(false);
   const calendarApiPath = "/api/put-calendar-event";
   const eventApiPath = "/api/put-event-data";
@@ -472,6 +511,7 @@ const CollectionsPage = () => {
     const firestoreEvent: CalendarEventData = {};
     Object.keys(values).forEach((element) => {
       if (
+        // element != "DateObject" &&
         element != "addNewFields" &&
         element != "Organization" &&
         element != "Location" &&
@@ -487,7 +527,6 @@ const CollectionsPage = () => {
       }
       if (element == "Organization") {
         firestoreEvent[element] = values.Location[1];
-
       }
       if (element == "Location") {
         firestoreEvent[element] = values.Location[0];
@@ -500,6 +539,11 @@ const CollectionsPage = () => {
         firestoreEvent["recurrences original"] = rec;
       }
     });
+    
+    if (props.eventData?.id) {
+      firestoreEvent["id"] = props.eventData.id;
+    }
+
     const calendarPromise = async(calEvent: any, userToken: any) => {
       if (calEvent.StartDate) {
         fetch(calendarApiPath, {
@@ -532,11 +576,11 @@ const CollectionsPage = () => {
     <div>
       <Button
         type="primary"
-        onClick={() => {
-          setVisible(true);
+        onClick={(e) => {
+          setVisible(true);       
         }}
       >
-        Add Event
+        Modify Event
       </Button>
       <CollectionCreateForm
         visible={visible}
@@ -544,12 +588,13 @@ const CollectionsPage = () => {
         onCancel={() => {
           setVisible(false);
         }}
+        eventData={props.eventData}
       />
     </div>
   );
 };
 
-class EventForm extends React.Component {
+class ModifyEventForm extends React.Component {
   state = {
     loading: true,
   };
@@ -563,8 +608,8 @@ class EventForm extends React.Component {
       return null;
     }
 
-    return <CollectionsPage />;
+    return <CollectionsPage eventData={this.props.eventData} handleClose={this.props.handleClose} test={this.state.test}/>;
   }
 }
 
-export default EventForm;
+export default ModifyEventForm;

@@ -37,7 +37,6 @@ interface Creds {
 
 // Add event to calendar, which will have some name, description, time,
 // location, and recurrence
-
 export default async (req: NextApiRequest, resolve: NextApiResponse) => {
   const {
     eventData,

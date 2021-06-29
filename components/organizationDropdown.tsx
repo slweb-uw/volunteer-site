@@ -53,6 +53,7 @@ export default class OrganizationDropdown extends React.Component {
     const { items, name } = this.state;
     return (
       <Select
+        // value={this.props.eventData?.Organization ? this.props.eventData?.Organization : null}
         onChange={(v: any) => this.props.setOrgo(v) }
         style={{ width: 240 }}
         placeholder="select Location first"
@@ -71,6 +72,7 @@ export default class OrganizationDropdown extends React.Component {
             </div>
           </div>
         )}
+        getPopupContainer={node => node.parentNode}
       >
         {items.map(item => (
           <Option key={item}>{item}</Option>
