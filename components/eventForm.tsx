@@ -410,7 +410,6 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
 
 const CollectionsPage = () => {
   const [visible, setVisible] = useState(false);
-  const DOMAIN = "http:" + "//" + "localhost:3000";
   const calendarApiPath = "/api/put-calendar-event";
   const eventApiPath = "/api/put-event-data";
 
@@ -503,8 +502,6 @@ const CollectionsPage = () => {
     });
     const calendarPromise = async(calEvent: any, userToken: any) => {
       if (calEvent.StartDate) {
-        //TODO: for developing on localhost uncomment below and comment out below after
-        // fetch(DOMAIN + calendarApiPath, {
         fetch(calendarApiPath, {
         method: "POST",
         body: JSON.stringify({ eventData: calEvent, userToken }),
@@ -516,8 +513,6 @@ const CollectionsPage = () => {
       .then((userToken) => {
         Promise.all([
           calendarPromise(calEvent, userToken),
-          //TODO: for developing on localhost uncomment below and comment out below after
-          // fetch(DOMAIN + eventApiPath, {
           fetch(eventApiPath, {
             method: "POST",
             body: JSON.stringify({ eventData: firestoreEvent, userToken }),
