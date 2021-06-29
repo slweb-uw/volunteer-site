@@ -109,7 +109,7 @@ const App: React.FC<{}> = () => {
             }}
           >
             {/* Idaho wants to use own website, but card should look the same */}
-            <a href="/Idaho" style={{ textDecoration: "none", color: "black" }}>
+            <a href="https://idahowwami.school.blog/" style={{ textDecoration: "none", color: "black" }}>
               <div style={{ cursor: "pointer" }}>
                 <img src="/Idaho.png" />
                 <Typography>Idaho</Typography>
