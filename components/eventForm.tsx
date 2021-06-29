@@ -498,6 +498,7 @@ const CollectionsPage = () => {
       }
       if (element == "recurrences") {
         firestoreEvent[element] = recReadable;
+        firestoreEvent["recurrences original"] = rec;
       }
     });
     const calendarPromise = async(calEvent: any, userToken: any) => {
