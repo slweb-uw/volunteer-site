@@ -52,8 +52,8 @@ const Header: React.FC<{}> = (props) => {
         <NavLink href="/resources">
           <StyledLink>Resources</StyledLink>
         </NavLink>
-        <NavLink href="/protocol">
-          <StyledLink>Protocol</StyledLink>
+        <NavLink href="/protocols">
+          <StyledLink>Protocols</StyledLink>
         </NavLink>
         <NavLink href="/donations">
           <StyledLink>Donations</StyledLink>

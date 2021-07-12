@@ -55,9 +55,6 @@ const EventCard: React.FC<Props> = (props) => {
           <Typography variant="subtitle1" color="textSecondary" gutterBottom>
             {props.event.organization}
           </Typography>
-          <Typography gutterBottom>
-            <b>Project Description</b>
-          </Typography>
           <div>{props.event["Project Description"]}</div>
         </CardContent>
       </div>

@@ -28,6 +28,20 @@ const App: React.FC<{}> = () => {
             "Welcome to Service Learning at the UW School of Medicine/WWAMI & UW Health Sciences"
           }
         </Typography>
+        <Typography
+          gutterBottom
+          style={{
+            marginTop: "2em",
+            marginBottom: "2em",
+            maxWidth: "80%",
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+        >
+          We support 50+ student projects in Seattle and throughout the region!
+          The UW School of Medicine and other Health Sciences Schools strive to
+          enrich student education by facilitating service
+        </Typography>
         <Typography variant="h6" gutterBottom>
           <i>
             Choose a location to find Service Learning opportunities in that
@@ -109,7 +123,10 @@ const App: React.FC<{}> = () => {
             }}
           >
             {/* Idaho wants to use own website, but card should look the same */}
-            <a href="https://idahowwami.school.blog/" style={{ textDecoration: "none", color: "black" }}>
+            <a
+              href="https://idahowwami.school.blog/"
+              style={{ textDecoration: "none", color: "black" }}
+            >
               <div style={{ cursor: "pointer" }}>
                 <img src="/Idaho.png" />
                 <Typography>Idaho</Typography>

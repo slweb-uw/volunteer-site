@@ -31,14 +31,14 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   const { location } = router.query; // string of current location (ex: "Seattle")
   const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
   const [events, setEvents] = useState<EventData[]>([]); // list of loaded events
-  const [cursor, setCursor] =
-    useState<firebaseClient.firestore.QueryDocumentSnapshot>(); // cursor to last document loaded
+  const [cursor, setCursor] = useState<
+    firebaseClient.firestore.QueryDocumentSnapshot
+  >(); // cursor to last document loaded
   const [filter, setFilter] = useState<string | undefined>();
   const [showLoadButton, setShowLoadButton] = useState<boolean>(true);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [selectedEvent, setSelectedEvent] = useState<EventData>();
   const [sortField, setSortField] = useState<string>("timestamp");
-
 
   useEffect(() => {
     firebaseClient.analytics().logEvent("location_page_visit");
@@ -147,8 +147,9 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   return (
     <div className={classes.page}>
       <CssBaseline />
-      <Typography variant="h3">Opportunities in {location}</Typography>
-
+      <Typography variant="h3" gutterBottom>
+        Opportunities in {location}
+      </Typography>
       <EventModal
         open={modalOpen}
         event={selectedEvent}
@@ -192,15 +193,17 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
         </span>
         <div style={{ textAlign: "right" }}>
           <Button
-              variant="contained"
-              color="primary"
-              style={{
-                marginTop: "2em",
-              }}
-            >
-              <Typography variant="h6">
-                <Link href="/calendar" ><div style={{ color: "white" }}>See Calendar</div></Link> 
-              </Typography>
+            variant="contained"
+            color="primary"
+            style={{
+              marginTop: "2em",
+            }}
+          >
+            <Typography variant="h6">
+              <Link href="/calendar">
+                <div style={{ color: "white" }}>See Calendar</div>
+              </Link>
+            </Typography>
           </Button>
         </div>
       </div>
@@ -210,7 +213,7 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
         style={{ textAlign: "center", marginBottom: "3em", color: "#85754D" }}
       >
         <b>
-          Make sure you have read and reviewed the{" "}
+          Please review our{" "}
           <i>
             <Link href={"/onboarding/" + location}>
               <a style={{ color: "#85754D" }}>Onboarding Instructions</a>

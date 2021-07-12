@@ -35,16 +35,22 @@ const Resources: NextPage<Props> = ({ classes }) => {
         variant="h4"
         style={{ fontWeight: 600, paddingBottom: "0.5em" }}
       >
-        Links to Additional Service Learning Resources
+        Resource Links
       </Typography>
 
       <Typography
         variant="h5"
         style={{ fontWeight: 600, paddingBottom: "0.5em" }}
       >
-        University of Washington Service Learning Pages
+        University of Washington Service Learning Websites
       </Typography>
+
       <Typography className={classes.header}>
+        <b>School of Medicine</b>
+      </Typography>
+
+      <Typography className={classes.header}>
+        -{" "}
         <Link
           className={classes.links}
           href="https://www.uwmedicine.org/school-of-medicine/md-program/service-learning"
@@ -55,6 +61,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
       </Typography>
 
       <Typography className={classes.header}>
+        -{" "}
         <Link
           className={classes.links}
           href="https://canvas.uw.edu/courses/1176739"
@@ -65,6 +72,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
       </Typography>
 
       <Typography className={classes.header}>
+        -{" "}
         <Link
           className={classes.links}
           href="https://education.uwmedicine.org/volunteer-opportunities-2-2/"
@@ -75,6 +83,29 @@ const Resources: NextPage<Props> = ({ classes }) => {
       </Typography>
 
       <Typography className={classes.header}>
+        <Link
+          className={classes.links}
+          href="https://dental.washington.edu/oepd/volunteer-opportunities/"
+        >
+          School of Dentistry
+        </Link>{" "}
+      </Typography>
+
+      <Typography className={classes.header}>
+        <Link
+          className={classes.links}
+          href="https://nursing.uw.edu/community/"
+        >
+          School of Nursing
+        </Link>{" "}
+      </Typography>
+
+      <Typography className={classes.header}>
+        <b>Interprofessional</b>
+      </Typography>
+
+      <Typography className={classes.header}>
+        -{" "}
         <Link
           className={classes.links}
           href="https://collaborate.uw.edu/in-the-community/"

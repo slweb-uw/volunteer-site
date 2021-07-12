@@ -48,10 +48,10 @@ const Donations: NextPage<Props> = ({ classes }) => {
               Your donation will help sustain our efforts!
             </Typography>
             <Typography>
-              TEXT HERE EXPLAINING WHAT THE $ IS USED FOR. Place soeme
-              information here so that donors know that the funds are. Maybe
-              example projects that were funded by donations or how it has had a
-              positive impact on the community
+              Support School of Medicine students engaged in service-learning or
+              advocacy activities. We provide basic health services and health
+              education to communities in need and support outreach efforts to
+              bring underrepressented youth into the health professions.
             </Typography>
             <Button
               variant="contained"
