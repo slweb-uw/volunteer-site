@@ -16,7 +16,6 @@ export default ({ href, children }: {href:string, children:any}) => {
   const router = useRouter()
 
   let className = children.props.className || ''
-  console.log("hello" + router.pathname);
   if (router.pathname === href) {
     className = `${className} ${classes.active}`
   }

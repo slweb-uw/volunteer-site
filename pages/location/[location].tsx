@@ -17,6 +17,8 @@ import EventCard from "../../components/eventCard";
 import BootstrapInput from "components/bootstrapInput";
 import Link from "next/link";
 import EventModal from "components/eventModal";
+import EventForm from "components/eventForm";
+import { useAuth } from "auth";
 
 interface Props {
   classes?: any;
@@ -25,12 +27,13 @@ interface Props {
 
 const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   const router = useRouter();
+  const { user } = useAuth();
   const { location } = router.query; // string of current location (ex: "Seattle")
+  const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
   const [events, setEvents] = useState<EventData[]>([]); // list of loaded events
-  const [
-    cursor,
-    setCursor,
-  ] = useState<firebaseClient.firestore.QueryDocumentSnapshot>(); // cursor to last document loaded
+  const [cursor, setCursor] = useState<
+    firebaseClient.firestore.QueryDocumentSnapshot
+  >(); // cursor to last document loaded
   const [filter, setFilter] = useState<string | undefined>();
   const [showLoadButton, setShowLoadButton] = useState<boolean>(true);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -45,6 +48,15 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
     // Load initial events
     if (location) {
       reloadEvents(undefined, "timestamp");
+      if (typeof location === "string") {
+        // pull organizations for this location from the metadata cache
+        firebaseClient
+          .firestore()
+          .collection("cache")
+          .doc(location)
+          .get()
+          .then((doc) => setOrganizations(Object.keys(doc.data())));
+      }
     }
   }, [router]);
 
@@ -135,8 +147,9 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   return (
     <div className={classes.page}>
       <CssBaseline />
-      <Typography variant="h3">Opportunities in {location}</Typography>
-
+      <Typography variant="h3" gutterBottom>
+        Opportunities in {location}
+      </Typography>
       <EventModal
         open={modalOpen}
         event={selectedEvent}
@@ -159,8 +172,9 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
             input={<BootstrapInput />}
           >
             <MenuItem>Show All</MenuItem>
-            <MenuItem value={"Clinical"}>Clinical</MenuItem>
-            <MenuItem value={"Advocacy"}>Advocacy</MenuItem>
+            {organizations.map((organization) => (
+              <MenuItem value={organization}>{organization}</MenuItem>
+            ))}
           </Select>
         </span>
         <span style={{ marginLeft: "1em" }}>
@@ -177,6 +191,21 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
             <MenuItem value={"Title"}>Title</MenuItem>
           </Select>
         </span>
+        <div style={{ textAlign: "right" }}>
+          <Button
+            variant="contained"
+            color="primary"
+            style={{
+              marginTop: "2em",
+            }}
+          >
+            <Typography variant="h6">
+              <Link href="/calendar">
+                <div style={{ color: "white" }}>See Calendar</div>
+              </Link>
+            </Typography>
+          </Button>
+        </div>
       </div>
 
       <Typography
@@ -184,15 +213,27 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
         style={{ textAlign: "center", marginBottom: "3em", color: "#85754D" }}
       >
         <b>
-          Make sure you have read and reviewed the{" "}
+          Please review our{" "}
           <i>
-            <Link href={"/onboarding/" + location}>
-              <a style={{ color: "#85754D" }}>Onboarding Instructions</a>
+            <Link href={"/onboarding/"}>
+              <u>
+                <a style={{ color: "#85754D" }}>Onboarding Instructions</a>
+              </u>
             </Link>
           </i>{" "}
           before signing up for an opportunity!
         </b>
       </Typography>
+
+      {/* Button-Modal Module for adding new events */}
+      {/* TODO: custom claims for admin access, currently hardcoded here and on backend check */}
+      {user &&
+        (user.email === "slweb@uw.edu" ||
+          user.email === "slwebuw@gmail.com") && (
+          <div style={{ paddingBottom: "2em" }}>
+            <EventForm />
+          </div>
+        )}
 
       <div style={{ paddingBottom: "4em" }}>
         <Grid container spacing={6}>

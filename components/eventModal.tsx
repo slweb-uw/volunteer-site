@@ -18,6 +18,10 @@ import Link from "next/link";
 
 import { useRouter } from 'next/router';
 
+import ModifyEventForm from "components/modifyEventForm";
+import { useAuth } from "auth";
+
+
 const styles = (theme: Theme) =>
   createStyles({
     root: {
@@ -73,8 +77,9 @@ export default function EventModal(props: {
   open: boolean;
   event: EventData | undefined;
   handleClose: any;
+  handleModify: any;
 }) {
-  const { open, event, handleClose } = props;
+  const { open, event, handleClose, handleModify } = props;
   const router = useRouter();
 
   const { location } = router.query; // string of current location (ex: "Seattle")
@@ -84,6 +89,8 @@ export default function EventModal(props: {
     eventLink = "/" + location + "/" + event.id;
   }
 
+  const { user } = useAuth();
+
   return (
     <Dialog
       onClose={handleClose}
@@ -91,6 +98,7 @@ export default function EventModal(props: {
       open={open}
       fullWidth={true}
       maxWidth={"lg"}
+      disableEnforceFocus={true}
     >
       <DialogTitle id="event-dialog" onClose={handleClose}>
         <b>{event?.Title}</b>
@@ -156,6 +164,13 @@ export default function EventModal(props: {
                     Sign-up Link
                   </Button>
                 </a>
+              )}
+              {user &&
+              (user.email === "slweb@uw.edu" ||
+                user.email === "slwebuw@gmail.com") && (
+                <div style={{ paddingBottom: "2em" }}>
+                  <ModifyEventForm eventData={event} handleClose={handleClose} />
+                </div>
               )}
             </div>
           </Grid>

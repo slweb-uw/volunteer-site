@@ -14,7 +14,8 @@ const Footer: React.FC<{}> = () => {
     >
       <img src="/footer-logo.png" />
       <Typography style={{ color: "white", marginTop: "0.5em" }} gutterBottom>
-        Contact us: (206) 685-2009 or clarkel@uw.edu
+        Contact us: (206) 685-2009 or{" "}
+        <a href="mailto://clarkel@uw.edu">clarkel@uw.edu</a>
       </Typography>
       <Typography style={{ color: "white" }} gutterBottom>
         <i>
