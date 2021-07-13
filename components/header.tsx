@@ -2,6 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import Link from "next/link";
 import NavLink from "./navlink";
+import Hidden from '@material-ui/core/Hidden';
+
 
 const StyledLink = styled.a`
   color: white;
@@ -28,6 +30,7 @@ const Header: React.FC<{}> = (props) => {
         alignItems: "center",
       }}
     >
+      <Hidden only={["xs", "sm"]}>
       <Link href="/">
         <img src="/header-logo.png"
         style={{
@@ -36,6 +39,7 @@ const Header: React.FC<{}> = (props) => {
                 padding: ".6em"
               }} />
       </Link>
+      </Hidden>
       <div style={{ marginRight: "3em", display: 'flex'}}>
         <NavLink href="/"><StyledLink>Home</StyledLink></NavLink>
         <NavLink href="/training"><StyledLink>Training</StyledLink></NavLink>
