@@ -83,20 +83,30 @@ const Resources: NextPage<Props> = ({ classes }) => {
       </Typography>
 
       <Typography className={classes.header}>
+        <b>School of Dentistry</b>
+      </Typography>
+
+      <Typography className={classes.header}>
+        -{" "}
         <Link
           className={classes.links}
           href="https://dental.washington.edu/oepd/volunteer-opportunities/"
         >
-          School of Dentistry
+          Service Learning Page
         </Link>{" "}
       </Typography>
 
       <Typography className={classes.header}>
+        <b>School of Nursing</b>
+      </Typography>
+
+      <Typography className={classes.header}>
+        -{" "}
         <Link
           className={classes.links}
           href="https://nursing.uw.edu/community/"
         >
-          School of Nursing
+          Service Learning Page
         </Link>{" "}
       </Typography>
 

@@ -36,7 +36,7 @@ const Donations: NextPage<Props> = ({ classes }) => {
               variant="h5"
               style={{ paddingBottom: "0.5rem", fontWeight: 700 }}
             >
-              UWSOM Medicine Service Learning Fund
+              UW School of Medicine Service Learning Fund
             </Typography>
             <Typography
               style={{

@@ -215,8 +215,10 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
         <b>
           Please review our{" "}
           <i>
-            <Link href={"/onboarding/" + location}>
-              <a style={{ color: "#85754D" }}>Onboarding Instructions</a>
+            <Link href={"/onboarding/"}>
+              <u>
+                <a style={{ color: "#85754D" }}>Onboarding Instructions</a>
+              </u>
             </Link>
           </i>{" "}
           before signing up for an opportunity!
