@@ -56,7 +56,7 @@ const Event: NextPage<Props> = ({ classes }) => {
       </Typography>
 
       <Grid container spacing={6}>
-        <Grid item xs={6}>
+        <Grid item sm={12} md={6}>
           <img
             src={eventData?.imageURL ?? "/beigeSquare.png"}
             style={{
@@ -68,7 +68,7 @@ const Event: NextPage<Props> = ({ classes }) => {
             alt={"Image for " + eventData?.Title}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item sm={12} md={6}>
           <Grid container direction="column" spacing={6}>
             <Grid item>
               <Grid container direction="row" spacing={10}>
@@ -113,7 +113,7 @@ const Event: NextPage<Props> = ({ classes }) => {
       <Divider></Divider>
 
       <Grid container spacing={6} style={{ marginTop:"2em" }}>
-        <Grid item xs={6}>
+        <Grid item sm={12} md={6}>
           <Grid container direction="column" spacing={3}>
             <Grid item>
               <Typography variant="h6" style={{ fontWeight: 600 }}>Project Description</Typography>
@@ -129,7 +129,7 @@ const Event: NextPage<Props> = ({ classes }) => {
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item sm={12} md={6}>
           <Grid container direction="column" spacing={3}>
             <Grid item>
               <Typography variant="h6" style={{ fontWeight: 600 }}>Tips and Reminders</Typography>
@@ -155,6 +155,7 @@ const styles = createStyles({
     marginLeft: "auto",
     marginRight: "auto",
     maxWidth: 1500,
+    marginBottom: 300,
     width: "90%",
     paddingTop: "2em",
     paddingBottom: "5em",
