@@ -114,7 +114,7 @@ async function addOrUpdateEvent(
       document = firebaseAdmin.firestore().collection(event.Location).doc();
       body["id"] = document.id;
       console.log(body);
-      document.set(body)
+      await document.set(body)
       .then(() => {
           console.log("Document successfully written!");
       })
@@ -128,7 +128,7 @@ async function addOrUpdateEvent(
         .collection("cache")
         .doc(event.Location);
 
-      let organizations = document.get().then((snapshot) => {
+      let organizations = await document.get().then((snapshot) => {
         const data = snapshot.data();
       });
       if (!Object.keys(organizations).includes(event.Organization)) {
@@ -139,7 +139,7 @@ async function addOrUpdateEvent(
       return body;
     }
   } catch (err) {
-    console.log("error error3");
+    console.log("error error3", err);
     throw new Error("Error from change:" + err);
   }
 }
