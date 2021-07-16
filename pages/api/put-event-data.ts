@@ -128,9 +128,16 @@ async function addOrUpdateEvent(
         .collection("cache")
         .doc(event.Location);
 
-      let organizations = await document.get().then((snapshot) => {
-        const data = snapshot.data();
-      });
+      let organizations = await document.get();
+      
+      // organizations = organizations.then((snapshot) => {
+      //   return snapshot.data();
+      // });
+
+      organizations = organizations.data();
+
+      console.log(organizations);
+
       if (!Object.keys(organizations).includes(event.Organization)) {
         let key = event.Organization;
         let res = { [key]: true };
