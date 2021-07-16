@@ -53,7 +53,7 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
           eventData,
           document
         );
-        resolve.status(200).send("Success:" + res);
+        resolve.status(200).send("Success:" + JSON.stringify(res));
       } catch (err) {
         resolve.status(400).send("Bad request: " + err);
       }
@@ -114,7 +114,13 @@ async function addOrUpdateEvent(
       document = firebaseAdmin.firestore().collection(event.Location).doc();
       body["id"] = document.id;
       console.log(body);
-      document.set(body);
+      document.set(body)
+      .then(() => {
+          console.log("Document successfully written!");
+      })
+      .catch((error) => {
+          console.error("Error writing document: ", error);
+      });
 
       // check if this event is part of a new organization not existing in current cache of orgs.
       document = firebaseAdmin
