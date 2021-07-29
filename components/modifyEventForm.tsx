@@ -478,7 +478,7 @@ export const CollectionsPage = (props) => {
       EndDate: endTime,
       Timezone: "GMT",
     };
-    let rec: string[] = [];
+    let rec: string[] | null = [];
     if (values.recurrences) {
       for (let i of values.recurrences) {
           if (i.recEndDate) {
@@ -537,8 +537,10 @@ export const CollectionsPage = (props) => {
         firestoreEvent[element] = values.Location[2];
       }
       if (element == "recurrences") {
-        firestoreEvent[element] = recReadable;
-        firestoreEvent["recurrences original"] = rec;
+        if (values.recurrences) {
+          firestoreEvent[element] = recReadable;
+          firestoreEvent["recurrences original"] = rec;
+        }
       }
     });
     
