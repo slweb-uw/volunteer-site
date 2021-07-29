@@ -479,25 +479,27 @@ export const CollectionsPage = (props) => {
       Timezone: "GMT",
     };
     let rec: string[] = [];
-    for (let i of values.recurrences) {
-        if (i.recEndDate) {
-            switch(i.tabNum) {
-                case "1":
-                    rec.push(`RRULE:FREQ=DAILY;INTERVAL=${i.interval};UNTIL=${i.recEndDate}`);
-                    break;
-                case "2":
-                    rec.push(`RRULE:FREQ=WEEKLY;BYDAY=${i.weekday};UNTIL=${i.recEndDate}`);
-                    break;
-                case "3":
-                    rec.push(`RRULE:FREQ=MONTHLY;BYMONTHDAY=${i.monthday};UNTIL=${i.recEndDate}`);
-                    break;
-                case "4":
-                    rec.push(`RRULE:FREQ=YEARLY;BYMONTH=${i.month};BYMONTHDAY=${i.monthday};UNTIL=${i.recEndDate}`);
-                    break;
-                default:
-                    break;
-            }
-        }
+    if (values.recurrences) {
+      for (let i of values.recurrences) {
+          if (i.recEndDate) {
+              switch(i.tabNum) {
+                  case "1":
+                      rec.push(`RRULE:FREQ=DAILY;INTERVAL=${i.interval};UNTIL=${i.recEndDate}`);
+                      break;
+                  case "2":
+                      rec.push(`RRULE:FREQ=WEEKLY;BYDAY=${i.weekday};UNTIL=${i.recEndDate}`);
+                      break;
+                  case "3":
+                      rec.push(`RRULE:FREQ=MONTHLY;BYMONTHDAY=${i.monthday};UNTIL=${i.recEndDate}`);
+                      break;
+                  case "4":
+                      rec.push(`RRULE:FREQ=YEARLY;BYMONTH=${i.month};BYMONTHDAY=${i.monthday};UNTIL=${i.recEndDate}`);
+                      break;
+                  default:
+                      break;
+              }
+          }
+      }
     }
     calEvent.Recurrence = rec;
     let recReadable: string[] = [];
