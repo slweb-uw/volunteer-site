@@ -115,12 +115,6 @@ async function addOrUpdateEvent(
       body["id"] = document.id;
       console.log(body);
       await document.set(body)
-      .then(() => {
-          console.log("Document successfully written!");
-      })
-      .catch((error) => {
-          console.error("Error writing document: ", error);
-      });
 
       // check if this event is part of a new organization not existing in current cache of orgs.
       document = firebaseAdmin
