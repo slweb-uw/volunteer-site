@@ -141,7 +141,7 @@ async function addOrUpdateEvent(
       if (!Object.keys(organizations).includes(event.Organization)) {
         let key = event.Organization;
         let res = { [key]: true };
-        document.set(res, { merge: true });
+        await document.set(res, { merge: true });
       }
       return body;
     }
