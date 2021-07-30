@@ -104,7 +104,7 @@ async function addOrUpdateEvent(
   try {
     const body = createRequestBody(event, update);
     if (update && updateEventId) {
-      document.update({ ...body });
+      await document.update({ ...body });
       return body;
     } else {
       // const res = await calendar.events.insert({
@@ -128,7 +128,7 @@ async function addOrUpdateEvent(
       //   return snapshot.data();
       // });
 
-      organizations = organizations.data();
+      organizations = await organizations.data();
 
       console.log(organizations);
 
