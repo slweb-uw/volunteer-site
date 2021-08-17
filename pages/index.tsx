@@ -122,6 +122,22 @@ const App: React.FC<{}> = () => {
               textAlign: "center",
             }}
           >
+            <Link href="/location/Montana">
+              <div style={{ cursor: "pointer" }}>
+                <img src="/Montana.png" />
+                <Typography>Montana</Typography>
+              </div>
+            </Link>
+          </div>
+        </Grid>
+        <Grid item xs={12} sm={4} lg>
+          <div
+            style={{
+              marginLeft: "auto",
+              marginRight: "auto",
+              textAlign: "center",
+            }}
+          >
             {/* Idaho wants to use own website, but card should look the same */}
             <a
               href="https://idahowwami.school.blog/"
