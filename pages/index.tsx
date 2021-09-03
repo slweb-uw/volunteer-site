@@ -22,7 +22,7 @@ const App: React.FC<{}> = () => {
       <div style={{ textAlign: "center", marginBottom: "7em" }}>
         <Typography variant="h4" gutterBottom style={{ color: "#4B2E83" }}>
           {
-            "Welcome to Service Learning at the UW School of Medicine/WWAMI & UW Health Sciences"
+            "Welcome to Service Learning at the UW School of Medicine (WWAMI) & UW Health Sciences"
           }
         </Typography>
         <Typography
@@ -157,7 +157,7 @@ const App: React.FC<{}> = () => {
           verticalAlign: "middle",
         }}
       >
-        <Grid container spacing={4}>
+        <Grid container spacing={2}>
           <Grid item xs={12} md={6} lg={4}>
             <div
               style={{
@@ -168,10 +168,12 @@ const App: React.FC<{}> = () => {
             >
               <img
                 style={{
+                  marginLeft: 10,
                   width: "80%",
+                  borderRadius: 10,
                 }}
-                src="/serveWithUs.png"
-                alt="doctor caring for mom with child"
+                src="/serveWithUs.jpg"
+                alt="group of medical volunteers standing together"
               />
             </div>
           </Grid>
@@ -194,6 +196,35 @@ const App: React.FC<{}> = () => {
                 are very flexible and try to make it easy to work around busy
                 schedules. There is no required hourly commitment. Simply sign
                 up when you have the time!
+              </Typography>
+            </div>
+          </Grid>
+        </Grid>
+      </div>
+      <div
+        style={{
+          paddingTop: "5em",
+          paddingBottom: "5em",
+          verticalAlign: "middle",
+        }}
+      >
+        <Grid container spacing={4}>
+          <Grid item>
+            <div
+              style={{
+                width: "80%",
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+            >
+              <Typography gutterBottom variant="h4">
+                About Us
+              </Typography>
+              <Typography>
+                The UW School of Medicine and other Health Sciences Schools
+                strive to enrich student education by facilitating service
+                opportunities where students can hone their skills while
+                addressing the health needs of our underserved communities.
               </Typography>
             </div>
           </Grid>

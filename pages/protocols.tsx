@@ -109,6 +109,12 @@ const Protocols: NextPage<Props> = ({ classes }) => {
                 Screen and Refer information for preceptors (SHIFA)
               </a>
             </Typography>
+
+            <Typography variant="h6" className={classes.header}>
+              <a href="https://drive.google.com/drive/folders/1g0S7HfB5-mOYXNh0Ph4gtJYbQ4t6--Nx?usp=sharing">
+                Diabetes Protocol (UGM)
+              </a>
+            </Typography>
           </div>
         </Grid>
         <Grid item xs={12} md={6} lg={4}>
@@ -123,8 +129,8 @@ const Protocols: NextPage<Props> = ({ classes }) => {
               style={{
                 width: "25rem",
               }}
-              src="/protocols.png"
-              alt="a group of volunteers"
+              src="/protocols.jpeg"
+              alt="a masked vaccine volunteer holding a green sign"
             />
           </div>
         </Grid>

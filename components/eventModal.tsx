@@ -16,11 +16,10 @@ import Typography from "@material-ui/core/Typography";
 import { Grid } from "@material-ui/core";
 import Link from "next/link";
 
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
 import ModifyEventForm from "components/modifyEventForm";
 import { useAuth } from "auth";
-
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -84,7 +83,7 @@ export default function EventModal(props: {
 
   const { location } = router.query; // string of current location (ex: "Seattle")
 
-  let eventLink = "/"
+  let eventLink = "/";
   if (event) {
     eventLink = "/" + location + "/" + event.id;
   }
@@ -139,16 +138,18 @@ export default function EventModal(props: {
               </div>
             )}
             <div style={{ marginTop: "2em" }}>
-              <Link href={eventLink}>
-                <Button
-                  autoFocus
-                  onClick={handleClose}
-                  color="secondary"
-                  variant="contained"
-                  style={{ marginRight: "1em" }}
-                >
-                  Learn more
-                </Button>
+              <Link passHref href={eventLink}>
+                <a target="_blank">
+                  <Button
+                    autoFocus
+                    onClick={handleClose}
+                    color="secondary"
+                    variant="contained"
+                    style={{ marginRight: "1em" }}
+                  >
+                    Learn more
+                  </Button>
+                </a>
               </Link>
               {event?.["Sign-up Link"] && (
                 <a
@@ -166,12 +167,15 @@ export default function EventModal(props: {
                 </a>
               )}
               {user &&
-              (user.email === "slweb@uw.edu" ||
-                user.email === "slwebuw@gmail.com") && (
-                <div style={{ paddingBottom: "2em" }}>
-                  <ModifyEventForm eventData={event} handleClose={handleClose} />
-                </div>
-              )}
+                (user.email === "slweb@uw.edu" ||
+                  user.email === "slwebuw@gmail.com") && (
+                  <div style={{ paddingBottom: "2em" }}>
+                    <ModifyEventForm
+                      eventData={event}
+                      handleClose={handleClose}
+                    />
+                  </div>
+                )}
             </div>
           </Grid>
         </Grid>
