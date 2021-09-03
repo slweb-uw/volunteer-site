@@ -127,6 +127,7 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
       // newEvents.push(document.data() as EventData);
       newEvents.push(eventDoc);
     });
+    newEvents.sort((a, b) => a.Title.localeCompare(b.Title))
     setCursor(next.docs[next.docs.length - 1]);
     setEvents(newEvents);
     setShowLoadButton(newEvents.length === 10);
