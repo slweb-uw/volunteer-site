@@ -3,11 +3,8 @@ import { Typography, Grid } from "@material-ui/core";
 import Link from "next/link";
 
 import { firebaseClient } from "firebaseClient";
-import EventForm from "components/eventForm";
 
 const App: React.FC<{}> = () => {
-  // Page where customers can check their order status
-
   useEffect(() => {
     firebaseClient.analytics().logEvent("home_page_visit");
   }, []);

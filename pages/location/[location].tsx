@@ -31,9 +31,8 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   const { location } = router.query; // string of current location (ex: "Seattle")
   const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
   const [events, setEvents] = useState<EventData[]>([]); // list of loaded events
-  const [cursor, setCursor] = useState<
-    firebaseClient.firestore.QueryDocumentSnapshot
-  >(); // cursor to last document loaded
+  const [cursor, setCursor] =
+    useState<firebaseClient.firestore.QueryDocumentSnapshot>(); // cursor to last document loaded
   const [filter, setFilter] = useState<string | undefined>();
   const [showLoadButton, setShowLoadButton] = useState<boolean>(true);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -127,7 +126,7 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
       // newEvents.push(document.data() as EventData);
       newEvents.push(eventDoc);
     });
-    newEvents.sort((a, b) => a.Title.localeCompare(b.Title))
+    newEvents.sort((a, b) => a.Title.localeCompare(b.Title));
     setCursor(next.docs[next.docs.length - 1]);
     setEvents(newEvents);
     setShowLoadButton(newEvents.length === 10);
@@ -192,7 +191,8 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
             <MenuItem value={"Title"}>Title</MenuItem>
           </Select>
         </span>
-        <div style={{ textAlign: "right" }}>
+        {/* TODO: Uncomment when calendar is fixed */}
+        {/* <div style={{ textAlign: "right" }}>
           <Button
             variant="contained"
             color="primary"
@@ -206,7 +206,7 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
               </Link>
             </Typography>
           </Button>
-        </div>
+        </div> */}
       </div>
 
       <Typography

@@ -48,64 +48,67 @@ const Protocols: NextPage<Props> = ({ classes }) => {
               For life-threatening illness or injury, call 911 or go to your
               nearest emergency room location.
             </Typography>
-
-            <a href="https://drive.google.com/file/d/19YXIakAij0IOf0yyEiP4ZjNPFJr-CLUc/view?usp=sharing">
-              <Typography variant="h6" className={classes.header}>
-                UWSOM Bloodborne Pathogen Protocol
-              </Typography>
-            </a>
-
-            <a href="https://catalyst.uw.edu/webq/survey/clarkel/408070">
-              <Typography variant="h6" className={classes.header}>
-                Incident Report Form
-              </Typography>
-            </a>
-
-            <a href="https://docs.google.com/document/d/1mYrFFx-jlq9FdnKvKAvh3cx2XIeKSAVLfgnrOLi04E0/edit?usp=sharing">
-              <Typography variant="h6" className={classes.header}>
-                Supervision Guidelines
-              </Typography>
-            </a>
-
             <Typography variant="h6" className={classes.header}>
-              Standards of Practice
+              <a href="https://drive.google.com/file/d/19YXIakAij0IOf0yyEiP4ZjNPFJr-CLUc/view?usp=sharing">
+                UWSOM Bloodborne Pathogen Protocol
+              </a>
             </Typography>
 
-            <a href="https://drive.google.com/file/d/1ArIy-cOJ2d3keqkjyUxP-IBE3Y1D4q3z/view?usp=sharing">
-              <Typography className={classes.header}>
+            <Typography variant="h6" className={classes.header}>
+              <a href="https://catalyst.uw.edu/webq/survey/clarkel/408070">
+                Incident Report Form
+              </a>
+            </Typography>
+
+            <Typography variant="h6" className={classes.header}>
+              <a href="https://docs.google.com/document/d/1mYrFFx-jlq9FdnKvKAvh3cx2XIeKSAVLfgnrOLi04E0/edit?usp=sharing">
+                Supervision Guidelines
+              </a>
+            </Typography>
+
+            <Typography
+              variant="h6"
+              className={classes.header}
+              style={{ marginTop: "1em" }}
+            >
+              <u>Standards of Practice</u>
+            </Typography>
+
+            <Typography variant="h6" className={classes.header}>
+              <a href="https://drive.google.com/file/d/1ArIy-cOJ2d3keqkjyUxP-IBE3Y1D4q3z/view?usp=sharing">
                 Footcare Manual (CHAP)
-              </Typography>
-            </a>
+              </a>
+            </Typography>
 
-            <a href="https://drive.google.com/file/d/1W5g2tey9tPEMCyc5VMb-AsW3ITCqnWSz/view?usp=sharing">
-              <Typography className={classes.header}>
+            <Typography variant="h6" className={classes.header}>
+              <a href="https://drive.google.com/file/d/1W5g2tey9tPEMCyc5VMb-AsW3ITCqnWSz/view?usp=sharing">
                 General Clinical Protocols (SHIFA)
-              </Typography>
-            </a>
+              </a>
+            </Typography>
 
-            <a href="https://drive.google.com/file/d/1ZTbz-diYHWxnEpEhEu57fLeCykdBD6UW/view?usp=sharing">
-              <Typography className={classes.header}>
+            <Typography variant="h6" className={classes.header}>
+              <a href="https://drive.google.com/file/d/1ZTbz-diYHWxnEpEhEu57fLeCykdBD6UW/view?usp=sharing">
                 Blood Glucose Guide (SHIFA)
-              </Typography>
-            </a>
+              </a>
+            </Typography>
 
-            <a href="http://servicelearning.washington.edu/resources">
-              <Typography className={classes.header}>
+            <Typography variant="h6" className={classes.header}>
+              <a href="http://servicelearning.washington.edu/resources">
                 Blood Glucose Testing Protocol (SHIFA)
-              </Typography>
-            </a>
+              </a>
+            </Typography>
 
-            <a href="https://drive.google.com/file/d/1__J_8Kc7P2Ll0WcVlJoFUECZ7lzDTFAp/view?usp=sharing">
-              <Typography className={classes.header}>
+            <Typography variant="h6" className={classes.header}>
+              <a href="https://drive.google.com/file/d/1__J_8Kc7P2Ll0WcVlJoFUECZ7lzDTFAp/view?usp=sharing">
                 Blood Pressure Volunteer Information (SHIFA)
-              </Typography>
-            </a>
+              </a>
+            </Typography>
 
-            <a href="https://drive.google.com/file/d/19mAxA_9UNJ8whBkpRXdHlk26SmM3hnDU/view?usp=sharing">
-              <Typography className={classes.header}>
+            <Typography variant="h6" className={classes.header}>
+              <a href="https://drive.google.com/file/d/19mAxA_9UNJ8whBkpRXdHlk26SmM3hnDU/view?usp=sharing">
                 Screen and Refer information for preceptors (SHIFA)
-              </Typography>
-            </a>
+              </a>
+            </Typography>
           </div>
         </Grid>
         <Grid item xs={12} md={6} lg={4}>
