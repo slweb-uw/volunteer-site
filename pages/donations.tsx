@@ -101,7 +101,7 @@ const Donations: NextPage<Props> = ({ classes }) => {
             title="Health Sciences Mobile Health Van"
             description="The Mobile Health Outreach Van is a collaborative effort by students, staff and faculty from across the UW health sciences (medicine, social work, public health, pharmacy, nursing, and dentistry)."
             donate="https://online.gifts.washington.edu/peer2peer/campaign/b2a0bc42-b48b-49c7-8615-4a6fc1ad53c2"
-            img="/mobile-van.png"
+            img="/mobile-van.jpeg"
           />
         </Grid>
         <Grid item xs={12} lg={6}>
@@ -109,7 +109,7 @@ const Donations: NextPage<Props> = ({ classes }) => {
             title="The Student Health Initiative For Access (SHIFA)"
             description="The Student Health Initiative for Access (SHIFA) organization is a product of a group vision to create a primary care student-run clinic serving vulnerable populations in the King County area."
             donate="https://online.gifts.washington.edu/peer2peer/campaign/5c9028f3-582b-449d-ba71-91e56490e82f"
-            img="/shifa.png"
+            img="/shifa.jpg"
           />
         </Grid>
         <Grid item xs={12} lg={6}>
