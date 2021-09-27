@@ -4,7 +4,7 @@ WWAMI volunteer catalog and sign-ups. Made with NextJS (React)
 
 Development Requirements: Node
 
-Set up: Run `npm install` or `yarn`
+Set up: Run `yarn`
 
 Development: Run `yarn dev` in the root
 
