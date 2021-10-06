@@ -20,7 +20,7 @@ const Protocols: NextPage<Props> = ({ classes }) => {
     <div className={classes.page}>
       <CssBaseline />
       <Typography
-        variant="h4"
+        variant='h4'
         style={{ fontWeight: 600, paddingBottom: "1em" }}
       >
         Protocols
@@ -34,84 +34,83 @@ const Protocols: NextPage<Props> = ({ classes }) => {
             }}
           >
             <Typography style={{ fontWeight: 600 }}>
-              COVID-19 Update: For information see Service Learning COVID
-              Guidelines{" "}
-              <a href="https://education.uwmedicine.org/covid-19-service-learning/">
+              COVID-19: For information see Service Learning COVID Guidelines{" "}
+              <a href='https://education.uwmedicine.org/covid-19-service-learning/'>
                 here.
               </a>
             </Typography>
 
-            <Typography variant="h6" className={classes.header}>
+            <Typography variant='h6' className={classes.header}>
               Urgent Care
             </Typography>
             <Typography>
               For life-threatening illness or injury, call 911 or go to your
               nearest emergency room location.
             </Typography>
-            <Typography variant="h6" className={classes.header}>
-              <a href="https://drive.google.com/file/d/19YXIakAij0IOf0yyEiP4ZjNPFJr-CLUc/view?usp=sharing">
+            <Typography variant='h6' className={classes.header}>
+              <a href='https://drive.google.com/file/d/19YXIakAij0IOf0yyEiP4ZjNPFJr-CLUc/view?usp=sharing'>
                 UWSOM Bloodborne Pathogen Protocol
               </a>
             </Typography>
 
-            <Typography variant="h6" className={classes.header}>
-              <a href="https://catalyst.uw.edu/webq/survey/clarkel/408070">
+            <Typography variant='h6' className={classes.header}>
+              <a href='https://catalyst.uw.edu/webq/survey/clarkel/408070'>
                 Incident Report Form
               </a>
             </Typography>
 
-            <Typography variant="h6" className={classes.header}>
-              <a href="https://docs.google.com/document/d/1mYrFFx-jlq9FdnKvKAvh3cx2XIeKSAVLfgnrOLi04E0/edit?usp=sharing">
+            <Typography variant='h6' className={classes.header}>
+              <a href='https://docs.google.com/document/d/1mYrFFx-jlq9FdnKvKAvh3cx2XIeKSAVLfgnrOLi04E0/edit?usp=sharing'>
                 Supervision Guidelines
               </a>
             </Typography>
 
             <Typography
-              variant="h6"
+              variant='h6'
               className={classes.header}
               style={{ marginTop: "1em" }}
             >
-              <u>Standards of Practice</u>
+              Standards of Practice
             </Typography>
 
-            <Typography variant="h6" className={classes.header}>
-              <a href="https://drive.google.com/file/d/1ArIy-cOJ2d3keqkjyUxP-IBE3Y1D4q3z/view?usp=sharing">
+            <Typography variant='h6' className={classes.header}>
+              <a href='https://drive.google.com/file/d/1ArIy-cOJ2d3keqkjyUxP-IBE3Y1D4q3z/view?usp=sharing'>
                 Footcare Manual (CHAP)
               </a>
             </Typography>
 
-            <Typography variant="h6" className={classes.header}>
-              <a href="https://drive.google.com/file/d/1W5g2tey9tPEMCyc5VMb-AsW3ITCqnWSz/view?usp=sharing">
+            <Typography variant='h6' className={classes.header}>
+              <a href='https://drive.google.com/file/d/1W5g2tey9tPEMCyc5VMb-AsW3ITCqnWSz/view?usp=sharing'>
                 General Clinical Protocols (SHIFA)
               </a>
             </Typography>
 
-            <Typography variant="h6" className={classes.header}>
-              <a href="https://drive.google.com/file/d/1ZTbz-diYHWxnEpEhEu57fLeCykdBD6UW/view?usp=sharing">
+            <Typography variant='h6' className={classes.header}>
+              <a href='https://drive.google.com/file/d/1ZTbz-diYHWxnEpEhEu57fLeCykdBD6UW/view?usp=sharing'>
                 Blood Glucose Guide (SHIFA)
               </a>
             </Typography>
 
-            <Typography variant="h6" className={classes.header}>
-              <a href="http://servicelearning.washington.edu/resources">
+            <Typography variant='h6' className={classes.header}>
+              <a href='http://servicelearning.washington.edu/resources'>
                 Blood Glucose Testing Protocol (SHIFA)
               </a>
             </Typography>
 
-            <Typography variant="h6" className={classes.header}>
-              <a href="https://drive.google.com/file/d/1__J_8Kc7P2Ll0WcVlJoFUECZ7lzDTFAp/view?usp=sharing">
+            <Typography variant='h6' className={classes.header}>
+              <a href='https://drive.google.com/file/d/1__J_8Kc7P2Ll0WcVlJoFUECZ7lzDTFAp/view?usp=sharing'>
                 Blood Pressure Volunteer Information (SHIFA)
               </a>
             </Typography>
 
-            <Typography variant="h6" className={classes.header}>
-              <a href="https://drive.google.com/file/d/19mAxA_9UNJ8whBkpRXdHlk26SmM3hnDU/view?usp=sharing">
+            <Typography variant='h6' className={classes.header}>
+              <a href='https://drive.google.com/file/d/19mAxA_9UNJ8whBkpRXdHlk26SmM3hnDU/view?usp=sharing'>
                 Screen and Refer information for preceptors (SHIFA)
               </a>
             </Typography>
 
-            <Typography variant="h6" className={classes.header}>
-              <a href="https://drive.google.com/drive/folders/1g0S7HfB5-mOYXNh0Ph4gtJYbQ4t6--Nx?usp=sharing">
+            <Typography variant='h6' className={classes.header}>
+              <a href='https://drive.google.com/drive/folders/1g0S7HfB5-mOYXNh0Ph4gtJYbQ4t6--Nx?usp=sharing'>
                 Diabetes Protocol (UGM)
               </a>
             </Typography>
@@ -129,8 +128,8 @@ const Protocols: NextPage<Props> = ({ classes }) => {
               style={{
                 width: "25rem",
               }}
-              src="/protocols.jpeg"
-              alt="a masked vaccine volunteer holding a green sign"
+              src='/protocols.jpeg'
+              alt='a masked vaccine volunteer holding a green sign'
             />
           </div>
         </Grid>
