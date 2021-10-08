@@ -35,7 +35,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
         variant="h4"
         style={{ fontWeight: 600, paddingBottom: "0.5em" }}
       >
-        Resource Links
+        Links to additional Service Learning resources
       </Typography>
 
       <Typography
@@ -48,34 +48,36 @@ const Resources: NextPage<Props> = ({ classes }) => {
       <Typography className={classes.header}>
         <b>School of Medicine</b>
       </Typography>
-
-      <Typography className={classes.header}>
+      <Typography className={classes.header} style={{ marginLeft: 50 }}>
         -{" "}
         <Link
           className={classes.links}
           href="https://www.uwmedicine.org/school-of-medicine/md-program/service-learning"
+          target="_blank"
         >
           School of Medicine Service Learning
         </Link>{" "}
         (External)
       </Typography>
 
-      <Typography className={classes.header}>
+      <Typography className={classes.header} style={{ marginLeft: 50 }}>
         -{" "}
         <Link
           className={classes.links}
           href="https://canvas.uw.edu/courses/1176739"
+          target="_blank"
         >
           School of Medicine Service Learning Canvas Site
         </Link>{" "}
         (Internal - logistics site)
       </Typography>
 
-      <Typography className={classes.header}>
+      <Typography className={classes.header} style={{ marginLeft: 50 }}>
         -{" "}
         <Link
           className={classes.links}
           href="https://education.uwmedicine.org/volunteer-opportunities-2-2/"
+          target="_blank"
         >
           School of Medicine Intranet/Service Learning Page
         </Link>{" "}
@@ -86,11 +88,12 @@ const Resources: NextPage<Props> = ({ classes }) => {
         <b>School of Dentistry</b>
       </Typography>
 
-      <Typography className={classes.header}>
+      <Typography className={classes.header} style={{ marginLeft: 50 }}>
         -{" "}
         <Link
           className={classes.links}
           href="https://dental.washington.edu/oepd/volunteer-opportunities/"
+          target="_blank"
         >
           Service Learning Page
         </Link>{" "}
@@ -100,11 +103,12 @@ const Resources: NextPage<Props> = ({ classes }) => {
         <b>School of Pharmacy</b>
       </Typography>
 
-      <Typography className={classes.header}>
+      <Typography className={classes.header} style={{ marginLeft: 50 }}>
         -{" "}
         <Link
           className={classes.links}
           href="https://sop.washington.edu/pharmd/student-resources/student-organizations-and-activities/student-organizations-committees/"
+          target="_blank"
         >
           Service Learning Page
         </Link>{" "}
@@ -114,11 +118,12 @@ const Resources: NextPage<Props> = ({ classes }) => {
         <b>School of Social Work</b>
       </Typography>
 
-      <Typography className={classes.header}>
+      <Typography className={classes.header} style={{ marginLeft: 50 }}>
         -{" "}
         <Link
           className={classes.links}
           href="https://canvas.uw.edu/courses/1369328/pages/ssw-student-groups"
+          target="_blank"
         >
           Service Learning Page
         </Link>{" "}
@@ -128,11 +133,12 @@ const Resources: NextPage<Props> = ({ classes }) => {
         <b>School of Nursing</b>
       </Typography>
 
-      <Typography className={classes.header}>
+      <Typography className={classes.header} style={{ marginLeft: 50 }}>
         -{" "}
         <Link
           className={classes.links}
           href="https://nursing.uw.edu/community/"
+          target="_blank"
         >
           Service Learning Page
         </Link>{" "}
@@ -142,11 +148,12 @@ const Resources: NextPage<Props> = ({ classes }) => {
         <b>Interprofessional</b>
       </Typography>
 
-      <Typography className={classes.header}>
+      <Typography className={classes.header} style={{ marginLeft: 50 }}>
         -{" "}
         <Link
           className={classes.links}
           href="https://collaborate.uw.edu/in-the-community/"
+          target="_blank"
         >
           Center for Health Sciences Interprofessional Education
         </Link>{" "}
@@ -170,6 +177,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://www.cssalaska.org/our-programs/brother-francis-shelter/"
                 className={classes.resource}
+                target="_blank"
               >
                 Brother Francis Shelter
               </a>{" "}
@@ -179,6 +187,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://www.alaskanaids.org/"
                 className={classes.resource}
+                target="_blank"
               >
                 Four A’s. (Alaskan AIDS Assistance Association)
               </a>{" "}
@@ -188,6 +197,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://www.facebook.com/events/egan-center/anchorage-project-homeless-connect/437372703642603/"
                 className={classes.resource}
+                target="_blank"
               >
                 Project Homelessness Connect
               </a>{" "}
@@ -214,13 +224,18 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://www.cap4action.org/aaa/"
                 className={classes.resource}
+                target="_blank"
               >
                 Area Center on Aging
               </a>{" "}
               - https://www.cap4action.org/aaa/
             </Typography>
             <Typography>
-              <a href="https://gritman.org/" className={classes.resource}>
+              <a
+                href="https://gritman.org/"
+                className={classes.resource}
+                target="_blank"
+              >
                 Gritman Medical Center
               </a>{" "}
               - https://gritman.org/
@@ -229,6 +244,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://friendshipclinic.com/"
                 className={classes.resource}
+                target="_blank"
               >
                 Marie Blanchard Friendship Clinic
               </a>{" "}
@@ -238,6 +254,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://www.facebook.com/palousefreeclinic/"
                 className={classes.resource}
+                target="_blank"
               >
                 Palouse Free Clinic
               </a>{" "}
@@ -247,6 +264,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://www.srccfreeclinic.org/"
                 className={classes.resource}
+                target="_blank"
               >
                 Snake River Community Clinic
               </a>{" "}
@@ -272,13 +290,18 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://www.aidsoutreachmt.org/"
                 className={classes.resource}
+                target="_blank"
               >
                 AIDS Outreach
               </a>{" "}
               - https://www.aidsoutreachmt.org/
             </Typography>
             <Typography>
-              <a href="https://chphealthmt.org/" className={classes.resource}>
+              <a
+                href="https://chphealthmt.org/"
+                className={classes.resource}
+                target="_blank"
+              >
                 CHP (Community Health Partners)
               </a>{" "}
               - https://chphealthmt.org/
@@ -287,13 +310,18 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://www.hopamountain.org/"
                 className={classes.resource}
+                target="_blank"
               >
                 Hopa Mountain
               </a>{" "}
               - https://www.hopamountain.org/
             </Typography>
             <Typography>
-              <a href="https://thehrdc.org/" className={classes.resource}>
+              <a
+                href="https://thehrdc.org/"
+                className={classes.resource}
+                target="_blank"
+              >
                 HRDC (Human Resource Development Council)
               </a>{" "}
               - https://thehrdc.org/
@@ -316,34 +344,51 @@ const Resources: NextPage<Props> = ({ classes }) => {
           <div>
             <Typography>
               <a
-                href="https://www.transitionalhousing.org/li/aloha_inn_transitional_housing_98109"
+                href="https://www.co.washington.or.us/Housing/SupportiveHousingServices/Shelters/aloha-inn-permanent-supportive-housing.cfm"
                 className={classes.resource}
+                target="_blank"
               >
                 Aloha Inn
               </a>{" "}
               -
-              https://www.transitionalhousing.org/li/aloha_inn_transitional_housing_98109
+              https://www.co.washington.or.us/Housing/SupportiveHousingServices/Shelters/aloha-inn-permanent-supportive-housing.cfm
             </Typography>
             <Typography>
-              <a href="https://casa-latina.org/" className={classes.resource}>
+              <a
+                href="https://casa-latina.org/"
+                className={classes.resource}
+                target="_blank"
+              >
                 Casa Latina
               </a>{" "}
               - https://casa-latina.org/
             </Typography>
             <Typography>
-              <a href="https://www.desc.org/" className={classes.resource}>
+              <a
+                href="https://www.desc.org/"
+                className={classes.resource}
+                target="_blank"
+              >
                 Downtown Emergency Service Center (DESC)
               </a>{" "}
               - https://www.desc.org/
             </Typography>
             <Typography>
-              <a href="https://eghseattle.org/" className={classes.resource}>
+              <a
+                href="https://eghseattle.org/"
+                className={classes.resource}
+                target="_blank"
+              >
                 Elizabeth Gregory Home
               </a>{" "}
               - https://eghseattle.org/
             </Typography>
             <Typography>
-              <a href="https://www.ichs.com/" className={classes.resource}>
+              <a
+                href="https://www.ichs.com/"
+                className={classes.resource}
+                target="_blank"
+              >
                 ICHS (International Community Health Services)
               </a>{" "}
               - https://www.ichs.com/
@@ -352,6 +397,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://lihi.org/tiny-houses/"
                 className={classes.resource}
+                target="_blank"
               >
                 Low Income Housing Institute (LIHI) Tiny Houses
               </a>{" "}
@@ -361,6 +407,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://www.mercyhousing.org/northwest/"
                 className={classes.resource}
+                target="_blank"
               >
                 Mercy Housing Northwest
               </a>{" "}
@@ -370,6 +417,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://www.uwmedicine.org/locations/harborview-medical-center"
                 className={classes.resource}
+                target="_blank"
               >
                 Harborview Medical Center
               </a>{" "}
@@ -379,6 +427,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://help.rescue.org/donate?ms=gs_brand_best_charity_es_fy18&initialms=gs_brand_best_charity_es_fy18&gclid=CjwKCAjw-e2EBhAhEiwAJI5jgwiwHEGgUTQKXzfSXc32Wq9klMzmC4Imn23JcSm6I1z2h7HbgYxGWBoCQuMQAvD_BwE"
                 className={classes.resource}
+                target="_blank"
               >
                 International Resuce Committee
               </a>{" "}
@@ -386,7 +435,11 @@ const Resources: NextPage<Props> = ({ classes }) => {
               https://help.rescue.org/donate?ms=gs_brand_best_charity_es_fy18&initialms=gs_brand_best_charity_es_fy18&gclid=CjwKCAjw-e2EBhAhEiwAJI5jgwiwHEGgUTQKXzfSXc32Wq9klMzmC4Imn23JcSm6I1z2h7HbgYxGWBoCQuMQAvD_BwE
             </Typography>
             <Typography>
-              <a href="https://nhmin.org/" className={classes.resource}>
+              <a
+                href="https://nhmin.org/"
+                className={classes.resource}
+                target="_blank"
+              >
                 New Horizons
               </a>{" "}
               - https://nhmin.org/
@@ -395,6 +448,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://www.peerseattle.org/"
                 className={classes.resource}
+                target="_blank"
               >
                 Peer Seattle
               </a>{" "}
@@ -404,6 +458,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://www.uwmedicine.org/locations/pioneer-square"
                 className={classes.resource}
+                target="_blank"
               >
                 Pioneer Square Clinic
               </a>{" "}
@@ -413,13 +468,18 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://kingcounty.gov/depts/health.aspx"
                 className={classes.resource}
+                target="_blank"
               >
                 Public Health Seattle/King County
               </a>{" "}
               - https://kingcounty.gov/depts/health.aspx
             </Typography>
             <Typography>
-              <a href="https://rootsinfo.org/" className={classes.resource}>
+              <a
+                href="https://rootsinfo.org/"
+                className={classes.resource}
+                target="_blank"
+              >
                 ROOTS Youth Shelter
               </a>{" "}
               - https://rootsinfo.org/
@@ -428,6 +488,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="http://www.rotacarelakecity.org/"
                 className={classes.resource}
+                target="_blank"
               >
                 Rotacare Free Clinic
               </a>{" "}
@@ -437,6 +498,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://www.seamar.org/king-medical-seattle.html"
                 className={classes.resource}
+                target="_blank"
               >
                 SeaMar
               </a>{" "}
@@ -446,6 +508,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://www.seattlecca.org/?gclid=CjwKCAjw-e2EBhAhEiwAJI5jg3vYWEYCyEpmvQD6b_5W6uX4m_iH_-uNVB1_zaId9ghcdP4msAOAShoCLv8QAvD_BwE"
                 className={classes.resource}
+                target="_blank"
               >
                 Seattle Cancer Care Alliance
               </a>{" "}
@@ -456,6 +519,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://seattlecenter.org/skcclinic/"
                 className={classes.resource}
+                target="_blank"
               >
                 Seattle/King County Clinic
               </a>{" "}
@@ -465,13 +529,18 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://somalihealthboard.org/"
                 className={classes.resource}
+                target="_blank"
               >
                 Somali Health Board
               </a>{" "}
               - https://somalihealthboard.org/
             </Typography>
             <Typography>
-              <a href="https://svdpseattle.org/" className={classes.resource}>
+              <a
+                href="https://svdpseattle.org/"
+                className={classes.resource}
+                target="_blank"
+              >
                 St. Vincent de Paul
               </a>{" "}
               - https://svdpseattle.org/
@@ -480,6 +549,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://www.uwmedicine.org/"
                 className={classes.resource}
+                target="_blank"
               >
                 University of Washington Medical Center
               </a>{" "}
@@ -502,7 +572,11 @@ const Resources: NextPage<Props> = ({ classes }) => {
         <AccordionDetails>
           <div>
             <Typography>
-              <a href="https://chas.org/" className={classes.resource}>
+              <a
+                href="https://chas.org/"
+                className={classes.resource}
+                target="_blank"
+              >
                 CHAS Health
               </a>{" "}
               - https://chas.org/
@@ -511,6 +585,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://www.cceasternwa.org/house-of-charity"
                 className={classes.resource}
+                target="_blank"
               >
                 House of Charity
               </a>{" "}
@@ -520,6 +595,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="http://www.refugeeconnectionsspokane.org/store/c1/Featured_Products.html"
                 className={classes.resource}
+                target="_blank"
               >
                 Refugee Connections
               </a>{" "}
@@ -530,6 +606,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://www.rangecommunityclinic.org/"
                 className={classes.resource}
+                target="_blank"
               >
                 Range Community Health
               </a>{" "}
@@ -539,13 +616,18 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://www.spokaneschools.org/rogers"
                 className={classes.resource}
+                target="_blank"
               >
                 Rogers High School
               </a>{" "}
               - https://www.spokaneschools.org/rogers
             </Typography>
             <Typography>
-              <a href="https://srhd.org/" className={classes.resource}>
+              <a
+                href="https://srhd.org/"
+                className={classes.resource}
+                target="_blank"
+              >
                 Spokane Regional Health District
               </a>{" "}
               - https://srhd.org/
@@ -554,6 +636,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://www.facebook.com/UGMSpokane/"
                 className={classes.resource}
+                target="_blank"
               >
                 Union Gospel Mission
               </a>{" "}
@@ -579,6 +662,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://www.downtownclinic.org/"
                 className={classes.resource}
+                target="_blank"
               >
                 Downtown Clinic
               </a>{" "}
