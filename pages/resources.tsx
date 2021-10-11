@@ -18,6 +18,8 @@ import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
 import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 
+import ResourceLink from "../components/resourceLink";
+
 interface Props {
   classes?: any;
 }
@@ -48,39 +50,33 @@ const Resources: NextPage<Props> = ({ classes }) => {
       <Typography className={classes.header}>
         <b>School of Medicine</b>
       </Typography>
-      <Typography className={classes.header} style={{ marginLeft: 50 }}>
-        -{" "}
-        <Link
+      <Typography className={classes.header}>
+        <ResourceLink
           className={classes.links}
           href="https://www.uwmedicine.org/school-of-medicine/md-program/service-learning"
-          target="_blank"
         >
-          School of Medicine Service Learning
-        </Link>{" "}
+          - School of Medicine Service Learning
+        </ResourceLink>{" "}
         (External)
       </Typography>
 
-      <Typography className={classes.header} style={{ marginLeft: 50 }}>
-        -{" "}
-        <Link
+      <Typography className={classes.header}>
+        <ResourceLink
           className={classes.links}
           href="https://canvas.uw.edu/courses/1176739"
-          target="_blank"
         >
-          School of Medicine Service Learning Canvas Site
-        </Link>{" "}
+          - SOM Service Learning Canvas Site
+        </ResourceLink>{" "}
         (Internal - logistics site)
       </Typography>
 
-      <Typography className={classes.header} style={{ marginLeft: 50 }}>
-        -{" "}
-        <Link
+      <Typography className={classes.header}>
+        <ResourceLink
           className={classes.links}
           href="https://education.uwmedicine.org/volunteer-opportunities-2-2/"
-          target="_blank"
         >
-          School of Medicine Intranet/Service Learning Page
-        </Link>{" "}
+          - SOM Intranet - Service Learning page
+        </ResourceLink>{" "}
         (External)
       </Typography>
 
@@ -88,76 +84,72 @@ const Resources: NextPage<Props> = ({ classes }) => {
         <b>School of Dentistry</b>
       </Typography>
 
-      <Typography className={classes.header} style={{ marginLeft: 50 }}>
-        -{" "}
-        <Link
+      <Typography className={classes.header}>
+        <ResourceLink
           className={classes.links}
           href="https://dental.washington.edu/oepd/volunteer-opportunities/"
-          target="_blank"
         >
-          Service Learning Page
-        </Link>{" "}
+          - Service Learning Page
+        </ResourceLink>{" "}
       </Typography>
 
       <Typography className={classes.header}>
         <b>School of Pharmacy</b>
       </Typography>
 
-      <Typography className={classes.header} style={{ marginLeft: 50 }}>
-        -{" "}
-        <Link
+      <Typography className={classes.header}>
+        <ResourceLink
           className={classes.links}
           href="https://sop.washington.edu/pharmd/student-resources/student-organizations-and-activities/student-organizations-committees/"
-          target="_blank"
         >
-          Service Learning Page
-        </Link>{" "}
+          - Service Learning Page
+        </ResourceLink>{" "}
       </Typography>
 
       <Typography className={classes.header}>
         <b>School of Social Work</b>
       </Typography>
 
-      <Typography className={classes.header} style={{ marginLeft: 50 }}>
-        -{" "}
-        <Link
+      <Typography className={classes.header}>
+        <ResourceLink
           className={classes.links}
           href="https://canvas.uw.edu/courses/1369328/pages/ssw-student-groups"
-          target="_blank"
         >
-          Service Learning Page
-        </Link>{" "}
+          - Service Learning Page
+        </ResourceLink>{" "}
       </Typography>
 
       <Typography className={classes.header}>
         <b>School of Nursing</b>
       </Typography>
 
-      <Typography className={classes.header} style={{ marginLeft: 50 }}>
-        -{" "}
-        <Link
+      <Typography className={classes.header}>
+        <ResourceLink
           className={classes.links}
           href="https://nursing.uw.edu/community/"
-          target="_blank"
         >
-          Service Learning Page
-        </Link>{" "}
+          - Service Learning Page
+        </ResourceLink>{" "}
       </Typography>
 
       <Typography className={classes.header}>
         <b>Interprofessional</b>
       </Typography>
 
-      <Typography className={classes.header} style={{ marginLeft: 50 }}>
-        -{" "}
-        <Link
+      <Typography className={classes.header}>
+        <ResourceLink
           className={classes.links}
           href="https://collaborate.uw.edu/in-the-community/"
-          target="_blank"
         >
-          Center for Health Sciences Interprofessional Education
-        </Link>{" "}
+          - Center for Health Sciences Interprofessional Education
+        </ResourceLink>{" "}
         (CHSIE)
+      </Typography>
+      <Typography
+        variant="h5"
+        style={{ fontWeight: 600, paddingBottom: "0.5em", paddingTop: "0.5em" }}
+      >
+        Links to Community Partners over the 5 expandable sites
       </Typography>
 
       <Accordion
@@ -177,30 +169,27 @@ const Resources: NextPage<Props> = ({ classes }) => {
               <a
                 href="https://www.cssalaska.org/our-programs/brother-francis-shelter/"
                 className={classes.resource}
-                target="_blank"
               >
                 Brother Francis Shelter
               </a>{" "}
               - https://www.cssalaska.org/our-programs/brother-francis-shelter/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://www.alaskanaids.org/"
                 className={classes.resource}
-                target="_blank"
               >
                 Four A’s. (Alaskan AIDS Assistance Association)
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://www.alaskanaids.org/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://www.facebook.com/events/egan-center/anchorage-project-homeless-connect/437372703642603/"
                 className={classes.resource}
-                target="_blank"
               >
                 Project Homelessness Connect
-              </a>{" "}
+              </ResourceLink>{" "}
               -
               https://www.facebook.com/events/egan-center/anchorage-project-homeless-connect/437372703642603/
             </Typography>
@@ -221,53 +210,48 @@ const Resources: NextPage<Props> = ({ classes }) => {
         <AccordionDetails>
           <div>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://www.cap4action.org/aaa/"
                 className={classes.resource}
-                target="_blank"
               >
                 Area Center on Aging
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://www.cap4action.org/aaa/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://gritman.org/"
                 className={classes.resource}
-                target="_blank"
               >
                 Gritman Medical Center
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://gritman.org/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://friendshipclinic.com/"
                 className={classes.resource}
-                target="_blank"
               >
                 Marie Blanchard Friendship Clinic
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://friendshipclinic.com/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://www.facebook.com/palousefreeclinic/"
                 className={classes.resource}
-                target="_blank"
               >
                 Palouse Free Clinic
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://www.facebook.com/palousefreeclinic/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://www.srccfreeclinic.org/"
                 className={classes.resource}
-                target="_blank"
               >
                 Snake River Community Clinic
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://www.srccfreeclinic.org/
             </Typography>
           </div>
@@ -287,43 +271,39 @@ const Resources: NextPage<Props> = ({ classes }) => {
         <AccordionDetails>
           <div>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://www.aidsoutreachmt.org/"
                 className={classes.resource}
-                target="_blank"
               >
                 AIDS Outreach
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://www.aidsoutreachmt.org/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://chphealthmt.org/"
                 className={classes.resource}
-                target="_blank"
               >
                 CHP (Community Health Partners)
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://chphealthmt.org/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://www.hopamountain.org/"
                 className={classes.resource}
-                target="_blank"
               >
                 Hopa Mountain
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://www.hopamountain.org/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://thehrdc.org/"
                 className={classes.resource}
-                target="_blank"
               >
                 HRDC (Human Resource Development Council)
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://thehrdc.org/
             </Typography>
           </div>
@@ -343,216 +323,195 @@ const Resources: NextPage<Props> = ({ classes }) => {
         <AccordionDetails>
           <div>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://www.co.washington.or.us/Housing/SupportiveHousingServices/Shelters/aloha-inn-permanent-supportive-housing.cfm"
                 className={classes.resource}
-                target="_blank"
               >
                 Aloha Inn
-              </a>{" "}
+              </ResourceLink>{" "}
               -
-              https://www.co.washington.or.us/Housing/SupportiveHousingServices/Shelters/aloha-inn-permanent-supportive-housing.cfm
+              https://www.co.washResourceLinkngton.or.us/Housing/SupportiveHousingServices/Shelters/aloha-inn-permanent-supportive-housing.cfm
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://casa-latina.org/"
                 className={classes.resource}
-                target="_blank"
               >
                 Casa Latina
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://casa-latina.org/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://www.desc.org/"
                 className={classes.resource}
-                target="_blank"
               >
                 Downtown Emergency Service Center (DESC)
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://www.desc.org/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://eghseattle.org/"
                 className={classes.resource}
-                target="_blank"
               >
                 Elizabeth Gregory Home
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://eghseattle.org/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://www.ichs.com/"
                 className={classes.resource}
-                target="_blank"
               >
                 ICHS (International Community Health Services)
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://www.ichs.com/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://lihi.org/tiny-houses/"
                 className={classes.resource}
-                target="_blank"
               >
                 Low Income Housing Institute (LIHI) Tiny Houses
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://lihi.org/tiny-houses/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://www.mercyhousing.org/northwest/"
                 className={classes.resource}
-                target="_blank"
               >
                 Mercy Housing Northwest
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://www.mercyhousing.org/northwest/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://www.uwmedicine.org/locations/harborview-medical-center"
                 className={classes.resource}
-                target="_blank"
               >
                 Harborview Medical Center
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://www.uwmedicine.org/locations/harborview-medical-center
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://help.rescue.org/donate?ms=gs_brand_best_charity_es_fy18&initialms=gs_brand_best_charity_es_fy18&gclid=CjwKCAjw-e2EBhAhEiwAJI5jgwiwHEGgUTQKXzfSXc32Wq9klMzmC4Imn23JcSm6I1z2h7HbgYxGWBoCQuMQAvD_BwE"
                 className={classes.resource}
-                target="_blank"
               >
                 International Resuce Committee
-              </a>{" "}
+              </ResourceLink>{" "}
               -
               https://help.rescue.org/donate?ms=gs_brand_best_charity_es_fy18&initialms=gs_brand_best_charity_es_fy18&gclid=CjwKCAjw-e2EBhAhEiwAJI5jgwiwHEGgUTQKXzfSXc32Wq9klMzmC4Imn23JcSm6I1z2h7HbgYxGWBoCQuMQAvD_BwE
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://nhmin.org/"
                 className={classes.resource}
-                target="_blank"
               >
                 New Horizons
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://nhmin.org/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://www.peerseattle.org/"
                 className={classes.resource}
-                target="_blank"
               >
                 Peer Seattle
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://www.peerseattle.org/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://www.uwmedicine.org/locations/pioneer-square"
                 className={classes.resource}
-                target="_blank"
               >
                 Pioneer Square Clinic
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://www.uwmedicine.org/locations/pioneer-square
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://kingcounty.gov/depts/health.aspx"
                 className={classes.resource}
-                target="_blank"
               >
                 Public Health Seattle/King County
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://kingcounty.gov/depts/health.aspx
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://rootsinfo.org/"
                 className={classes.resource}
-                target="_blank"
               >
                 ROOTS Youth Shelter
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://rootsinfo.org/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="http://www.rotacarelakecity.org/"
                 className={classes.resource}
-                target="_blank"
               >
                 Rotacare Free Clinic
-              </a>{" "}
+              </ResourceLink>{" "}
               - http://www.rotacarelakecity.org/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://www.seamar.org/king-medical-seattle.html"
                 className={classes.resource}
-                target="_blank"
               >
                 SeaMar
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://www.seamar.org/king-medical-seattle.html
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://www.seattlecca.org/?gclid=CjwKCAjw-e2EBhAhEiwAJI5jg3vYWEYCyEpmvQD6b_5W6uX4m_iH_-uNVB1_zaId9ghcdP4msAOAShoCLv8QAvD_BwE"
                 className={classes.resource}
-                target="_blank"
               >
                 Seattle Cancer Care Alliance
-              </a>{" "}
+              </ResourceLink>{" "}
               -
               https://www.seattlecca.org/?gclid=CjwKCAjw-e2EBhAhEiwAJI5jg3vYWEYCyEpmvQD6b_5W6uX4m_iH_-uNVB1_zaId9ghcdP4msAOAShoCLv8QAvD_BwE
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://seattlecenter.org/skcclinic/"
                 className={classes.resource}
-                target="_blank"
               >
                 Seattle/King County Clinic
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://seattlecenter.org/skcclinic/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://somalihealthboard.org/"
                 className={classes.resource}
-                target="_blank"
               >
                 Somali Health Board
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://somalihealthboard.org/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://svdpseattle.org/"
                 className={classes.resource}
-                target="_blank"
               >
                 St. Vincent de Paul
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://svdpseattle.org/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://www.uwmedicine.org/"
                 className={classes.resource}
-                target="_blank"
               >
                 University of Washington Medical Center
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://www.uwmedicine.org/
             </Typography>
           </div>
@@ -572,74 +531,67 @@ const Resources: NextPage<Props> = ({ classes }) => {
         <AccordionDetails>
           <div>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://chas.org/"
                 className={classes.resource}
-                target="_blank"
               >
                 CHAS Health
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://chas.org/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://www.cceasternwa.org/house-of-charity"
                 className={classes.resource}
-                target="_blank"
               >
                 House of Charity
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://www.cceasternwa.org/house-of-charity
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="http://www.refugeeconnectionsspokane.org/store/c1/Featured_Products.html"
                 className={classes.resource}
-                target="_blank"
               >
                 Refugee Connections
-              </a>{" "}
+              </ResourceLink>{" "}
               -
               http://www.refugeeconnectionsspokane.org/store/c1/Featured_Products.html
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://www.rangecommunityclinic.org/"
                 className={classes.resource}
-                target="_blank"
               >
                 Range Community Health
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://www.rangecommunityclinic.org/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://www.spokaneschools.org/rogers"
                 className={classes.resource}
-                target="_blank"
               >
                 Rogers High School
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://www.spokaneschools.org/rogers
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://srhd.org/"
                 className={classes.resource}
-                target="_blank"
               >
                 Spokane Regional Health District
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://srhd.org/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://www.facebook.com/UGMSpokane/"
                 className={classes.resource}
-                target="_blank"
               >
                 Union Gospel Mission
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://www.facebook.com/UGMSpokane/
             </Typography>
           </div>
@@ -659,22 +611,21 @@ const Resources: NextPage<Props> = ({ classes }) => {
         <AccordionDetails>
           <div>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://www.downtownclinic.org/"
                 className={classes.resource}
-                target="_blank"
               >
                 Downtown Clinic
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://www.downtownclinic.org/
             </Typography>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://hospiceoflaramie.org/"
                 className={classes.resource}
               >
                 Hospice of Laramie
-              </a>{" "}
+              </ResourceLink>{" "}
               - https://hospiceoflaramie.org/
             </Typography>
           </div>
@@ -701,6 +652,7 @@ const styles = createStyles({
   links: {
     color: "#2436D9",
     textDecorationLine: "underline",
+    marginLeft: 50,
   },
 
   title: {
