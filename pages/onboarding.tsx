@@ -38,7 +38,7 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
         Volunteer Provider Onboarding Instructions
       </Typography>
 
-      <Typography style={{ fontWeight: 600, paddingBottom: "0.5em" }}>
+      <Typography style={{ fontWeight: 600, paddingBottom: "2em" }}>
         All providers must fill out a brief survey here:{" "}
         <a href="https://catalyst.uw.edu/webq/survey/clarkel/343031">
           https://catalyst.uw.edu/webq/survey/clarkel/343031
@@ -58,7 +58,7 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
         </AccordionSummary>
         <AccordionDetails>
           <div>
-            <Typography gutterBottom>
+            <Typography paragraph>
               Individual projects may have additional training/onboarding
               requirements. See project specific pages for details.
             </Typography>
@@ -69,7 +69,7 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
                 Neurology, and Pediatrics
               </b>
             </Typography>
-            <Typography gutterBottom>
+            <Typography paragraph>
               NO additional approval is required
             </Typography>
             <Typography>
@@ -77,22 +77,23 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
                 UW Physicians (full-time or part-time) in ALL OTHER departments
               </b>
             </Typography>
-            <Typography gutterBottom>
+            <Typography paragraph>
               Please contact Leonora Clarke,{" "}
-              <a href="mailto://clarkel@uw.edu">clarkel@uw.edu</a>
+              <a href="mailto://clarkel@uw.edu">clarkel@uw.edu</a>.
             </Typography>
             <Typography>
               <b>Non-UW Physicians (this includes VA and FQHC employees)</b>
             </Typography>
-            <Typography gutterBottom>
+            <Typography paragraph>
               Please contact your insurance company/employer to find out if you
               are covered for service learning activities. If your coverage does
               not extend to this activity, or if you are retired, the University
               requires volunteers to apply for the free professional liability
               coverage through the Volunteer and Retired Provider (VRP) program.
               The VRP program offers coverage for non-invasive primary and
-              specialty care of low-income patients in qualified settings. The
-              form is quite simple and approval takes 1-2 weeks.
+              specialty care of low-income patients in qualified settings. 
+              The <a target="_blank" href="https://www.wahealthcareaccessalliance.org/volunteers/apply-for-vrp">form</a> is
+              quite simple and approval takes 1-2 weeks.
             </Typography>
             <Typography>
               <b>Non-MD Providers</b>
@@ -104,8 +105,9 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
               requires volunteers to apply for the free professional liability
               coverage through the Volunteer and Retired Provider (VRP) program.
               The VRP program offers coverage for non-invasive primary and
-              specialty care of low-income patients in qualified settings. The
-              form is quite simple and approval takes 1-2 weeks.
+              specialty care of low-income patients in qualified settings.
+              The <a target="_blank" href="https://www.wahealthcareaccessalliance.org/volunteers/apply-for-vrp">form</a> is
+              quite simple and approval takes 1-2 weeks.
             </Typography>
           </div>
         </AccordionDetails>
@@ -123,7 +125,7 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
         </AccordionSummary>
         <AccordionDetails>
           <div>
-            <Typography gutterBottom>
+            <Typography paragraph>
               Individual projects may have additional training/onboarding
               requirements. See project specific pages for details.
             </Typography>
@@ -137,8 +139,9 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
               requires volunteers to apply for the free professional liability
               coverage through the Volunteer and Retired Provider (VRP) program.
               The VRP program offers coverage for non-invasive primary and
-              specialty care of low-income patients in qualified settings. The
-              form is quite simple and approval takes 1-2 weeks.
+              specialty care of low-income patients in qualified settings.
+              The <a target="_blank" href="https://www.wahealthcareaccessalliance.org/volunteers/apply-for-vrp">form</a> is
+              quite simple and approval takes 1-2 weeks.
             </Typography>
           </div>
         </AccordionDetails>
@@ -156,7 +159,7 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
         </AccordionSummary>
         <AccordionDetails>
           <div>
-            <Typography gutterBottom>
+            <Typography paragraph>
               Individual projects may have additional training/onboarding
               requirements. See project specific pages for details.
             </Typography>
