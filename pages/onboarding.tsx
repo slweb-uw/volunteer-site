@@ -38,9 +38,9 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
         Volunteer Provider Onboarding Instructions
       </Typography>
 
-      <Typography style={{ fontWeight: 600, paddingBottom: "2em" }}>
+      <Typography style={{ fontWeight: 600, paddingBottom: "2em", marginLeft: "2em" }}>
         All providers must fill out a brief survey here:{" "}
-        <a href="https://catalyst.uw.edu/webq/survey/clarkel/343031">
+        <a target="_blank" href="https://catalyst.uw.edu/webq/survey/clarkel/343031">
           https://catalyst.uw.edu/webq/survey/clarkel/343031
         </a>
       </Typography>
@@ -59,7 +59,7 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
         <AccordionDetails>
           <div>
             <Typography paragraph>
-              Individual projects may have additional training/onboarding
+              Individual projects may have other training/onboarding
               requirements. See project specific pages for details.
             </Typography>
             <Typography>
@@ -126,7 +126,7 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
         <AccordionDetails>
           <div>
             <Typography paragraph>
-              Individual projects may have additional training/onboarding
+              Individual projects may have other training/onboarding
               requirements. See project specific pages for details.
             </Typography>
             <Typography>
@@ -160,7 +160,7 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
         <AccordionDetails>
           <div>
             <Typography paragraph>
-              Individual projects may have additional training/onboarding
+              Individual projects may have other training/onboarding
               requirements. See project specific pages for details.
             </Typography>
             <Typography>
