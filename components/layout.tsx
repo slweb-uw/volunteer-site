@@ -10,9 +10,6 @@ class Layout extends Component {
       <div
         style={{
           overflow: "hidden",
-          width: "101%",
-          marginLeft: "-1em",
-          marginTop: "-1em",
         }}
       >
         <Header />
