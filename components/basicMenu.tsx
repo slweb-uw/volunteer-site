@@ -1,17 +1,19 @@
-import * as React from "react";
+import React from "react";
 
 import Box from "@material-ui/core/Box";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/icons/Menu";
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
 import List from "@material-ui/core/List";
-import NavLink from "./navlink";
-import { StyledLink } from "./header";
 import ListItem from "@material-ui/core/ListItem";
 
 type Anchor = "right";
 
-export default function SwipeableTemporaryDrawer() {
+interface Props{
+  links: React.ReactNode[]
+}
+
+const BasicMenu: React.FC<Props> = (Props) => {
   const [state, setState] = React.useState({
     right: false,
   });
@@ -38,26 +40,9 @@ export default function SwipeableTemporaryDrawer() {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
-        <ListItem>
-          <NavLink href="/">
-            <StyledLink>Home</StyledLink>
-          </NavLink>
-        </ListItem>
-        <ListItem>
-          <NavLink href="/resources">
-            <StyledLink>Resources</StyledLink>
-          </NavLink>
-        </ListItem>
-        <ListItem>
-          <NavLink href="/protocols">
-            <StyledLink>Protocols</StyledLink>
-          </NavLink>
-        </ListItem>
-        <ListItem>
-          <NavLink href="/donations">
-            <StyledLink>Donations</StyledLink>
-          </NavLink>
-        </ListItem>
+        {Props.links.map((element: React.ReactNode) => {
+          return <ListItem>{element}</ListItem>
+        })}
       </List>
     </Box>
   );
@@ -89,3 +74,5 @@ export default function SwipeableTemporaryDrawer() {
     </div>
   );
 }
+
+export default BasicMenu;
