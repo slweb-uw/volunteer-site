@@ -6,14 +6,19 @@ import Hidden from "@material-ui/core/Hidden";
 import { useAuth } from "auth";
 import { firebaseClient } from "firebaseClient";
 import BasicMenu from "./basicMenu";
+import { makeStyles } from "@material-ui/core/styles";
 
+// Create more customizable media query @ line 18
 export const StyledLink = styled.a`
-  color: black;
+  color: white;
   font-family: "Lato", sans-serif;
   text-decoration: none;
   margin: 1em;
   cursor: pointer;
-
+  @media screen and (max-width: 960px) {
+    color: black;
+  }
+  
   &:hover {
     font-weight: 600;
   }
@@ -62,22 +67,24 @@ const Header: React.FC<{}> = (props) => {
     )
   ]
 
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      display: "flex",
+      backgroundColor: "#4B2E83",
+      padding: "1em",
+      margin: "0em",
+      width: "100%",
+      justifyContent: "flex-end",
+      alignContent: "flex-end",
+      [theme.breakpoints.up('md')]: {
+        justifyContent:"space-between"
+      },
+    },
+  }));
+
   return (
     <div
-      style={{
-        display: "flex",
-        backgroundColor: "#4B2E83",
-        padding: "1em",
-        margin: "0em",
-        width: "100%",
-        justifyContent: "flex-end",
-        alignContent: "flex-end",
-    
-        // "@media screen and minWidth(1000px)":{
-        //     justifyContent: "space-between"
-        // }
-      }
-    }
+      className={useStyles().root}
     >
       <Hidden only={["lg", "md", "xl"]}>
         <BasicMenu links={links} />
