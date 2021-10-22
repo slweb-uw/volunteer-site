@@ -57,7 +57,7 @@ const Header: React.FC<{}> = (props) => {
           );
           provider.setCustomParameters({
             // Target specific email with login hint.
-            login_hint: "netid@uw.edu",
+            tenant: 'uw.edu'
           });
           firebaseClient.auth().signInWithPopup(provider);
         }}
