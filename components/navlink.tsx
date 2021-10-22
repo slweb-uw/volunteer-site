@@ -1,28 +1,24 @@
-import React from 'react'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { makeStyles } from '@material-ui/core/styles';
+import React from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
   active: {
     fontWeight: 600,
-    paddingBottom: '4px',
-    borderBottom: 'solid white .18em',
+    paddingBottom: "4px",
+    borderBottom: "solid white .18em",
   },
 });
 
-export default ({ href, children }: {href:string, children:any}) => {
+export default ({ href, children }: { href: string; children: any }) => {
   const classes = useStyles();
-  const router = useRouter()
+  const router = useRouter();
 
-  let className = children.props.className || ''
+  let className = children.props.className || "";
   if (router.pathname === href) {
-    className = `${className} ${classes.active}`
+    className = `${className} ${classes.active}`;
   }
 
-  return (
-    <Link href={href}>
-      {React.cloneElement(children, { className })}
-    </Link>
-  )
-}
+  return <Link href={href}>{React.cloneElement(children, { className })}</Link>;
+};
