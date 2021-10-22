@@ -7,15 +7,15 @@ import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 
-type Anchor = "right";
+type Anchor = "top";
 
-interface Props{
-  links: React.ReactNode[]
+interface Props {
+  links: React.ReactNode[];
 }
 
 const BasicMenu: React.FC<Props> = (Props) => {
   const [state, setState] = React.useState({
-    right: false,
+    top: false,
   });
 
   const toggleDrawer = (anchor: Anchor, open: boolean) => (
@@ -41,7 +41,7 @@ const BasicMenu: React.FC<Props> = (Props) => {
     >
       <List>
         {Props.links.map((element: React.ReactNode) => {
-          return <ListItem>{element}</ListItem>
+          return <ListItem>{element}</ListItem>;
         })}
       </List>
     </Box>
@@ -53,7 +53,7 @@ const BasicMenu: React.FC<Props> = (Props) => {
         marginRight: "2em",
       }}
     >
-      {(["right"] as const).map((anchor) => (
+      {(["top"] as const).map((anchor) => (
         <React.Fragment key={anchor}>
           <IconButton
             style={{ width: "min-content" }}
@@ -73,6 +73,6 @@ const BasicMenu: React.FC<Props> = (Props) => {
       ))}
     </div>
   );
-}
+};
 
 export default BasicMenu;
