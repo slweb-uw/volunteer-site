@@ -56,15 +56,11 @@ const Event: NextPage<Props> = ({ classes }) => {
       </Typography>
 
       <Grid container spacing={6}>
-        <Grid item sm={12} md={6}>
+        <Grid item sm={12} md={6}
+          className={classes.detailsImageContainer}>
           <img
+            className={classes.detailsImage}
             src={eventData?.imageURL ?? "/beigeSquare.png"}
-            style={{
-              height: 350,
-              width: "auto",
-              margin: "1rem",
-              borderRadius: "10px",
-            }}
             alt={"Image for " + eventData?.Title}
           />
         </Grid>
@@ -160,5 +156,20 @@ const styles = createStyles({
     paddingTop: "2em",
     paddingBottom: "5em",
   },
+  detailsImageContainer: {
+    display: 'flex',
+    margin: '1rem',
+    justifyContent: 'center',
+    overflow: 'hidden',
+    maxWidth: '500px',
+    maxHeight: '500px',
+    paddingRight: '0px !important',
+  },
+  detailsImage: {
+    minWidth: '100%',
+    minHeight: '100%',
+    borderRadius: '10px',
+    objectFit: 'cover',
+  }
 });
 export default withStyles(styles)(Event);
