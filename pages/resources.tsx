@@ -149,7 +149,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
         variant="h5"
         style={{ fontWeight: 600, paddingBottom: "0.5em", paddingTop: "0.5em" }}
       >
-        Links to Community Partners over the 5 expandable sites
+        Links to WWAMI regional community partners
       </Typography>
 
       <Accordion
