@@ -31,6 +31,8 @@ interface Props {
   handleClick: React.MouseEventHandler<HTMLDivElement> | undefined;
 }
 
+const NotSpecified = <i style={{color: 'gray'}}>Not specified</i>
+
 const EventCard: React.FC<Props> = (props) => {
   const classes = useStyles();
 
@@ -55,7 +57,7 @@ const EventCard: React.FC<Props> = (props) => {
           <Typography variant="subtitle1" color="textSecondary" gutterBottom>
             {props.event.organization}
           </Typography>
-          <div>{props.event["Project Description"]}</div>
+          <div>{props.event["Project Description"] ?? NotSpecified }</div>
         </CardContent>
       </div>
     </Card>

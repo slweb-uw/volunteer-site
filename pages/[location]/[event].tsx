@@ -18,6 +18,21 @@ interface Props {
   classes?: any;
 }
 
+const NotSpecified = <i style={{color: 'gray'}}>Not specified</i>
+
+const Data: {[key: string]: any}  = {
+  WEBSITE: "Website Link",
+  DATETIME: "Date and Time",
+  CONTACT: "Contact Information and Cancellation Policy",
+  TYPESVOL: "Types of Volunteers Needed",
+  DESC: "Project Description",
+  TIPS: "Tips and Reminders",
+  REQTRNGS: "Required Trainings",
+  PROVINFO: "Provider Information",
+  CLINICF: "Clinic Flow",
+  DIRECTIONS: "Parking and Directions",
+}
+
 const Event: NextPage<Props> = ({ classes }) => {
   const router = useRouter();
   const { event, location } = router.query; // current event id and location 
@@ -45,7 +60,7 @@ const Event: NextPage<Props> = ({ classes }) => {
 
   // console.log(eventData);
 
-  let buttonText = (eventData?.["Website Link"]) ? "Sign up >" : "No sign up links available yet"
+  let buttonText = (eventData?.[Data.WEBSITE]) ? "Sign up >" : "No sign up links available yet"
   
 
   return (
@@ -70,11 +85,15 @@ const Event: NextPage<Props> = ({ classes }) => {
               <Grid container direction="row" spacing={10}>
                 <Grid item>
                   <Typography variant="h6" style={{ fontWeight: 600 }}>Location</Typography>
-                  <Typography variant="body1">{eventData?.Location}</Typography>
+                  <Typography variant="body1">
+                    {eventData?.Location ?? NotSpecified}
+                  </Typography>
                 </Grid>
                 <Grid item>
                   <Typography variant="h6" style={{ fontWeight: 600 }}>Date and Time</Typography>
-                  <Typography variant="body1">{eventData?.["Date and Time"]}</Typography>
+                  <Typography variant="body1">
+                    {eventData?.[Data.DATETIME] ?? NotSpecified}
+                  </Typography>
                 </Grid>
               </Grid>
             </Grid>
@@ -83,12 +102,14 @@ const Event: NextPage<Props> = ({ classes }) => {
                 Contact Information & Cancellation Policy
               </Typography>
               <Typography>
-                {eventData?.["Contact Information and Cancellation Policy"]}
+                {eventData?.[Data.CONTACT] ?? NotSpecified}
               </Typography>
             </Grid>
             <Grid item>
               <Typography variant="h6" style={{ fontWeight: 600 }}>Types of Volunteers Needed</Typography>
-              <Typography>{eventData?.["Types of Volunteers Needed"]}</Typography>
+              <Typography>
+                {eventData?.[Data.TYPESVOL] ?? NotSpecified}
+              </Typography>
             </Grid>
             <Grid item>
               <Button
@@ -96,8 +117,8 @@ const Event: NextPage<Props> = ({ classes }) => {
                 color="secondary"
                 variant="contained"
                 style={{ marginRight: "1em", marginBottom: "2em" }}
-                href={eventData?.["Website Link"]}
-                disabled={!eventData?.["Website Link"]}
+                href={eventData?.[Data.WEBSITE]}
+                disabled={!eventData?.[Data.WEBSITE]}
               >
                 {buttonText}
               </Button>
@@ -113,15 +134,21 @@ const Event: NextPage<Props> = ({ classes }) => {
           <Grid container direction="column" spacing={3}>
             <Grid item>
               <Typography variant="h6" style={{ fontWeight: 600 }}>Project Description</Typography>
-              <Typography>{eventData?.["Project Description"]}</Typography>
+              <Typography>
+                {eventData?.[Data.DESC] ?? NotSpecified}
+              </Typography>
             </Grid>
             <Grid item>
               <Typography variant="h6" style={{ fontWeight: 600 }}>Clinic Flow</Typography>
-              <Typography>{eventData?.["Clinic Flow"]}</Typography>
+              <Typography>
+                {eventData?.[Data.CLINICF] ?? NotSpecified}
+              </Typography>
             </Grid>
             <Grid item>
               <Typography variant="h6" style={{ fontWeight: 600 }}>Parking Directions</Typography>
-              <Typography>{eventData?.["Parking and Directions"]}</Typography>
+              <Typography>
+                {eventData?.[Data.DIRECTIONS] ?? NotSpecified}
+              </Typography>
             </Grid>
           </Grid>
         </Grid>
@@ -129,15 +156,21 @@ const Event: NextPage<Props> = ({ classes }) => {
           <Grid container direction="column" spacing={3}>
             <Grid item>
               <Typography variant="h6" style={{ fontWeight: 600 }}>Tips and Reminders</Typography>
-              <Typography>{eventData?.["Tips and Reminders"]}</Typography>
+              <Typography>
+                {eventData?.[Data.TIPS] ?? NotSpecified}
+              </Typography>
             </Grid>
             <Grid item>
               <Typography variant="h6" style={{ fontWeight: 600 }}>Required Trainings</Typography>
-              <Typography>{eventData?.["Required Trainings"]}</Typography>
+              <Typography>
+                {eventData?.[Data.REQTRNGS] ?? NotSpecified}
+              </Typography>
             </Grid>
             <Grid item>
               <Typography variant="h6" style={{ fontWeight: 600 }}>Provider Information</Typography>
-              <Typography>{eventData?.["Provider Information"]}</Typography>
+              <Typography>
+                {eventData?.[Data.PROVINFO] ?? NotSpecified}
+              </Typography>
             </Grid>
           </Grid>
         </Grid>
