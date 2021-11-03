@@ -18,7 +18,7 @@ export const StyledLink = styled.a`
   @media screen and (max-width: 960px) {
     color: black;
   }
-  
+
   &:hover {
     font-weight: 600;
   }
@@ -52,9 +52,7 @@ const Header: React.FC<{}> = (props) => {
     ) : (
       <StyledLink
         onClick={() => {
-          var provider = new firebaseClient.auth.OAuthProvider(
-            "microsoft.com"
-          );
+          var provider = new firebaseClient.auth.OAuthProvider("microsoft.com");
           provider.setCustomParameters({
             // Target specific email with login hint.
             login_hint: "netid@uw.edu",
@@ -64,8 +62,8 @@ const Header: React.FC<{}> = (props) => {
       >
         Sign In
       </StyledLink>
-    )
-  ]
+    ),
+  ];
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -74,38 +72,34 @@ const Header: React.FC<{}> = (props) => {
       padding: "1em",
       margin: "0em",
       width: "100%",
-      justifyContent: "flex-end",
+      justifyContent: "space-between",
       alignContent: "flex-end",
-      [theme.breakpoints.up('md')]: {
-        justifyContent:"space-between"
+      [theme.breakpoints.up("md")]: {
+        justifyContent: "space-between",
       },
     },
   }));
 
   return (
-    <div
-      className={useStyles().root}
-    >
+    <div className={useStyles().root}>
+      <Link href="/">
+        <img
+          src="/header-logo.png"
+          style={{
+            cursor: "pointer",
+            width: "25em",
+            minWidth: 5,
+            padding: ".6em",
+          }}
+        />
+      </Link>
       <Hidden only={["lg", "md", "xl"]}>
         <BasicMenu links={links} />
       </Hidden>
-      <Hidden only={["xs", "sm"]}>
-        <Link href="/">
-          <img
-            src="/header-logo.png"
-            style={{
-              cursor: "pointer",
-              width: "28em",
-              padding: ".6em",
-            }}
-          />
-        </Link>
-      </Hidden>
-
       <Hidden only={["sm", "xs"]}>
         <div style={{ marginRight: "3em", display: "flex" }}>
-          {links.map((element:React.ReactNode) => {
-              return element;
+          {links.map((element: React.ReactNode) => {
+            return element;
           })}
           {/* <NavLink href="/training"><StyledLink>Training</StyledLink></NavLink> */}
         </div>
