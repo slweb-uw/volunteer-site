@@ -55,7 +55,7 @@ const Header: React.FC<{}> = (props) => {
           var provider = new firebaseClient.auth.OAuthProvider("microsoft.com");
           provider.setCustomParameters({
             // Target specific email with login hint.
-            login_hint: "netid@uw.edu",
+            tenant: 'uw.edu'
           });
           firebaseClient.auth().signInWithPopup(provider);
         }}
