@@ -17,7 +17,7 @@ import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import { firebaseClient } from "../firebaseClient";
 import OrganizationDropdown from "./organizationDropdown";
 import VolunteerType from "./volunteerType";
-import { rrulestr } from 'rrule';
+import { rrulestr } from "rrule";
 
 const { TabPane } = Tabs;
 const { RangePicker } = DatePicker;
@@ -90,38 +90,33 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
 
   React.useEffect(() => {
     let recurrencesFields = form.getFieldValue("recurrences");
-    if (add && (recEndDate != null)) {
-        let ind = recurrencesFields.length - 1
-        recurrencesFields[ind] = {
-                recEndDate,
-                tabNum,
-                interval,
-                weekday,
-                month,
-                monthday
-        }
-        setRecEndDate(null);
+    if (add && recEndDate != null) {
+      let ind = recurrencesFields.length - 1;
+      recurrencesFields[ind] = {
+        recEndDate,
+        tabNum,
+        interval,
+        weekday,
+        month,
+        monthday,
+      };
+      setRecEndDate(null);
     }
   }, [add, recEndDate]);
 
-
   React.useEffect(() => {
     form.setFieldsValue({
-    Location: [
-        city,
-        orgo,
-        volunteer
-    ]
+      Location: [city, orgo, volunteer],
     });
   }, [city, orgo, volunteer]);
 
   return (
     <Modal
       visible={Props.visible}
-      title="Create New Event"
+      title='Create New Event'
       width={900}
-      okText="Create"
-      cancelText="Cancel"
+      okText='Create'
+      cancelText='Cancel'
       onCancel={Props.onCancel}
       onOk={() => {
         form
@@ -143,12 +138,12 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
           });
       }}
     >
-      <Form form={form} layout="vertical" name="form_in_modal">
+      <Form form={form} layout='vertical' name='form_in_modal'>
         <Row gutter={[16, 16]}>
           <Col span={12}>
             <Form.Item
-              name="Title"
-              label="Event Name"
+              name='Title'
+              label='Event Name'
               rules={[
                 {
                   required: true,
@@ -160,8 +155,8 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
             </Form.Item>
 
             <Form.Item
-              name="Project Description"
-              label="Description"
+              name='Project Description'
+              label='Description'
               rules={[
                 {
                   required: true,
@@ -169,12 +164,12 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                 },
               ]}
             >
-              <Input type="textarea" />
+              <Input type='textarea' />
             </Form.Item>
 
             <Form.Item
-              name="Location"
-              label="Location"
+              name='Location'
+              label='Location'
               rules={[
                 {
                   required: true,
@@ -183,17 +178,22 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
               ]}
             >
               <Select onChange={(v: any) => setCity(v)}>
-                <Select.Option value="Alaska">Alaska</Select.Option>
-                <Select.Option value="Montana">Montana</Select.Option>
-                <Select.Option value="Seattle">Seattle</Select.Option>
-                <Select.Option value="Spokane">Spokane</Select.Option>
-                <Select.Option value="Wyoming">Wyoming</Select.Option>
+                <Select.Option value='Alaska'>Alaska</Select.Option>
+                <Select.Option value='Montana'>Montana</Select.Option>
+                <Select.Option value='Seattle'>Seattle</Select.Option>
+                <Select.Option value='Spokane'>Spokane</Select.Option>
+                <Select.Option value='Wyoming'>Wyoming</Select.Option>
               </Select>
             </Form.Item>
 
             <Form.Item
-              name="Organization"
-              label={<><label style={{ color: "red" }}>∗</label><label>&nbsp;Organization (select Location first)</label></>}
+              name='Organization'
+              label={
+                <>
+                  <label style={{ color: "red" }}>∗</label>
+                  <label>&nbsp;Organization (select Location first)</label>
+                </>
+              }
             >
               <OrganizationDropdown
                 orgs={getOrganizations}
@@ -203,46 +203,46 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
             </Form.Item>
 
             <Form.Item
-              name="Types of Volunteers Needed"
-              label="Types of Volunteers Needed"
+              name='Types of Volunteers Needed'
+              label='Types of Volunteers Needed'
             >
               <VolunteerType setVolunteer={setVolunteer} />
             </Form.Item>
 
             <Form.Item
-              name="Contact Information and Cancellation Policy"
-              label="Contact Information and Cancellation Policy"
+              name='Contact Information and Cancellation Policy'
+              label='Contact Information and Cancellation Policy'
             >
               <Input />
             </Form.Item>
 
-            <Form.Item name="Website Link" label="Website Link">
+            <Form.Item name='Website Link' label='Website Link'>
               <Input />
             </Form.Item>
 
-            <Form.Item name="Sign-up Link" label="Sign-up Link">
+            <Form.Item name='Sign-up Link' label='Sign-up Link'>
               <Input />
             </Form.Item>
 
             <Form.Item
-              name="Parking and Directions"
-              label="Parking and Directions"
+              name='Parking and Directions'
+              label='Parking and Directions'
             >
               <Input />
             </Form.Item>
 
-            <Form.Item name="Provider Information" label="Provider Information">
+            <Form.Item name='Provider Information' label='Provider Information'>
               <Input />
             </Form.Item>
 
-            <Form.List name="addNewFields">
+            <Form.List name='addNewFields'>
               {(fields, { add, remove }) => (
                 <>
                   {fields.map(({ key, name, fieldKey, ...restField }) => (
                     <Space
                       key={key}
                       style={{ display: "flex", marginBottom: 8 }}
-                      align="baseline"
+                      align='baseline'
                     >
                       <Form.Item
                         {...restField}
@@ -252,7 +252,7 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                           { required: true, message: "Missing detail name" },
                         ]}
                       >
-                        <Input placeholder="Detail Name (i.e. Parking Directions)" />
+                        <Input placeholder='Detail Name (i.e. Parking Directions)' />
                       </Form.Item>
                       <Form.Item
                         {...restField}
@@ -262,14 +262,14 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
                           { required: true, message: "Missing detail value" },
                         ]}
                       >
-                        <Input placeholder="Detail Value (i.e. Park at level 2)" />
+                        <Input placeholder='Detail Value (i.e. Park at level 2)' />
                       </Form.Item>
                       <MinusCircleOutlined onClick={() => remove(name)} />
                     </Space>
                   ))}
                   <Form.Item>
                     <Button
-                      type="dashed"
+                      type='dashed'
                       onClick={() => add()}
                       block
                       icon={<PlusOutlined />}
@@ -282,124 +282,174 @@ const CollectionCreateForm: React.FC<Props> = (Props) => {
             </Form.List>
           </Col>
           <Col span={12}>
-            <Form.Item name="Clinic Flow" label="Clinic Flow">
+            <Form.Item name='Clinic Flow' label='Clinic Flow'>
               <Input />
             </Form.Item>
 
-            <Form.Item name="Clinic Schedule" label="Clinic Schedule">
+            <Form.Item name='Clinic Schedule' label='Clinic Schedule'>
               <Input />
             </Form.Item>
 
             <Form.Item
-              name="HS Grad Student Information"
-              label="HS Grad Student Information"
+              name='HS Grad Student Information'
+              label='HS Grad Student Information'
             >
               <Input />
             </Form.Item>
 
             <Form.Item
-              name="Project Specific Training"
-              label="Project Specific Training"
+              name='Project Specific Training'
+              label='Project Specific Training'
             >
               <Input />
             </Form.Item>
 
-            <Form.Item name="Services Provided" label="Services Provided">
+            <Form.Item name='Services Provided' label='Services Provided'>
               <Input />
             </Form.Item>
 
-            <Form.Item name="Tips and Reminders" label="Tips and Reminders">
+            <Form.Item name='Tips and Reminders' label='Tips and Reminders'>
               <Input />
             </Form.Item>
 
             <Form.Item
-              name="Undergraduate Information"
-              label="Undergraduate Information"
+              name='Undergraduate Information'
+              label='Undergraduate Information'
             >
               <Input />
             </Form.Item>
 
-            <Form.Item name="DateObject" label="Date/Time">
-              <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />
+            <Form.Item name='DateObject' label='Date/Time'>
+              <RangePicker showTime format='YYYY-MM-DD HH:mm:ss' />
             </Form.Item>
-            <Form.List name="recurrences" initialValue={[]}>
-                {(fields, { add, remove }) => (
-                    <>
-                        {fields.map(({name, key, ...restField}) => (
-                <Form.Item name={name} key={key} {...restField} label="Event Recurrence"
-                rules={[
-                {
-                  required: true,
-                  message: "All fields in recurrences are required", //shows upon incompletion
-                },
-              ]}>
-                    <Tabs defaultActiveKey="1" onChange={(v) => setTabNum(v)}>
-                        <TabPane tab="Daily" key="1">
-                            <Space>
+            <Form.List name='recurrences' initialValue={[]}>
+              {(fields, { add, remove }) => (
+                <>
+                  {fields.map(({ name, key, ...restField }) => (
+                    <Form.Item
+                      name={name}
+                      key={key}
+                      {...restField}
+                      label='Event Recurrence'
+                      rules={[
+                        {
+                          required: true,
+                          message: "All fields in recurrences are required", //shows upon incompletion
+                        },
+                      ]}
+                    >
+                      <Tabs defaultActiveKey='1' onChange={(v) => setTabNum(v)}>
+                        <TabPane tab='Daily' key='1'>
+                          <Space>
                             Reapeat Every
-                            <Select style={{ width: 120 }} onChange={ (v: any)=> setInterval(v)}>
-                                <Select.Option value="1">1</Select.Option>
-                                <Select.Option value="2">2</Select.Option>
-                                <Select.Option value="3">3</Select.Option>
-                                <Select.Option value="4">4</Select.Option>:
-￼
-                                <Select.Option value="5">5</Select.Option>
-                                <Select.Option value="6">6</Select.Option>
+                            <Select
+                              style={{ width: 120 }}
+                              onChange={(v: any) => setInterval(v)}
+                            >
+                              <Select.Option value='1'>1</Select.Option>
+                              <Select.Option value='2'>2</Select.Option>
+                              <Select.Option value='3'>3</Select.Option>
+                              <Select.Option value='4'>4</Select.Option>: ￼
+                              <Select.Option value='5'>5</Select.Option>
+                              <Select.Option value='6'>6</Select.Option>
                             </Select>
                             Day
-                            </Space>
-                            <br />
-                            <br />
-                            <Space>
+                          </Space>
+                          <br />
+                          <br />
+                          <Space>
                             Recurrence End Date:
-                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onOk={ (v: any)=> setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
-                            </Space>
+                            <DatePicker
+                              showTime
+                              format='YYYY-MM-DD HH:mm:ss'
+                              onOk={(v: any) =>
+                                setRecEndDate(v.format("YYYYMMDD[T]HHmmss[Z]"))
+                              }
+                            />
+                          </Space>
                         </TabPane>
-                        <TabPane tab="Weekly" key="2">
-                            <Checkbox.Group options={weekdayOptions} onChange={(v: any) => setWeekday(v)}/>
-                            <br />
-                            <br />
-                            <Space>
+                        <TabPane tab='Weekly' key='2'>
+                          <Checkbox.Group
+                            options={weekdayOptions}
+                            onChange={(v: any) => setWeekday(v)}
+                          />
+                          <br />
+                          <br />
+                          <Space>
                             Recurrence End Date:
-                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onOk={(v: any) => setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
-                            </Space>
+                            <DatePicker
+                              showTime
+                              format='YYYY-MM-DD HH:mm:ss'
+                              onOk={(v: any) =>
+                                setRecEndDate(v.format("YYYYMMDD[T]HHmmss[Z]"))
+                              }
+                            />
+                          </Space>
                         </TabPane>
-                        <TabPane tab="Monthly" key="3">
-                            Month day:
-                            <Checkbox.Group options={monthdayOptions} onChange={(v: any) => setMonthday(v)}/>
-                            <br />
-                            <br />
-                            <Space>
+                        <TabPane tab='Monthly' key='3'>
+                          Month day:
+                          <Checkbox.Group
+                            options={monthdayOptions}
+                            onChange={(v: any) => setMonthday(v)}
+                          />
+                          <br />
+                          <br />
+                          <Space>
                             Recurrence End Date:
-                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onOk={(v: any) => setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
-                            </Space>
+                            <DatePicker
+                              showTime
+                              format='YYYY-MM-DD HH:mm:ss'
+                              onOk={(v: any) =>
+                                setRecEndDate(v.format("YYYYMMDD[T]HHmmss[Z]"))
+                              }
+                            />
+                          </Space>
                         </TabPane>
-                        <TabPane tab="Yearly" key="4">
-                            Month:
-                            <Checkbox.Group options={monthOptions} onChange={(v: any) => setMonth(v)}/>
-                            <br />
-                            <br />
-                            Month day:
-                            <Checkbox.Group options={monthdayOptions} onChange={(v: any) => setMonthday(v)}/>
-                            <br />
-                            <br />
-                            <Space>
+                        <TabPane tab='Yearly' key='4'>
+                          Month:
+                          <Checkbox.Group
+                            options={monthOptions}
+                            onChange={(v: any) => setMonth(v)}
+                          />
+                          <br />
+                          <br />
+                          Month day:
+                          <Checkbox.Group
+                            options={monthdayOptions}
+                            onChange={(v: any) => setMonthday(v)}
+                          />
+                          <br />
+                          <br />
+                          <Space>
                             Recurrence End Date:
-                            <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" onOk={(v: any) => setRecEndDate(v.format('YYYYMMDD[T]HHmmss[Z]'))}/>
-
-                            </Space>
+                            <DatePicker
+                              showTime
+                              format='YYYY-MM-DD HH:mm:ss'
+                              onOk={(v: any) =>
+                                setRecEndDate(v.format("YYYYMMDD[T]HHmmss[Z]"))
+                              }
+                            />
+                          </Space>
                         </TabPane>
-                    </Tabs>
-                    <MinusCircleOutlined onClick={() => remove(name)} />
-                </Form.Item>
-              ))}
-                <Form.Item>
-                    <Button type="dashed" onClick={() => {add(); setAdd(true);}} block icon={<PlusOutlined />}>
-                        Add Recurrence
+                      </Tabs>
+                      <MinusCircleOutlined onClick={() => remove(name)} />
+                    </Form.Item>
+                  ))}
+                  <Form.Item>
+                    <Button
+                      type='dashed'
+                      onClick={() => {
+                        add();
+                        setAdd(true);
+                      }}
+                      block
+                      icon={<PlusOutlined />}
+                    >
+                      Add Recurrence
                     </Button>
-                </Form.Item>
-            </>
-            )}   
+                  </Form.Item>
+                </>
+              )}
             </Form.List>
           </Col>
         </Row>
@@ -441,24 +491,32 @@ const CollectionsPage = () => {
     };
     let rec: string[] = [];
     for (let i of values.recurrences) {
-        if (i.recEndDate) {
-            switch(i.tabNum) {
-                case "1":
-                    rec.push(`RRULE:FREQ=DAILY;INTERVAL=${i.interval};UNTIL=${i.recEndDate}`);
-                    break;
-                case "2":
-                    rec.push(`RRULE:FREQ=WEEKLY;BYDAY=${i.weekday};UNTIL=${i.recEndDate}`);
-                    break;
-                case "3":
-                    rec.push(`RRULE:FREQ=MONTHLY;BYMONTHDAY=${i.monthday};UNTIL=${i.recEndDate}`);
-                    break;
-                case "4":
-                    rec.push(`RRULE:FREQ=YEARLY;BYMONTH=${i.month};BYMONTHDAY=${i.monthday};UNTIL=${i.recEndDate}`);
-                    break;
-                default:
-                    break;
-            }
+      if (i.recEndDate) {
+        switch (i.tabNum) {
+          case "1":
+            rec.push(
+              `RRULE:FREQ=DAILY;INTERVAL=${i.interval};UNTIL=${i.recEndDate}`
+            );
+            break;
+          case "2":
+            rec.push(
+              `RRULE:FREQ=WEEKLY;BYDAY=${i.weekday};UNTIL=${i.recEndDate}`
+            );
+            break;
+          case "3":
+            rec.push(
+              `RRULE:FREQ=MONTHLY;BYMONTHDAY=${i.monthday};UNTIL=${i.recEndDate}`
+            );
+            break;
+          case "4":
+            rec.push(
+              `RRULE:FREQ=YEARLY;BYMONTH=${i.month};BYMONTHDAY=${i.monthday};UNTIL=${i.recEndDate}`
+            );
+            break;
+          default:
+            break;
         }
+      }
     }
     calEvent.Recurrence = rec;
     let recReadable: string[] = [];
@@ -487,7 +545,6 @@ const CollectionsPage = () => {
       }
       if (element == "Organization") {
         firestoreEvent[element] = values.Location[1];
-
       }
       if (element == "Location") {
         firestoreEvent[element] = values.Location[0];
@@ -500,13 +557,14 @@ const CollectionsPage = () => {
         firestoreEvent["recurrences original"] = rec;
       }
     });
-    const calendarPromise = async(calEvent: any, userToken: any) => {
+    const calendarPromise = async (calEvent: any, userToken: any) => {
       if (calEvent.StartDate) {
         fetch(calendarApiPath, {
-        method: "POST",
-        body: JSON.stringify({ eventData: calEvent, userToken }),
-        })
-      }};
+          method: "POST",
+          body: JSON.stringify({ eventData: calEvent, userToken }),
+        });
+      }
+    };
     firebaseClient
       .auth()
       .currentUser?.getIdToken()
@@ -531,7 +589,7 @@ const CollectionsPage = () => {
   return (
     <div>
       <Button
-        type="primary"
+        type='primary'
         onClick={() => {
           setVisible(true);
         }}
