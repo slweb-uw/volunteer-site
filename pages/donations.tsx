@@ -90,7 +90,7 @@ const Donations: NextPage<Props> = ({ classes }) => {
       </Grid>
       <Typography
         variant="h5"
-        style={{ fontWeight: 600, paddingBottom: "1rem" }}
+        style={{ fontWeight: 600, paddingBottom: "1rem", paddingTop: "1.5rem"}}
       >
         Donate to a Specific Project
       </Typography>
