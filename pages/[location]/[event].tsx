@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { firebaseClient } from "../../firebaseClient";
 import { useState, useEffect } from "react";
 import { NextPage } from "next";
+import IconBreadcrumbs from "../../components/breadcrumbs";
 
 import {
   createStyles,
@@ -66,6 +67,9 @@ const Event: NextPage<Props> = ({ classes }) => {
   return (
     <div className={classes.page}>
       <CssBaseline />
+      <IconBreadcrumbs
+        parentURL = {"/location/" + location}
+        crumbs = {["Opportunities in " + location, eventData?.Title ?? 'Untitled']} />
       <Typography variant="h5" style={{ fontWeight: 900 }}>
         {eventData?.Title}
       </Typography>

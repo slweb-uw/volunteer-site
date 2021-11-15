@@ -1,5 +1,4 @@
 import { NextPage } from "next";
-
 import {
   createStyles,
   CssBaseline,
@@ -10,6 +9,7 @@ import {
   Grid,
   Button,
 } from "@material-ui/core";
+import IconBreadcrumbs from "../components/breadcrumbs";
 
 interface Props {
   classes?: any;
@@ -19,6 +19,8 @@ const Protocols: NextPage<Props> = ({ classes }) => {
   return (
     <div className={classes.page}>
       <CssBaseline />
+      <IconBreadcrumbs
+        crumbs = {["Protocols"]} />
       <Typography
         variant='h4'
         style={{ fontWeight: 600, paddingBottom: "1em" }}

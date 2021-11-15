@@ -17,7 +17,7 @@ import MuiAccordion from "@material-ui/core/Accordion";
 import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
 import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-
+import IconBreadcrumbs from "../components/breadcrumbs"
 interface Props {
   classes?: any;
 }
@@ -31,6 +31,8 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
 
   return (
     <div className={classes.page}>
+      <IconBreadcrumbs
+        crumbs = {["Onboarding Instructions"]} />
       <Typography
         variant="h4"
         style={{ fontWeight: 600, paddingBottom: "0.5em" }}

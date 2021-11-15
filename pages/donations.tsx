@@ -10,7 +10,7 @@ import {
   Button,
 } from "@material-ui/core";
 import DonateCard from "../components/donateCard";
-
+import IconBreadcrumbs from "../components/breadcrumbs";
 interface Props {
   classes?: any;
 }
@@ -19,6 +19,8 @@ const Donations: NextPage<Props> = ({ classes }) => {
   return (
     <div className={classes.page}>
       <CssBaseline />
+      <IconBreadcrumbs
+        crumbs = {["Donations"]} />
       <Grid container spacing={4}>
         <Grid item xs={12} md={6} lg={8}>
           <div
