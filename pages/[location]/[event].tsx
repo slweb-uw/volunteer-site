@@ -19,9 +19,9 @@ interface Props {
   classes?: any;
 }
 
-const NotSpecified = <i style={{color: 'gray'}}>Not specified</i>
+const NotSpecified = <i style={{ color: "gray" }}>Not specified</i>;
 
-const Data: {[key: string]: any}  = {
+const Data: { [key: string]: any } = {
   WEBSITE: "Website Link",
   DATETIME: "Date and Time",
   CONTACT: "Contact Information and Cancellation Policy",
@@ -32,11 +32,11 @@ const Data: {[key: string]: any}  = {
   PROVINFO: "Provider Information",
   CLINICF: "Clinic Flow",
   DIRECTIONS: "Parking and Directions",
-}
+};
 
 const Event: NextPage<Props> = ({ classes }) => {
   const router = useRouter();
-  const { event, location } = router.query; // current event id and location 
+  const { event, location } = router.query; // current event id and location
 
   // const [data, setData] = useState({});
 
@@ -56,13 +56,14 @@ const Event: NextPage<Props> = ({ classes }) => {
       .doc("" + event)
       .get(); // queries data
     // setData(next.data() as any);
-    setEventData(next.data() as EventData)
+    setEventData(next.data() as EventData);
   };
 
   // console.log(eventData);
 
-  let buttonText = (eventData?.[Data.WEBSITE]) ? "Sign up >" : "No sign up links available yet"
-  
+  let buttonText = eventData?.[Data.WEBSITE]
+    ? "Sign up >"
+    : "No sign up links available yet";
 
   return (
     <div className={classes.page}>
@@ -75,34 +76,37 @@ const Event: NextPage<Props> = ({ classes }) => {
       </Typography>
 
       <Grid container spacing={6}>
-        <Grid item sm={12} md={6}
-          className={classes.detailsImageContainer}>
+        <Grid item sm={12} md={6} className={classes.detailsImageContainer}>
           <img
             className={classes.detailsImage}
-            src={eventData?.imageURL ?? "/beigeSquare.png"}
+            src={eventData?.imageURL ? eventData?.imageURL : "/beigeSquare.png"}
             alt={"Image for " + eventData?.Title}
           />
         </Grid>
         <Grid item sm={12} md={6}>
-          <Grid container direction="column" spacing={6}>
+          <Grid container direction='column' spacing={6}>
             <Grid item>
-              <Grid container direction="row" spacing={10}>
+              <Grid container direction='row' spacing={10}>
                 <Grid item>
-                  <Typography variant="h6" style={{ fontWeight: 600 }}>Location</Typography>
-                  <Typography variant="body1">
+                  <Typography variant='h6' style={{ fontWeight: 600 }}>
+                    Location
+                  </Typography>
+                  <Typography variant='body1'>
                     {eventData?.Location ?? NotSpecified}
                   </Typography>
                 </Grid>
                 <Grid item>
-                  <Typography variant="h6" style={{ fontWeight: 600 }}>Date and Time</Typography>
-                  <Typography variant="body1">
+                  <Typography variant='h6' style={{ fontWeight: 600 }}>
+                    Date and Time
+                  </Typography>
+                  <Typography variant='body1'>
                     {eventData?.[Data.DATETIME] ?? NotSpecified}
                   </Typography>
                 </Grid>
               </Grid>
             </Grid>
             <Grid item>
-              <Typography variant="h6" style={{ fontWeight: 600 }}>
+              <Typography variant='h6' style={{ fontWeight: 600 }}>
                 Contact Information & Cancellation Policy
               </Typography>
               <Typography>
@@ -110,7 +114,9 @@ const Event: NextPage<Props> = ({ classes }) => {
               </Typography>
             </Grid>
             <Grid item>
-              <Typography variant="h6" style={{ fontWeight: 600 }}>Types of Volunteers Needed</Typography>
+              <Typography variant='h6' style={{ fontWeight: 600 }}>
+                Types of Volunteers Needed
+              </Typography>
               <Typography>
                 {eventData?.[Data.TYPESVOL] ?? NotSpecified}
               </Typography>
@@ -118,8 +124,8 @@ const Event: NextPage<Props> = ({ classes }) => {
             <Grid item>
               <Button
                 autoFocus
-                color="secondary"
-                variant="contained"
+                color='secondary'
+                variant='contained'
                 style={{ marginRight: "1em", marginBottom: "2em" }}
                 href={eventData?.[Data.WEBSITE]}
                 disabled={!eventData?.[Data.WEBSITE]}
@@ -133,23 +139,27 @@ const Event: NextPage<Props> = ({ classes }) => {
 
       <Divider></Divider>
 
-      <Grid container spacing={6} style={{ marginTop:"2em" }}>
+      <Grid container spacing={6} style={{ marginTop: "2em" }}>
         <Grid item sm={12} md={6}>
-          <Grid container direction="column" spacing={3}>
+          <Grid container direction='column' spacing={3}>
             <Grid item>
-              <Typography variant="h6" style={{ fontWeight: 600 }}>Project Description</Typography>
-              <Typography>
-                {eventData?.[Data.DESC] ?? NotSpecified}
+              <Typography variant='h6' style={{ fontWeight: 600 }}>
+                Project Description
               </Typography>
+              <Typography>{eventData?.[Data.DESC] ?? NotSpecified}</Typography>
             </Grid>
             <Grid item>
-              <Typography variant="h6" style={{ fontWeight: 600 }}>Clinic Flow</Typography>
+              <Typography variant='h6' style={{ fontWeight: 600 }}>
+                Clinic Flow
+              </Typography>
               <Typography>
                 {eventData?.[Data.CLINICF] ?? NotSpecified}
               </Typography>
             </Grid>
             <Grid item>
-              <Typography variant="h6" style={{ fontWeight: 600 }}>Parking Directions</Typography>
+              <Typography variant='h6' style={{ fontWeight: 600 }}>
+                Parking Directions
+              </Typography>
               <Typography>
                 {eventData?.[Data.DIRECTIONS] ?? NotSpecified}
               </Typography>
@@ -157,21 +167,25 @@ const Event: NextPage<Props> = ({ classes }) => {
           </Grid>
         </Grid>
         <Grid item sm={12} md={6}>
-          <Grid container direction="column" spacing={3}>
+          <Grid container direction='column' spacing={3}>
             <Grid item>
-              <Typography variant="h6" style={{ fontWeight: 600 }}>Tips and Reminders</Typography>
-              <Typography>
-                {eventData?.[Data.TIPS] ?? NotSpecified}
+              <Typography variant='h6' style={{ fontWeight: 600 }}>
+                Tips and Reminders
               </Typography>
+              <Typography>{eventData?.[Data.TIPS] ?? NotSpecified}</Typography>
             </Grid>
             <Grid item>
-              <Typography variant="h6" style={{ fontWeight: 600 }}>Required Trainings</Typography>
+              <Typography variant='h6' style={{ fontWeight: 600 }}>
+                Required Trainings
+              </Typography>
               <Typography>
                 {eventData?.[Data.REQTRNGS] ?? NotSpecified}
               </Typography>
             </Grid>
             <Grid item>
-              <Typography variant="h6" style={{ fontWeight: 600 }}>Provider Information</Typography>
+              <Typography variant='h6' style={{ fontWeight: 600 }}>
+                Provider Information
+              </Typography>
               <Typography>
                 {eventData?.[Data.PROVINFO] ?? NotSpecified}
               </Typography>
@@ -194,19 +208,19 @@ const styles = createStyles({
     paddingBottom: "5em",
   },
   detailsImageContainer: {
-    display: 'flex',
-    margin: '1rem',
-    justifyContent: 'center',
-    overflow: 'hidden',
-    maxWidth: '500px',
-    maxHeight: '500px',
-    paddingRight: '0px !important',
+    display: "flex",
+    margin: "1rem",
+    justifyContent: "center",
+    overflow: "hidden",
+    maxWidth: "500px",
+    maxHeight: "500px",
+    paddingRight: "0px !important",
   },
   detailsImage: {
-    minWidth: '100%',
-    minHeight: '100%',
-    borderRadius: '10px',
-    objectFit: 'cover',
-  }
+    minWidth: "100%",
+    minHeight: "100%",
+    borderRadius: "10px",
+    objectFit: "cover",
+  },
 });
 export default withStyles(styles)(Event);
