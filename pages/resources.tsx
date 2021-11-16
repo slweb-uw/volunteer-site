@@ -11,7 +11,7 @@ import {
   Link,
   Divider,
 } from "@material-ui/core";
-import { useState } from "react";
+import React, { useState } from "react";
 
 import MuiAccordion from "@material-ui/core/Accordion";
 import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
@@ -19,6 +19,7 @@ import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 
 import ResourceLink from "../components/resourceLink";
+import IconBreadcrumbs from "../components/breadcrumbs";
 
 interface Props {
   classes?: any;
@@ -33,6 +34,8 @@ const Resources: NextPage<Props> = ({ classes }) => {
 
   return (
     <div className={classes.page}>
+      <IconBreadcrumbs
+        crumbs = {["Resources"]} />
       <Typography
         variant="h4"
         style={{ fontWeight: 600, paddingBottom: "0.5em" }}

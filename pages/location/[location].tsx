@@ -19,6 +19,7 @@ import Link from "next/link";
 import EventModal from "components/eventModal";
 import EventForm from "components/eventForm";
 import { useAuth } from "auth";
+import IconBreadcrumbs from "components/breadcrumbs";
 
 interface Props {
   classes?: any;
@@ -147,6 +148,8 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   return (
     <div className={classes.page}>
       <CssBaseline />
+      <IconBreadcrumbs
+        crumbs = {["Opportunities in " + location]} />
       <Typography variant="h3" gutterBottom>
         Opportunities in {location}
       </Typography>
