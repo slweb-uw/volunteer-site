@@ -113,9 +113,6 @@ export default function EventModal(props: {
             </Grid>
           )}
           <Grid item xs={12} lg={event?.["imageURL"] ? 8 : 12}>
-            <Typography>
-              <b>Project Description</b>
-            </Typography>
             <Typography gutterBottom>
               {event?.["Project Description"]}
             </Typography>

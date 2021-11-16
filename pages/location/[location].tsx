@@ -159,12 +159,11 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
         handleClose={() => setModalOpen(false)}
       />
 
-      <div style={{ marginTop: "2em", marginBottom: "2em" }}>
+      <div style={{ display: "flex", alignItems: "center", marginTop: "2em", marginBottom: "2em" }}>
         <Typography display="inline">
           <b>Filters</b>{" "}
         </Typography>
-        <span style={{ marginLeft: "1em" }}>
-          <Typography display="inline">Category: </Typography>
+          <Typography display="inline" style={{ marginLeft: "1em", marginRight: "0.5rem" }}>Category: </Typography>
           <Select
             value={filter}
             onChange={(e) => {
@@ -179,9 +178,7 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
               <MenuItem value={organization}>{organization}</MenuItem>
             ))}
           </Select>
-        </span>
-        <span style={{ marginLeft: "1em" }}>
-          <Typography display="inline">Sort By: </Typography>
+          <Typography display="inline" style={{ marginLeft: "1em", marginRight: "0.5rem" }}>Sort By: </Typography>
           <Select
             value={sortField}
             onChange={(e) => {
@@ -193,7 +190,6 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
             <MenuItem value={"timestamp"}>Date Added</MenuItem>
             <MenuItem value={"Title"}>Title</MenuItem>
           </Select>
-        </span>
         {/* TODO: Uncomment when calendar is fixed */}
         {/* <div style={{ textAlign: "right" }}>
           <Button
@@ -217,7 +213,7 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
         style={{ textAlign: "center", marginBottom: "3em", color: "#85754D" }}
       >
         <b>
-          Please review our{" "}
+          Providers: </b> Please review our{" "}
           <i>
             <Link href={"/onboarding/"}>
               <u>
@@ -226,7 +222,7 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
             </Link>
           </i>{" "}
           before signing up for an opportunity!
-        </b>
+
       </Typography>
 
       {/* Button-Modal Module for adding new events */}

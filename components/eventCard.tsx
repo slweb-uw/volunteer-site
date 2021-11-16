@@ -13,9 +13,10 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
   },
   details: {
-    height: 300,
-    display: "flex",
-    flexDirection: "column",
+    display: "-webkit-box",
+    WebkitBoxOrient: "vertical",
+    WebkitLineClamp: 8,
+    overflow: "hidden",
   },
   content: {
     flex: "1 0 auto",
@@ -51,7 +52,7 @@ const EventCard: React.FC<Props> = (props) => {
         }
         alt={"Image for" + props.event.Title}
       />
-      <div className={classes.details}>
+      <div>
         <CardContent className={classes.content}>
           <Typography component='h6' variant='h6'>
             <b>{props.event.Title}</b>
@@ -59,7 +60,7 @@ const EventCard: React.FC<Props> = (props) => {
           <Typography variant='subtitle1' color='textSecondary' gutterBottom>
             {props.event.organization}
           </Typography>
-          <div>{props.event["Project Description"] ?? NotSpecified }</div>
+          <div className={classes.details}>{props.event["Project Description"] ?? NotSpecified }</div>
         </CardContent>
       </div>
     </Card>
