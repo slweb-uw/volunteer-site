@@ -2,8 +2,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { firebaseAdmin } from "../../firebaseAdmin";
 import { promises as fsPromises } from "fs";
 import { google } from "googleapis";
+import calendarSecret from "../../calendarSecret.json";
 
-const CREDS_PATH = "calendarSecret.json";
 const SCOPES = [
   "https://www.googleapis.com/auth/calendar",
   "https://www.googleapis.com/auth/calendar.events",
@@ -48,41 +48,42 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
 
   // Verify user
   if (user.email === "slweb@uw.edu" || user.email === "slwebuw@gmail.com") {
-      if (req.method === "POST") {
-        try {
-          const fcontent: Creds = JSON.parse(
-            (await fsPromises.readFile(CREDS_PATH)).toString()
-          );
-          const jwtClient = new google.auth.JWT(
-            fcontent.client_email,
-            undefined,
-            fcontent.private_key,
-            SCOPES
-          );
-          const _ = await jwtClient.authorize();
-          const {
-            update,
-            updateEventId,
-          }: { update: boolean; updateEventId: string | null } = await checkEvent(
-            jwtClient,
-            eventData
-          );
-          const res = await addOrUpdateEvent(
-            jwtClient,
-            update,
-            updateEventId,
-            eventData
-          );
-          resolve.status(200).send("Success:" + res);
-        } catch (err) {
-          resolve.status(400).send("Bad request: " + err);
-        }
-      } else {
-        resolve.status(400).send("Invalid request method");
+    if (req.method === "POST") {
+      try {
+        const fcontent: Creds = calendarSecret;
+        const jwtClient = new google.auth.JWT(
+          fcontent.client_email,
+          undefined,
+          fcontent.private_key,
+          SCOPES
+        );
+        const _ = await jwtClient.authorize();
+        const {
+          update,
+          updateEventId,
+        }: { update: boolean; updateEventId: string | null } = await checkEvent(
+          jwtClient,
+          eventData
+        );
+        const res = await addOrUpdateEvent(
+          jwtClient,
+          update,
+          updateEventId,
+          eventData
+        );
+        resolve.status(200).send("Success:" + res);
+      } catch (err) {
+        console.log("Bad request: " + err);
+        resolve.status(400).send("Bad request: " + err);
       }
     } else {
-      resolve.status(400).send("Error: Unauthorized User");
+      console.log("Invalid request method");
+      resolve.status(400).send("Invalid request method");
     }
+  } else {
+    console.log("Error: Unauthorized User");
+    resolve.status(400).send("Error: Unauthorized User");
+  }
 };
 
 /**
