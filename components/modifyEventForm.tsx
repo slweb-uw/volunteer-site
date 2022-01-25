@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "antd/dist/antd.css";
 import {
   Button,
@@ -74,6 +74,7 @@ const generateLabelValuePairs = (
 };
 
 export const CollectionCreateForm: React.FC<Props> = (Props) => {
+  const eventData: EventData = Props.eventData;
   const [form] = Form.useForm();
   const [recEndDate, setRecEndDate] = useState(null);
   const [tabNum, setTabNum] = useState("1");
@@ -82,9 +83,10 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
   const [month, setMonth] = useState(null);
   const [monthday, setMonthday] = useState(null);
   const [add, setAdd] = useState(false);
-  const [city, setCity] = useState(null);
-  const [orgo, setOrgo] = useState(null);
+  const [city, setCity] = useState(eventData["Location"]);
+  const [orgo, setOrgo] = useState(eventData["Organization"]);
   const [volunteer, setVolunteer] = useState(null);
+  const [organizationList, setOrganizationList] = useState<string[]>([]);
 
   const weekdayOptions = [
     { label: "Monday", value: "MO" },
@@ -98,9 +100,7 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
   const monthOptions = generateLabelValuePairs(12);
   const monthdayOptions = generateLabelValuePairs(31);
 
-  const eventData = Props.eventData;
-
-  React.useEffect(() => {
+  useEffect(() => {
     let recurrencesFields = form.getFieldValue("recurrences");
     if (add && recEndDate != null) {
       let ind = recurrencesFields.length - 1;
@@ -116,14 +116,15 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
     }
   }, [add, recEndDate]);
 
-  React.useEffect(() => {
-    form.setFieldsValue({
-      Location: [city, orgo, volunteer],
-    });
-  }, [city, orgo, volunteer]);
-
-  const now = moment();
-  console.log(eventData);
+  useEffect(() => {
+    if (city) {
+      getOrganizations(city).then((orgs) => {
+        if (orgs) {
+          setOrganizationList(Object.keys(orgs));
+        }
+      });
+    }
+  }, [city]);
 
   const onReset = () => {
     form.setFieldsValue({ "Add Photo": "" });
@@ -132,11 +133,11 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
   return (
     <Modal
       visible={Props.visible}
-      title='Modify Event'
+      title="Modify Event"
       width={900}
       zIndex={1300}
-      okText='Update'
-      cancelText='Cancel'
+      okText="Update"
+      cancelText="Cancel"
       onCancel={Props.onCancel}
       onOk={() => {
         form
@@ -160,8 +161,8 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
     >
       <Form
         form={form}
-        layout='vertical'
-        name='form_in_modal'
+        layout="vertical"
+        name="form_in_modal"
         initialValues={{
           ["Title"]: eventData.Title ? eventData.Title : null,
           ["Project Description"]: eventData["Project Description"]
@@ -228,8 +229,8 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
         <Row gutter={[16, 16]}>
           <Col span={12}>
             <Form.Item
-              name='Title'
-              label='Event Name'
+              name="Title"
+              label="Event Name"
               rules={[
                 {
                   required: true,
@@ -241,8 +242,8 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
             </Form.Item>
 
             <Form.Item
-              name='Project Description'
-              label='Description'
+              name="Project Description"
+              label="Description"
               rules={[
                 {
                   required: true,
@@ -251,7 +252,7 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
               ]}
             >
               <Input
-                type='textarea'
+                type="textarea"
                 value={
                   eventData["Project Description"]
                     ? eventData["Project Description"].replace(/\n/gi, " ")
@@ -261,8 +262,8 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
             </Form.Item>
 
             <Form.Item
-              name='Location'
-              label='Location'
+              name="Location"
+              label="Location"
               rules={[
                 {
                   required: true,
@@ -275,16 +276,16 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
                 onChange={(v: any) => setCity(v)}
                 getPopupContainer={(node) => node.parentNode}
               >
-                <Select.Option value='Alaska'>Alaska</Select.Option>
-                <Select.Option value='Montana'>Montana</Select.Option>
-                <Select.Option value='Seattle'>Seattle</Select.Option>
-                <Select.Option value='Spokane'>Spokane</Select.Option>
-                <Select.Option value='Wyoming'>Wyoming</Select.Option>
+                <Select.Option value="Alaska">Alaska</Select.Option>
+                <Select.Option value="Montana">Montana</Select.Option>
+                <Select.Option value="Seattle">Seattle</Select.Option>
+                <Select.Option value="Spokane">Spokane</Select.Option>
+                <Select.Option value="Wyoming">Wyoming</Select.Option>
               </Select>
             </Form.Item>
 
             <Form.Item
-              name='Organization'
+              name="Organization"
               label={
                 <>
                   <label style={{ color: "red" }}>∗</label>
@@ -293,16 +294,17 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
               }
             >
               <OrganizationDropdown
-                orgs={getOrganizations}
+                orgsList={organizationList}
+                setOrgsList={setOrganizationList}
                 city={city}
                 setOrgo={setOrgo}
-                eventData={eventData}
+                orgo={orgo}
               />
             </Form.Item>
 
             <Form.Item
-              name='Types of Volunteers Needed'
-              label='Types of Volunteers Needed'
+              name="Types of Volunteers Needed"
+              label="Types of Volunteers Needed"
             >
               <VolunteerType
                 setVolunteer={setVolunteer}
@@ -311,8 +313,8 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
             </Form.Item>
 
             <Form.Item
-              name='Contact Information and Cancellation Policy'
-              label='Contact Information and Cancellation Policy'
+              name="Contact Information and Cancellation Policy"
+              label="Contact Information and Cancellation Policy"
             >
               <Input
                 value={
@@ -325,7 +327,7 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
               />
             </Form.Item>
 
-            <Form.Item name='Website Link' label='Website Link'>
+            <Form.Item name="Website Link" label="Website Link">
               <Input
                 value={
                   eventData["Website Link"] ? eventData["Website Link"] : null
@@ -333,7 +335,7 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
               />
             </Form.Item>
 
-            <Form.Item name='Sign-up Link' label='Sign-up Link'>
+            <Form.Item name="Sign-up Link" label="Sign-up Link">
               <Input
                 value={
                   eventData["Sign-up Link"] ? eventData["Sign-up Link"] : null
@@ -342,8 +344,8 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
             </Form.Item>
 
             <Form.Item
-              name='Parking and Directions'
-              label='Parking and Directions'
+              name="Parking and Directions"
+              label="Parking and Directions"
             >
               <Input
                 value={
@@ -354,7 +356,7 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
               />
             </Form.Item>
 
-            <Form.Item name='Provider Information' label='Provider Information'>
+            <Form.Item name="Provider Information" label="Provider Information">
               <Input
                 value={
                   eventData["Provider Information"]
@@ -364,14 +366,14 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
               />
             </Form.Item>
 
-            <Form.List name='addNewFields'>
+            <Form.List name="addNewFields">
               {(fields, { add, remove }) => (
                 <>
                   {fields.map(({ key, name, fieldKey, ...restField }) => (
                     <Space
                       key={key}
                       style={{ display: "flex", marginBottom: 8 }}
-                      align='baseline'
+                      align="baseline"
                     >
                       <Form.Item
                         {...restField}
@@ -381,7 +383,7 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
                           { required: true, message: "Missing detail name" },
                         ]}
                       >
-                        <Input placeholder='Detail Name (i.e. Parking Directions)' />
+                        <Input placeholder="Detail Name (i.e. Parking Directions)" />
                       </Form.Item>
                       <Form.Item
                         {...restField}
@@ -391,14 +393,14 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
                           { required: true, message: "Missing detail value" },
                         ]}
                       >
-                        <Input placeholder='Detail Value (i.e. Park at level 2)' />
+                        <Input placeholder="Detail Value (i.e. Park at level 2)" />
                       </Form.Item>
                       <MinusCircleOutlined onClick={() => remove(name)} />
                     </Space>
                   ))}
                   <Form.Item>
                     <Button
-                      type='dashed'
+                      type="dashed"
                       onClick={() => add()}
                       block
                       icon={<PlusOutlined />}
@@ -411,7 +413,7 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
             </Form.List>
           </Col>
           <Col span={12}>
-            <Form.Item name='Clinic Flow' label='Clinic Flow'>
+            <Form.Item name="Clinic Flow" label="Clinic Flow">
               <Input
                 value={
                   eventData["Clinic Flow"]
@@ -421,7 +423,7 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
               />
             </Form.Item>
 
-            <Form.Item name='Clinic Schedule' label='Clinic Schedule'>
+            <Form.Item name="Clinic Schedule" label="Clinic Schedule">
               <Input
                 value={
                   eventData["Clinic Schedule"]
@@ -432,8 +434,8 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
             </Form.Item>
 
             <Form.Item
-              name='HS Grad Student Information'
-              label='HS Grad Student Information'
+              name="HS Grad Student Information"
+              label="HS Grad Student Information"
             >
               <Input
                 value={
@@ -448,8 +450,8 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
             </Form.Item>
 
             <Form.Item
-              name='Project Specific Training'
-              label='Project Specific Training'
+              name="Project Specific Training"
+              label="Project Specific Training"
             >
               <Input
                 value={
@@ -463,7 +465,7 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
               />
             </Form.Item>
 
-            <Form.Item name='Services Provided' label='Services Provided'>
+            <Form.Item name="Services Provided" label="Services Provided">
               <Input
                 value={
                   eventData["Services Provided"]
@@ -473,7 +475,7 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
               />
             </Form.Item>
 
-            <Form.Item name='Tips and Reminders' label='Tips and Reminders'>
+            <Form.Item name="Tips and Reminders" label="Tips and Reminders">
               <Input
                 value={
                   eventData["Tips and Reminders"]
@@ -484,8 +486,8 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
             </Form.Item>
 
             <Form.Item
-              name='Undergraduate Information'
-              label='Undergraduate Information'
+              name="Undergraduate Information"
+              label="Undergraduate Information"
             >
               <Input
                 value={
@@ -499,13 +501,13 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
               />
             </Form.Item>
 
-            <Form.Item name='Add Photo' label='Add Photo'>
+            <Form.Item name="Add Photo" label="Add Photo">
               <Upload>
                 <Button icon={<UploadOutlined />}>Click to Upload</Button>
               </Upload>
             </Form.Item>
 
-            <Form.Item label=' '>
+            <Form.Item label=" ">
               <Button
                 onClick={() => {
                   onReset();
@@ -517,10 +519,10 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
               </Button>
             </Form.Item>
 
-            <Form.Item name='DateObject' label='Date/Time'>
+            <Form.Item name="DateObject" label="Date/Time">
               <RangePicker
                 showTime
-                format='YYYY-MM-DD HH:mm:ss'
+                format="YYYY-MM-DD HH:mm:ss"
                 getPopupContainer={(node) => node.parentNode}
                 value={
                   eventData.DateObject
@@ -532,7 +534,7 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
                 }
               />
             </Form.Item>
-            <Form.List name='recurrences' initialValue={[]}>
+            <Form.List name="recurrences" initialValue={[]}>
               {(fields, { add, remove }) => (
                 <>
                   {fields.map(({ name, key, ...restField }) => (
@@ -540,7 +542,7 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
                       name={name}
                       key={key}
                       {...restField}
-                      label='Event Recurrence'
+                      label="Event Recurrence"
                       rules={[
                         {
                           required: true,
@@ -548,8 +550,8 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
                         },
                       ]}
                     >
-                      <Tabs defaultActiveKey='1' onChange={(v) => setTabNum(v)}>
-                        <TabPane tab='Daily' key='1'>
+                      <Tabs defaultActiveKey="1" onChange={(v) => setTabNum(v)}>
+                        <TabPane tab="Daily" key="1">
                           <Space>
                             Reapeat Every
                             <Select
@@ -557,12 +559,12 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
                               style={{ width: 120 }}
                               onChange={(v: any) => setInterval(v)}
                             >
-                              <Select.Option value='1'>1</Select.Option>
-                              <Select.Option value='2'>2</Select.Option>
-                              <Select.Option value='3'>3</Select.Option>
-                              <Select.Option value='4'>4</Select.Option>
-                              <Select.Option value='5'>5</Select.Option>
-                              <Select.Option value='6'>6</Select.Option>
+                              <Select.Option value="1">1</Select.Option>
+                              <Select.Option value="2">2</Select.Option>
+                              <Select.Option value="3">3</Select.Option>
+                              <Select.Option value="4">4</Select.Option>
+                              <Select.Option value="5">5</Select.Option>
+                              <Select.Option value="6">6</Select.Option>
                             </Select>
                             Day
                           </Space>
@@ -573,14 +575,14 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
                             <DatePicker
                               showTime
                               getPopupContainer={(node) => node.parentNode}
-                              format='YYYY-MM-DD HH:mm:ss'
+                              format="YYYY-MM-DD HH:mm:ss"
                               onOk={(v: any) =>
                                 setRecEndDate(v.format("YYYYMMDD[T]HHmmss[Z]"))
                               }
                             />
                           </Space>
                         </TabPane>
-                        <TabPane tab='Weekly' key='2'>
+                        <TabPane tab="Weekly" key="2">
                           <Checkbox.Group
                             options={weekdayOptions}
                             onChange={(v: any) => setWeekday(v)}
@@ -592,14 +594,14 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
                             <DatePicker
                               showTime
                               getPopupContainer={(node) => node.parentNode}
-                              format='YYYY-MM-DD HH:mm:ss'
+                              format="YYYY-MM-DD HH:mm:ss"
                               onOk={(v: any) =>
                                 setRecEndDate(v.format("YYYYMMDD[T]HHmmss[Z]"))
                               }
                             />
                           </Space>
                         </TabPane>
-                        <TabPane tab='Monthly' key='3'>
+                        <TabPane tab="Monthly" key="3">
                           Month day:
                           <Checkbox.Group
                             options={monthdayOptions}
@@ -612,14 +614,14 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
                             <DatePicker
                               showTime
                               getPopupContainer={(node) => node.parentNode}
-                              format='YYYY-MM-DD HH:mm:ss'
+                              format="YYYY-MM-DD HH:mm:ss"
                               onOk={(v: any) =>
                                 setRecEndDate(v.format("YYYYMMDD[T]HHmmss[Z]"))
                               }
                             />
                           </Space>
                         </TabPane>
-                        <TabPane tab='Yearly' key='4'>
+                        <TabPane tab="Yearly" key="4">
                           Month:
                           <Checkbox.Group
                             options={monthOptions}
@@ -639,7 +641,7 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
                             <DatePicker
                               showTime
                               getPopupContainer={(node) => node.parentNode}
-                              format='YYYY-MM-DD HH:mm:ss'
+                              format="YYYY-MM-DD HH:mm:ss"
                               onOk={(v: any) =>
                                 setRecEndDate(v.format("YYYYMMDD[T]HHmmss[Z]"))
                               }
@@ -652,7 +654,7 @@ export const CollectionCreateForm: React.FC<Props> = (Props) => {
                   ))}
                   <Form.Item>
                     <Button
-                      type='dashed'
+                      type="dashed"
                       onClick={() => {
                         add();
                         setAdd(true);
@@ -859,7 +861,8 @@ export const CollectionsPage = (props) => {
   return (
     <div>
       <Button
-        type='primary'
+        style={{ display: "inline-block" }}
+        type="primary"
         onClick={(e) => {
           setVisible(true);
         }}
@@ -878,7 +881,10 @@ export const CollectionsPage = (props) => {
   );
 };
 
-class ModifyEventForm extends React.Component {
+class ModifyEventForm extends React.Component<
+  { eventData: any; handleClose: any },
+  {}
+> {
   state = {
     loading: true,
   };
@@ -896,7 +902,6 @@ class ModifyEventForm extends React.Component {
       <CollectionsPage
         eventData={this.props.eventData}
         handleClose={this.props.handleClose}
-        test={this.state.test}
       />
     );
   }

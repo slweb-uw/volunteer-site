@@ -5,7 +5,8 @@ import {
   withStyles,
   WithStyles,
 } from "@material-ui/core/styles";
-import Button from "@material-ui/core/Button";
+import MaterialButton from "@material-ui/core/Button";
+import { Button } from "antd";
 import Dialog from "@material-ui/core/Dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
@@ -20,6 +21,7 @@ import { useRouter } from "next/router";
 
 import ModifyEventForm from "components/modifyEventForm";
 import { useAuth } from "auth";
+import { firebaseClient } from "firebaseClient";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -65,12 +67,37 @@ const DialogContent = withStyles((theme: Theme) => ({
   },
 }))(MuiDialogContent);
 
-const DialogActions = withStyles((theme: Theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(1),
-  },
-}))(MuiDialogActions);
+const deleteEvent = async (eventData: EventData | undefined) => {
+  if (
+    eventData &&
+    confirm("Please acknowledge you wish to delete this event.")
+  ) {
+    const userToken = await firebaseClient.auth().currentUser?.getIdToken();
+
+    try {
+      await Promise.all([
+        fetch("/api/delete-event-data", {
+          method: "POST",
+          body: JSON.stringify({
+            eventData,
+            userToken,
+          }),
+        }),
+        fetch("/api/delete-calendar-event", {
+          method: "POST",
+          body: JSON.stringify({
+            eventData,
+            userToken,
+          }),
+        }),
+      ]);
+      alert("Success!");
+      location.reload();
+    } catch (e) {
+      alert(e);
+    }
+  }
+};
 
 export default function EventModal(props: {
   open: boolean;
@@ -137,7 +164,7 @@ export default function EventModal(props: {
             <div style={{ marginTop: "2em" }}>
               <Link passHref href={eventLink}>
                 <a target="_blank">
-                  <Button
+                  <MaterialButton
                     autoFocus
                     onClick={handleClose}
                     color="secondary"
@@ -145,7 +172,7 @@ export default function EventModal(props: {
                     style={{ marginRight: "1em" }}
                   >
                     Learn more
-                  </Button>
+                  </MaterialButton>
                 </a>
               </Link>
               {event?.["Sign-up Link"] && (
@@ -153,24 +180,35 @@ export default function EventModal(props: {
                   href={event?.["Sign-up Link"]}
                   style={{ textDecoration: "none" }}
                 >
-                  <Button
+                  <MaterialButton
                     autoFocus
                     onClick={handleClose}
                     color="secondary"
                     variant="contained"
                   >
                     Sign-up Link
-                  </Button>
+                  </MaterialButton>
                 </a>
               )}
               {user &&
                 (user.email === "slweb@uw.edu" ||
                   user.email === "slwebuw@gmail.com") && (
-                  <div style={{ paddingBottom: "2em" }}>
-                    <ModifyEventForm
-                      eventData={event}
-                      handleClose={handleClose}
-                    />
+                  <div style={{ paddingBottom: "2em", paddingTop: "2em" }}>
+                    <div style={{ display: "inline-block" }}>
+                      <ModifyEventForm
+                        eventData={event}
+                        handleClose={handleClose}
+                      />
+                    </div>
+                    <Button
+                      style={{ display: "inline-block", marginLeft: "1em" }}
+                      type="primary"
+                      onClick={async (e) => {
+                        deleteEvent(event);
+                      }}
+                    >
+                      Delete Event
+                    </Button>
                   </div>
                 )}
             </div>
