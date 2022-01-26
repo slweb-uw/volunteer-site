@@ -4,24 +4,21 @@
 interface EventData {
   Title: string;
   ["Project Description"]: string;
-  organization: string;
-  Order?: string[];
-  Timestamp: Date;
-  [Field: string]: string;
+  Organization: string;
+  timestamp: Date;
+  [Field: string]: string | string[];
   id: string;
   imageURL?: string;
+  Order?: string[];
+  ["Types of Volunteers Needed"]?: string[];
 }
 
 // The data of the event which needs to be passed in during the api call.
 interface CalendarEventData {
   //calendar fields
-  Name: string;
-  Description: string;
-  Organization: string;
-  Location: string;
-  StartDate: string; // format according to RFC5545, use toISOString() before send the api request
-  EndDate: string; // format according to RFC5545, use toISOString() before send the api request
-  Timezone: string; // Formatted as an IANA Time Zone Database name, e.g. "Europe/Zurich"
+  StartDate?: string; // format according to RFC5545, use toISOString() before send the api request
+  EndDate?: string; // format according to RFC5545, use toISOString() before send the api request
+  Timezone?: string; // Formatted as an IANA Time Zone Database name, e.g. "Europe/Zurich"
   // format according to
   // RFC5545(https://tools.ietf.org/html/rfc5545#page-37,
   // https://tools.ietf.org/html/rfc5545#section-3.8.5)
@@ -32,14 +29,14 @@ interface CalendarEventData {
   Recurrence?: string[];
 
   //Event Fields:
-  Title?: string;
-  ["Project Description"]?: string;
+  Title: string;
+  Location: string;
+  Organization: string;
+  ["Project Description"]: string;
   id?: string; // document's id
-  ["Types of Volunteers Needed"]?: string;
-  TimeStamp?: Date;
-  //[Field?: string]: string;
+  ["Types of Volunteers Needed"]?: string[];
+  timestamp: Date;
+  [Field: string]: string | string[] | Date;
   Order?: string[];
-  recurrences?: string[];
-  ["recurrences original"]?: string[];
   imageURL?: string;
 }

@@ -61,14 +61,18 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
         const _ = await jwtClient.authorize();
         const deleteEventId = await checkEvent(jwtClient, eventData);
         const res = await deleteEvent(jwtClient, deleteEventId, eventData);
+        console.log("Calendar event deleted!");
         resolve.status(200).send("Success:" + res);
       } catch (err) {
+        console.log("Bad request" + err);
         resolve.status(400).send("Bad request: " + err);
       }
     } else {
+      console.log("Invalid request method");
       resolve.status(400).send("Invalid request method");
     }
   } else {
+    console.log("Unauthorized user");
     resolve.status(400).send("Error: Unauthorized User");
   }
 };
@@ -84,16 +88,16 @@ async function checkEvent(auth: any, event: CalendarEventData) {
   try {
     const res = await calendar.events.list({
       calendarId: "slweb@uw.edu",
-      q: event.Name,
+      q: event.Title,
     });
     const events: any = res.data.items;
     let deleteEventId: string | null = null;
     if (events.length) {
       events.forEach((content: any, index: number) => {
         if (
-          content.summary === event.Name &&
+          content.summary === event.Title &&
           content.location === event.Location &&
-          content.organizer.displayName === event.Organization
+          content.description.includes(event.id)
         ) {
           deleteEventId = content.id;
         }

@@ -74,11 +74,12 @@ export default class OrganizationDropdown extends React.Component<
         )}
         getPopupContainer={(node) => node.parentNode}
       >
-        {this.props.orgsList.map((item) => (
-          <Option key={item} value={item}>
-            {item}
-          </Option>
-        ))}
+        {this.props.orgsList &&
+          this.props.orgsList.map((item) => (
+            <Option key={item} value={item}>
+              {item}
+            </Option>
+          ))}
       </Select>
     );
   }

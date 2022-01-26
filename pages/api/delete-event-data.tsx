@@ -39,6 +39,9 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
  * @param {CalendarEventData} event Event related information.
  */
 async function deleteEvent(event: CalendarEventData) {
+  if (!event.id) {
+    throw new Error("Event ID is missing from data");
+  }
   firebaseAdmin
     .firestore()
     .collection(event.Location)
@@ -48,6 +51,6 @@ async function deleteEvent(event: CalendarEventData) {
       console.log("Document successfully deleted!");
     })
     .catch((error) => {
-      throw new Error("Error removing document: ", error);
+      throw new Error("Error removing document: " + error);
     });
 }

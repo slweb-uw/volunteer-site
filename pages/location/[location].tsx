@@ -17,7 +17,7 @@ import EventCard from "../../components/eventCard";
 import BootstrapInput from "components/bootstrapInput";
 import Link from "next/link";
 import EventModal from "components/eventModal";
-import EventForm from "components/eventForm";
+import AddModifyEventModal from "components/addModifyEventModal";
 import { useAuth } from "auth";
 import IconBreadcrumbs from "components/breadcrumbs";
 
@@ -32,11 +32,13 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   const { location } = router.query; // string of current location (ex: "Seattle")
   const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
   const [events, setEvents] = useState<EventData[]>([]); // list of loaded events
-  const [cursor, setCursor] =
-    useState<firebaseClient.firestore.QueryDocumentSnapshot>(); // cursor to last document loaded
+  const [cursor, setCursor] = useState<
+    firebaseClient.firestore.QueryDocumentSnapshot
+  >(); // cursor to last document loaded
   const [filter, setFilter] = useState<string | undefined>();
   const [showLoadButton, setShowLoadButton] = useState<boolean>(true);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [adminModalOpen, setAdminModalOpen] = useState<boolean>(false);
   const [selectedEvent, setSelectedEvent] = useState<EventData>();
   const [sortField, setSortField] = useState<string>("timestamp");
 
@@ -55,7 +57,7 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
           .collection("cache")
           .doc(location)
           .get()
-          .then((doc) => setOrganizations(Object.keys(doc.data())));
+          .then((doc) => setOrganizations(Object.keys(doc.data() as string[])));
       }
     }
   }, [router]);
@@ -149,7 +151,9 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
     <div className={classes.page}>
       <CssBaseline />
       <IconBreadcrumbs
-        crumbs = {["Opportunities in " + location]} />
+        crumbs={["Opportunities in " + location]}
+        parentURL={undefined}
+      />
       <Typography variant="h3" gutterBottom>
         Opportunities in {location}
       </Typography>
@@ -159,70 +163,101 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
         handleClose={() => setModalOpen(false)}
       />
 
-      <div style={{ display: "flex", alignItems: "center", marginTop: "2em", marginBottom: "2em" }}>
-        <Typography display="inline">
-          <b>Filters</b>{" "}
-        </Typography>
-          <Typography display="inline" style={{ marginLeft: "1em", marginRight: "0.5rem" }}>Category: </Typography>
-          <Select
-            value={filter}
-            onChange={(e) => {
-              filterByCategory(e.target.value as string | undefined);
-            }}
-            style={{ width: 200 }}
-            displayEmpty
-            input={<BootstrapInput />}
-          >
-            <MenuItem>Show All</MenuItem>
-            {organizations.map((organization) => (
-              <MenuItem value={organization}>{organization}</MenuItem>
-            ))}
-          </Select>
-          <Typography display="inline" style={{ marginLeft: "1em", marginRight: "0.5rem" }}>Sort By: </Typography>
-          <Select
-            value={sortField}
-            onChange={(e) => {
-              changeSortField(e.target.value as string);
-            }}
-            style={{ width: 200 }}
-            input={<BootstrapInput />}
-          >
-            <MenuItem value={"timestamp"}>Date Added</MenuItem>
-            <MenuItem value={"Title"}>Title</MenuItem>
-          </Select>
-        {/* TODO: Uncomment when calendar is fixed */}
-        {/* <div style={{ textAlign: "right" }}>
-          <Button
-            variant="contained"
-            color="primary"
-            style={{
-              marginTop: "2em",
-            }}
-          >
-            <Typography variant="h6">
-              <Link href="/calendar">
-                <div style={{ color: "white" }}>See Calendar</div>
-              </Link>
-            </Typography>
-          </Button>
-        </div> */}
+      <div
+        style={{
+          marginTop: "2em",
+          marginBottom: "2em",
+          width: "100%",
+        }}
+      >
+        <Grid container>
+          <Grid item xs={12} sm={10}>
+            <Grid container>
+              <Grid item xs={12}>
+                <Typography
+                  gutterBottom
+                  display="inline"
+                  style={{ marginRight: "1em" }}
+                >
+                  <b>Filters</b>{" "}
+                </Typography>
+              </Grid>
+              <Grid item style={{ marginBottom: "1em" }}>
+                <Typography
+                  display="inline"
+                  style={{ marginLeft: "1em", marginRight: "0.5rem" }}
+                >
+                  Category:{" "}
+                </Typography>
+                <Select
+                  value={filter}
+                  onChange={(e) => {
+                    filterByCategory(e.target.value as string | undefined);
+                  }}
+                  style={{ width: 200 }}
+                  displayEmpty
+                  input={<BootstrapInput />}
+                >
+                  <MenuItem>Show All</MenuItem>
+                  {organizations.map((organization) => (
+                    <MenuItem value={organization}>{organization}</MenuItem>
+                  ))}
+                </Select>
+              </Grid>
+              <Grid item style={{ marginBottom: "1em" }}>
+                <Typography
+                  display="inline"
+                  style={{ marginLeft: "1em", marginRight: "0.5rem" }}
+                >
+                  Sort By:{" "}
+                </Typography>
+                <Select
+                  value={sortField}
+                  onChange={(e) => {
+                    changeSortField(e.target.value as string);
+                  }}
+                  style={{ width: 200 }}
+                  input={<BootstrapInput />}
+                >
+                  <MenuItem value={"timestamp"}>Date Added</MenuItem>
+                  <MenuItem value={"Title"}>Title</MenuItem>
+                </Select>
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid item xs={12} sm={2} style={{ textAlign: "right" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              style={{
+                float: "right",
+              }}
+            >
+              <Typography>
+                <Link href="/calendar">
+                  <div style={{ color: "white" }}>See Calendar</div>
+                </Link>
+              </Typography>
+            </Button>
+          </Grid>
+        </Grid>
       </div>
 
       <Typography
         variant="h6"
         style={{ textAlign: "center", marginBottom: "3em", color: "#85754D" }}
       >
-        <b>
-          Providers: </b> Please review our{" "}
-          <i>
-            <Link href={"/onboarding/"}>
-              <u>
-                <a style={{ color: "#85754D" }}>Onboarding Instructions</a>
-              </u>
-            </Link>
-          </i>{" "}
-          before signing up for an opportunity!
-
+        <b>Providers: </b> Please review our{" "}
+        <i>
+          <Link href={"/onboarding/"}>
+            <u>
+              <a style={{ color: "#85754D", cursor: "pointer" }}>
+                Onboarding Instructions
+              </a>
+            </u>
+          </Link>
+        </i>{" "}
+        before signing up for an opportunity!
       </Typography>
 
       {/* Button-Modal Module for adding new events */}
@@ -231,7 +266,22 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
         (user.email === "slweb@uw.edu" ||
           user.email === "slwebuw@gmail.com") && (
           <div style={{ paddingBottom: "2em" }}>
-            <EventForm />
+            <AddModifyEventModal
+              open={adminModalOpen}
+              location={location}
+              handleClose={() => {
+                setAdminModalOpen(false);
+              }}
+            />
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => {
+                setAdminModalOpen(true);
+              }}
+            >
+              Add Event
+            </Button>
           </div>
         )}
 

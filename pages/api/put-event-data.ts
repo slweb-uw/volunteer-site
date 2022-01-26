@@ -53,7 +53,7 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
           eventData,
           document
         );
-        resolve.status(200).send("Success:" + JSON.stringify(res));
+        resolve.status(200).send(JSON.stringify(res));
       } catch (err) {
         resolve.status(400).send("Bad request: " + err);
       }
@@ -69,22 +69,18 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
  * check if the given event already exists in firestore
  * @param {CalendarEventData} event Event related information.
  */
-async function checkEvent(
-  event: CalendarEventData,
-  document: DocumentReference
-) {
+async function checkEvent(event: CalendarEventData, document: any) {
   try {
     let update: boolean = false;
     let updateEventId: string | null = null;
 
     // check firestore if there is an existing event with matching location and name and organization
-    if (document) {
+    if (document && event.id) {
       update = true;
       updateEventId = event.id;
     }
     return { update, updateEventId };
   } catch (err) {
-    console.log("error error2");
     return { update: false, updateEventId: null };
   }
 }
@@ -111,10 +107,12 @@ async function addOrUpdateEvent(
       //   calendarId: 'slweb@uw.edu',
       //   requestBody: body,
       // });
-      document = firebaseAdmin.firestore().collection(event.Location).doc();
+      document = firebaseAdmin
+        .firestore()
+        .collection(event.Location)
+        .doc();
       body["id"] = document.id;
-      console.log(body);
-      await document.set(body)
+      await document.set(body);
 
       // check if this event is part of a new organization not existing in current cache of orgs.
       document = firebaseAdmin
@@ -123,7 +121,7 @@ async function addOrUpdateEvent(
         .doc(event.Location);
 
       let organizations = await document.get();
-      
+
       // organizations = organizations.then((snapshot) => {
       //   return snapshot.data();
       // });
@@ -140,7 +138,6 @@ async function addOrUpdateEvent(
       return body;
     }
   } catch (err) {
-    console.log("error error3", err);
     throw new Error("Error from change:" + err);
   }
 }
@@ -163,8 +160,6 @@ function createRequestBody(event: CalendarEventData, update: boolean) {
       result[element] = event[element];
     }
   });
-
   result["timestamp"] = new Date().toISOString();
-
   return result;
 }

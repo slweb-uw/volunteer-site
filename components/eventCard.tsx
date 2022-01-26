@@ -58,7 +58,7 @@ const EventCard: React.FC<Props> = (props) => {
             <b>{props.event.Title}</b>
           </Typography>
           <Typography variant='subtitle1' color='textSecondary' gutterBottom>
-            {props.event.organization}
+            {props.event.Organization}
           </Typography>
           <div className={classes.details}>{props.event["Project Description"] ?? NotSpecified }</div>
         </CardContent>

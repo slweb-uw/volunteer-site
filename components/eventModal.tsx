@@ -1,27 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   createStyles,
   Theme,
   withStyles,
   WithStyles,
 } from "@material-ui/core/styles";
-import MaterialButton from "@material-ui/core/Button";
-import { Button } from "antd";
 import Dialog from "@material-ui/core/Dialog";
 import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import MuiDialogContent from "@material-ui/core/DialogContent";
-import MuiDialogActions from "@material-ui/core/DialogActions";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
-import { Grid } from "@material-ui/core";
+import { Button, Grid } from "@material-ui/core";
 import Link from "next/link";
-
 import { useRouter } from "next/router";
-
-import ModifyEventForm from "components/modifyEventForm";
 import { useAuth } from "auth";
 import { firebaseClient } from "firebaseClient";
+import AddModifyEventModal from "./addModifyEventModal";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -91,7 +86,6 @@ const deleteEvent = async (eventData: EventData | undefined) => {
           }),
         }),
       ]);
-      alert("Success!");
       location.reload();
     } catch (e) {
       alert(e);
@@ -103,10 +97,11 @@ export default function EventModal(props: {
   open: boolean;
   event: EventData | undefined;
   handleClose: any;
-  handleModify: any;
 }) {
-  const { open, event, handleClose, handleModify } = props;
+  const { open, event, handleClose } = props;
   const router = useRouter();
+
+  const [adminModalOpen, setAdminModalOpen] = useState<boolean>(false);
 
   const { location } = router.query; // string of current location (ex: "Seattle")
 
@@ -163,46 +158,58 @@ export default function EventModal(props: {
             )}
             <div style={{ marginTop: "2em" }}>
               <Link passHref href={eventLink}>
-                <a target="_blank">
-                  <MaterialButton
-                    autoFocus
+                <a style={{ textDecoration: "none" }} target="_blank">
+                  <Button
                     onClick={handleClose}
                     color="secondary"
                     variant="contained"
                     style={{ marginRight: "1em" }}
                   >
                     Learn more
-                  </MaterialButton>
+                  </Button>
                 </a>
               </Link>
-              {event?.["Sign-up Link"] && (
-                <a
-                  href={event?.["Sign-up Link"]}
-                  style={{ textDecoration: "none" }}
-                >
-                  <MaterialButton
-                    autoFocus
-                    onClick={handleClose}
-                    color="secondary"
-                    variant="contained"
+              {event?.["Sign-up Link"] &&
+                typeof event?.["Sign-up Link"] === "string" && (
+                  <a
+                    href={event?.["Sign-up Link"]}
+                    style={{ textDecoration: "none" }}
                   >
-                    Sign-up Link
-                  </MaterialButton>
-                </a>
-              )}
+                    <Button
+                      onClick={handleClose}
+                      color="secondary"
+                      variant="contained"
+                    >
+                      Sign-up Link
+                    </Button>
+                  </a>
+                )}
               {user &&
                 (user.email === "slweb@uw.edu" ||
                   user.email === "slwebuw@gmail.com") && (
                   <div style={{ paddingBottom: "2em", paddingTop: "2em" }}>
                     <div style={{ display: "inline-block" }}>
-                      <ModifyEventForm
-                        eventData={event}
-                        handleClose={handleClose}
+                      <AddModifyEventModal
+                        open={adminModalOpen}
+                        location={location}
+                        event={event}
+                        handleClose={() => {
+                          setAdminModalOpen(false);
+                        }}
                       />
+                      <Button
+                        style={{ display: "inline-block" }}
+                        color="secondary"
+                        onClick={(e) => {
+                          setAdminModalOpen(true);
+                        }}
+                      >
+                        Modify Event
+                      </Button>
                     </div>
                     <Button
                       style={{ display: "inline-block", marginLeft: "1em" }}
-                      type="primary"
+                      color="secondary"
                       onClick={async (e) => {
                         deleteEvent(event);
                       }}

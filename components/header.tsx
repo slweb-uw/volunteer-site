@@ -28,21 +28,22 @@ const Header: React.FC<{}> = (props) => {
   const { user } = useAuth();
 
   const links: React.ReactNode[] = [
-    <NavLink href="/">
+    <NavLink key="/" href="/">
       <StyledLink>Home</StyledLink>
     </NavLink>,
-    <NavLink href="/resources">
+    <NavLink key="resources" href="/resources">
       <StyledLink>Resources</StyledLink>
     </NavLink>,
-    <NavLink href="/protocols">
+    <NavLink key="protocols" href="/protocols">
       <StyledLink>Protocols</StyledLink>
     </NavLink>,
-    <NavLink href="/donations">
+    <NavLink key="donations" href="/donations">
       <StyledLink>Donations</StyledLink>
     </NavLink>,
     // sign in and out
     user ? (
       <StyledLink
+        key="sign out"
         onClick={() => {
           firebaseClient.auth().signOut();
         }}
@@ -51,11 +52,12 @@ const Header: React.FC<{}> = (props) => {
       </StyledLink>
     ) : (
       <StyledLink
+        key="sign in"
         onClick={() => {
           var provider = new firebaseClient.auth.OAuthProvider("microsoft.com");
           provider.setCustomParameters({
             // Target uw login
-            tenant: 'uw.edu'
+            tenant: "uw.edu",
           });
           firebaseClient.auth().signInWithPopup(provider);
         }}

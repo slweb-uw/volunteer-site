@@ -96,7 +96,7 @@ async function checkEvent(auth: any, event: CalendarEventData) {
   try {
     const res = await calendar.events.list({
       calendarId: "slweb@uw.edu",
-      q: event.Name,
+      q: event.Title,
     });
     const events: any = res.data.items;
     let update: boolean = false;
@@ -104,9 +104,9 @@ async function checkEvent(auth: any, event: CalendarEventData) {
     if (events.length) {
       events.forEach((content: any, index: number) => {
         if (
-          content.summary === event.Name &&
+          content.summary === event.Title &&
           content.location === event.Location &&
-          content.organizer.displayName === event.Organization
+          content.description.includes(event.id)
         ) {
           update = true;
           updateEventId = content.id;
@@ -163,11 +163,16 @@ function createRequestBody(event: CalendarEventData, update: boolean) {
   let result: any = {};
   result["end"] = { dateTime: event.EndDate, timeZone: event.Timezone };
   result["start"] = { dateTime: event.StartDate, timeZone: event.Timezone };
-  result["description"] = event.Description;
+  result["description"] =
+    "https://servicelearning.washington.edu/" +
+    event.Location +
+    "/" +
+    event.id +
+    "\n" +
+    event["Project Description"];
   if (!update) {
     result["location"] = event.Location;
-    result["summary"] = event.Name;
-    result["organizer"] = { displayName: event.Organization };
+    result["summary"] = event.Title;
   }
   if (event.Recurrence) {
     result["recurrence"] = event.Recurrence;

@@ -1,6 +1,7 @@
 import firebaseClient from "firebase/app";
 import "firebase/firestore";
 import "firebase/database";
+import "firebase/storage"
 import "firebase/auth";
 import "firebase/analytics";
 

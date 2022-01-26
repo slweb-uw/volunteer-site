@@ -1,12 +1,23 @@
 import type { AppProps } from "next/app";
 import { AuthProvider } from "../auth";
 import React from "react";
-import { MuiThemeProvider, createMuiTheme } from "@material-ui/core";
+import { MuiThemeProvider, createTheme } from "@material-ui/core";
 import { SnackbarProvider } from "notistack";
 import Layout from "components/layout";
+import type {} from '@mui/lab/themeAugmentation';
 
 // Global Theme
-const theme = createMuiTheme({
+const theme = createTheme({
+  //@ts-ignore
+  components: {
+    MuiTimeline: {
+      styleOverrides: {
+        root: {
+          backgroundColor: 'red',
+        },
+      },
+    },
+  },
   typography: {
     fontFamily: '"Lato", sans-serif',
   },
