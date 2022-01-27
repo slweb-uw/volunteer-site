@@ -101,6 +101,9 @@ const volunteerTypes = [
   "School of Social Work",
   "MEDEX",
   "PT/OT/P&O",
+  "Providers",
+  "Undergraduates",
+  "Other",
 ];
 
 const locations = ["Seattle", "Spokane", "Montana", "Alaska", "Wyoming"];
@@ -110,13 +113,13 @@ const initialFields = [
   "Website Link",
   "Sign-up Link",
   "Parking and Directions",
-  "Provider Information",
   "Clinic Flow",
   "Clinic Schedule",
-  "HS Grad Student Information",
   "Project Specific Training",
   "Services Provided",
   "Tips and Reminders",
+  "Provider Information",
+  "HS Grad Student Information",
   "Undergraduate Information",
 ];
 
@@ -127,7 +130,7 @@ const reservedFields = new Set([
   "Organization",
   "Order",
   "id",
-  "imageUrl",
+  "imageURL",
   "timestamp",
   "recurrences",
   "recurrences original",
@@ -171,7 +174,7 @@ export default function AddModifyEventModal(props: {
   const [volunteersNeeded, setVolunteersNeeded] = useState<string[]>([]);
   const [startDateTime, setStartDateTime] = useState<Date | null>(null);
   const [endDateTime, setEndDateTime] = useState<Date | null>(null);
-  const [imageUrl, setImageUrl] = useState<string | undefined>();
+  const [imageURL, setImageURL] = useState<string | undefined>();
   const [otherFields, setOtherFields] = useState<
     Record<string, string | string[] | undefined>
   >({});
@@ -203,10 +206,10 @@ export default function AddModifyEventModal(props: {
   );
 
   const deleteImage = async () => {
-    if (imageUrl) {
-      const imageRef = firebaseClient.storage().refFromURL(imageUrl);
+    if (imageURL) {
+      const imageRef = firebaseClient.storage().refFromURL(imageURL);
       await imageRef.delete();
-      setImageUrl(undefined);
+      setImageURL(undefined);
       alert(
         "Image deleted. Please save the event, or set the image and save the event."
       );
@@ -219,10 +222,10 @@ export default function AddModifyEventModal(props: {
     const imageFile: File = (target.files as FileList)[0];
     const photoId = Guid.create().toString();
     const storageRef = firebaseClient.storage().ref(photoId);
-    // Upload image to firebase storage then get its url
+    // Upload image to firebase storage then get its URL
     const snapshot = storageRef.put(imageFile).then((snapshot) => {
-      snapshot.ref.getDownloadURL().then((downloadUrl) => {
-        setImageUrl(downloadUrl as string);
+      snapshot.ref.getDownloadURL().then((downloadURL) => {
+        setImageURL(downloadURL as string);
       });
     });
   };
@@ -288,6 +291,7 @@ export default function AddModifyEventModal(props: {
         }
         const rule = new RRule({
           freq: RRule.WEEKLY,
+          interval: interval ?? 1,
           byweekday: ruleDays,
           dtstart: startDateTime,
           until: recEndDate,
@@ -339,8 +343,8 @@ export default function AddModifyEventModal(props: {
         uploadEvent[fieldName] = cur;
       }
     });
-    if (imageUrl) {
-      uploadEvent[imageUrl] = imageUrl;
+    if (imageURL) {
+      uploadEvent[imageURL] = imageURL;
     }
     if (volunteersNeeded) {
       uploadEvent["Types of Volunteers Needed"] = volunteersNeeded;
@@ -575,6 +579,11 @@ export default function AddModifyEventModal(props: {
           {Object.keys(otherFields).map((fieldName) => (
             <Grid item xs={12} sm={6}>
               <TextField
+                helperText={
+                  fieldName === "Clinic Schedule"
+                    ? "i.e. every other Saturday at 2:00-4:00pm"
+                    : ""
+                }
                 multiline
                 fullWidth
                 label={fieldName}
@@ -595,7 +604,7 @@ export default function AddModifyEventModal(props: {
               variant="h6"
               style={{ paddingTop: "2em", paddingBottom: "1em" }}
             >
-              Date/Time
+              Outreach Event Date/Time
             </Typography>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DateTimePicker
@@ -675,7 +684,7 @@ export default function AddModifyEventModal(props: {
                     Repeat Every{" "}
                     <Select
                       value={interval}
-                      label="Organization *"
+                      label="Interval *"
                       onChange={(e) => {
                         setInterval(e.target.value as number);
                       }}
@@ -715,6 +724,22 @@ export default function AddModifyEventModal(props: {
                         ))}
                       </FormGroup>
                     </FormControl>
+                    Repeat Every{" "}
+                    <Select
+                      value={interval}
+                      label="Interval *"
+                      onChange={(e) => {
+                        setInterval(e.target.value as number);
+                      }}
+                    >
+                      <MenuItem value={1}>1</MenuItem>
+                      <MenuItem value={2}>2</MenuItem>
+                      <MenuItem value={3}>3</MenuItem>
+                      <MenuItem value={4}>4</MenuItem>
+                      <MenuItem value={5}>5</MenuItem>
+                      <MenuItem value={6}>6</MenuItem>
+                    </Select>{" "}
+                    Week(s)
                   </div>
                 )}
                 {recurrenceType === "Monthly" && (
@@ -815,7 +840,7 @@ export default function AddModifyEventModal(props: {
         </Grid>
       </ModalDialogContent>
       <DialogActions>
-        {imageUrl && (
+        {imageURL && (
           <Button
             variant="contained"
             color="secondary"
@@ -844,7 +869,7 @@ export default function AddModifyEventModal(props: {
           />
         </Button>
         <Button variant="contained" color="secondary" onClick={putEvent}>
-          Save Event
+          Save Project
         </Button>
       </DialogActions>
     </Dialog>

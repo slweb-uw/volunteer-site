@@ -21,18 +21,38 @@ interface Props {
 
 const NotSpecified = <i style={{ color: "gray" }}>Not specified</i>;
 
-const Data: { [key: string]: any } = {
-  WEBSITE: "Website Link",
-  DATETIME: "Date and Time",
-  CONTACT: "Contact Information and Cancellation Policy",
-  TYPESVOL: "Types of Volunteers Needed",
-  DESC: "Project Description",
-  TIPS: "Tips and Reminders",
-  REQTRNGS: "Required Trainings",
-  PROVINFO: "Provider Information",
-  CLINICF: "Clinic Flow",
-  DIRECTIONS: "Parking and Directions",
-};
+const initialGridKeys = [
+  "Project Description",
+  "Tips and Reminders",
+  "Clinic Flow",
+  "Required Trainings",
+  "Parking and Directions",
+  "Provider Information",
+];
+
+const reservedKeys = [
+  "Project Description",
+  "Types of Volunteers Needed",
+  "Title",
+  "Order",
+  "Organization",
+  "Location",
+  "Contact Information and Cancellation Policy",
+  "Website Link",
+  "Sign-up Link",
+  "Parking and Directions",
+  "Clinic Flow",
+  "Tips and Reminders",
+  "Provider Information",
+  "id",
+  "timestamp",
+  "StartDate",
+  "EndDate",
+  "Recurrence",
+  "recurrences",
+  "original recurrence",
+  "imageURL",
+];
 
 const Event: NextPage<Props> = ({ classes }) => {
   const router = useRouter();
@@ -61,16 +81,21 @@ const Event: NextPage<Props> = ({ classes }) => {
 
   // console.log(eventData);
 
-  let buttonText = eventData?.[Data.WEBSITE]
+  const options = { year: "numeric", month: "long", day: "numeric" };
+
+  let buttonText = eventData?.["Sign-up Link"]
     ? "Sign up >"
     : "No sign up links available yet";
 
-  return (
+  return !eventData ? (
+    <div />
+  ) : (
     <div className={classes.page}>
       <CssBaseline />
       <IconBreadcrumbs
-        parentURL = {"/location/" + location}
-        crumbs = {["Opportunities in " + location, eventData?.Title ?? 'Untitled']} />
+        parentURL={"/location/" + location}
+        crumbs={["Opportunities in " + location, eventData.Title]}
+      />
       <Typography variant="h5" style={{ fontWeight: 900 }}>
         {eventData?.Title}
       </Typography>
@@ -80,118 +105,88 @@ const Event: NextPage<Props> = ({ classes }) => {
           <img
             className={classes.detailsImage}
             src={eventData?.imageURL ? eventData?.imageURL : "/beigeSquare.png"}
-            alt={"Image for " + eventData?.Title}
+            alt={"Image for " + eventData.Title}
           />
         </Grid>
         <Grid item sm={12} md={6}>
-          <Grid container direction='column' spacing={6}>
+          <Grid container direction="column" spacing={6}>
             <Grid item>
-              <Grid container direction='row' spacing={10}>
+              <Grid container direction="row" spacing={10}>
                 <Grid item>
-                  <Typography variant='h6' style={{ fontWeight: 600 }}>
+                  <Typography variant="h6" style={{ fontWeight: 600 }}>
                     Location
                   </Typography>
-                  <Typography variant='body1'>
+                  <Typography variant="body1">
                     {eventData?.Location ?? NotSpecified}
                   </Typography>
                 </Grid>
                 <Grid item>
-                  <Typography variant='h6' style={{ fontWeight: 600 }}>
+                  <Typography variant="h6" style={{ fontWeight: 600 }}>
                     Date and Time
                   </Typography>
-                  <Typography variant='body1'>
-                    {eventData?.[Data.DATETIME] ?? NotSpecified}
+                  <Typography variant="body1">
+                    {eventData["StartDate"] ?? NotSpecified}
                   </Typography>
                 </Grid>
               </Grid>
             </Grid>
             <Grid item>
-              <Typography variant='h6' style={{ fontWeight: 600 }}>
+              <Typography variant="h6" style={{ fontWeight: 600 }}>
                 Contact Information & Cancellation Policy
               </Typography>
               <Typography>
-                {eventData?.[Data.CONTACT] ?? NotSpecified}
+                {eventData["Contact Information and Cancellation Policy"] ??
+                  NotSpecified}
               </Typography>
             </Grid>
             <Grid item>
-              <Typography variant='h6' style={{ fontWeight: 600 }}>
+              <Typography variant="h6" style={{ fontWeight: 600 }}>
                 Types of Volunteers Needed
               </Typography>
               <Typography>
-                {eventData?.[Data.TYPESVOL] ?? NotSpecified}
+                {eventData["Types of Volunteers Needed"] ?? NotSpecified}
               </Typography>
             </Grid>
             <Grid item>
               <Button
                 autoFocus
-                color='secondary'
-                variant='contained'
+                color="secondary"
+                variant="contained"
                 style={{ marginRight: "1em", marginBottom: "2em" }}
-                href={eventData?.[Data.WEBSITE]}
-                disabled={!eventData?.[Data.WEBSITE]}
+                href={eventData["Sign-up Link"]}
+                disabled={!eventData["Sign-up Link"]}
               >
                 {buttonText}
               </Button>
             </Grid>
           </Grid>
+          <Grid container>
+            <Grid item>{Object.keys(eventData).map((fieldName) => {})}</Grid>
+          </Grid>
         </Grid>
       </Grid>
 
-      <Divider></Divider>
+      <Divider style={{ marginBottom: "2em" }}></Divider>
 
-      <Grid container spacing={6} style={{ marginTop: "2em" }}>
-        <Grid item sm={12} md={6}>
-          <Grid container direction='column' spacing={3}>
-            <Grid item>
-              <Typography variant='h6' style={{ fontWeight: 600 }}>
-                Project Description
-              </Typography>
-              <Typography>{eventData?.[Data.DESC] ?? NotSpecified}</Typography>
-            </Grid>
-            <Grid item>
-              <Typography variant='h6' style={{ fontWeight: 600 }}>
-                Clinic Flow
-              </Typography>
-              <Typography>
-                {eventData?.[Data.CLINICF] ?? NotSpecified}
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography variant='h6' style={{ fontWeight: 600 }}>
-                Parking Directions
-              </Typography>
-              <Typography>
-                {eventData?.[Data.DIRECTIONS] ?? NotSpecified}
-              </Typography>
-            </Grid>
+      <Grid container spacing={4}>
+        {initialGridKeys.map((key) => (
+          <Grid item sm={12} md={6}>
+            <Typography variant="h6" style={{ fontWeight: 600 }}>
+              {key}
+            </Typography>
+            <Typography>{eventData[key] ?? NotSpecified}</Typography>
           </Grid>
-        </Grid>
-        <Grid item sm={12} md={6}>
-          <Grid container direction='column' spacing={3}>
-            <Grid item>
-              <Typography variant='h6' style={{ fontWeight: 600 }}>
-                Tips and Reminders
+        ))}
+        {Object.keys(eventData)
+          .filter((key) => !reservedKeys.includes(key))
+          .map((key) => (
+            <Grid item sm={12} md={6}>
+              <Typography variant="h6" style={{ fontWeight: 600 }}>
+                {key}
               </Typography>
-              <Typography>{eventData?.[Data.TIPS] ?? NotSpecified}</Typography>
+              <Typography>{eventData[key] ?? NotSpecified}</Typography>
             </Grid>
-            <Grid item>
-              <Typography variant='h6' style={{ fontWeight: 600 }}>
-                Required Trainings
-              </Typography>
-              <Typography>
-                {eventData?.[Data.REQTRNGS] ?? NotSpecified}
-              </Typography>
-            </Grid>
-            <Grid item>
-              <Typography variant='h6' style={{ fontWeight: 600 }}>
-                Provider Information
-              </Typography>
-              <Typography>
-                {eventData?.[Data.PROVINFO] ?? NotSpecified}
-              </Typography>
-            </Grid>
-          </Grid>
-        </Grid>
+          ))}
       </Grid>
     </div>
   );

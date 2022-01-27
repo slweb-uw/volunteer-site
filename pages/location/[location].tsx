@@ -280,7 +280,7 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
                 setAdminModalOpen(true);
               }}
             >
-              Add Event
+              Add Project
             </Button>
           </div>
         )}

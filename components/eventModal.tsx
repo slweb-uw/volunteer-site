@@ -204,7 +204,7 @@ export default function EventModal(props: {
                           setAdminModalOpen(true);
                         }}
                       >
-                        Modify Event
+                        Modify Project
                       </Button>
                     </div>
                     <Button

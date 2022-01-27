@@ -11,6 +11,18 @@ interface EventData {
   imageURL?: string;
   Order?: string[];
   ["Types of Volunteers Needed"]?: string[];
+  ["Contact Information and Cancellation Policy"]?: string;
+  ["Website Link"]?: string;
+  ["Sign-up Link"]?: string;
+  ["Parking and Directions"]?: string;
+  ["Clinic Flow"]?: string;
+  ["Clinic Schedule"]?: string;
+  ["Project Specific Training"]?: string;
+  ["Services Provided"]?: string;
+  ["Tips and Reminders"]?: string;
+  ["Provider Information"]?: string;
+  ["HS Grad Student Information"]?: string;
+  ["Undergraduate Information"]?: string;
 }
 
 // The data of the event which needs to be passed in during the api call.
