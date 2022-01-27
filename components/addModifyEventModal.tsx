@@ -106,7 +106,14 @@ const volunteerTypes = [
   "Other",
 ];
 
-const locations = ["Seattle", "Spokane", "Montana", "Alaska", "Wyoming"];
+const locations = [
+  "Seattle",
+  "Spokane",
+  "Montana",
+  "Alaska",
+  "Wyoming",
+  "Idaho",
+];
 
 const initialFields = [
   "Contact Information and Cancellation Policy",

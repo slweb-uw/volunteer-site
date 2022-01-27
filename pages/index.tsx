@@ -135,16 +135,12 @@ const App: React.FC<{}> = () => {
               textAlign: "center",
             }}
           >
-            {/* Idaho wants to use own website, but card should look the same */}
-            <a
-              href="https://idahowwami.school.blog/"
-              style={{ textDecoration: "none", color: "black" }}
-            >
+            <Link href="/location/Idaho">
               <div style={{ cursor: "pointer" }}>
                 <img src="/Idaho.png" />
                 <Typography>Idaho</Typography>
               </div>
-            </a>
+            </Link>
           </div>
         </Grid>
       </Grid>
