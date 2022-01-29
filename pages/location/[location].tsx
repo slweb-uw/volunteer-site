@@ -92,9 +92,13 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
     next.docs.forEach((document) => {
       let eventDoc = document.data() as EventData;
       eventDoc.id = document.id; // adds event id to the EventData object
-
+      const volunteersNeeded: string | string[] | undefined =
+        eventDoc["Types of Volunteers Needed"];
+      if (volunteersNeeded && typeof volunteersNeeded === "string") {
+        // If string, then obsolete. Remove data
+        eventDoc["Types of Volunteers Needed"] = [];
+      }
       eventsToAdd.push(eventDoc);
-      // eventsToAdd.push(document.data() as EventData);
     });
     setCursor(next.docs[next.docs.length - 1]);
     setEvents((prevEvents) => [...prevEvents, ...eventsToAdd]);
@@ -125,8 +129,12 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
     next.docs.forEach((document) => {
       let eventDoc = document.data() as EventData;
       eventDoc.id = document.id; // adds event id to the EventData object
-
-      // newEvents.push(document.data() as EventData);
+      const volunteersNeeded: string | string[] | undefined =
+        eventDoc["Types of Volunteers Needed"];
+      if (volunteersNeeded && typeof volunteersNeeded === "string") {
+        // If string, then obsolete. Remove data
+        eventDoc["Types of Volunteers Needed"] = [];
+      }
       newEvents.push(eventDoc);
     });
     newEvents.sort((a, b) => a.Title.localeCompare(b.Title));

@@ -230,7 +230,7 @@ export default function AddModifyEventModal(props: {
     const photoId = Guid.create().toString();
     const storageRef = firebaseClient.storage().ref(photoId);
     // Upload image to firebase storage then get its URL
-    const snapshot = storageRef.put(imageFile).then((snapshot) => {
+    storageRef.put(imageFile).then((snapshot) => {
       snapshot.ref.getDownloadURL().then((downloadURL) => {
         setImageURL(downloadURL as string);
       });
@@ -568,9 +568,11 @@ export default function AddModifyEventModal(props: {
                 input={<Input />}
                 renderValue={(selected: any) => (
                   <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-                    {selected.map((value: string) => (
-                      <Chip key={value} label={value} />
-                    ))}
+                    {typeof selected === "object"
+                      ? selected.map((value: string) => (
+                          <Chip key={value} label={value} />
+                        ))
+                      : []}
                   </Box>
                 )}
               >
