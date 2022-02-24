@@ -351,7 +351,7 @@ export default function AddModifyEventModal(props: {
       }
     });
     if (imageURL) {
-      uploadEvent[imageURL] = imageURL;
+      uploadEvent["imageURL"] = imageURL;
     }
     if (volunteersNeeded) {
       uploadEvent["Types of Volunteers Needed"] = volunteersNeeded;
