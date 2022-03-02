@@ -17,6 +17,8 @@ import { useRouter } from "next/router";
 import { useAuth } from "auth";
 import { firebaseClient } from "firebaseClient";
 import AddModifyEventModal from "./addModifyEventModal";
+import EventImage from "./eventImage";
+import naturalJoin from "../helpers/naturalJoin";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -127,10 +129,11 @@ export default function EventModal(props: {
       <DialogContent>
         <Grid container spacing={5}>
           {event?.["imageURL"] && (
-            <Grid item xs={12} lg={4} style={{ textAlign: "center" }}>
-              <img
-                src={event?.["imageURL"]}
-                style={{ maxHeight: 400, width: "auto", maxWidth: "90%" }}
+            <Grid item xs={12} lg={4}>
+              <EventImage
+                style={{ height: "100%", width: "100%", borderRadius: 10 }}
+                imageURL={event.imageURL}
+                eventTitle={event.Title}
               />
             </Grid>
           )}
@@ -152,7 +155,7 @@ export default function EventModal(props: {
                   <b>Types of Volunteers Needed</b>
                 </Typography>
                 <Typography gutterBottom>
-                  {event?.["Types of Volunteers Needed"]}
+                  {naturalJoin(event["Types of Volunteers Needed"])}
                 </Typography>
               </div>
             )}

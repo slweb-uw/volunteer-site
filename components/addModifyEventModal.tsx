@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {ChangeEvent, useEffect, useState} from "react";
 import {
   createStyles,
   Theme,
@@ -28,20 +28,38 @@ import {
   Checkbox,
   FormGroup,
   FormLabel,
-  Button,
+  Button
 } from "@material-ui/core";
 import { firebaseClient } from "firebaseClient";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import { DateTimePicker, LocalizationProvider } from "@mui/lab";
+import { DateTimePicker, LocalizationProvider, LoadingButton } from "@mui/lab";
 import { DialogActions } from "@mui/material";
 import RRule, { rrulestr } from "rrule";
 import { Guid } from "guid-typescript";
+import EventImage from "./eventImage";
+import Cropper from "react-cropper";
+import "cropperjs/dist/cropper.css";
+import EventCard from "./eventCard";
 
 const styles = (theme: Theme) =>
   createStyles({
     root: {
       margin: 0,
       padding: theme.spacing(2),
+    },
+    preview: {
+      width: 300,
+      height: 300,
+      borderRadius: 10
+    },
+    cropHolder: {
+      height: "calc(100% - 64px)"
+    },
+    mainImageSelector: {
+      rowGap: 20
+    },
+    cardImageSelector: {
+      columnGap: 30
     },
     closeButton: {
       position: "absolute",
@@ -138,6 +156,7 @@ const reservedFields = new Set([
   "Order",
   "id",
   "imageURL",
+  "cardImageURL",
   "timestamp",
   "recurrences",
   "recurrences original",
@@ -159,15 +178,124 @@ const weekdayOptions = [
 const monthOptions = generateLabelValuePairs(12);
 const monthDayOptions = generateLabelValuePairs(31);
 
-export default function AddModifyEventModal(props: {
+interface AddModifyEventModalProps extends WithStyles<typeof styles> {
   open: boolean;
   event?: EventData;
   location: string | string[] | undefined;
   handleClose: any;
-}) {
-  const { open, event, handleClose } = props;
+}
 
+interface ImageSelectorProps {
+  setImage: (e: ChangeEvent<HTMLInputElement>) => any;
+  deleteImage: () => any;
+  hasImage: () => boolean;
+  uploadText: string;
+  deleteText: string;
+}
+
+interface CropModalProps extends WithStyles<typeof styles> {
+  cropImage: string;
+  open: boolean;
+  saveImage: (blob: Blob) => Promise<void>;
+  aspectRatio: number;
+  handleClose: () => any;
+}
+
+enum ModalState {
+  Main,
+  CropSquare,
+  CropCard
+}
+
+const ImageSelector = (props: ImageSelectorProps) => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  return <React.Fragment>
+    <Button
+      variant="contained"
+      color="secondary"
+      onClick={() => {
+        fileInputRef.current?.click();
+      }}
+    >
+      {props.uploadText}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={props.setImage}
+        hidden
+      />
+    </Button>
+    {props.hasImage() && (
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={props.deleteImage}
+      >
+        {props.deleteText}
+      </Button>
+    )}
+  </React.Fragment>
+}
+
+const CropModal = withStyles(styles)((props: CropModalProps) => {
+  const cropperRef = React.useRef<HTMLImageElement>(null);
+  const {cropImage, open, aspectRatio, saveImage, handleClose, classes} = props;
+  const [loading, setLoading] = useState(false);
+
+  const onCrop = () => {
+    // Note: react-cropper does not currently support proper typing
+    const imageElement: any = cropperRef?.current;
+    const cropper: any = imageElement?.cropper;
+    setLoading(true);
+    cropper.getCroppedCanvas().toBlob((blob: Blob | null) => {
+        if (!blob) {
+          console.error("blob failed")
+          return;
+        }
+        saveImage(blob).then(() => {
+          handleClose();
+          setLoading(false);
+        });
+      }
+    );
+  }
+
+  return <Dialog
+    onClose={handleClose}
+    aria-labelledby="crop-dialog"
+    open={open}
+    fullWidth={true}
+    PaperProps={{
+      classes: {
+        root: classes.cropHolder
+      }
+    }}
+    maxWidth={"lg"}
+    disableEnforceFocus={true}
+  >
+    <ModalDialogTitle id="crop-dialog" onClose={handleClose}>
+      <b>Crop Image</b>
+    </ModalDialogTitle>
+    <ModalDialogContent>
+      <Cropper
+        src={cropImage}
+        style={{ height: "100%", width: "100%" }}
+        ref={cropperRef}
+        aspectRatio={aspectRatio}
+        guides={false}
+      />
+    </ModalDialogContent>
+    <DialogActions>
+      <LoadingButton loading={loading} variant="contained" color="secondary" onClick={onCrop}>
+        Crop
+      </LoadingButton>
+    </DialogActions>
+  </Dialog>
+});
+
+const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps) => {
+  const { open, event, handleClose, classes } = props;
 
   // Event fields
   const [recurrenceFromProps, setRecurrenceFromProps] = useState<
@@ -182,6 +310,9 @@ export default function AddModifyEventModal(props: {
   const [startDateTime, setStartDateTime] = useState<Date | null>(null);
   const [endDateTime, setEndDateTime] = useState<Date | null>(null);
   const [imageURL, setImageURL] = useState<string | undefined>();
+  const [cardImageURL, setCardImageURL] = useState<string | undefined>();
+  const [modalState, setModalState] = useState(ModalState.Main);
+  const [cropImage, setCropImage] = useState<string | undefined>();
   const [otherFields, setOtherFields] = useState<
     Record<string, string | string[] | undefined>
   >({});
@@ -212,36 +343,42 @@ export default function AddModifyEventModal(props: {
     initialMonthDays
   );
 
-  const deleteImage = async () => {
-    if (imageURL) {
-      const imageRef = firebaseClient.storage().refFromURL(imageURL);
+  const deleteImage = async (url: string | undefined, setter: (v: string) => any) => {
+    if (url) {
+      const imageRef = firebaseClient.storage().refFromURL(url);
       await imageRef.delete();
-      setImageURL(undefined);
+      setter("");
       alert(
         "Image deleted. Please save the event, or set the image and save the event."
       );
     }
   };
 
-  // Selects and uploads image to Firebase Storage and sets imageURL of event
-  const setImage = (evt: React.FormEvent<HTMLInputElement>) => {
-    const target = evt.target as HTMLInputElement;
-    const imageFile: File = (target.files as FileList)[0];
+  // Selects and uploads image to Firebase Storage and returns the image URL
+  const saveImage = async (image: Blob): Promise<string> => {
     const photoId = Guid.create().toString();
     const storageRef = firebaseClient.storage().ref(photoId);
     // Upload image to firebase storage then get its URL
-    storageRef.put(imageFile).then((snapshot) => {
-      snapshot.ref.getDownloadURL().then((downloadURL) => {
-        setImageURL(downloadURL as string);
-      });
-    });
+    const snapshot = await storageRef.put(image);
+    return (await snapshot.ref.getDownloadURL()) as string;
+  }
+
+  const setImage = (evt: React.FormEvent<HTMLInputElement>) => {
+    const target = evt.target as HTMLInputElement;
+    const imageFile: File = (target.files as FileList)[0];
+    const reader = new FileReader();
+    reader.readAsDataURL(imageFile);
+    reader.onload = () => {
+      setCropImage(reader.result as string);
+    };
+    reader.onerror = (error) => {
+      console.log("Image reader error: ", error);
+    };
   };
 
-  // Puts event to Firestore and Google Calendar
-  const putEvent = () => {
+  const compileEvent = (): CalendarEventData | null => {
     if (!title || !description || !description || !location || !organization) {
-      alert("Error: missing required field.");
-      return;
+      return null;
     }
 
     // CalendarEventData is superset of EventData used in the APIs
@@ -350,11 +487,20 @@ export default function AddModifyEventModal(props: {
         uploadEvent[fieldName] = cur;
       }
     });
-    if (imageURL) {
-      uploadEvent[imageURL] = imageURL;
-    }
+    uploadEvent.imageURL = imageURL;
+    uploadEvent.cardImageURL = cardImageURL;
     if (volunteersNeeded) {
       uploadEvent["Types of Volunteers Needed"] = volunteersNeeded;
+    }
+
+    return uploadEvent;
+  }
+
+  // Puts event to Firestore and Google Calendar
+  const putEvent = () => {
+    const uploadEvent = compileEvent();
+    if (!uploadEvent) {
+      alert("Error: missing required field.");
     }
 
     const calendarPromise = async (calEvent: any, userToken: any) => {
@@ -412,6 +558,8 @@ export default function AddModifyEventModal(props: {
       ) {
         setEndDateTime(new Date(props.event["EndDate"]));
       }
+      setImageURL(props.event.imageURL);
+      setCardImageURL(props.event.cardImageURL);
       setTitle(props.event.Title);
       setDescription(props.event["Project Description"]);
       setOrganization(props.event.Organization);
@@ -477,7 +625,29 @@ export default function AddModifyEventModal(props: {
     });
   };
 
-  return (
+  const compiled = compileEvent();
+
+  return (<React.Fragment>
+    {(cropImage !== undefined &&
+      <CropModal
+        cropImage={cropImage}
+        open={open && modalState != ModalState.Main}
+        saveImage={(blob) => {
+          return saveImage(blob)
+            .then((url) => {
+              if (modalState == ModalState.CropSquare) {
+                setImageURL(url);
+              } else {
+                setCardImageURL(url);
+              }
+            });
+        }}
+        aspectRatio={modalState == ModalState.CropSquare ? 1 : (23 / 30)}
+        handleClose={() => {
+          setModalState(ModalState.Main)
+        }}
+      />
+    )}
     <Dialog
       onClose={handleClose}
       aria-labelledby="event-dialog"
@@ -491,6 +661,34 @@ export default function AddModifyEventModal(props: {
       </ModalDialogTitle>
       <ModalDialogContent>
         <Grid container spacing={5}>
+          <Grid item xs={2}>
+            <Grid
+              container
+              direction="column"
+              className={classes.mainImageSelector}
+            >
+              <ImageSelector
+                setImage={(e) => {
+                  setModalState(ModalState.CropSquare);
+                  setImage(e);
+                }}
+                deleteImage={() => {
+                  deleteImage(imageURL, setImageURL);
+                }}
+                hasImage={() => !!imageURL}
+                uploadText={"Upload Image"}
+                deleteText={"Delete Image"}
+              />
+            </Grid>
+          </Grid>
+          <Grid item sm={4}>
+            <EventImage
+              className={classes.preview}
+              imageURL={imageURL}
+              eventTitle={title ?? "event"}
+            />
+          </Grid>
+
           <Grid item xs={12} sm={6}>
             <TextField
               required
@@ -530,6 +728,49 @@ export default function AddModifyEventModal(props: {
               <FormHelperText>Required</FormHelperText>
             </FormControl>
           </Grid>
+
+          {compiled &&
+            <Grid
+              container
+              direction="row"
+              justifyContent="center"
+              alignItems="center"
+              spacing={4}
+            >
+              <Grid item xs={12}>
+                <Typography
+                  variant="h6"
+                  style={{ textAlign: "center" }}
+                >
+                  Preview
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Grid
+                  container
+                  justifyContent="center"
+                  alignItems="center"
+                  className={classes.cardImageSelector}
+                >
+                  <ImageSelector
+                    setImage={(e) => {
+                      setModalState(ModalState.CropCard);
+                      setImage(e);
+                    }}
+                    deleteImage={() => {
+                      deleteImage(cardImageURL, setCardImageURL);
+                    }}
+                    hasImage={() => !!cardImageURL}
+                    uploadText={"Upload Card Image"}
+                    deleteText={"Delete Card Image"}
+                  />
+                </Grid>
+              </Grid>
+              <Grid item xs={9} sm={7}>
+                <EventCard event={compiled} handleClick={undefined} />
+              </Grid>
+            </Grid>
+          }
 
           <Grid item xs={12} sm={6}>
             <FormControl required fullWidth>
@@ -849,38 +1090,12 @@ export default function AddModifyEventModal(props: {
         </Grid>
       </ModalDialogContent>
       <DialogActions>
-        {imageURL && (
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={() => {
-              deleteImage();
-            }}
-          >
-            Delete Image
-          </Button>
-        )}
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => {
-            fileInputRef.current?.click();
-          }}
-        >
-          Upload Image
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={(e) => {
-              setImage(e);
-            }}
-            hidden
-          />
-        </Button>
         <Button variant="contained" color="secondary" onClick={putEvent}>
           Save Project
         </Button>
       </DialogActions>
     </Dialog>
-  );
-}
+  </React.Fragment>);
+});
+
+export default AddModifyEventModal;

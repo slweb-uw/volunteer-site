@@ -4,31 +4,34 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
-
-import Link from "next/link";
+import EventImage from "./eventImage";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     cursor: "pointer",
     display: "flex",
+    borderRadius: 10,
+    height: 300
   },
   details: {
     display: "-webkit-box",
-    WebkitBoxOrient: "vertical",
-    WebkitLineClamp: 8,
+    lineClamp: 6,
+    boxOrient: "vertical",
     overflow: "hidden",
   },
-  content: {
-    flex: "1 0 auto",
-  },
   cover: {
-    width: 230,
-    height: 300,
+    "@media (max-width: 600px)": {
+      width: 115
+    },
+    "@media (min-width: 600px)": {
+      width: 230
+    },
+    height: 300
   },
 }));
 
 interface Props {
-  event: EventData;
+  event: EventData | CalendarEventData;
   handleClick: React.MouseEventHandler<HTMLDivElement> | undefined;
 }
 
@@ -41,28 +44,26 @@ const EventCard: React.FC<Props> = (props) => {
     <Card
       className={classes.root}
       variant='outlined'
-      style={{ borderRadius: 10 }}
       onClick={props.handleClick}
     >
-      <CardMedia
-        component='img'
-        className={classes.cover}
-        src={
-          props.event["imageURL"] ? props.event["imageURL"] : "/beigeSquare.png"
-        }
-        alt={"Image for" + props.event.Title}
-      />
-      <div>
-        <CardContent className={classes.content}>
-          <Typography component='h6' variant='h6'>
-            <b>{props.event.Title}</b>
-          </Typography>
-          <Typography variant='subtitle1' color='textSecondary' gutterBottom>
-            {props.event.Organization}
-          </Typography>
-          <div className={classes.details}>{props.event["Project Description"] ?? NotSpecified }</div>
-        </CardContent>
-      </div>
+      <CardMedia>
+        <EventImage
+          className={classes.cover}
+          imageURL={props.event.cardImageURL ? props.event.cardImageURL : props.event.imageURL}
+          eventTitle={props.event.Title}
+        />
+      </CardMedia>
+      <CardContent>
+        <Typography component='h6' variant='h6'>
+          <b>{props.event.Title}</b>
+        </Typography>
+        <Typography variant='subtitle1' color='textSecondary' gutterBottom>
+          {props.event.Organization}
+        </Typography>
+        <Typography className={classes.details}>
+          {props.event["Project Description"] ?? NotSpecified }
+        </Typography>
+      </CardContent>
     </Card>
   );
 };
