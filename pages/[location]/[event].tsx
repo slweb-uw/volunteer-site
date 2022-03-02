@@ -14,6 +14,7 @@ import {
   Grid,
   Button,
 } from "@material-ui/core";
+import naturalJoin from "../../helpers/naturalJoin";
 
 interface Props {
   classes?: any;
@@ -144,7 +145,7 @@ const Event: NextPage<Props> = ({ classes }) => {
                 Types of Volunteers Needed
               </Typography>
               <Typography>
-                {eventData["Types of Volunteers Needed"] ?? NotSpecified}
+                {eventData["Types of Volunteers Needed"] ? naturalJoin(eventData["Types of Volunteers Needed"]) : NotSpecified}
               </Typography>
             </Grid>
             <Grid item>
