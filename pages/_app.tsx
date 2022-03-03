@@ -1,13 +1,14 @@
 import type { AppProps } from "next/app";
 import { AuthProvider } from "../auth";
 import React from "react";
-import { MuiThemeProvider, createTheme } from "@material-ui/core";
+import { MuiThemeProvider, createTheme as createv4Theme } from "@material-ui/core";
+import { ThemeProvider, createTheme as createv5Theme } from '@mui/material/styles';
 import { SnackbarProvider } from "notistack";
 import Layout from "components/layout";
 import type {} from '@mui/lab/themeAugmentation';
 
 // Global Theme
-const theme = createTheme({
+const theme = {
   //@ts-ignore
   components: {
     MuiTimeline: {
@@ -28,7 +29,10 @@ const theme = createTheme({
     primary: { 500: "#6415ff" },
     secondary: { main: "#85754D" },
   },
-});
+};
+
+const v4theme = createv4Theme(theme);
+const v5theme = createv5Theme(theme);
 
 function MyApp({ Component, pageProps }: AppProps) {
   React.useEffect(() => {
@@ -47,11 +51,13 @@ function MyApp({ Component, pageProps }: AppProps) {
       <title>UW Medicine Service Learning Volunteer Catalog</title>
       <SnackbarProvider maxSnack={3}>
         <AuthProvider>
-          <MuiThemeProvider theme={theme}>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </MuiThemeProvider>
+          <ThemeProvider theme={v5theme}>
+            <MuiThemeProvider theme={v4theme}>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </MuiThemeProvider>
+          </ThemeProvider>
         </AuthProvider>
       </SnackbarProvider>
     </div>

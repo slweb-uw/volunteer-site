@@ -9,6 +9,7 @@ interface EventData {
   [Field: string]: string | string[];
   id: string;
   imageURL?: string;
+  cardImageURL?: string;
   Order?: string[];
   ["Types of Volunteers Needed"]?: string[];
   ["Contact Information and Cancellation Policy"]?: string;
@@ -51,4 +52,5 @@ interface CalendarEventData {
   [Field: string]: string | string[] | Date;
   Order?: string[];
   imageURL?: string;
+  cardImageURL?: string;
 }
