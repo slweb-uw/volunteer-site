@@ -22,7 +22,7 @@ const Communitypartners: NextPage<Props> = ({ classes }) => {
     <div className={classes.page}>
       <CssBaseline />
       <IconBreadcrumbs
-        crumbs = {["Welcome Community Partners"]} />
+        crumbs = {["Welcome Community Partners"]} parentURL = {undefined} />
       <Typography
         variant='h4'
         style={{ fontWeight: 1000, paddingBottom: "1em" }}
@@ -33,39 +33,30 @@ const Communitypartners: NextPage<Props> = ({ classes }) => {
         <Grid item xs={12} md={6} lg={4}>
           <div
             style={{
-              marginLeft: "auto",
-              marginRight: "146px",
+              marginLeft: "0px",
+              marginRight: "20%",
               textAlign: "center",
               marginTop: "1em",
             }}
           >
             <img
               style={{
-                width: "415px"
+                width: "415px",
+                borderRadius: "10px"
               }}
-              src='/communitypartners.png'
+              src='/communityPartners.jpg'
               alt='a masked vaccine volunteer holding a green sign'
             />
           </div>
-          <Typography 
-            style={{ fontWeight: 700, fontSize: 20, marginTop: "53px" }}
-          >
-            Quotes from previous Community Partners
-          </Typography>
-          <Typography style={{fontWeight: 400, fontSize: 20, fontStyle: "italic", marginTop: "39px" }}>
-              "We need more quotes..."
-              <Typography style={{fontWeight: 700, fontSize: 20, fontStyle: "italic" }}>
-                - UX Design Team, Washington
-              </Typography>
-          </Typography>
         </Grid>
         <Grid item xs={12} md={6} lg={8}>
           <div
             style={{
-              marginLeft: "146px",
-              marginRight: "82px",
+              marginLeft: "auto",
+              marginRight: "auto",
               textAlign: "left",
               marginTop: "1em",
+              width: "80%"
             }}
           >
             <Typography style = {{fontSize: 20}}>
@@ -84,6 +75,19 @@ const Communitypartners: NextPage<Props> = ({ classes }) => {
               </Typography>
             </Typography>
           </div>
+        </Grid>
+        <Grid item xs={12} md={6} lg={8}>
+            <Typography 
+                style={{ fontWeight: 700, fontSize: 20, marginTop: "53px" }}
+            >
+                Quotes from previous Community Partners
+            </Typography>
+            <Typography style={{fontWeight: 400, fontSize: 20, fontStyle: "italic", marginTop: "39px", marginBottom: "39px"}}>
+                “We need more quotes...”
+                <Typography style={{fontWeight: 700, fontSize: 20, fontStyle: "italic" }}>
+                    - UX Design Team, Washington
+                </Typography>
+            </Typography>
         </Grid>
       </Grid>
     </div>
