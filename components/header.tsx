@@ -31,12 +31,15 @@ const Header: React.FC<{}> = (props) => {
     <NavLink key="/" href="/">
       <StyledLink>Home</StyledLink>
     </NavLink>,
+    <a key="training" style={{marginTop:"1em", textDecoration:"none"}} href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569" target="_blank">
+      <StyledLink>Training</StyledLink>
+    </a>,
     <NavLink key="resources" href="/resources">
       <StyledLink>Resources</StyledLink>
     </NavLink>,
-    <NavLink key="protocols" href="/protocols">
+    <a key="protocols" style={{marginTop:"1em", textDecoration:"none"}} href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947" target="_blank">
       <StyledLink>Protocols</StyledLink>
-    </NavLink>,
+    </a>,
     <NavLink key="donations" href="/donations">
       <StyledLink>Donations</StyledLink>
     </NavLink>,
