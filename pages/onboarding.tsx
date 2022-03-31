@@ -24,7 +24,7 @@ interface Props {
 }
 
 const Onboarding: NextPage<Props> = ({ classes }) => {
-  const [expanded, setExpanded] = useState("panel1");
+  const [expanded, setExpanded] = useState("");
 
   const handleChange = (panel: any) => (event: any, newExpanded: any) => {
     setExpanded(newExpanded ? panel : false);
