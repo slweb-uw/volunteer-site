@@ -27,9 +27,14 @@ interface Props {
 
 const Resources: NextPage<Props> = ({ classes }) => {
   const [expanded, setExpanded] = useState("");
+  const [schoolExpanded, setSchoolExpanded] = useState("")
 
   const handleChange = (panel: any) => (event: any, newExpanded: any) => {
     setExpanded(newExpanded ? panel : false);
+  };
+
+  const handleSchoolChange = (panel: any) => (event: any, newExpanded: any) => {
+    setSchoolExpanded(newExpanded ? panel : false);
   };
 
   return (
@@ -47,112 +52,186 @@ const Resources: NextPage<Props> = ({ classes }) => {
         variant="h5"
         style={{ fontWeight: 600, paddingBottom: "0.5em" }}
       >
-        University of Washington Service Learning Websites
+        UW Health Sciences Service Learning Websites
       </Typography>
 
-      <Typography className={classes.header}>
-        <b>School of Medicine</b>
-      </Typography>
-      <Typography className={classes.header}>
-        <ResourceLink
-          className={classes.links}
-          href="https://www.uwmedicine.org/school-of-medicine/md-program/service-learning"
-        >
-          - School of Medicine Service Learning
-        </ResourceLink>{" "}
-        (External)
-      </Typography>
+      <Accordion
+        square
+        expanded={schoolExpanded === "schoolpanel1"}
+        onChange={handleSchoolChange("schoolpanel1")}
+      >
+        <AccordionSummary aria-controls="schoolpanel1d-content" id="panel1d-header">
+          <Typography className={classes.title}>School of Medicine</Typography>
+          <AddCircleOutlineIcon
+            style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
+          />
+        </AccordionSummary>
+        <AccordionDetails>
+          <div>
+            <Typography className={classes.header}>
+              <ResourceLink
+                className={classes.links}
+                href="https://www.uwmedicine.org/school-of-medicine/md-program/service-learning"
+              >
+                School of Medicine Service Learning
+              </ResourceLink>{" "}
+              (External)
+            </Typography>
 
-      <Typography className={classes.header}>
-        <ResourceLink
-          className={classes.links}
-          href="https://canvas.uw.edu/courses/1176739"
-        >
-          - SOM Service Learning Canvas Site
-        </ResourceLink>{" "}
-        (Internal - logistics site)
-      </Typography>
+            <Typography className={classes.header}>
+              <ResourceLink
+                className={classes.links}
+                href="https://canvas.uw.edu/courses/1176739"
+              >
+                SOM Service Learning Canvas Site
+              </ResourceLink>{" "}
+              (Internal - Logistics Site)
+            </Typography>
 
-      <Typography className={classes.header}>
-        <ResourceLink
-          className={classes.links}
-          href="https://education.uwmedicine.org/volunteer-opportunities-2-2/"
-        >
-          - SOM Intranet - Service Learning page
-        </ResourceLink>{" "}
-        (External)
-      </Typography>
+            <Typography className={classes.header}>
+              <ResourceLink
+                className={classes.links}
+                href="https://education.uwmedicine.org/volunteer-opportunities-2-2/"
+              >
+                SOM Intranet - Service Learning page
+              </ResourceLink>{" "}
+              (External)
+            </Typography>
+          </div>
+        </AccordionDetails>
+      </Accordion>
+      <Accordion
+        square
+        expanded={schoolExpanded === "schoolpanel2"}
+        onChange={handleSchoolChange("schoolpanel2")}
+      >
+        <AccordionSummary aria-controls="schoolpanel2d-content" id="schoolpanel2d-header">
+          <Typography className={classes.title}>School of Dentistry</Typography>
+          <AddCircleOutlineIcon
+            style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
+          />
+        </AccordionSummary>
+        <AccordionDetails>
+          <div>
+            <Typography className={classes.header}>
+              <ResourceLink
+                className={classes.links}
+                href="https://dental.washington.edu/oepd/volunteer-opportunities/"
+              >
+                Service Learning Page
+              </ResourceLink>{" "}
+            </Typography>
+          </div>
+        </AccordionDetails>
+      </Accordion>
 
-      <Typography className={classes.header}>
-        <b>School of Dentistry</b>
-      </Typography>
+      <Accordion
+        square
+        expanded={schoolExpanded === "schoolpanel3"}
+        onChange={handleSchoolChange("schoolpanel3")}
+      >
+        <AccordionSummary aria-controls="schoolpanel3d-content" id="schoolpanel3d-header">
+          <Typography className={classes.title}>School of Pharmacy</Typography>
+          <AddCircleOutlineIcon
+            style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
+          />
+        </AccordionSummary>
+        <AccordionDetails>
+          <div>
+            <Typography className={classes.header}>
+              <ResourceLink
+                className={classes.links}
+                href="https://sop.washington.edu/pharmd/student-resources/student-organizations-and-activities/student-organizations-committees/"
+              >
+                Service Learning Page
+              </ResourceLink>{" "}
+            </Typography>
+          </div>
+        </AccordionDetails>
+      </Accordion>
 
-      <Typography className={classes.header}>
-        <ResourceLink
-          className={classes.links}
-          href="https://dental.washington.edu/oepd/volunteer-opportunities/"
-        >
-          - Service Learning Page
-        </ResourceLink>{" "}
-      </Typography>
+      <Accordion
+        square
+        expanded={schoolExpanded === "schoolpanel4"}
+        onChange={handleSchoolChange("schoolpanel4")}
+      >
+        <AccordionSummary aria-controls="schoolpanel4d-content" id="schoolpanel4d-header">
+          <Typography className={classes.title}>School of Social Work</Typography>
+          <AddCircleOutlineIcon
+            style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
+          />
+        </AccordionSummary>
+        <AccordionDetails>
+          <div>
+            <Typography className={classes.header}>
+              <ResourceLink
+                className={classes.links}
+                href="https://canvas.uw.edu/courses/1369328/pages/ssw-student-groups"
+              >
+                Service Learning Page
+              </ResourceLink>{" "}
+            </Typography>
+          </div>
+        </AccordionDetails>
+      </Accordion>
 
-      <Typography className={classes.header}>
-        <b>School of Pharmacy</b>
-      </Typography>
+      <Accordion
+        square
+        expanded={schoolExpanded === "schoolpanel5"}
+        onChange={handleSchoolChange("schoolpanel5")}
+      >
+        <AccordionSummary aria-controls="schoolpanel5d-content" id="schoolpanel5d-header">
+          <Typography className={classes.title}>School of Nursing</Typography>
+          <AddCircleOutlineIcon
+            style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
+          />
+        </AccordionSummary>
+        <AccordionDetails>
+          <div>
+            <Typography className={classes.header}>
+              <ResourceLink
+                className={classes.links}
+                href="https://nursing.uw.edu/community/"
+              >
+                Service Learning Page
+              </ResourceLink>{" "}
+            </Typography>
+          </div>
+        </AccordionDetails>
+      </Accordion>
 
-      <Typography className={classes.header}>
-        <ResourceLink
-          className={classes.links}
-          href="https://sop.washington.edu/pharmd/student-resources/student-organizations-and-activities/student-organizations-committees/"
-        >
-          - Service Learning Page
-        </ResourceLink>{" "}
-      </Typography>
+      <Accordion
+        square
+        expanded={schoolExpanded === "schoolpanel6"}
+        onChange={handleSchoolChange("schoolpanel6")}
+      >
+        <AccordionSummary aria-controls="schoolpanel6d-content" id="schoolpanel6d-header">
+          <Typography className={classes.title}>Interprofessional</Typography>
+          <AddCircleOutlineIcon
+            style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
+          />
+        </AccordionSummary>
+        <AccordionDetails>
+          <div>
+            <Typography className={classes.header}>
+              <ResourceLink
+                className={classes.links}
+                href="https://collaborate.uw.edu/in-the-community/"
+              >
+                Center for Health Sciences Interprofessional Education
+              </ResourceLink>{" "}
+              (CHSIE)
+            </Typography>
+          </div>
+        </AccordionDetails>
+      </Accordion>
 
-      <Typography className={classes.header}>
-        <b>School of Social Work</b>
-      </Typography>
 
-      <Typography className={classes.header}>
-        <ResourceLink
-          className={classes.links}
-          href="https://canvas.uw.edu/courses/1369328/pages/ssw-student-groups"
-        >
-          - Service Learning Page
-        </ResourceLink>{" "}
-      </Typography>
-
-      <Typography className={classes.header}>
-        <b>School of Nursing</b>
-      </Typography>
-
-      <Typography className={classes.header}>
-        <ResourceLink
-          className={classes.links}
-          href="https://nursing.uw.edu/community/"
-        >
-          - Service Learning Page
-        </ResourceLink>{" "}
-      </Typography>
-
-      <Typography className={classes.header}>
-        <b>Interprofessional</b>
-      </Typography>
-
-      <Typography className={classes.header}>
-        <ResourceLink
-          className={classes.links}
-          href="https://collaborate.uw.edu/in-the-community/"
-        >
-          - Center for Health Sciences Interprofessional Education
-        </ResourceLink>{" "}
-        (CHSIE)
-      </Typography>
       <Typography
         variant="h5"
         style={{ fontWeight: 600, paddingBottom: "0.5em", paddingTop: "0.5em" }}
       >
-        Links to WWAMI regional community partners
+        SOM Community
       </Typography>
 
       <Accordion
