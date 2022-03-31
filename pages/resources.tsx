@@ -1,3 +1,4 @@
+//*NOTE: Resources is renamed as Links on the Website /*
 import { NextPage } from "next";
 import {
   createStyles,
@@ -40,7 +41,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
   return (
     <div className={classes.page}>
       <IconBreadcrumbs
-        crumbs = {["Resources"]} />
+        crumbs = {["Links"]} />
       <Typography
         variant="h4"
         style={{ fontWeight: 600, paddingBottom: "0.5em" }}
