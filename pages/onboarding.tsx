@@ -18,6 +18,7 @@ import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
 import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import IconBreadcrumbs from "../components/breadcrumbs"
+import { yellow } from "@material-ui/core/colors";
 interface Props {
   classes?: any;
 }
@@ -40,11 +41,13 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
         Volunteer Provider Onboarding Instructions
       </Typography>
 
-      <Typography style={{ fontWeight: 600, paddingBottom: "2em", marginLeft: "2em" }}>
-        All providers must fill out a brief survey here:{" "}
-        <a target="_blank" href="https://catalyst.uw.edu/webq/survey/clarkel/343031">
+      <Typography style={{ fontWeight: 600, paddingBottom: "2em", marginLeft: "2em", color: "red", fontSize: "20px" }}>
+        <p className={classes.standout}>
+          All providers must fill out a brief survey here:{" "}
+          <a target="_blank" href="https://catalyst.uw.edu/webq/survey/clarkel/343031">
           https://catalyst.uw.edu/webq/survey/clarkel/343031
-        </a>
+          </a>
+        </p>
       </Typography>
 
       <Accordion
@@ -93,7 +96,7 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
               requires volunteers to apply for the free professional liability
               coverage through the Volunteer and Retired Provider (VRP) program.
               The VRP program offers coverage for non-invasive primary and
-              specialty care of low-income patients in qualified settings. 
+              specialty care of low-income patients in qualified settings.
               The <a target="_blank" href="https://www.wahealthcareaccessalliance.org/volunteers/apply-for-vrp">form</a> is
               quite simple and approval takes 1-2 weeks.
             </Typography>
@@ -206,6 +209,12 @@ const styles = createStyles({
   resource: {
     fontWeight: 800,
   },
+
+  standout: {
+    display: "inline-block",
+    backgroundColor: "#FFFF00",
+  },
+
 });
 
 const Accordion = withStyles({
