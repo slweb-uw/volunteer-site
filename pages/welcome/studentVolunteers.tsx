@@ -82,7 +82,7 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
             <Typography 
                 style={{ fontWeight: 700, fontSize: 20, marginTop: "53px" }}
             >
-                Quotes from previous Community Partners
+                Quote from previous Community Partner
             </Typography>
             <Typography style={{fontWeight: 400, fontSize: 20, fontStyle: "italic", marginTop: "39px", marginBottom: "39px"}}>
                 “Service Learning has helped me to get to know and build relationships in a community that I was new to.
@@ -95,12 +95,12 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
                 </Typography>
             </Typography>
 
-            <Typography style={{fontWeight: 400, fontSize: 20, fontStyle: "italic", marginTop: "39px", marginBottom: "39px"}}>
+            {/* <Typography style={{fontWeight: 400, fontSize: 20, fontStyle: "italic", marginTop: "39px", marginBottom: "39px"}}>
                 “We need more quotes...”
                 <Typography style={{fontWeight: 700, fontSize: 20, fontStyle: "italic" }}>
                     - UX Design Team, Washington
                 </Typography>
-            </Typography>
+            </Typography> */}
         </Grid>
       </Grid>
     </div>

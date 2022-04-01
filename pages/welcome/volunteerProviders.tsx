@@ -107,7 +107,7 @@ const VolunteerProviders : NextPage<Props> = ({ classes }) => {
             </Typography>
           </div>
         </Grid>
-        <Grid item xs={12} md={6} lg={8}>
+        {/* <Grid item xs={12} md={6} lg={8}>
             <Typography 
                 style={{ fontWeight: 700, fontSize: 20, marginTop: "53px" }}
             >
@@ -119,7 +119,7 @@ const VolunteerProviders : NextPage<Props> = ({ classes }) => {
                     - UX Design Team, Washington
                 </Typography>
             </Typography>
-        </Grid>
+        </Grid> */}
       </Grid>
     </div>
   );
