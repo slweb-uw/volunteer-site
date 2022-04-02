@@ -121,15 +121,6 @@ const App: React.FC<{}> = () => {
                   </div>
                 </CardContent>
               </CardActionArea>
-              {/*<hr style={{border: ".2px solid #E5E5E5", width:"100%", margin:"0"}}></hr>
-               <CardActionArea href="">                                                             ***Add opportunities page
-                <CardContent>
-                  <div className={classes.cardlinks}>
-                    <Typography>Find Opportunities</Typography>
-                    <Typography><img src="/arrowIcon.png" alt="arrow icon" style={{height: "1em"}}/></Typography>
-                  </div>
-                </CardContent>
-              </CardActionArea> */}
             </Card>
           </div>
           <div
@@ -171,15 +162,6 @@ const App: React.FC<{}> = () => {
                   </div>
                 </CardContent>
               </CardActionArea>
-              {/*<hr style={{border: ".2px solid #E5E5E5", width:"100%", margin:"0"}}></hr>
-               <CardActionArea href="">  **** Link to opportunities page
-                <CardContent>
-                  <div className={classes.cardlinks}>
-                    <Typography>Find Opportunities</Typography>
-                    <Typography><ArrowForwardIos style={{fontSize: "1em", color: "#4B2E83"}}/></Typography>
-                  </div>
-                </CardContent>
-              </CardActionArea> */}
             </Card>
           </div>
           <div

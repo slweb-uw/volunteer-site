@@ -94,13 +94,6 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
                 - Kierney Ross, Montana WWAMI
                 </Typography>
             </Typography>
-
-            {/* <Typography style={{fontWeight: 400, fontSize: 20, fontStyle: "italic", marginTop: "39px", marginBottom: "39px"}}>
-                “We need more quotes...”
-                <Typography style={{fontWeight: 700, fontSize: 20, fontStyle: "italic" }}>
-                    - UX Design Team, Washington
-                </Typography>
-            </Typography> */}
         </Grid>
       </Grid>
     </div>
