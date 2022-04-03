@@ -226,7 +226,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
         variant="h5"
         style={{ fontWeight: 600, paddingBottom: "0.5em", paddingTop: "0.5em" }}
       >
-        SOM Community
+        SOM Community Partners
       </Typography>
 
       <Accordion
