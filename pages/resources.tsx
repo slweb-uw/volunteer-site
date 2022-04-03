@@ -735,7 +735,7 @@ const styles = createStyles({
   title: {
     color: "#4B2E83",
     fontSize: "1.5rem",
-    fontWeight: 900,
+    fontWeight: 2000,
   },
 
   resource: {
@@ -745,10 +745,9 @@ const styles = createStyles({
 
 const Accordion = withStyles({
   root: {
-    border: "1px solid rgba(0, 0, 0, .125)",
     boxShadow: "none",
     "&:not(:last-child)": {
-      borderBottom: 0,
+      borderBottom: "2px solid #A0A0A0"
     },
     "&:before": {
       display: "none",
@@ -762,11 +761,10 @@ const Accordion = withStyles({
 
 const AccordionSummary = withStyles({
   root: {
-    backgroundColor: "rgba(0, 0, 0, .03)",
-    borderBottom: "1px solid rgba(0, 0, 0, .125)",
     marginBottom: -1,
     minHeight: 56,
     "&$expanded": {
+      backgroundColor: "#E5E5E5",
       minHeight: 56,
     },
   },
