@@ -42,12 +42,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
     <div className={classes.page}>
       <IconBreadcrumbs
         crumbs = {["Links"]} />
-      <Typography
-        variant="h4"
-        style={{ fontWeight: 600, paddingBottom: "0.5em" }}
-      >
-        Links to additional Service Learning resources
-      </Typography>
 
       <Typography
         variant="h5"
