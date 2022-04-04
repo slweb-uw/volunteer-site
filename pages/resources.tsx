@@ -714,7 +714,7 @@ const Accordion = withStyles({
   root: {
     boxShadow: "none",
     "&:not(:last-child)": {
-      borderBottom: "2px solid #A0A0A0"
+      borderBottom: "2px solid #A0A0A0",
     },
     "&:before": {
       display: "none",

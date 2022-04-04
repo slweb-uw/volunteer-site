@@ -13,16 +13,19 @@ import {
 } from "@material-ui/core";
 import { useState } from "react";
 
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 import MuiAccordion from "@material-ui/core/Accordion";
 import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
 import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import IconBreadcrumbs from "../components/breadcrumbs"
+import ArrowDropDownCircleOutlinedIcon from '@mui/icons-material/ArrowDropDownCircleOutlined';
 import { yellow } from "@material-ui/core/colors";
+import { WarningOutlined } from "@material-ui/icons";
 interface Props {
   classes?: any;
 }
-
 const Onboarding: NextPage<Props> = ({ classes }) => {
   const [expanded, setExpanded] = useState("");
 
@@ -41,25 +44,22 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
         Volunteer Provider Onboarding Instructions
       </Typography>
 
-      <Typography style={{ fontWeight: 600, paddingBottom: "2em", marginLeft: "2em", color: "red", fontSize: "20px" }}>
-        <p className={classes.standout}>
-          All providers must fill out a brief survey here:{" "}
+      <Alert severity="warning" style={{ backgroundColor: "#fef4e5", marginBottom: "2em" }}>
+        <AlertTitle>
+          <strong>All providers must fill out a brief survey here:{" "}</strong>
           <a target="_blank" href="https://catalyst.uw.edu/webq/survey/clarkel/343031">
           https://catalyst.uw.edu/webq/survey/clarkel/343031
           </a>
-        </p>
-      </Typography>
+        </AlertTitle>
+      </Alert>
 
       <Accordion
         square
         expanded={expanded === "panel1"}
         onChange={handleChange("panel1")}
       >
-        <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+        <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
           <Typography className={classes.title}>Seattle</Typography>
-          <AddCircleOutlineIcon
-            style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
-          />
         </AccordionSummary>
         <AccordionDetails>
           <div>
@@ -122,11 +122,8 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
         expanded={expanded === "panel2"}
         onChange={handleChange("panel2")}
       >
-        <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
+        <AccordionSummary aria-controls="panel2d-content" id="panel2d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
           <Typography className={classes.title}>Spokane</Typography>
-          <AddCircleOutlineIcon
-            style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
-          />
         </AccordionSummary>
         <AccordionDetails>
           <div>
@@ -156,11 +153,8 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
         expanded={expanded === "panel3"}
         onChange={handleChange("panel3")}
       >
-        <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
+        <AccordionSummary aria-controls="panel3d-content" id="panel3d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
           <Typography className={classes.title}>All Other Sites</Typography>
-          <AddCircleOutlineIcon
-            style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
-          />
         </AccordionSummary>
         <AccordionDetails>
           <div>
@@ -198,6 +192,7 @@ const styles = createStyles({
   links: {
     color: "#2436D9",
     textDecorationLine: "underline",
+    marginLeft: 50,
   },
 
   title: {
@@ -219,10 +214,9 @@ const styles = createStyles({
 
 const Accordion = withStyles({
   root: {
-    border: "1px solid rgba(0, 0, 0, .125)",
     boxShadow: "none",
     "&:not(:last-child)": {
-      borderBottom: 0,
+      borderBottom: "2px solid #A0A0A0",
     },
     "&:before": {
       display: "none",
@@ -236,12 +230,11 @@ const Accordion = withStyles({
 
 const AccordionSummary = withStyles({
   root: {
-    backgroundColor: "rgba(0, 0, 0, .03)",
-    borderBottom: "1px solid rgba(0, 0, 0, .125)",
     marginBottom: -1,
     minHeight: 56,
     "&$expanded": {
       minHeight: 56,
+      backgroundColor: "#E5E5E5",
     },
   },
   content: {
