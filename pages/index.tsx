@@ -70,7 +70,8 @@ const App: React.FC<{}> = () => {
               variant="contained"
               style={{ width: "200px" }}
             >
-              Find Opportunities <ArrowForwardIos style={{fontSize: "1.1em", color: "#ffffff"}}/>
+              Find Opportunities
+              <ArrowForwardIos style={{fontSize: "1.1em", color: "#ffffff"}}/>
             </Button>
           </div>
         </div>
@@ -121,6 +122,15 @@ const App: React.FC<{}> = () => {
                   </div>
                 </CardContent>
               </CardActionArea>
+              <hr style={{border: ".2px solid #E5E5E5", width:"100%", margin:"0"}}></hr>
+              <CardActionArea href="/location/[location]">
+                <CardContent>
+                  <div className={classes.cardlinks}>
+                    <Typography>Find Opportunities</Typography>
+                    <Typography><ArrowForwardIos style={{fontSize: "1em", color: "#4B2E83"}}/></Typography>
+                  </div>
+                </CardContent>
+              </CardActionArea>
             </Card>
           </div>
           <div
@@ -143,7 +153,6 @@ const App: React.FC<{}> = () => {
                 src="./volunteerProviders.jpg"
                 style={{ height: "200px", width: "301px", objectFit: "cover"}}
               ></CardMedia>
-              
               <CardActionArea href="/welcome/volunteerProviders">
                 <CardContent>
                   <div className={classes.cardlinks}>
@@ -153,11 +162,19 @@ const App: React.FC<{}> = () => {
                 </CardContent>
               </CardActionArea>
               <hr style={{border: ".2px solid #E5E5E5", width:"100%", margin:"0"}}></hr>
-
               <CardActionArea href="/onboarding">
                 <CardContent>
                   <div className={classes.cardlinks}>
                     <Typography>Onboarding</Typography>
+                    <Typography><ArrowForwardIos style={{fontSize: "1em", color: "#4B2E83"}}/></Typography>
+                  </div>
+                </CardContent>
+              </CardActionArea>
+              <hr style={{border: ".2px solid #E5E5E5", width:"100%", margin:"0"}}></hr>
+              <CardActionArea href="/location/[location]">
+                <CardContent>
+                  <div className={classes.cardlinks}>
+                    <Typography>Find Opportunities</Typography>
                     <Typography><ArrowForwardIos style={{fontSize: "1em", color: "#4B2E83"}}/></Typography>
                   </div>
                 </CardContent>
