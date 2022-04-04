@@ -18,9 +18,11 @@ import MuiAccordion from "@material-ui/core/Accordion";
 import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
 import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import ArrowDropDownCircleOutlinedIcon from '@mui/icons-material/ArrowDropDownCircleOutlined';
 
 import ResourceLink from "../components/resourceLink";
 import IconBreadcrumbs from "../components/breadcrumbs";
+import { ExpandMore } from "@material-ui/icons";
 
 interface Props {
   classes?: any;
@@ -55,11 +57,8 @@ const Resources: NextPage<Props> = ({ classes }) => {
         expanded={schoolExpanded === "schoolpanel1"}
         onChange={handleSchoolChange("schoolpanel1")}
       >
-        <AccordionSummary aria-controls="schoolpanel1d-content" id="panel1d-header">
+        <AccordionSummary aria-controls="schoolpanel1d-content" id="panel1d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
           <Typography className={classes.title}>School of Medicine</Typography>
-          <AddCircleOutlineIcon
-            style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
-          />
         </AccordionSummary>
         <AccordionDetails>
           <div>
@@ -100,11 +99,8 @@ const Resources: NextPage<Props> = ({ classes }) => {
         expanded={schoolExpanded === "schoolpanel2"}
         onChange={handleSchoolChange("schoolpanel2")}
       >
-        <AccordionSummary aria-controls="schoolpanel2d-content" id="schoolpanel2d-header">
+        <AccordionSummary aria-controls="schoolpanel2d-content" id="schoolpanel2d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
           <Typography className={classes.title}>School of Dentistry</Typography>
-          <AddCircleOutlineIcon
-            style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
-          />
         </AccordionSummary>
         <AccordionDetails>
           <div>
@@ -125,11 +121,8 @@ const Resources: NextPage<Props> = ({ classes }) => {
         expanded={schoolExpanded === "schoolpanel3"}
         onChange={handleSchoolChange("schoolpanel3")}
       >
-        <AccordionSummary aria-controls="schoolpanel3d-content" id="schoolpanel3d-header">
+        <AccordionSummary aria-controls="schoolpanel3d-content" id="schoolpanel3d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
           <Typography className={classes.title}>School of Pharmacy</Typography>
-          <AddCircleOutlineIcon
-            style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
-          />
         </AccordionSummary>
         <AccordionDetails>
           <div>
@@ -150,11 +143,8 @@ const Resources: NextPage<Props> = ({ classes }) => {
         expanded={schoolExpanded === "schoolpanel4"}
         onChange={handleSchoolChange("schoolpanel4")}
       >
-        <AccordionSummary aria-controls="schoolpanel4d-content" id="schoolpanel4d-header">
+        <AccordionSummary aria-controls="schoolpanel4d-content" id="schoolpanel4d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
           <Typography className={classes.title}>School of Social Work</Typography>
-          <AddCircleOutlineIcon
-            style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
-          />
         </AccordionSummary>
         <AccordionDetails>
           <div>
@@ -175,11 +165,8 @@ const Resources: NextPage<Props> = ({ classes }) => {
         expanded={schoolExpanded === "schoolpanel5"}
         onChange={handleSchoolChange("schoolpanel5")}
       >
-        <AccordionSummary aria-controls="schoolpanel5d-content" id="schoolpanel5d-header">
+        <AccordionSummary aria-controls="schoolpanel5d-content" id="schoolpanel5d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
           <Typography className={classes.title}>School of Nursing</Typography>
-          <AddCircleOutlineIcon
-            style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
-          />
         </AccordionSummary>
         <AccordionDetails>
           <div>
@@ -200,11 +187,8 @@ const Resources: NextPage<Props> = ({ classes }) => {
         expanded={schoolExpanded === "schoolpanel6"}
         onChange={handleSchoolChange("schoolpanel6")}
       >
-        <AccordionSummary aria-controls="schoolpanel6d-content" id="schoolpanel6d-header">
+        <AccordionSummary aria-controls="schoolpanel6d-content" id="schoolpanel6d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
           <Typography className={classes.title}>Interprofessional</Typography>
-          <AddCircleOutlineIcon
-            style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
-          />
         </AccordionSummary>
         <AccordionDetails>
           <div>
@@ -234,11 +218,8 @@ const Resources: NextPage<Props> = ({ classes }) => {
         expanded={expanded === "panel1"}
         onChange={handleChange("panel1")}
       >
-        <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
+        <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
           <Typography className={classes.title}>Alaska</Typography>
-          <AddCircleOutlineIcon
-            style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
-          />
         </AccordionSummary>
         <AccordionDetails>
           <div>
@@ -278,11 +259,8 @@ const Resources: NextPage<Props> = ({ classes }) => {
         expanded={expanded === "panel2"}
         onChange={handleChange("panel2")}
       >
-        <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
+        <AccordionSummary aria-controls="panel2d-content" id="panel2d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
           <Typography className={classes.title}>Idaho</Typography>
-          <AddCircleOutlineIcon
-            style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
-          />
         </AccordionSummary>
         <AccordionDetails>
           <div>
@@ -339,11 +317,8 @@ const Resources: NextPage<Props> = ({ classes }) => {
         expanded={expanded === "panel3"}
         onChange={handleChange("panel3")}
       >
-        <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
+        <AccordionSummary aria-controls="panel3d-content" id="panel3d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
           <Typography className={classes.title}>Montana</Typography>
-          <AddCircleOutlineIcon
-            style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
-          />
         </AccordionSummary>
         <AccordionDetails>
           <div>
@@ -391,11 +366,9 @@ const Resources: NextPage<Props> = ({ classes }) => {
         expanded={expanded === "panel4"}
         onChange={handleChange("panel4")}
       >
-        <AccordionSummary aria-controls="panel4d-content" id="panel4d-header">
+        <AccordionSummary aria-controls="panel4d-content" id="panel4d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
           <Typography className={classes.title}>Seattle</Typography>
-          <AddCircleOutlineIcon
-            style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
-          />
+
         </AccordionSummary>
         <AccordionDetails>
           <div>
@@ -599,11 +572,8 @@ const Resources: NextPage<Props> = ({ classes }) => {
         expanded={expanded === "panel5"}
         onChange={handleChange("panel5")}
       >
-        <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
+        <AccordionSummary aria-controls="panel3d-content" id="panel3d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
           <Typography className={classes.title}>Spokane</Typography>
-          <AddCircleOutlineIcon
-            style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
-          />
         </AccordionSummary>
         <AccordionDetails>
           <div>
@@ -679,11 +649,8 @@ const Resources: NextPage<Props> = ({ classes }) => {
         expanded={expanded === "panel6"}
         onChange={handleChange("panel6")}
       >
-        <AccordionSummary aria-controls="panel6d-content" id="panel6d-header">
+        <AccordionSummary aria-controls="panel6d-content" id="panel6d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
           <Typography className={classes.title}>Wyoming</Typography>
-          <AddCircleOutlineIcon
-            style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
-          />
         </AccordionSummary>
         <AccordionDetails>
           <div>
