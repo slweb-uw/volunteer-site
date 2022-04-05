@@ -82,9 +82,11 @@ const Donations: NextPage<Props> = ({ classes }) => {
           >
             <img
               style={{
-                width: "25rem",
+                height: "20rem",
+                width: "auto",
+                borderRadius: "5px",
               }}
-              src="/donate-header.png"
+              src="/home-care-kits.jpg"
               alt="doctor caring for mom with child"
             />
           </div>

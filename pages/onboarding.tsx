@@ -47,8 +47,8 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
       <Alert severity="warning" style={{ backgroundColor: "#fef4e5", marginBottom: "2em" }}>
         <AlertTitle>
           <strong>All providers must fill out a brief survey here:{" "}</strong>
-          <a target="_blank" href="https://catalyst.uw.edu/webq/survey/clarkel/343031">
-          https://catalyst.uw.edu/webq/survey/clarkel/343031
+          <a target="_blank" href="https://forms.office.com/r/yyLvBx8HiT">
+          https://forms.office.com/r/yyLvBx8HiT
           </a>
         </AlertTitle>
       </Alert>
