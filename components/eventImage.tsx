@@ -3,7 +3,7 @@ import React from "react";
 interface Props {
   className?: string;
   style?: React.CSSProperties;
-  imageURL?: string | null;
+  imageURL?: string | undefined;
   eventTitle: string;
 }
 
