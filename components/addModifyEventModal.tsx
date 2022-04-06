@@ -67,6 +67,9 @@ const styles = (theme: Theme) =>
       top: theme.spacing(1),
       color: theme.palette.grey[500],
     },
+    modalContent: {
+      overflowX: "hidden"
+    }
   });
 
 export interface DialogTitleProps extends WithStyles<typeof styles> {
@@ -222,7 +225,14 @@ const ImageSelector = (props: ImageSelectorProps) => {
       <input
         type="file"
         ref={fileInputRef}
-        onChange={props.setImage}
+        onChange={(evt) => {
+          props.setImage(evt);
+          // Bit of a hack to prevent onChange not firing when re-inputting the same image
+          // The issue is that file inputs are uncontrolled, so when the same image is input
+          // as before there is no "change". We manually clear the input here since all we
+          // need to do is process it, it doesn't need to stay here afterwards.
+          fileInputRef.current.value = "";
+        }}
         hidden
       />
     </Button>
@@ -287,6 +297,9 @@ const CropModal = withStyles(styles)((props: CropModalProps) => {
       />
     </ModalDialogContent>
     <DialogActions>
+      <Typography style={{ marginRight: "auto" }}>
+        Scroll to zoom in/out; drag inside the box to move it; drag on the corners of the box to resize it
+      </Typography>
       <LoadingButton loading={loading} variant="contained" color="secondary" onClick={onCrop}>
         Crop
       </LoadingButton>
@@ -659,36 +672,8 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
       <ModalDialogTitle id="event-dialog" onClose={handleClose}>
         <b>{event ? "Modify Event" : "Add Event"}</b>
       </ModalDialogTitle>
-      <ModalDialogContent>
+      <ModalDialogContent classes={{root: classes.modalContent}}>
         <Grid container spacing={5}>
-          <Grid item xs={2}>
-            <Grid
-              container
-              direction="column"
-              className={classes.mainImageSelector}
-            >
-              <ImageSelector
-                setImage={(e) => {
-                  setModalState(ModalState.CropSquare);
-                  setImage(e);
-                }}
-                deleteImage={() => {
-                  deleteImage(imageURL, setImageURL);
-                }}
-                hasImage={() => !!imageURL}
-                uploadText={"Upload Image"}
-                deleteText={"Delete Image"}
-              />
-            </Grid>
-          </Grid>
-          <Grid item sm={4}>
-            <EventImage
-              className={classes.preview}
-              imageURL={imageURL}
-              eventTitle={title ?? "event"}
-            />
-          </Grid>
-
           <Grid item xs={12} sm={6}>
             <TextField
               required
@@ -728,49 +713,6 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
               <FormHelperText>Required</FormHelperText>
             </FormControl>
           </Grid>
-
-          {compiled &&
-            <Grid
-              container
-              direction="row"
-              justifyContent="center"
-              alignItems="center"
-              spacing={4}
-            >
-              <Grid item xs={12}>
-                <Typography
-                  variant="h6"
-                  style={{ textAlign: "center" }}
-                >
-                  Preview
-                </Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <Grid
-                  container
-                  justifyContent="center"
-                  alignItems="center"
-                  className={classes.cardImageSelector}
-                >
-                  <ImageSelector
-                    setImage={(e) => {
-                      setModalState(ModalState.CropCard);
-                      setImage(e);
-                    }}
-                    deleteImage={() => {
-                      deleteImage(cardImageURL, setCardImageURL);
-                    }}
-                    hasImage={() => !!cardImageURL}
-                    uploadText={"Upload Card Image"}
-                    deleteText={"Delete Card Image"}
-                  />
-                </Grid>
-              </Grid>
-              <Grid item xs={9} sm={7}>
-                <EventCard event={compiled} handleClick={undefined} />
-              </Grid>
-            </Grid>
-          }
 
           <Grid item xs={12} sm={6}>
             <FormControl required fullWidth>
@@ -847,8 +789,9 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
               />
             </Grid>
           ))}
-        </Grid>
-        <Grid container>
+
+          <Grid item sm={12}>{/* spacer so that the below components are always aligned */}</Grid>
+
           <Grid item xs={12} sm={6}>
             <Typography
               variant="h6"
@@ -1087,6 +1030,97 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
               </Box>
             )}
           </Grid>
+
+          <Grid item sm={12}>
+            <Grid
+                container
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                spacing={4}
+            >
+              <Grid item xs={12}>
+                <Typography
+                    variant="h6"
+                    style={{ textAlign: "center" }}
+                >
+                  Main Image Preview
+                </Typography>
+              </Grid>
+              <Grid item xs={2}>
+                <Grid
+                  container
+                  direction="column"
+                  className={classes.mainImageSelector}
+                >
+                  <ImageSelector
+                      setImage={(e) => {
+                        setModalState(ModalState.CropSquare);
+                        setImage(e);
+                      }}
+                      deleteImage={() => {
+                        deleteImage(imageURL, setImageURL);
+                      }}
+                      hasImage={() => !!imageURL}
+                      uploadText={"Upload Image"}
+                      deleteText={"Delete Image"}
+                  />
+                </Grid>
+              </Grid>
+              <Grid item sm={4}>
+                <EventImage
+                    className={classes.preview}
+                    imageURL={imageURL}
+                    eventTitle={title ?? "event"}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
+
+          {compiled &&
+              <Grid item sm={12}>
+                <Grid
+                  container
+                  direction="row"
+                  justifyContent="center"
+                  alignItems="center"
+                  spacing={4}
+                >
+                  <Grid item xs={12}>
+                    <Typography
+                        variant="h6"
+                        style={{ textAlign: "center" }}
+                    >
+                      Card Preview
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Grid
+                        container
+                        justifyContent="center"
+                        alignItems="center"
+                        className={classes.cardImageSelector}
+                    >
+                      <ImageSelector
+                          setImage={(e) => {
+                            setModalState(ModalState.CropCard);
+                            setImage(e);
+                          }}
+                          deleteImage={() => {
+                            deleteImage(cardImageURL, setCardImageURL);
+                          }}
+                          hasImage={() => !!cardImageURL}
+                          uploadText={"Upload Card Image"}
+                          deleteText={"Delete Card Image"}
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid item xs={9} sm={7}>
+                    <EventCard event={compiled} handleClick={undefined} />
+                  </Grid>
+                </Grid>
+              </Grid>
+          }
         </Grid>
       </ModalDialogContent>
       <DialogActions>
