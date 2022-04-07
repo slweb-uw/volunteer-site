@@ -123,7 +123,7 @@ const App: React.FC<{}> = () => {
                 </CardContent>
               </CardActionArea>
               <hr style={{border: ".2px solid #E5E5E5", width:"100%", margin:"0"}}></hr>
-              <CardActionArea href="/location/[location]">
+              <CardActionArea href="/location/opportunities">
                 <CardContent>
                   <div className={classes.cardlinks}>
                     <Typography>Find Opportunities</Typography>
@@ -171,7 +171,7 @@ const App: React.FC<{}> = () => {
                 </CardContent>
               </CardActionArea>
               <hr style={{border: ".2px solid #E5E5E5", width:"100%", margin:"0"}}></hr>
-              <CardActionArea href="/location/[location]">
+              <CardActionArea href="/location/opportunities">
                 <CardContent>
                   <div className={classes.cardlinks}>
                     <Typography>Find Opportunities</Typography>
