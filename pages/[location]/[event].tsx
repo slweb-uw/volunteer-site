@@ -53,6 +53,7 @@ const reservedKeys = [
   "recurrences",
   "original recurrence",
   "imageURL",
+  "cardImageURL"
 ];
 
 const Event: NextPage<Props> = ({ classes }) => {
