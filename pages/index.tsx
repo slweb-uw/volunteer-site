@@ -17,6 +17,7 @@ import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import { firebaseClient } from "firebaseClient";
 import { ArrowForwardIos } from "@material-ui/icons";
+import { textAlign } from "@mui/system";
 
 const App: React.FC<{}> = () => {
   // Page where customers can check their order status
@@ -60,39 +61,33 @@ const App: React.FC<{}> = () => {
             <Typography
               variant="subtitle1"
               gutterBottom
-              style={{ fontSize: "1.2rem" }}
+              style={{ fontSize: "1.2rem", width: "50%"}}
             >
-              Choose a location to find Service Learning opportunities in that
-              area
+              Our program supports 50+ student led service projects throughout the region.
             </Typography>
-            <Button
-              color="primary"
-              variant="contained"
-              style={{ width: "200px" }}
-            >
-              Find Opportunities
-              <ArrowForwardIos style={{fontSize: "1.1em", color: "#ffffff"}}/>
-            </Button>
+            <Link href="/location/opportunities">
+              <Button
+                color="primary"
+                variant="contained"
+                style={{ width: "220px"}}
+              >
+                Find Opportunities
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
 
-      <div style={{ textAlign: "center", margin: "2em"}}>
-        <Typography
-          gutterBottom
-          variant="h4"
-          style={{ fontWeight: 700, paddingBottom: "0.5em" }}
-        >
-          Get Started
-        </Typography>
+      <div style={{ textAlign: "center", marginTop: "2em"}}>
         <div
           style={{
             margin: "2em",
-            width: "95%",
+            width: "100%",
             display: "flex",
             flexWrap: "wrap",
             justifyContent: "center",
-            textAlign: "left",
+            columnGap: "5%",
+            textAlign: "center"
           }}
         >
           <div
@@ -102,7 +97,7 @@ const App: React.FC<{}> = () => {
               alignItems: "center",
             }}
           >
-            <Typography style={{ fontSize: "1.3rem", fontWeight: 700 }}>
+            <Typography style={{ fontSize: "1.5rem", fontWeight: 700 }}>
               Students
             </Typography>
             <Card
@@ -123,11 +118,11 @@ const App: React.FC<{}> = () => {
                 </CardContent>
               </CardActionArea>
               <hr style={{border: ".2px solid #E5E5E5", width:"100%", margin:"0"}}></hr>
-              <CardActionArea href="/location/opportunities">
+              <CardActionArea href="/location/opportunities" style={{backgroundColor: "#4B2E83"}}>
                 <CardContent>
                   <div className={classes.cardlinks}>
-                    <Typography>Find Opportunities</Typography>
-                    <Typography><ArrowForwardIos style={{fontSize: "1em", color: "#4B2E83"}}/></Typography>
+                    <Typography style={{color: "#ffffff"}}>Find Opportunities</Typography>
+                    <Typography><ArrowForwardIos style={{fontSize: "1em", color: "#ffffff"}}/></Typography>
                   </div>
                 </CardContent>
               </CardActionArea>
@@ -140,7 +135,7 @@ const App: React.FC<{}> = () => {
               alignItems: "center",
             }}
           >
-            <Typography style={{ fontSize: "1.3rem", fontWeight: 700 }}>
+            <Typography style={{ fontSize: "1.5rem", fontWeight: 700 }}>
               Volunteer Providers
             </Typography>
 
@@ -171,11 +166,11 @@ const App: React.FC<{}> = () => {
                 </CardContent>
               </CardActionArea>
               <hr style={{border: ".2px solid #E5E5E5", width:"100%", margin:"0"}}></hr>
-              <CardActionArea href="/location/opportunities">
+              <CardActionArea href="/location/opportunities" style={{backgroundColor: "#4B2E83"}}>
                 <CardContent>
                   <div className={classes.cardlinks}>
-                    <Typography>Find Opportunities</Typography>
-                    <Typography><ArrowForwardIos style={{fontSize: "1em", color: "#4B2E83"}}/></Typography>
+                  <Typography style={{color: "#ffffff"}}>Find Opportunities</Typography>
+                    <Typography><ArrowForwardIos style={{fontSize: "1em", color: "#ffffff"}}/></Typography>
                   </div>
                 </CardContent>
               </CardActionArea>
@@ -188,7 +183,7 @@ const App: React.FC<{}> = () => {
               alignItems: "center",
             }}
           >
-            <Typography style={{ fontSize: "1.3rem", fontWeight: 700 }}>
+            <Typography style={{ fontSize: "1.5rem", fontWeight: 700 }}>
               Community Partners
             </Typography>
 
@@ -201,6 +196,7 @@ const App: React.FC<{}> = () => {
                 src="./home3.png"
                 style={{ height: "200px", width: "301px" }}
               ></CardMedia>
+              <hr style={{border: ".2px solid #E5E5E5", width:"100%", margin:"0"}}></hr>
               <CardActionArea href="/welcome/communitypartners">
                 <CardContent>
                   <div className={classes.cardlinks}>
@@ -254,13 +250,12 @@ const App: React.FC<{}> = () => {
                 Serve With Us
               </Typography>
               <Typography>
-                Volunteering with our programs is a wonderful way to practice
-                your clinical and teaching skills, make a difference in our
-                community and form meaningful connections. We invite you to
-                explore our opportunities for providers and students alike. We
-                are very flexible and try to make it easy to work around busy
-                schedules. There is no required hourly commitment. Simply sign
-                up when you have the time!
+                Volunteering with our programs is a wonderful way to practice your
+                skills, make a difference in our community and form meaningful
+                connections. We invite you to explore our opportunities for providers
+                and students alike. We are very flexible and try to make it easy to work
+                around busy schedules. There is no required hourly commitment. Simply 
+                sign up when you have the time!
               </Typography>
             </div>
           </Grid>
@@ -440,7 +435,7 @@ const useStyles = makeStyles((theme) => ({
     top: 0,
     right: 0,
     bottom: 0,
-    background: "linear-gradient(90deg, #FFFFFF 0%, #DFDFDF 0.01%, rgba(255, 255, 255, 0.6) 100%)",
+    background: "#DFDFDF",
   },
   triangletop: {
     position: "absolute",

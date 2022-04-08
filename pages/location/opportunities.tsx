@@ -31,7 +31,7 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   const { user } = useAuth();
   // const { location } = router.query; // string of current location (ex: "Seattle")
   const [location, setLocation] = useState<string | undefined>();
-  const locations  = ["Seattle", "Spokane", "Alaska", "Wyoming", "Montana", "Idaho"];
+  const locations  = ["Alaska", "Idaho", "Montana", "Seattle", "Spokane",  "Wyoming"];
   const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
   const [events, setEvents] = useState<EventData[]>([]); // list of loaded events
   const [cursor, setCursor] = useState<
