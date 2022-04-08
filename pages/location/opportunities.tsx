@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { firebaseClient } from "../../firebaseClient";
-import { useRouter } from "next/router";
+//import { useRouter } from "next/router";
 import { NextPage } from "next";
 import {
   createStyles,
@@ -27,15 +27,17 @@ interface Props {
 }
 
 const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
-  const router = useRouter();
+  // const router = useRouter();
   const { user } = useAuth();
-  const { location } = router.query; // string of current location (ex: "Seattle")
+  // const { location } = router.query; // string of current location (ex: "Seattle")
+  const [location, setLocation] = useState<string | undefined>();
+  const locations  = ["Alaska", "Idaho", "Montana", "Seattle", "Spokane",  "Wyoming"];
   const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
   const [events, setEvents] = useState<EventData[]>([]); // list of loaded events
   const [cursor, setCursor] = useState<
     firebaseClient.firestore.QueryDocumentSnapshot
   >(); // cursor to last document loaded
-  const [filter, setFilter] = useState<string | undefined>();
+  const [filter, setFilter] = useState<string | undefined>(); 
   const [showLoadButton, setShowLoadButton] = useState<boolean>(true);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [adminModalOpen, setAdminModalOpen] = useState<boolean>(false);
@@ -60,7 +62,7 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
           .then((doc) => setOrganizations(Object.keys(doc.data() as string[])));
       }
     }
-  }, [router]);
+  }, [location]); // location selected instead of router
 
   const getOrder = (curSort: string) => {
     return curSort === "timestamp" ? "desc" : "asc";
@@ -159,11 +161,11 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
     <div className={classes.page}>
       <CssBaseline />
       <IconBreadcrumbs
-        crumbs={["Opportunities in " + location]}
+        crumbs={["Opportunities"]}
         parentURL={undefined}
       />
       <Typography variant="h3" gutterBottom>
-        Opportunities in {location}
+        Opportunities
       </Typography>
       <EventModal
         open={modalOpen}
@@ -181,6 +183,33 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
         <Grid container>
           <Grid item xs={12} sm={10}>
             <Grid container>
+
+            <Grid item xs={12}>
+                <Typography
+                  gutterBottom
+                  display="inline"
+                  style={{ marginRight: "1em", verticalAlign: "50%" }}
+                >
+                  <b>Select a Location</b>{" "}
+                </Typography>
+                <Select
+                  value={filter}
+                  onChange={(e) => {
+                    setLocation(e.target.value as string | undefined);
+                  }}
+                  style={{ width: 104 }}
+                  displayEmpty
+                  input={<BootstrapInput />}
+                >
+                  <MenuItem>Location</MenuItem>
+                  {locations.map((location) => (
+                    <MenuItem value={location}>{location}</MenuItem>
+                  ))}
+                </Select>
+              </Grid>
+
+
+
               <Grid item xs={12}>
                 <Typography
                   gutterBottom
@@ -193,9 +222,9 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
               <Grid item style={{ marginBottom: "1em" }}>
                 <Typography
                   display="inline"
-                  style={{ marginLeft: "1em", marginRight: "0.5rem" }}
+                  style={{ marginLeft: "1em", marginRight: "0.5rem", verticalAlign: "50%" }}
                 >
-                  Category:{" "}
+                  Category{" "}
                 </Typography>
                 <Select
                   value={filter}
@@ -215,9 +244,9 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
               <Grid item style={{ marginBottom: "1em" }}>
                 <Typography
                   display="inline"
-                  style={{ marginLeft: "1em", marginRight: "0.5rem" }}
+                  style={{ marginLeft: "1em", marginRight: "0.5rem", verticalAlign: "50%" }}
                 >
-                  Sort By:{" "}
+                  Sort By{" "}
                 </Typography>
                 <Select
                   value={sortField}
