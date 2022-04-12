@@ -31,13 +31,20 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   const { user } = useAuth();
   // const { location } = router.query; // string of current location (ex: "Seattle")
   const [location, setLocation] = useState<string | undefined>();
-  const locations  = ["Alaska", "Idaho", "Montana", "Seattle", "Spokane",  "Wyoming"];
+  const locations = [
+    "Alaska",
+    "Idaho",
+    "Montana",
+    "Seattle",
+    "Spokane",
+    "Wyoming",
+  ];
   const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
   const [events, setEvents] = useState<EventData[]>([]); // list of loaded events
   const [cursor, setCursor] = useState<
     firebaseClient.firestore.QueryDocumentSnapshot
   >(); // cursor to last document loaded
-  const [filter, setFilter] = useState<string | undefined>(); 
+  const [filter, setFilter] = useState<string | undefined>();
   const [showLoadButton, setShowLoadButton] = useState<boolean>(true);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [adminModalOpen, setAdminModalOpen] = useState<boolean>(false);
@@ -160,10 +167,7 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   return (
     <div className={classes.page}>
       <CssBaseline />
-      <IconBreadcrumbs
-        crumbs={["Opportunities"]}
-        parentURL={undefined}
-      />
+      <IconBreadcrumbs crumbs={["Opportunities"]} parentURL={undefined} />
       <Typography variant="h3" gutterBottom>
         Opportunities
       </Typography>
@@ -184,8 +188,7 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
         <Grid container>
           <Grid item xs={12} sm={10}>
             <Grid container>
-
-            <Grid item xs={12}>
+              <Grid item xs={12}>
                 <Typography
                   gutterBottom
                   display="inline"
@@ -209,8 +212,6 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
                 </Select>
               </Grid>
 
-
-
               <Grid item xs={12}>
                 <Typography
                   gutterBottom
@@ -223,7 +224,11 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
               <Grid item style={{ marginBottom: "1em" }}>
                 <Typography
                   display="inline"
-                  style={{ marginLeft: "1em", marginRight: "0.5rem", verticalAlign: "50%" }}
+                  style={{
+                    marginLeft: "1em",
+                    marginRight: "0.5rem",
+                    verticalAlign: "50%",
+                  }}
                 >
                   Category{" "}
                 </Typography>
@@ -245,7 +250,11 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
               <Grid item style={{ marginBottom: "1em" }}>
                 <Typography
                   display="inline"
-                  style={{ marginLeft: "1em", marginRight: "0.5rem", verticalAlign: "50%" }}
+                  style={{
+                    marginLeft: "1em",
+                    marginRight: "0.5rem",
+                    verticalAlign: "50%",
+                  }}
                 >
                   Sort By{" "}
                 </Typography>
@@ -323,36 +332,44 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
           </div>
         )}
 
-      <div style={{ paddingBottom: "4em" }}>
-        <Grid container spacing={6}>
-          {events.map((event) => (
-            <Grid item xs={12} lg={6}>
-              <EventCard
-                event={event}
-                handleClick={() => {
-                  setModalOpen(true);
-                  setSelectedEvent(event);
+      {location ? (
+        <div style={{ paddingBottom: "4em" }}>
+          <Grid container spacing={6}>
+            {events.map((event) => (
+              <Grid item xs={12} lg={6}>
+                <EventCard
+                  event={event}
+                  handleClick={() => {
+                    setModalOpen(true);
+                    setSelectedEvent(event);
+                  }}
+                />
+              </Grid>
+            ))}
+          </Grid>
+          {showLoadButton && (
+            <div style={{ textAlign: "center" }}>
+              <Button
+                variant="outlined"
+                onClick={loadEvents}
+                style={{
+                  marginTop: "2em",
                 }}
-              />
-            </Grid>
-          ))}
-        </Grid>
-        {showLoadButton && (
-          <div style={{ textAlign: "center" }}>
-            <Button
-              variant="outlined"
-              onClick={loadEvents}
-              style={{
-                marginTop: "2em",
-              }}
-            >
-              <Typography variant="h6">
-                <b>Load more</b>
-              </Typography>
-            </Button>
-          </div>
-        )}
-      </div>
+              >
+                <Typography variant="h6">
+                  <b>Load more</b>
+                </Typography>
+              </Button>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div style={{ textAlign: "center" }}>
+          <Typography variant="h6">
+            <b>Please select a location.</b>
+          </Typography>
+        </div>
+      )}
     </div>
   );
 };
