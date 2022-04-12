@@ -13,7 +13,6 @@ import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
 import { Button, Grid } from "@material-ui/core";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useAuth } from "auth";
 import { firebaseClient } from "firebaseClient";
 import AddModifyEventModal from "./addModifyEventModal";
@@ -98,14 +97,11 @@ const deleteEvent = async (eventData: EventData | undefined) => {
 export default function EventModal(props: {
   open: boolean;
   event: EventData | undefined;
+  location: string | undefined;
   handleClose: any;
 }) {
-  const { open, event, handleClose } = props;
-  const router = useRouter();
-
+  const { open, event, location, handleClose } = props;
   const [adminModalOpen, setAdminModalOpen] = useState<boolean>(false);
-
-  const { location } = router.query; // string of current location (ex: "Seattle")
 
   let eventLink = "/";
   if (event) {

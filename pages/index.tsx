@@ -65,7 +65,7 @@ const App: React.FC<{}> = () => {
             >
               Our program supports 50+ student led service projects throughout the region.
             </Typography>
-            <Link href="/location/opportunities">
+            <Link href="/opportunities">
               <Button
                 color="primary"
                 variant="contained"
@@ -118,7 +118,7 @@ const App: React.FC<{}> = () => {
                 </CardContent>
               </CardActionArea>
               <hr style={{border: ".2px solid #E5E5E5", width:"100%", margin:"0"}}></hr>
-              <CardActionArea href="/location/opportunities" style={{backgroundColor: "#4B2E83"}}>
+              <CardActionArea href="/opportunities" style={{backgroundColor: "#4B2E83"}}>
                 <CardContent>
                   <div className={classes.cardlinks}>
                     <Typography style={{color: "#ffffff"}}>Find Opportunities</Typography>
@@ -166,7 +166,7 @@ const App: React.FC<{}> = () => {
                 </CardContent>
               </CardActionArea>
               <hr style={{border: ".2px solid #E5E5E5", width:"100%", margin:"0"}}></hr>
-              <CardActionArea href="/location/opportunities" style={{backgroundColor: "#4B2E83"}}>
+              <CardActionArea href="/opportunities" style={{backgroundColor: "#4B2E83"}}>
                 <CardContent>
                   <div className={classes.cardlinks}>
                   <Typography style={{color: "#ffffff"}}>Find Opportunities</Typography>

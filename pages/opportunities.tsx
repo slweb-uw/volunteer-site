@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { firebaseClient } from "../../firebaseClient";
+import { firebaseClient } from "../firebaseClient";
 //import { useRouter } from "next/router";
 import { NextPage } from "next";
 import {
@@ -13,7 +13,7 @@ import {
   Button,
 } from "@material-ui/core";
 import { withSnackbar } from "notistack";
-import EventCard from "../../components/eventCard";
+import EventCard from "../components/eventCard";
 import BootstrapInput from "components/bootstrapInput";
 import Link from "next/link";
 import EventModal from "components/eventModal";
@@ -170,6 +170,7 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
       <EventModal
         open={modalOpen}
         event={selectedEvent}
+        location={location}
         handleClose={() => setModalOpen(false)}
       />
 
