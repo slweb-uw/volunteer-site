@@ -65,7 +65,9 @@ const Donations: NextPage<Props> = ({ classes }) => {
                 marginBottom: "2rem",
                 fontWeight: 700,
                 padding: "1rem",
-                fontSize: "1.2rem",
+                fontSize: "1.4rem",
+                width: "330px",
+                height: "90px",
               }}
             >
               Make a Gift Today! {">"}{" "}
@@ -86,8 +88,8 @@ const Donations: NextPage<Props> = ({ classes }) => {
                 width: "auto",
                 borderRadius: "5px",
               }}
-              src="/home-care-kits.jpg"
-              alt="doctor caring for mom with child"
+              src="/Foot Care 2.jpg"
+              alt="person holding home care kit"
             />
           </div>
         </Grid>
@@ -145,6 +147,7 @@ const styles = createStyles({
     width: "95%",
     paddingTop: "2em",
     paddingBottom: "5em",
+    backgroundColor: "white",
   },
 });
 
