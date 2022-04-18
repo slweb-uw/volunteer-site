@@ -98,7 +98,7 @@ const Event: NextPage<Props> = ({ classes }) => {
         parentURL={"/location/" + location}
         crumbs={["Opportunities in " + location, eventData.Title]}
       />
-      <Typography variant="h5" style={{ fontWeight: 900 }}>
+      <Typography variant="h5" style={{ fontWeight: 900, paddingBottom: 50 }}>
         {eventData?.Title}
       </Typography>
 
@@ -111,7 +111,7 @@ const Event: NextPage<Props> = ({ classes }) => {
           />
         </Grid>
         <Grid item sm={12} md={6}>
-          <Grid container direction="column" spacing={6}>
+          <Grid container direction="column" spacing={5} style={{  position: "absolute", marginLeft: 122, paddingTop: 8 }}>
             <Grid item>
               <Grid container direction="row" spacing={10}>
                 <Grid item>
@@ -122,7 +122,7 @@ const Event: NextPage<Props> = ({ classes }) => {
                     {eventData?.Location ?? NotSpecified}
                   </Typography>
                 </Grid>
-                <Grid item>
+                <Grid item style={{ marginLeft: 100 }}>
                   <Typography variant="h6" style={{ fontWeight: 600 }}>
                     Date and Time
                   </Typography>
@@ -168,7 +168,7 @@ const Event: NextPage<Props> = ({ classes }) => {
         </Grid>
       </Grid>
 
-      <Divider style={{ marginBottom: "2em" }}></Divider>
+      <Divider style={{ marginBottom: "3em", marginTop: "3em", height: 3, borderRadius: "25px"}}></Divider>
 
       <Grid container spacing={4}>
         {initialGridKeys.map((key) => (
@@ -212,6 +212,7 @@ const styles = createStyles({
     maxWidth: "500px",
     maxHeight: "500px",
     paddingRight: "0px !important",
+    marginLeft: "0px"
   },
   detailsImage: {
     minWidth: "100%",

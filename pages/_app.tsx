@@ -24,7 +24,7 @@ const theme = {
   },
   palette: {
     background: {
-      default: "#F7F7F7",
+      default: "#FFFFFF",
     },
     primary: { 500: "#4B2E83" },
     secondary: { main: "#85754D" },
