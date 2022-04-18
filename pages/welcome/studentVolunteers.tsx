@@ -82,7 +82,7 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
             <Typography 
                 style={{ fontWeight: 700, fontSize: 20, marginTop: "53px" }}
             >
-                Quote from previous Community Partner
+                Quote from previous Student Volunteer
             </Typography>
             <Typography style={{fontWeight: 400, fontSize: 20, fontStyle: "italic", marginTop: "39px", marginBottom: "39px"}}>
                 “Service Learning has helped me to get to know and build relationships in a community that I was new to.

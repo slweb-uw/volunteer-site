@@ -76,6 +76,22 @@ const Communitypartners: NextPage<Props> = ({ classes }) => {
             </Typography>
           </div>
         </Grid>
+        <Grid item xs={12} md={6} lg={8}>
+            <Typography 
+                style={{ fontWeight: 700, fontSize: 20, marginTop: "53px" }}
+            >
+                Quote from previous Community Partner
+            </Typography>
+            <Typography style={{fontWeight: 400, fontSize: 20, fontStyle: "italic", marginTop: "39px", marginBottom: "39px"}}>
+                “Precepting can help you feel better about yourself and the world. This is one of the greatest positives about precepting. 
+                Taking a few hours to work with totally selfless health sciences students who are searching for ways to help the less fortunate
+                is the best antidote to the COVID blues and political cynicism that I’ve found. It is a joyful experience. Give it a try and see
+                if you don’t agree.”
+                <Typography style={{fontWeight: 700, fontSize: 20, fontStyle: "italic" }}>
+                - Richard Arnold, MD
+                </Typography>
+            </Typography>
+        </Grid>
       </Grid>
     </div>
   );
