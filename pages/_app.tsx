@@ -20,7 +20,9 @@ const theme = {
     },
   },
   typography: {
+    /*
     fontFamily: '"Encode Sans", sans-serif',
+    */
   },
   palette: {
     background: {
@@ -44,10 +46,6 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <div>
-      <link
-        rel="stylesheet"
-        href='https://fonts.googleapis.com/css2?family=Encode+Sans:wght@800&display=swap'
-      />
       <title>UW Medicine Service Learning Volunteer Catalog</title>
       <SnackbarProvider maxSnack={3}>
         <AuthProvider>
