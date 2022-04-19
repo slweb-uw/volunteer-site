@@ -18,6 +18,7 @@ import CardMedia from "@material-ui/core/CardMedia";
 import { firebaseClient } from "firebaseClient";
 import { ArrowForwardIos } from "@material-ui/icons";
 import { textAlign } from "@mui/system";
+import HeadlineBar from "components/headlineBar";
 
 const App: React.FC<{}> = () => {
   // Page where customers can check their order status
@@ -101,6 +102,11 @@ const App: React.FC<{}> = () => {
             <Typography style={{ fontSize: "1.5rem", fontWeight: 700, fontFamily: "Encode Sans" }}>
               Students
             </Typography>
+
+            <div style={{ position: "absolute", marginBottom: "0", marginTop: "28px", marginRight: "16px" }}>
+              <HeadlineBar color="gold" width={90} height={5}></HeadlineBar>
+            </div>
+
             <Card
               variant="outlined"
               style={{ borderRadius: 10, margin: "1em", height: "auto" }}
@@ -139,6 +145,10 @@ const App: React.FC<{}> = () => {
             <Typography style={{ fontSize: "1.5rem", fontWeight: 700, fontFamily: "Encode Sans" }}>
               Volunteer Providers
             </Typography>
+
+            <div style={{ position: "absolute", marginBottom: "0", marginTop: "28px", marginRight: "18px" }}>
+              <HeadlineBar color="gold" width={222} height={5}></HeadlineBar>
+            </div>
 
             <Card
               variant="outlined"
@@ -187,6 +197,10 @@ const App: React.FC<{}> = () => {
             <Typography style={{ fontSize: "1.5rem", fontWeight: 700, fontFamily: "Encode Sans" }}>
               Community Partners
             </Typography>
+
+            <div style={{ position: "absolute", marginBottom: "0", marginTop: "28px", marginRight: "24px" }}>
+              <HeadlineBar color="gold" width={220} height={5}></HeadlineBar>
+            </div>
 
             <Card
               variant="outlined"
@@ -246,10 +260,11 @@ const App: React.FC<{}> = () => {
               <Typography
                 gutterBottom
                 variant="h4"
-                style={{ fontWeight: 700, paddingBottom: "0.5em", fontFamily: "Encode Sans" }}
+                style={{ fontWeight: 700, paddingBottom: "0", marginBottom: "0", fontFamily: "Encode Sans" }}
               >
                 Serve With Us
               </Typography>
+              <HeadlineBar color="purple" width={220} height={10}></HeadlineBar>
               <Typography style={{ fontFamily: "Open Sans" }}>
                 Volunteering with our programs is a wonderful way to practice your
                 skills, make a difference in our community and form meaningful
@@ -281,10 +296,11 @@ const App: React.FC<{}> = () => {
               <Typography
                 gutterBottom
                 variant="h4"
-                style={{ fontWeight: 700, paddingBottom: "0.5em", fontFamily: "Encode Sans" }}
+                style={{ fontWeight: 700, paddingBottom: "0", marginBottom: "0", fontFamily: "Encode Sans" }}
               >
                 About Us
               </Typography>
+              <HeadlineBar color="gold" width={130} height={10}></HeadlineBar>
               <Typography style={{ fontFamily: "Open Sans" }}>
                 The UW School of Medicine's Service Learning program strives to
                 enrich medical education by providing our students with
@@ -339,10 +355,13 @@ const App: React.FC<{}> = () => {
         <Typography
           gutterBottom
           variant="h4"
-          style={{ fontWeight: 700, marginLeft: "2em", textAlign: "center", fontFamily: "Encode Sans" }}
+          style={{ fontWeight: 700, marginLeft: "2em", textAlign: "center", fontFamily: "Encode Sans", marginBottom: "0" }}
         >
           Contact Us
         </Typography>
+        <div style={{ marginLeft: "584px" }}>
+          <HeadlineBar color="purple" width={130} height={10}></HeadlineBar>
+        </div>
         <Grid container spacing={6} xs={12} sm={12} style={{ marginTop: "2em", display: "flex", justifyContent: "center"}}>
           <Grid item >
             <Grid container direction="column" spacing={3}>
