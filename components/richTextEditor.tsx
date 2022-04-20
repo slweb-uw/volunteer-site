@@ -432,6 +432,11 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       }),
       TextSelection
     ],
+    editorProps: {
+      attributes: {
+        style: "min-height: 250px"
+      }
+    },
     /***********************************************************
      DO NOT EDIT THIS SECTION UNLESS YOU KNOW WHAT YOU ARE DOING
      AND USE EXTREME CAUTION EVEN IF YOU DO
@@ -448,7 +453,13 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   })
 
   return (
-    <Paper variant="outlined" sx={{ margin: "10px", padding: "10px" }}>
+    <Paper
+      variant="outlined"
+      sx={{
+        margin: "10px",
+        padding: "10px",
+      }}
+    >
       {editor && <Toolbar editor={editor} />}
       <style global jsx>{`
         .ProseMirror-focused:focus {
