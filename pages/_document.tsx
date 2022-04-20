@@ -13,6 +13,14 @@ export default class MyDocument extends Document {
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
           />
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Encode+Sans:wght@800&display=swap"
+          />
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap"
+          />
         </Head>
         <body style={{ margin: 0, boxSizing: "content-box", fontSize: "1em" }}>
           <Main />

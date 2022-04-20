@@ -18,6 +18,7 @@ import CardMedia from "@material-ui/core/CardMedia";
 import { firebaseClient } from "firebaseClient";
 import { ArrowForwardIos } from "@material-ui/icons";
 import { textAlign } from "@mui/system";
+import HeadlineBar from "components/headlineBar";
 
 const App: React.FC<{}> = () => {
   // Page where customers can check their order status
@@ -52,6 +53,7 @@ const App: React.FC<{}> = () => {
                 width: "60%",
                 color: "#4B2E83",
                 fontWeight: 700,
+                fontFamily: "Encode Sans"
               }}
             >
               {
@@ -61,7 +63,7 @@ const App: React.FC<{}> = () => {
             <Typography
               variant="subtitle1"
               gutterBottom
-              style={{ fontSize: "1.2rem", width: "50%"}}
+              style={{ fontSize: "1.2rem", width: "50%", fontFamily: "Open Sans"}}
             >
               Our program supports 50+ student led service projects throughout the region.
             </Typography>
@@ -69,7 +71,7 @@ const App: React.FC<{}> = () => {
               <Button
                 color="primary"
                 variant="contained"
-                style={{ width: "220px"}}
+                style={{ width: "220px", fontFamily: "Encode Sans" }}
               >
                 Find Opportunities
               </Button>
@@ -97,12 +99,17 @@ const App: React.FC<{}> = () => {
               alignItems: "center",
             }}
           >
-            <Typography style={{ fontSize: "1.5rem", fontWeight: 700 }}>
+            <Typography style={{ fontSize: "1.5rem", fontWeight: 700, fontFamily: "Encode Sans" }}>
               Students
             </Typography>
+
+            <div style={{ position: "absolute", marginBottom: "0", marginTop: "28px", marginRight: "16px" }}>
+              <HeadlineBar color="gold" width={90} height={5}></HeadlineBar>
+            </div>
+
             <Card
               variant="outlined"
-              style={{ borderRadius: 10, margin: "1em", height: "auto"}}
+              style={{ borderRadius: 10, margin: "1em", height: "auto" }}
             >
               <CardMedia
                 component="img"
@@ -112,7 +119,7 @@ const App: React.FC<{}> = () => {
               <CardActionArea href="/welcome/studentVolunteers">
                 <CardContent>
                   <div className={classes.cardlinks}>
-                    <Typography>Welcome</Typography>
+                    <Typography className={classes.cardtitle}>Welcome</Typography>
                     <Typography><ArrowForwardIos style={{fontSize: "1em", color: "#4B2E83"}}/></Typography>
                   </div>
                 </CardContent>
@@ -121,7 +128,7 @@ const App: React.FC<{}> = () => {
               <CardActionArea href="/opportunities" style={{backgroundColor: "#4B2E83"}}>
                 <CardContent>
                   <div className={classes.cardlinks}>
-                    <Typography style={{color: "#ffffff"}}>Find Opportunities</Typography>
+                    <Typography className={classes.cardtitle} style={{color: "#ffffff"}}>Find Opportunities</Typography>
                     <Typography><ArrowForwardIos style={{fontSize: "1em", color: "#ffffff"}}/></Typography>
                   </div>
                 </CardContent>
@@ -135,9 +142,13 @@ const App: React.FC<{}> = () => {
               alignItems: "center",
             }}
           >
-            <Typography style={{ fontSize: "1.5rem", fontWeight: 700 }}>
+            <Typography style={{ fontSize: "1.5rem", fontWeight: 700, fontFamily: "Encode Sans" }}>
               Volunteer Providers
             </Typography>
+
+            <div style={{ position: "absolute", marginBottom: "0", marginTop: "28px", marginRight: "18px" }}>
+              <HeadlineBar color="gold" width={222} height={5}></HeadlineBar>
+            </div>
 
             <Card
               variant="outlined"
@@ -151,7 +162,7 @@ const App: React.FC<{}> = () => {
               <CardActionArea href="/welcome/volunteerProviders">
                 <CardContent>
                   <div className={classes.cardlinks}>
-                    <Typography>Welcome</Typography>
+                    <Typography className={classes.cardtitle}>Welcome</Typography>
                     <Typography><ArrowForwardIos style={{fontSize: "1em", color: "#4B2E83"}}/></Typography>
                   </div>
                 </CardContent>
@@ -160,7 +171,7 @@ const App: React.FC<{}> = () => {
               <CardActionArea href="/onboarding">
                 <CardContent>
                   <div className={classes.cardlinks}>
-                    <Typography>Onboarding</Typography>
+                    <Typography className={classes.cardtitle}>Onboarding</Typography>
                     <Typography><ArrowForwardIos style={{fontSize: "1em", color: "#4B2E83"}}/></Typography>
                   </div>
                 </CardContent>
@@ -169,7 +180,7 @@ const App: React.FC<{}> = () => {
               <CardActionArea href="/opportunities" style={{backgroundColor: "#4B2E83"}}>
                 <CardContent>
                   <div className={classes.cardlinks}>
-                  <Typography style={{color: "#ffffff"}}>Find Opportunities</Typography>
+                  <Typography className={classes.cardtitle} style={{color: "#ffffff"}}>Find Opportunities</Typography>
                     <Typography><ArrowForwardIos style={{fontSize: "1em", color: "#ffffff"}}/></Typography>
                   </div>
                 </CardContent>
@@ -183,9 +194,13 @@ const App: React.FC<{}> = () => {
               alignItems: "center",
             }}
           >
-            <Typography style={{ fontSize: "1.5rem", fontWeight: 700 }}>
+            <Typography style={{ fontSize: "1.5rem", fontWeight: 700, fontFamily: "Encode Sans" }}>
               Community Partners
             </Typography>
+
+            <div style={{ position: "absolute", marginBottom: "0", marginTop: "28px", marginRight: "24px" }}>
+              <HeadlineBar color="gold" width={220} height={5}></HeadlineBar>
+            </div>
 
             <Card
               variant="outlined"
@@ -200,7 +215,7 @@ const App: React.FC<{}> = () => {
               <CardActionArea href="/welcome/communitypartners">
                 <CardContent>
                   <div className={classes.cardlinks}>
-                    <Typography>Become a Partner</Typography>
+                    <Typography className={classes.cardtitle}>Become a Partner</Typography>
                     <Typography><ArrowForwardIos style={{fontSize: "1em", color: "#4B2E83"}}/></Typography>
                   </div>
                 </CardContent>
@@ -245,16 +260,17 @@ const App: React.FC<{}> = () => {
               <Typography
                 gutterBottom
                 variant="h4"
-                style={{ fontWeight: 700, paddingBottom: "0.5em" }}
+                style={{ fontWeight: 700, paddingBottom: "0", marginBottom: "0", fontFamily: "Encode Sans" }}
               >
                 Serve With Us
               </Typography>
-              <Typography>
+              <HeadlineBar color="purple" width={220} height={10}></HeadlineBar>
+              <Typography style={{ fontFamily: "Open Sans" }}>
                 Volunteering with our programs is a wonderful way to practice your
                 skills, make a difference in our community and form meaningful
                 connections. We invite you to explore our opportunities for providers
                 and students alike. We are very flexible and try to make it easy to work
-                around busy schedules. There is no required hourly commitment. Simply 
+                around busy schedules. There is no required hourly commitment. Simply
                 sign up when you have the time!
               </Typography>
             </div>
@@ -280,11 +296,12 @@ const App: React.FC<{}> = () => {
               <Typography
                 gutterBottom
                 variant="h4"
-                style={{ fontWeight: 700, paddingBottom: "0.5em" }}
+                style={{ fontWeight: 700, paddingBottom: "0", marginBottom: "0", fontFamily: "Encode Sans" }}
               >
                 About Us
               </Typography>
-              <Typography>
+              <HeadlineBar color="gold" width={130} height={10}></HeadlineBar>
+              <Typography style={{ fontFamily: "Open Sans" }}>
                 The UW School of Medicine's Service Learning program strives to
                 enrich medical education by providing our students with
                 opportunities to hone their skills while addressing the health
@@ -294,13 +311,13 @@ const App: React.FC<{}> = () => {
                 global society.
               </Typography>
               <br></br>
-              <Typography>
+              <Typography style={{ fontFamily: "Open Sans" }}>
                 These goals could not be achieved without strong community
                 partnerships, dedicated supervising providers, and collaboration
                 with the other six health sciences schools.
               </Typography>
               <br></br>
-              <Typography>
+              <Typography style={{ fontFamily: "Open Sans" }}>
                 Please take a moment to glance through the amazing clinical and
                 mentoring projects on this website that have been developed by
                 our students over the past ten years.
@@ -338,10 +355,13 @@ const App: React.FC<{}> = () => {
         <Typography
           gutterBottom
           variant="h4"
-          style={{ fontWeight: 700, marginLeft: "2em", textAlign: "center" }}
+          style={{ fontWeight: 700, marginLeft: "2em", textAlign: "center", fontFamily: "Encode Sans", marginBottom: "0" }}
         >
           Contact Us
         </Typography>
+        <div style={{ marginLeft: "584px" }}>
+          <HeadlineBar color="purple" width={130} height={10}></HeadlineBar>
+        </div>
         <Grid container spacing={6} xs={12} sm={12} style={{ marginTop: "2em", display: "flex", justifyContent: "center"}}>
           <Grid item >
             <Grid container direction="column" spacing={3}>
@@ -351,10 +371,10 @@ const App: React.FC<{}> = () => {
                     <img src="./profile-icon.png" alt="profile icon" />
                   </Grid>
                   <Grid item>
-                    <Typography style={{ fontSize: "1.2rem" }}>
+                    <Typography style={{ fontSize: "1.2rem", fontFamily: "Encode Sans" }}>
                       Leonora Clarke, Service Learning Manager
                     </Typography>
-                    <Typography style={{ fontSize: "1.2rem" }}>
+                    <Typography style={{ fontSize: "1.2rem", fontFamily: "Encode Sans"}}>
                       UW School of Medicine
                     </Typography>
                   </Grid>
@@ -367,13 +387,13 @@ const App: React.FC<{}> = () => {
                   style={{ marginLeft: "5em" }}
                 >
                   <Grid item>
-                    <Typography>clarkel@uw.edu</Typography>
+                    <Typography className={classes.contact}>clarkel@uw.edu</Typography>
                   </Grid>
                   <Grid item>
-                    <Typography>206-685-2009</Typography>
+                    <Typography className={classes.contact}>206-685-2009</Typography>
                   </Grid>
                   <Grid item>
-                    <Typography>
+                    <Typography className={classes.contact}>
                       Health Sciences Building, Suite A-300
                     </Typography>
                   </Grid>
@@ -389,7 +409,7 @@ const App: React.FC<{}> = () => {
                     <img src="./mail-icon.png" alt="mail icon" />
                   </Grid>
                   <Grid item>
-                    <Typography style={{ fontSize: "1.2rem" }}>
+                    <Typography style={{ fontSize: "1.2rem", fontFamily: "Encode Sans" }}>
                       Mailing Address
                     </Typography>
                   </Grid>
@@ -402,13 +422,13 @@ const App: React.FC<{}> = () => {
                   style={{ marginLeft: "5em" }}
                 >
                   <Grid item>
-                    <Typography>1959 NE. Pacific Ave. Suite A-300</Typography>
+                    <Typography className={classes.contact}>1959 NE. Pacific Ave. Suite A-300</Typography>
                   </Grid>
                   <Grid item>
-                    <Typography>Box 356340</Typography>
+                    <Typography className={classes.contact}>Box 356340</Typography>
                   </Grid>
                   <Grid item>
-                    <Typography>Seattle, WA 98195</Typography>
+                    <Typography className={classes.contact}>Seattle, WA 98195</Typography>
                   </Grid>
                 </Grid>
               </Grid>
@@ -466,6 +486,12 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  cardtitle: {
+    fontFamily: "Open Sans",
+  },
+  contact: {
+    fontFamily: "Open Sans",
   }
 }));
 

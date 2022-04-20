@@ -147,7 +147,6 @@ const styles = createStyles({
     width: "95%",
     paddingTop: "2em",
     paddingBottom: "5em",
-    backgroundColor: "white",
   },
 });
 

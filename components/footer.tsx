@@ -13,11 +13,11 @@ const Footer: React.FC<{}> = () => {
       }}
     >
       <img src="/footer-logo.png" />
-      <Typography style={{ color: "white", marginTop: "0.5em" }} gutterBottom>
+      <Typography style={{ color: "white", marginTop: "0.5em", fontFamily: "Open Sans" }} gutterBottom>
         Contact us: (206) 685-2009 or{" "}
-        <a href="mailto://clarkel@uw.edu" style={{color: "white", marginTop: "0.5em"}}>clarkel@uw.edu</a>
+        <a href="mailto://clarkel@uw.edu" style={{color: "white", marginTop: "0.5em", fontFamily: "Open Sans"}}>clarkel@uw.edu</a>
       </Typography>
-      <Typography style={{ color: "white" }} gutterBottom>
+      <Typography style={{ color: "white", fontFamily: "Open Sans" }} gutterBottom>
         <i>
           Please use browsers other than internet explorer for the best
           experience on this website.

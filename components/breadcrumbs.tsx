@@ -31,7 +31,7 @@ export default function IconBreadcrumbs(props: { crumbs: string[]; parentURL: st
             separator={<NavigateNextIcon fontSize="small" />}
             className={classes.main}>
         <Link
-            color="inherit" 
+            color="inherit"
             href="/"
             className={classes.link}>
             <HomeIcon className={classes.icon} />
@@ -44,7 +44,7 @@ export default function IconBreadcrumbs(props: { crumbs: string[]; parentURL: st
                 { props.crumbs[0] }
             </Link>
         }
-        <Typography color="textPrimary" className={classes.link}>
+        <Typography color="textPrimary" className={classes.link} style={{ fontFamily: "Encode Sans" }}>
             { props.crumbs.slice(-1)[0] }
         </Typography>
         </Breadcrumbs>

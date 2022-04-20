@@ -29,20 +29,20 @@ const Header: React.FC<{}> = (props) => {
 
   const links: React.ReactNode[] = [
     <NavLink key="/" href="/">
-      <StyledLink>Home</StyledLink>
+      <StyledLink style={{ fontFamily: "Encode Sans" }}>Home</StyledLink>
     </NavLink>,
     <a key="training" style={{marginTop:"1em", textDecoration:"none"}} href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569" target="_blank">
-      <StyledLink>Training</StyledLink>
+      <StyledLink style={{ fontFamily: "Encode Sans" }}>Training</StyledLink>
     </a>,
     //*NOTE: Resources name was changed to Links*/
     <NavLink key="resources" href="/resources">
-      <StyledLink>Links</StyledLink>
+      <StyledLink style={{ fontFamily: "Encode Sans" }}>Links</StyledLink>
     </NavLink>,
-    <a key="protocols" style={{marginTop:"1em", textDecoration:"none"}} href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947" target="_blank">
-      <StyledLink>Protocols</StyledLink>
+    <a key="protocols" style={{marginTop:"1em", textDecoration:"none", fontFamily: "Encode Sans"}} href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947" target="_blank">
+      <StyledLink style={{ fontFamily: "Encode Sans" }}>Protocols</StyledLink>
     </a>,
     <NavLink key="donations" href="/donations">
-      <StyledLink>Donations</StyledLink>
+      <StyledLink style={{ fontFamily: "Encode Sans" }}>Donations</StyledLink>
     </NavLink>,
     // sign in and out
     user ? (
@@ -51,6 +51,7 @@ const Header: React.FC<{}> = (props) => {
         onClick={() => {
           firebaseClient.auth().signOut();
         }}
+        style={{ fontFamily: "Encode Sans" }}
       >
         Sign Out
       </StyledLink>
@@ -65,6 +66,7 @@ const Header: React.FC<{}> = (props) => {
           });
           firebaseClient.auth().signInWithPopup(provider);
         }}
+        style={{ fontFamily: "Encode Sans" }}
       >
         Sign In
       </StyledLink>
@@ -84,7 +86,11 @@ const Header: React.FC<{}> = (props) => {
         justifyContent: "space-between",
       },
     },
+    navtitle: {
+      fontFamily: "Encode Sans"
+    },
   }));
+
 
   return (
     <div className={useStyles().root}>
