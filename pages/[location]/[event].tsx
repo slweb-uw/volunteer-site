@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { firebaseClient } from "../../firebaseClient";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { NextPage } from "next";
 import IconBreadcrumbs from "../../components/breadcrumbs";
 
@@ -15,6 +15,7 @@ import {
   Button,
 } from "@material-ui/core";
 import naturalJoin from "../../helpers/naturalJoin";
+import EventDescription from "../../components/eventDescription";
 
 interface Props {
   classes?: any;
@@ -23,7 +24,6 @@ interface Props {
 const NotSpecified = <i style={{ color: "gray" }}>Not specified</i>;
 
 const initialGridKeys = [
-  "Project Description",
   "Tips and Reminders",
   "Clinic Flow",
   "Required Trainings",
@@ -33,6 +33,7 @@ const initialGridKeys = [
 
 const reservedKeys = [
   "Project Description",
+  "Details",
   "Types of Volunteers Needed",
   "Title",
   "Order",
@@ -55,6 +56,32 @@ const reservedKeys = [
   "imageURL",
   "cardImageURL"
 ];
+
+type EventFieldProps = {
+  name: string;
+  value: string | string[] | JSX.Element | undefined;
+}
+
+const EventField: React.FC<EventFieldProps> = ({
+  name,
+  value
+}) => {
+  let data: string | JSX.Element | undefined;
+  if (value && Array.isArray(value)) {
+    data = naturalJoin(value);
+  } else {
+    data = value;
+  }
+  return (
+    <Grid style={{ maxWidth: "100%" }} item sm={12} md={6}>
+      <Typography variant="h6" style={{ fontWeight: 600 }}>
+        {name}
+      </Typography>
+
+      <Typography>{data ?? NotSpecified}</Typography>
+    </Grid>
+  );
+}
 
 const Event: NextPage<Props> = ({ classes }) => {
   const router = useRouter();
@@ -171,23 +198,14 @@ const Event: NextPage<Props> = ({ classes }) => {
       <Divider style={{ marginBottom: "3em", marginTop: "3em", height: 3, borderRadius: "25px"}}></Divider>
 
       <Grid container spacing={4}>
-        {initialGridKeys.map((key) => (
-          <Grid item sm={12} md={6}>
-            <Typography variant="h6" style={{ fontWeight: 600 }}>
-              {key}
-            </Typography>
-            <Typography>{eventData[key] ?? NotSpecified}</Typography>
-          </Grid>
+        <EventField name="Project Description" value={<EventDescription event={eventData} />} />
+        {initialGridKeys.map((name) => (
+          <EventField key={name} name={name} value={eventData[name]} />
         ))}
         {Object.keys(eventData)
-          .filter((key) => !reservedKeys.includes(key))
-          .map((key) => (
-            <Grid item sm={12} md={6}>
-              <Typography variant="h6" style={{ fontWeight: 600 }}>
-                {key}
-              </Typography>
-              <Typography>{eventData[key] ?? NotSpecified}</Typography>
-            </Grid>
+          .filter((name) => !reservedKeys.includes(name))
+          .map((name) => (
+            <EventField key={name} name={name} value={eventData[name]} />
           ))}
       </Grid>
     </div>

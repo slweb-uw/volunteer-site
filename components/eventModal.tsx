@@ -18,6 +18,7 @@ import { firebaseClient } from "firebaseClient";
 import AddModifyEventModal from "./addModifyEventModal";
 import EventImage from "./eventImage";
 import naturalJoin from "../helpers/naturalJoin";
+import EventDescription from "./eventDescription";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -31,6 +32,7 @@ const styles = (theme: Theme) =>
       top: theme.spacing(1),
       color: theme.palette.grey[500],
     },
+
   });
 
 export interface DialogTitleProps extends WithStyles<typeof styles> {
@@ -127,16 +129,16 @@ export default function EventModal(props: {
           {event?.["imageURL"] && (
             <Grid item xs={12} lg={4}>
               <EventImage
-                style={{ height: "100%", width: "100%", borderRadius: 10 }}
+                style={{ maxWidth: "100%", maxHeight: "500px", borderRadius: 10 }}
                 imageURL={event.imageURL}
                 eventTitle={event.Title}
               />
             </Grid>
           )}
           <Grid item xs={12} lg={event?.["imageURL"] ? 8 : 12}>
-            <Typography gutterBottom>
-              {event?.["Project Description"]}
-            </Typography>
+            {event && <Typography gutterBottom>
+              <EventDescription event={event} />
+            </Typography>}
             {event?.["Location"] && (
               <div>
                 <Typography>
