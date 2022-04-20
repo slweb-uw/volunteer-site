@@ -11,7 +11,7 @@ import MuiDialogContent from "@material-ui/core/DialogContent";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
-import { Button, Grid, makeStyles } from "@material-ui/core";
+import { Button, Grid } from "@material-ui/core";
 import Link from "next/link";
 import { useAuth } from "auth";
 import { firebaseClient } from "firebaseClient";
