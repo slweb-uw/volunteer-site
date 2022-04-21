@@ -40,6 +40,7 @@ import EventImage from "./eventImage";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import EventCard from "./eventCard";
+import RichTextEditor from "./richTextEditor";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -154,6 +155,7 @@ const initialFields = [
 const reservedFields = new Set([
   "Title",
   "Project Description",
+  "Details",
   "Types of Volunteers Needed",
   "Organization",
   "Order",
@@ -231,7 +233,9 @@ const ImageSelector = (props: ImageSelectorProps) => {
           // The issue is that file inputs are uncontrolled, so when the same image is input
           // as before there is no "change". We manually clear the input here since all we
           // need to do is process it, it doesn't need to stay here afterwards.
-          fileInputRef.current.value = "";
+          if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+          }
         }}
         hidden
       />
@@ -317,6 +321,7 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
   const [organizationList, setOrganizationList] = useState<string[]>([]);
   const [title, setTitle] = useState<string | undefined>();
   const [description, setDescription] = useState<string | undefined>();
+  const [details, setDetails] = useState<string | undefined>();
   const [organization, setOrganization] = useState<string | undefined>();
   const [location, setLocation] = useState<string | undefined>();
   const [volunteersNeeded, setVolunteersNeeded] = useState<string[]>([]);
@@ -390,7 +395,7 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
   };
 
   const compileEvent = (): CalendarEventData | null => {
-    if (!title || !description || !description || !location || !organization) {
+    if (!title || !description || !location || !organization) {
       return null;
     }
 
@@ -402,6 +407,10 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
       Location: location,
       timestamp: new Date(),
     };
+
+    if (details) {
+      uploadEvent.Details = details;
+    }
 
     if (startDateTime && endDateTime) {
       uploadEvent.StartDate = startDateTime.toISOString();
@@ -571,6 +580,9 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
       ) {
         setEndDateTime(new Date(props.event["EndDate"]));
       }
+      if (props.event.Details) {
+        setDetails(props.event.Details);
+      }
       setImageURL(props.event.imageURL);
       setCardImageURL(props.event.cardImageURL);
       setTitle(props.event.Title);
@@ -689,9 +701,23 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
               required
               multiline
               fullWidth
-              label="Project Description"
+              label="Project Summary"
               value={description}
               onChange={(e) => setDescription(e.target.value as string)}
+            />
+          </Grid>
+
+          <Grid style={{ maxWidth: "100%" }} item sm={12}>
+            <Typography
+              variant="h6"
+              style={{ textAlign: "center" }}
+            >
+              Detailed Project Description
+            </Typography>
+            <RichTextEditor
+              initialContent={event?.Details ?? ""}
+              output={setDetails}
+              placeholder="Add a detailed project description here. If left empty, the project summary will be used."
             />
           </Grid>
 

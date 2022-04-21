@@ -4,6 +4,7 @@
 interface EventData {
   Title: string;
   ["Project Description"]: string;
+  Details?: string;
   Organization: string;
   timestamp: Date;
   [Field: string]: string | string[];
@@ -46,6 +47,7 @@ interface CalendarEventData {
   Location: string;
   Organization: string;
   ["Project Description"]: string;
+  Details?: string;
   id?: string; // document's id
   ["Types of Volunteers Needed"]?: string[];
   timestamp: Date;

@@ -23,6 +23,12 @@
     "@mui/lab": "^5.0.0-alpha.66",
     "@mui/material": "^5.3.1",
     "@svgr/webpack": "^3.1.0",
+    "@tiptap/extension-link": "^2.0.0-beta.36",
+    "@tiptap/extension-placeholder": "^2.0.0-beta.48",
+    "@tiptap/extension-text-align": "^2.0.0-beta.29",
+    "@tiptap/extension-underline": "^2.0.0-beta.23",
+    "@tiptap/react": "^2.0.0-beta.108",
+    "@tiptap/starter-kit": "^2.0.0-beta.183",
     "@types/micro-cors": "^0.1.1",
     "@types/react": "^16.9.45",
     "babel-plugin-macros": "^3.0.1",
@@ -46,6 +52,7 @@
     "react-iframe": "^1.8.0",
     "react-native-webview": "^11.6.4",
     "rrule": "^2.6.8",
+    "sanitize-html": "^2.7.0",
     "styled-components": "^5.2.3",
     "superjson": "^1.7.3",
     "typescript": "^3.9.7",
@@ -53,6 +60,7 @@
   },
   "devDependencies": {
     "@types/memory-cache": "^0.2.1",
+    "@types/sanitize-html": "^2.6.2",
     "@types/styled-components": "^5.1.3",
     "babel-plugin-superjson-next": "^0.2.3"
   },
