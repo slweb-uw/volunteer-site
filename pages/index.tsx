@@ -446,7 +446,7 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
   },
   background: {
-    backgroundImage: "url(./homeNew.png)",
+    backgroundImage: "url(./homeNew-gradient.png)",
     backgroundSize: "auto",
     backgroundPosition: "right center",
     backgroundRepeat: "no-repeat",
@@ -455,7 +455,7 @@ const useStyles = makeStyles((theme) => ({
     top: 0,
     right: 0,
     bottom: 0,
-    background: "#DFDFDF",
+    background: "#FFFFFF",
   },
   triangletop: {
     position: "absolute",
