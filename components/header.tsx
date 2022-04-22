@@ -84,6 +84,7 @@ const Header: React.FC<{}> = (props) => {
       [theme.breakpoints.up("md")]: {
         justifyContent: "space-between",
       },
+      paddingBottom: "0px",
     },
     navtitle: {
       fontFamily: "Encode Sans"
@@ -100,7 +101,9 @@ const Header: React.FC<{}> = (props) => {
             cursor: "pointer",
             width: "25em",
             minWidth: 5,
-            padding: ".6em",
+            paddingBottom: "20px",
+            paddingLeft: "10px",
+            paddingTop: "5px"
           }}
         />
       </Link>

@@ -8,6 +8,7 @@ const useStyles = makeStyles({
     fontWeight: 600,
     paddingBottom: "4px",
     borderBottom: "solid #b7a57a .2em",
+    borderBottomStyle: "ridge"
   },
 });
 

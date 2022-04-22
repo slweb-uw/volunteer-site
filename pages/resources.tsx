@@ -94,6 +94,16 @@ const Resources: NextPage<Props> = ({ classes }) => {
               </ResourceLink>{" "}
               (External)
             </Typography>
+
+            <Typography className={classes.header}>
+              <ResourceLink
+                className={classes.links}
+                href="https://uwdpt-service-learning.rehab.washington.edu/"
+              >
+                Department of Rehabilitation Medicine Service Learning
+              </ResourceLink>{" "}
+              (External)
+            </Typography>
           </div>
         </AccordionDetails>
       </Accordion>
