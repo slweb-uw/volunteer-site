@@ -8,7 +8,7 @@ interface Props {
 
 const ResourceLink: React.FC<Props> = ({ href, className, children }) => {
   return (
-    <a href={href} className={className} target="_blank">
+    <a href={href} className={className} target="_blank" style={{ fontFamily: "Open Sans" }}>
       {children}
     </a>
   );

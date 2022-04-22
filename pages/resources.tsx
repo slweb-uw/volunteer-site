@@ -22,6 +22,7 @@ import ArrowDropDownCircleOutlinedIcon from '@mui/icons-material/ArrowDropDownCi
 
 import ResourceLink from "../components/resourceLink";
 import IconBreadcrumbs from "../components/breadcrumbs";
+import HeadlineBar from "components/headlineBar";
 import { ExpandMore } from "@material-ui/icons";
 
 interface Props {
@@ -46,11 +47,13 @@ const Resources: NextPage<Props> = ({ classes }) => {
         crumbs = {["Links"]} />
 
       <Typography
-        variant="h5"
-        style={{ fontWeight: 600, paddingBottom: "0.5em", fontFamily: "Encode Sans" }}
+        variant="h4"
+        style={{ fontWeight: 600, paddingBottom: "0", fontFamily: "Encode Sans", textTransform: "uppercase" }}
       >
         UW Health Sciences Service Learning Websites
       </Typography>
+
+      <HeadlineBar color="gold" width={850} height={10}></HeadlineBar>
 
       <Accordion
         square
@@ -207,11 +210,13 @@ const Resources: NextPage<Props> = ({ classes }) => {
 
 
       <Typography
-        variant="h5"
-        style={{ fontWeight: 600, paddingBottom: "0.5em", paddingTop: "2em", fontFamily: "Encode Sans" }}
+        variant="h4"
+        style={{ fontWeight: 600, paddingBottom: "0", paddingTop: "2em", fontFamily: "Encode Sans", textTransform: "uppercase" }}
       >
         SOM Community Partners
       </Typography>
+
+      <HeadlineBar color="gold" width={450} height={10}></HeadlineBar>
 
       <Accordion
         square
@@ -697,7 +702,6 @@ const styles = createStyles({
   links: {
     color: "#2436D9",
     textDecorationLine: "underline",
-    marginLeft: 50,
   },
 
   title: {
@@ -707,17 +711,12 @@ const styles = createStyles({
     fontFamily: "Encode Sans",
   },
 
-  resource: {
-    fontWeight: 800,
-  },
 });
 
 const Accordion = withStyles({
   root: {
     boxShadow: "none",
-    "&:not(:last-child)": {
-      borderBottom: "2px solid #A0A0A0",
-    },
+    borderBottom: "2px solid #A0A0A0",
     "&:before": {
       display: "none",
     },
