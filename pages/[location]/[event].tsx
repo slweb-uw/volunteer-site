@@ -108,7 +108,7 @@ const Event: NextPage<Props> = ({ classes }) => {
     setEventData(next.data() as EventData);
   };
 
-  console.log("eventData: ", eventData);
+  // console.log("eventData: ", eventData);
 
 
   const options = { year: "numeric", month: "long", day: "numeric" };
@@ -199,7 +199,6 @@ const Event: NextPage<Props> = ({ classes }) => {
 
       <Divider style={{ marginBottom: "3em", marginTop: "3em", height: 3, borderRadius: "25px"}}></Divider>
 
-      {/* Event page fields */}
       <Grid container spacing={4}>
         <EventField name="Project Description" value={<EventDescription event={eventData} />} />
         {initialGridKeys.filter((name) => eventData[name] != null && eventData[name] != "").map((name) => (
@@ -241,9 +240,6 @@ const styles = createStyles({
     minHeight: "100%",
     borderRadius: "10px",
     objectFit: "cover",
-  },
-  hidden: {
-    display: "none",
   },
 });
 export default withStyles(styles)(Event);
