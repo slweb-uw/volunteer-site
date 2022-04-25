@@ -107,7 +107,7 @@ export default function EventModal(props: {
 
   let eventLink = "/";
   if (event) {
-    eventLink = "/opportunities/" + location + "/" + event.id;
+    eventLink = "/" + location + "/" + event.id;
   }
 
   const { user } = useAuth();
