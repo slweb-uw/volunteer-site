@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
-import { firebaseClient } from "../../../firebaseClient";
+import { firebaseClient } from "../../firebaseClient";
 import React, { useState, useEffect } from "react";
 import { NextPage } from "next";
-import IconBreadcrumbs from "../../../components/breadcrumbs";
+import IconBreadcrumbs from "../../components/breadcrumbs";
 
 import {
   createStyles,
@@ -13,8 +13,8 @@ import {
   Grid,
   Button,
 } from "@material-ui/core";
-import naturalJoin from "../../../helpers/naturalJoin";
-import EventDescription from "../../../components/eventDescription";
+import naturalJoin from "../../helpers/naturalJoin";
+import EventDescription from "../../components/eventDescription";
 
 interface Props {
   classes?: any;

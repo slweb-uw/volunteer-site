@@ -30,7 +30,7 @@ module.exports = {
       {
         source: "/opportunities",
         destination: "/opportunities/default",
-      },
+      }
     ]
   }
 };
