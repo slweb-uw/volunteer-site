@@ -17,7 +17,7 @@ import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import { firebaseClient } from "firebaseClient";
 import { ArrowForwardIos } from "@material-ui/icons";
-import { textAlign } from "@mui/system";
+import { textAlign, textTransform } from "@mui/system";
 import HeadlineBar from "components/headlineBar";
 
 const App: React.FC<{}> = () => {
@@ -53,7 +53,8 @@ const App: React.FC<{}> = () => {
                 width: "60%",
                 color: "#4B2E83",
                 fontWeight: 700,
-                fontFamily: "Encode Sans"
+                fontFamily: "Encode Sans",
+                textTransform: "uppercase"
               }}
             >
               {
@@ -99,12 +100,12 @@ const App: React.FC<{}> = () => {
               alignItems: "center",
             }}
           >
-            <Typography style={{ fontSize: "1.5rem", fontWeight: 700, fontFamily: "Encode Sans" }}>
+            <Typography style={{ fontSize: "1.5rem", fontWeight: 700, fontFamily: "Encode Sans", textTransform: "uppercase" }}>
               Students
             </Typography>
 
-            <div style={{ position: "absolute", marginBottom: "0", marginTop: "28px", marginRight: "16px" }}>
-              <HeadlineBar color="gold" width={90} height={5}></HeadlineBar>
+            <div style={{ position: "absolute", marginBottom: "0", marginTop: "32px", marginRight: "11px" }}>
+              <HeadlineBar color="gold" width={120} height={8}></HeadlineBar>
             </div>
 
             <Card
@@ -142,12 +143,12 @@ const App: React.FC<{}> = () => {
               alignItems: "center",
             }}
           >
-            <Typography style={{ fontSize: "1.5rem", fontWeight: 700, fontFamily: "Encode Sans" }}>
+            <Typography style={{ fontSize: "1.5rem", fontWeight: 700, fontFamily: "Encode Sans", textTransform: "uppercase" }}>
               Volunteer Providers
             </Typography>
 
-            <div style={{ position: "absolute", marginBottom: "0", marginTop: "28px", marginRight: "18px" }}>
-              <HeadlineBar color="gold" width={222} height={5}></HeadlineBar>
+            <div style={{ position: "absolute", marginBottom: "0", marginTop: "32px", marginRight: "20px" }}>
+              <HeadlineBar color="gold" width={280} height={8}></HeadlineBar>
             </div>
 
             <Card
@@ -194,12 +195,12 @@ const App: React.FC<{}> = () => {
               alignItems: "center",
             }}
           >
-            <Typography style={{ fontSize: "1.5rem", fontWeight: 700, fontFamily: "Encode Sans" }}>
+            <Typography style={{ fontSize: "1.5rem", fontWeight: 700, fontFamily: "Encode Sans", textTransform: "uppercase" }}>
               Community Partners
             </Typography>
 
-            <div style={{ position: "absolute", marginBottom: "0", marginTop: "28px", marginRight: "24px" }}>
-              <HeadlineBar color="gold" width={220} height={5}></HeadlineBar>
+            <div style={{ position: "absolute", marginBottom: "0", marginTop: "32px", marginRight: "15px" }}>
+              <HeadlineBar color="gold" width={280} height={8}></HeadlineBar>
             </div>
 
             <Card
@@ -260,11 +261,11 @@ const App: React.FC<{}> = () => {
               <Typography
                 gutterBottom
                 variant="h4"
-                style={{ fontWeight: 700, paddingBottom: "0", marginBottom: "0", fontFamily: "Encode Sans" }}
+                style={{ fontWeight: 700, paddingBottom: "0", marginBottom: "0", fontFamily: "Encode Sans", textTransform: "uppercase" }}
               >
                 Serve With Us
               </Typography>
-              <HeadlineBar color="purple" width={220} height={10}></HeadlineBar>
+              <HeadlineBar color="purple" width={250} height={10}></HeadlineBar>
               <Typography style={{ fontFamily: "Open Sans" }}>
                 Volunteering with our programs is a wonderful way to practice your
                 skills, make a difference in our community and form meaningful
@@ -296,11 +297,11 @@ const App: React.FC<{}> = () => {
               <Typography
                 gutterBottom
                 variant="h4"
-                style={{ fontWeight: 700, paddingBottom: "0", marginBottom: "0", fontFamily: "Encode Sans" }}
+                style={{ fontWeight: 700, paddingBottom: "0", marginBottom: "0", fontFamily: "Encode Sans", textTransform: "uppercase" }}
               >
                 About Us
               </Typography>
-              <HeadlineBar color="gold" width={130} height={10}></HeadlineBar>
+              <HeadlineBar color="gold" width={160} height={10}></HeadlineBar>
               <Typography style={{ fontFamily: "Open Sans" }}>
                 The UW School of Medicine's Service Learning program strives to
                 enrich medical education by providing our students with
@@ -355,12 +356,12 @@ const App: React.FC<{}> = () => {
         <Typography
           gutterBottom
           variant="h4"
-          style={{ fontWeight: 700, marginLeft: "2em", textAlign: "center", fontFamily: "Encode Sans", marginBottom: "0" }}
+          style={{ fontWeight: 700, marginLeft: "2em", textAlign: "center", fontFamily: "Encode Sans", marginBottom: "0", textTransform: "uppercase" }}
         >
           Contact Us
         </Typography>
-        <div style={{ marginLeft: "584px" }}>
-          <HeadlineBar color="purple" width={130} height={10}></HeadlineBar>
+        <div style={{ textAlign: "center", marginLeft: "30px" }}>
+          <HeadlineBar color="purple" width={180} height={10}></HeadlineBar>
         </div>
         <Grid container spacing={6} xs={12} sm={12} style={{ marginTop: "2em", display: "flex", justifyContent: "center"}}>
           <Grid item >

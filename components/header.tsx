@@ -11,7 +11,6 @@ import { makeStyles } from "@material-ui/core/styles";
 // Create more customizable media query @ line 18
 export const StyledLink = styled.a`
   color: white;
-  font-family: "Lato", sans-serif;
   text-decoration: none;
   margin: 1em;
   cursor: pointer;
@@ -20,7 +19,7 @@ export const StyledLink = styled.a`
   }
 
   &:hover {
-    font-weight: 600;
+    color: #B7A57A;
   }
 `;
 
@@ -29,20 +28,20 @@ const Header: React.FC<{}> = (props) => {
 
   const links: React.ReactNode[] = [
     <NavLink key="/" href="/">
-      <StyledLink style={{ fontFamily: "Encode Sans" }}>Home</StyledLink>
+      <StyledLink style={{ fontFamily: "Encode Sans" }}>HOME</StyledLink>
     </NavLink>,
     <a key="training" style={{marginTop:"1em", textDecoration:"none"}} href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569" target="_blank">
-      <StyledLink style={{ fontFamily: "Encode Sans" }}>Training</StyledLink>
+      <StyledLink style={{ fontFamily: "Encode Sans" }}>TRAINING</StyledLink>
     </a>,
     //*NOTE: Resources name was changed to Links*/
     <NavLink key="resources" href="/resources">
-      <StyledLink style={{ fontFamily: "Encode Sans" }}>Links</StyledLink>
+      <StyledLink style={{ fontFamily: "Encode Sans" }}>LINKS</StyledLink>
     </NavLink>,
     <a key="protocols" style={{marginTop:"1em", textDecoration:"none", fontFamily: "Encode Sans"}} href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947" target="_blank">
-      <StyledLink style={{ fontFamily: "Encode Sans" }}>Protocols</StyledLink>
+      <StyledLink style={{ fontFamily: "Encode Sans" }}>PROTOCOLS</StyledLink>
     </a>,
     <NavLink key="donations" href="/donations">
-      <StyledLink style={{ fontFamily: "Encode Sans" }}>Donations</StyledLink>
+      <StyledLink style={{ fontFamily: "Encode Sans" }}>DONATIONS</StyledLink>
     </NavLink>,
     // sign in and out
     user ? (
@@ -53,7 +52,7 @@ const Header: React.FC<{}> = (props) => {
         }}
         style={{ fontFamily: "Encode Sans" }}
       >
-        Sign Out
+        SIGN OUT
       </StyledLink>
     ) : (
       <StyledLink
@@ -68,7 +67,7 @@ const Header: React.FC<{}> = (props) => {
         }}
         style={{ fontFamily: "Encode Sans" }}
       >
-        Sign In
+        SIGN IN
       </StyledLink>
     ),
   ];
@@ -85,6 +84,7 @@ const Header: React.FC<{}> = (props) => {
       [theme.breakpoints.up("md")]: {
         justifyContent: "space-between",
       },
+      paddingBottom: "0px",
     },
     navtitle: {
       fontFamily: "Encode Sans"
@@ -101,7 +101,9 @@ const Header: React.FC<{}> = (props) => {
             cursor: "pointer",
             width: "25em",
             minWidth: 5,
-            padding: ".6em",
+            paddingBottom: "20px",
+            paddingLeft: "10px",
+            paddingTop: "5px"
           }}
         />
       </Link>

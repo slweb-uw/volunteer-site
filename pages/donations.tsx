@@ -18,7 +18,6 @@ interface Props {
 const Donations: NextPage<Props> = ({ classes }) => {
   return (
     <div className={classes.page}>
-      <CssBaseline />
       <IconBreadcrumbs
         crumbs = {["Donations"]} />
       <Grid container spacing={4}>
@@ -30,13 +29,13 @@ const Donations: NextPage<Props> = ({ classes }) => {
             }}
           >
             <Typography
-              style={{ paddingBottom: "0.5rem", fontStyle: "italic" }}
+              style={{ paddingBottom: "0.5rem", fontStyle: "italic", fontFamily: "Open Sans" }}
             >
               Consider a Gift to the
             </Typography>
             <Typography
               variant="h5"
-              style={{ paddingBottom: "0.5rem", fontWeight: 700 }}
+              style={{ paddingBottom: "0.5rem", fontWeight: 700, fontFamily: "Encode Sans", textTransform: "uppercase" }}
             >
               UW School of Medicine Service Learning Fund
             </Typography>
@@ -45,11 +44,12 @@ const Donations: NextPage<Props> = ({ classes }) => {
                 paddingBottom: "0.5rem",
                 fontWeight: 700,
                 fontStyle: "italic",
+                fontFamily: "Open Sans"
               }}
             >
               Your donation will help sustain our efforts!
             </Typography>
-            <Typography>
+            <Typography style={{ fontFamily: "Open Sans" }}>
               Support School of Medicine students engaged in service-learning or
               advocacy activities. We provide basic health services and health
               education to communities in need and support outreach efforts to
@@ -68,6 +68,7 @@ const Donations: NextPage<Props> = ({ classes }) => {
                 fontSize: "1.4rem",
                 width: "330px",
                 height: "90px",
+                fontFamily: "Encode Sans"
               }}
             >
               Make a Gift Today! {">"}{" "}
@@ -96,7 +97,7 @@ const Donations: NextPage<Props> = ({ classes }) => {
       </Grid>
       <Typography
         variant="h5"
-        style={{ fontWeight: 600, paddingBottom: "1rem", paddingTop: "1.5rem"}}
+        style={{ fontWeight: 600, paddingBottom: "1rem", paddingTop: "1.5rem", fontFamily: "Encode Sans", textTransform: "uppercase"}}
       >
         Donate to a Specific Project
       </Typography>
