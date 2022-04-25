@@ -25,4 +25,12 @@ module.exports = {
 
     return config;
   },
+  async rewrites() {
+    return [
+      {
+        source: "/opportunities",
+        destination: "/opportunities/default",
+      },
+    ]
+  }
 };

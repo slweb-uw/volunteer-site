@@ -1,21 +1,20 @@
 import { useRouter } from "next/router";
-import { firebaseClient } from "../../firebaseClient";
+import { firebaseClient } from "../../../firebaseClient";
 import React, { useState, useEffect } from "react";
 import { NextPage } from "next";
-import IconBreadcrumbs from "../../components/breadcrumbs";
+import IconBreadcrumbs from "../../../components/breadcrumbs";
 
 import {
   createStyles,
   CssBaseline,
   Typography,
-  Select,
   Divider,
   withStyles,
   Grid,
   Button,
 } from "@material-ui/core";
-import naturalJoin from "../../helpers/naturalJoin";
-import EventDescription from "../../components/eventDescription";
+import naturalJoin from "../../../helpers/naturalJoin";
+import EventDescription from "../../../components/eventDescription";
 
 interface Props {
   classes?: any;
@@ -122,7 +121,7 @@ const Event: NextPage<Props> = ({ classes }) => {
     <div className={classes.page}>
       <CssBaseline />
       <IconBreadcrumbs
-        parentURL={"/location/" + location}
+        parentURL={"/opportunities/" + location}
         crumbs={["Opportunities in " + location, eventData.Title]}
       />
       <Typography variant="h5" style={{ fontWeight: 900, paddingBottom: 50 }}>

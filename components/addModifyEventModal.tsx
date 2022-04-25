@@ -186,7 +186,7 @@ const monthDayOptions = generateLabelValuePairs(31);
 interface AddModifyEventModalProps extends WithStyles<typeof styles> {
   open: boolean;
   event?: EventData;
-  location: string | string[] | undefined;
+  location: Location;
   handleClose: any;
 }
 

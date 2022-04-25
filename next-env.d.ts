@@ -1,6 +1,14 @@
 /// <reference types="next" />
 /// <reference types="next/types/global" />
 
+type Location =
+  | "Alaska"
+  | "Idaho"
+  | "Montana"
+  | "Seattle"
+  | "Spokane"
+  | "Wyoming"
+
 interface EventData {
   Title: string;
   ["Project Description"]: string;

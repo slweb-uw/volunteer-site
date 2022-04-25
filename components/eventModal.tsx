@@ -99,7 +99,7 @@ const deleteEvent = async (eventData: EventData | undefined) => {
 export default function EventModal(props: {
   open: boolean;
   event: EventData | undefined;
-  location: string | undefined;
+  location: Location;
   handleClose: any;
 }) {
   const { open, event, location, handleClose } = props;
@@ -107,7 +107,7 @@ export default function EventModal(props: {
 
   let eventLink = "/";
   if (event) {
-    eventLink = "/" + location + "/" + event.id;
+    eventLink = "/opportunities/" + location + "/" + event.id;
   }
 
   const { user } = useAuth();
