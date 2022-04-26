@@ -2,7 +2,16 @@ import {NextRouter} from "next/router";
 
 const BASE_URL = "/opportunities";
 
-const setLocation = (router: NextRouter, newLocation?: string) => {
+enum Location {
+  Alaska = "Alaska",
+  Idaho = "Idaho",
+  Montana = "Montana",
+  Seattle = "Seattle",
+  Spokane = "Spokane",
+  Wyoming = "Wyoming"
+}
+
+const setLocation = (router: NextRouter, newLocation?: Location) => {
   if (!newLocation) {
     router.push(BASE_URL, undefined, { scroll: false });
   } else {
@@ -10,4 +19,4 @@ const setLocation = (router: NextRouter, newLocation?: string) => {
   }
 }
 
-export default setLocation;
+export { Location, setLocation };

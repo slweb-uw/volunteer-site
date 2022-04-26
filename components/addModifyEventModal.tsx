@@ -41,6 +41,7 @@ import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import EventCard from "./eventCard";
 import RichTextEditor from "./richTextEditor";
+import { Location } from "../helpers/setLocation";
 
 const styles = (theme: Theme) =>
   createStyles({

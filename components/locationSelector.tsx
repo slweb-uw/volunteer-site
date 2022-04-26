@@ -2,16 +2,7 @@ import React from "react";
 import {MenuItem, Select, Typography} from "@material-ui/core";
 import BootstrapInput from "./bootstrapInput";
 import {useRouter} from "next/router";
-import setLocation from "../helpers/setLocation";
-
-const locations = [
-  "Alaska",
-  "Idaho",
-  "Montana",
-  "Seattle",
-  "Spokane",
-  "Wyoming",
-];
+import {Location, setLocation} from "../helpers/setLocation";
 
 type LocationSelectorProps = {
   defaultLocation: string;
@@ -40,14 +31,14 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
           if (location === defaultLocation) {
             setLocation(router);
           } else {
-            setLocation(router, location);
+            setLocation(router, location as Location);
           }
         }}
         style={{ width: 104 }}
         input={<BootstrapInput />}
       >
         <MenuItem value={defaultLocation}>Location</MenuItem>
-        {locations.map((location) => (
+        {Object.values(Location).map((location) => (
           <MenuItem value={location}>{location}</MenuItem>
         ))}
       </Select>

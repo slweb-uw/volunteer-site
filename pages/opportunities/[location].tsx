@@ -12,7 +12,7 @@ import IconBreadcrumbs from "components/breadcrumbs";
 import LocationSelector from "../../components/locationSelector";
 import {useRouter} from "next/router";
 import Events from "../../components/events";
-import setLocation from "../../helpers/setLocation";
+import {Location, setLocation} from "../../helpers/setLocation";
 
 // The default location, representing no location
 const DEFAULT_LOCATION = "default";
@@ -24,7 +24,7 @@ interface Props {
   enqueueSnackbar: (message: string) => void;
 }
 
-const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
+const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   const router = useRouter();
   let location = (router.query.location && !Array.isArray(router.query.location)) ? router.query.location : DEFAULT_LOCATION;
 
@@ -36,12 +36,14 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
 
   useEffect(() => {
     if (router.query.location) {
+      // The location is null until the page is hydrated by the client
       if (loaded) {
+        // We only want to set location for changes that occur after the initial page load
         window.localStorage.setItem(LAST_LOCATION_KEY, location);
       } else {
         const lastLocation = window.localStorage.getItem(LAST_LOCATION_KEY);
         if (lastLocation && lastLocation !== DEFAULT_LOCATION && location === DEFAULT_LOCATION) {
-          setLocation(router, lastLocation);
+          setLocation(router, lastLocation as Location);
         }
         setLoaded(true);
       }
@@ -61,7 +63,7 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
       }}>
         <LocationSelector defaultLocation={DEFAULT_LOCATION} />
       </div>
-      {location !== DEFAULT_LOCATION && <Events location={location as unknown as Location} />}
+      {location !== DEFAULT_LOCATION && <Events location={location as Location} />}
     </div>
   );
 };
@@ -79,4 +81,4 @@ const styles = createStyles({
 });
 
 //@ts-ignore
-export default withStyles(styles)(withSnackbar(Location));
+export default withStyles(styles)(withSnackbar(LocationPage));

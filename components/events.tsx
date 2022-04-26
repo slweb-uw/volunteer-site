@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from "react";
 import {firebaseClient} from "../firebaseClient";
-import {Button, CssBaseline, Grid, MenuItem, Select, Typography} from "@material-ui/core";
-import IconBreadcrumbs from "./breadcrumbs";
+import {Button, Grid, MenuItem, Select, Typography} from "@material-ui/core";
 import EventModal from "./eventModal";
 import BootstrapInput from "./bootstrapInput";
 import Link from "next/link";
 import AddModifyEventModal from "./addModifyEventModal";
 import EventCard from "./eventCard";
 import {useAuth} from "../auth";
+import {Location} from "../helpers/setLocation"
 
 type EventsProps = {
   location: Location;
@@ -37,7 +37,7 @@ const Events: React.FC<EventsProps> = ({
     firebaseClient
       .firestore()
       .collection("cache")
-      .doc("Seattle")
+      .doc(location.toString())
       .get()
       .then((doc) => setOrganizations(Object.keys(doc.data() as string[])));
   }, [location]);

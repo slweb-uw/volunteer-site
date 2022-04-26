@@ -19,6 +19,7 @@ import AddModifyEventModal from "./addModifyEventModal";
 import EventImage from "./eventImage";
 import naturalJoin from "../helpers/naturalJoin";
 import EventDescription from "./eventDescription";
+import { Location } from "../helpers/setLocation";
 
 const styles = (theme: Theme) =>
   createStyles({
