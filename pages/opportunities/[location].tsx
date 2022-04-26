@@ -10,9 +10,9 @@ import {
 import { withSnackbar } from "notistack";
 import IconBreadcrumbs from "components/breadcrumbs";
 import LocationSelector from "../../components/locationSelector";
-import {useRouter} from "next/router";
+import { useRouter } from "next/router";
 import Events from "../../components/events";
-import {Location, setLocation} from "../../helpers/setLocation";
+import { Location, setLocation } from "../../helpers/setLocation";
 
 // The default location, representing no location
 const DEFAULT_LOCATION = "default";
