@@ -8,7 +8,6 @@ import {
   createStyles,
   CssBaseline,
   Typography,
-  Select,
   Divider,
   withStyles,
   Grid,
@@ -123,7 +122,7 @@ const Event: NextPage<Props> = ({ classes }) => {
     <div className={classes.page}>
       <CssBaseline />
       <IconBreadcrumbs
-        parentURL={"/location/" + location}
+        parentURL={"/opportunities/" + location}
         crumbs={["Opportunities in " + location, eventData.Title]}
       />
       {/* EVENT TITLE */}

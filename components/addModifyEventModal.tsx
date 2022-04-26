@@ -41,6 +41,7 @@ import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import EventCard from "./eventCard";
 import RichTextEditor from "./richTextEditor";
+import { Location } from "../helpers/locations";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -186,7 +187,7 @@ const monthDayOptions = generateLabelValuePairs(31);
 interface AddModifyEventModalProps extends WithStyles<typeof styles> {
   open: boolean;
   event?: EventData;
-  location: string | string[] | undefined;
+  location: Location;
   handleClose: any;
 }
 
