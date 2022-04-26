@@ -12,7 +12,7 @@ import IconBreadcrumbs from "components/breadcrumbs";
 import LocationSelector from "../../components/locationSelector";
 import { useRouter } from "next/router";
 import Events from "../../components/events";
-import { Location, setLocation } from "../../helpers/setLocation";
+import { Location, setLocation } from "../../helpers/locations";
 
 // The default location, representing no location
 const DEFAULT_LOCATION = "default";

@@ -7,7 +7,7 @@ import Link from "next/link";
 import AddModifyEventModal from "./addModifyEventModal";
 import EventCard from "./eventCard";
 import { useAuth } from "../auth";
-import { Location } from "../helpers/setLocation"
+import { Location } from "../helpers/locations"
 
 type EventsProps = {
   location: Location;

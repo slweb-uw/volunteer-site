@@ -3,12 +3,12 @@ import {NextRouter} from "next/router";
 const BASE_URL = "/opportunities";
 
 enum Location {
-  Alaska = "Alaska",
-  Idaho = "Idaho",
-  Montana = "Montana",
-  Seattle = "Seattle",
-  Spokane = "Spokane",
-  Wyoming = "Wyoming"
+  ALASKA = "Alaska",
+  IDAHO = "Idaho",
+  MONTANA = "Montana",
+  SEATTLE = "Seattle",
+  SPOKANE = "Spokane",
+  WYOMING = "Wyoming"
 }
 
 const setLocation = (router: NextRouter, newLocation?: Location) => {
