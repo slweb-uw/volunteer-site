@@ -49,6 +49,7 @@
     "react": "^17.0.1",
     "react-cropper": "^2.1.8",
     "react-dom": "^16.13.1",
+    "react-icons": "^4.3.1",
     "react-iframe": "^1.8.0",
     "react-native-webview": "^11.6.4",
     "rrule": "^2.6.8",

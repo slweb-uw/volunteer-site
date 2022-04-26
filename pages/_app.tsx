@@ -6,6 +6,7 @@ import { ThemeProvider, createTheme as createv5Theme } from '@mui/material/style
 import { SnackbarProvider } from "notistack";
 import Layout from "components/layout";
 import type {} from '@mui/lab/themeAugmentation';
+import "../global.css";
 
 // Global Theme
 const theme = {

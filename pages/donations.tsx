@@ -97,7 +97,7 @@ const Donations: NextPage<Props> = ({ classes }) => {
       </Grid>
       <Typography
         variant="h5"
-        style={{ fontWeight: 600, paddingBottom: "1rem", paddingTop: "1.5rem", fontFamily: "Encode Sans", textTransform: "uppercase"}}
+        style={{ fontWeight: 600, paddingBottom: "1rem", paddingTop: "1.5rem", fontFamily: "Uni Sans Book", textTransform: "uppercase"}}
       >
         Donate to a Specific Project
       </Typography>
