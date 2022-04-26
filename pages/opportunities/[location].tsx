@@ -34,6 +34,7 @@ const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
     firebaseClient.analytics().logEvent("location_page_visit");
   }, []);
 
+  // Handle last location saving/loading
   useEffect(() => {
     if (router.query.location) {
       // The location is null until the page is hydrated by the client

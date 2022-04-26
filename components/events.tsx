@@ -54,20 +54,20 @@ const Events: React.FC<EventsProps> = ({
     const order = getOrder(sortField);
     const next = filter
       ? await firebaseClient // There is a category filter, apply it
-        .firestore()
-        .collection("/" + location)
-        .where("organization", "==", filter)
-        .orderBy(sortField, order)
-        .startAfter(cursor)
-        .limit(10)
-        .get()
+          .firestore()
+          .collection("/" + location)
+          .where("organization", "==", filter)
+          .orderBy(sortField, order)
+          .startAfter(cursor)
+          .limit(10)
+          .get()
       : await firebaseClient // There is no filter
-        .firestore()
-        .collection("/" + location)
-        .orderBy(sortField, order)
-        .startAfter(cursor)
-        .limit(10)
-        .get();
+          .firestore()
+          .collection("/" + location)
+          .orderBy(sortField, order)
+          .startAfter(cursor)
+          .limit(10)
+          .get();
     const eventsToAdd: EventData[] = [];
     next.docs.forEach((document) => {
       let eventDoc = document.data() as EventData;
@@ -93,18 +93,18 @@ const Events: React.FC<EventsProps> = ({
     const order = getOrder(curSort);
     const next = curFilter
       ? await firebaseClient
-        .firestore()
-        .collection("/" + location)
-        .where("organization", "==", curFilter)
-        .orderBy(curSort, order)
-        .limit(10)
-        .get()
+          .firestore()
+          .collection("/" + location)
+          .where("organization", "==", curFilter)
+          .orderBy(curSort, order)
+          .limit(10)
+          .get()
       : await firebaseClient
-        .firestore()
-        .collection("/" + location)
-        .orderBy(curSort, order)
-        .limit(10)
-        .get();
+          .firestore()
+          .collection("/" + location)
+          .orderBy(curSort, order)
+          .limit(10)
+          .get();
     const newEvents: EventData[] = [];
     next.docs.forEach((document) => {
       let eventDoc = document.data() as EventData;
