@@ -48,7 +48,7 @@ const DonateCard: React.FC<Props> = (props) => {
       />
       <div className={classes.details}>
         <CardContent className={classes.content}>
-          <Typography component="h5" variant="h5" style={{ fontFamily: "Uni Sans Book", textDecoration: "underline"}}>
+          <Typography component="h6" variant="h6" style={{ fontFamily: "Encode Sans", textDecoration: "underline"}}>
             <b>{props.title}</b>
           </Typography>
           <Typography variant="subtitle1" gutterBottom style={{ fontFamily: "Open Sans" }}>

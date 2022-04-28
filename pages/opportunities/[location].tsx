@@ -55,10 +55,10 @@ const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
     <div className={classes.page}>
       <CssBaseline />
       <IconBreadcrumbs crumbs={["Opportunities"]} parentURL={undefined} />
-      <Typography variant="h3" gutterBottom>
+      <Typography variant="h3" gutterBottom style={{ fontFamily: "Encode Sans", fontWeight: 800, marginBottom: ".5rem" }}>
         Opportunities
       </Typography>
-
+      <img src={"../goldbar.png"} style={{ width: "300px", height: "13px", marginBottom: "30px" }}/>
       <div style={{
         marginTop: "2em"
       }}>

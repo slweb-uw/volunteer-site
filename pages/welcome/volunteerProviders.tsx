@@ -23,7 +23,7 @@ const VolunteerProviders : NextPage<Props> = ({ classes }) => {
         variant='h4'
         style={{ fontWeight: 800, fontFamily: "Encode Sans" }}
       >
-        Welcome Volunteer Providers!
+        WELCOME VOLUNTEER PROVIDERS!
       </Typography>
       <img src={"../goldbar.png"} style={{ width: "480px", height: "10px", marginBottom: "5px" }}/>
       <div style={{ display: "flex"}}>
@@ -77,7 +77,7 @@ const VolunteerProviders : NextPage<Props> = ({ classes }) => {
                         <li><a href="https://collaborate.uw.edu/mobile/">Health Sciences Mobile Health Outreach Van</a></li>
                         <li><a href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569">Training</a></li>
                         <li><a href="categoriesOfService">Types of Service</a></li>
-                        <li><a href="../protocols">Protocols</a></li>
+                        <li><a href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947">Protocols</a></li>
                     </ul>
                 </Typography>
             </Typography>
