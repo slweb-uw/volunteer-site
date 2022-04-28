@@ -48,18 +48,19 @@ const App: React.FC<{}> = () => {
             <Typography
               variant="h4"
               gutterBottom
-              style={{
+            >
+              <pre style={{
                 fontSize: "2.5rem",
                 color: "black",
-                fontWeight: 700,
                 fontFamily: "Encode Sans",
+                fontWeight: 800,
                 textTransform: "uppercase",
                 marginBottom: "2px"
-              }}
-            >
+              }}>
               {
-                "UW HEALTH SCIENCES/WWAMI"
+                "UW School of Medicine\nWWAMI/UW Health Sciences"
               }
+              </pre>
             </Typography>
 
             <HeadlineBar color="purple" width={600} height={20}></HeadlineBar>
@@ -72,10 +73,11 @@ const App: React.FC<{}> = () => {
                 color: "black",
                 fontWeight: 700,
                 fontFamily: "Uni Sans Book",
+                paddingTop: "12px"
               }}
             >
               {
-                "Service Learning"
+                "SERVICE LEARNING"
               }
             </Typography>
 
@@ -90,7 +92,7 @@ const App: React.FC<{}> = () => {
               <Button
                 color="primary"
                 variant="contained"
-                style={{ width: "220px", fontFamily: "Encode Sans" }}
+                className={classes.findOppBtn}
               >
                 Find Opportunities
               </Button>
@@ -118,12 +120,12 @@ const App: React.FC<{}> = () => {
               alignItems: "center",
             }}
           >
-            <Typography style={{ fontSize: "1.5rem", fontWeight: 800, fontFamily: "Uni Sans Book", textTransform: "uppercase" }}>
+            <Typography style={{ fontSize: "1.5rem", fontWeight: 800, fontFamily: "Encode Sans", textTransform: "uppercase" }}>
               Students
             </Typography>
 
-            <div style={{ position: "absolute", marginBottom: "0", marginTop: "32px", marginRight: "9px" }}>
-              <HeadlineBar color="gold" width={110} height={8}></HeadlineBar>
+            <div style={{ position: "absolute", marginBottom: "0", marginTop: "32px", marginRight: "12px" }}>
+              <HeadlineBar color="gold" width={120} height={10}></HeadlineBar>
             </div>
 
             <Card
@@ -161,12 +163,12 @@ const App: React.FC<{}> = () => {
               alignItems: "center",
             }}
           >
-            <Typography style={{ fontSize: "1.5rem", fontWeight: 700, fontFamily: "Uni Sans Book", textTransform: "uppercase" }}>
+            <Typography style={{ fontSize: "1.5rem", fontWeight: 700, fontFamily: "Encode Sans", textTransform: "uppercase" }}>
               Volunteer Providers
             </Typography>
 
-            <div style={{ position: "absolute", marginBottom: "0", marginTop: "32px", marginRight: "15px" }}>
-              <HeadlineBar color="gold" width={250} height={8}></HeadlineBar>
+            <div style={{ position: "absolute", marginBottom: "0", marginTop: "32px", marginRight: "20px" }}>
+              <HeadlineBar color="gold" width={280} height={10}></HeadlineBar>
             </div>
 
             <Card
@@ -213,12 +215,12 @@ const App: React.FC<{}> = () => {
               alignItems: "center",
             }}
           >
-            <Typography style={{ fontSize: "1.5rem", fontWeight: 700, fontFamily: "Uni Sans Book", textTransform: "uppercase" }}>
+            <Typography style={{ fontSize: "1.5rem", fontWeight: 700, fontFamily: "Encode Sans", textTransform: "uppercase" }}>
               Community Partners
             </Typography>
 
             <div style={{ position: "absolute", marginBottom: "0", marginTop: "32px", marginRight: "18px" }}>
-              <HeadlineBar color="gold" width={240} height={8}></HeadlineBar>
+              <HeadlineBar color="gold" width={275} height={10}></HeadlineBar>
             </div>
 
             <Card
@@ -364,7 +366,7 @@ const App: React.FC<{}> = () => {
         </Grid>
       </div>
 
-      {/** Contact Us section*/}
+      {/** Contact section*/}
       <div
         style={{
           backgroundColor: "#E8E3D3",
@@ -376,10 +378,10 @@ const App: React.FC<{}> = () => {
           variant="h4"
           style={{ fontWeight: 700, marginLeft: "2em", textAlign: "center", fontFamily: "Encode Sans", marginBottom: "0", textTransform: "uppercase" }}
         >
-          Contact Us
+          Contact
         </Typography>
-        <div style={{ textAlign: "center", marginLeft: "30px" }}>
-          <HeadlineBar color="purple" width={180} height={10}></HeadlineBar>
+        <div style={{ textAlign: "center", marginLeft: "43px" }}>
+          <HeadlineBar color="purple" width={140} height={10}></HeadlineBar>
         </div>
         <Grid container spacing={6} xs={12} sm={12} style={{ marginTop: "2em", display: "flex", justifyContent: "center"}}>
           <Grid item >
@@ -406,7 +408,7 @@ const App: React.FC<{}> = () => {
                   style={{ marginLeft: "5em" }}
                 >
                   <Grid item>
-                    <Typography className={classes.contact}>clarkel@uw.edu</Typography>
+                    <Typography className={classes.contact}><a href="mailto://clarkel@uw.edu">clarkel@uw.edu</a></Typography>
                   </Grid>
                   <Grid item>
                     <Typography className={classes.contact}>206-685-2009</Typography>
@@ -518,6 +520,15 @@ const useStyles = makeStyles((theme) => ({
   },
   contact: {
     fontFamily: "Open Sans",
+  },
+  findOppBtn: {
+    width: "220px",
+    fontFamily: "Encode Sans",
+    fontWeight: 800,
+    "&:hover": {
+      color: "#B7A57A",
+      transition: ".25s",
+    }
   }
 }));
 

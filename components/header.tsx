@@ -41,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
   },
   navtitle: {
     fontFamily: "Encode Sans",
+    fontWeight: 600,
     color: "white",
     textDecoration: "none",
     margin: "1em",
@@ -61,7 +62,7 @@ const Header: React.FC<{}> = (props) => {
       <a className={useStyles().navtitle}>HOME</a>
     </NavLink>,
     <span style={{ fontSize: "35px", color: "grey", marginTop: "8px" }}>/</span>,
-    <NavLink key="training" href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569" target="_blank">
+    <NavLink key="training" href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569">
       <a className={useStyles().navtitle}>TRAINING</a>
     </NavLink>,
     //*NOTE: Resources name was changed to Links*/
@@ -70,12 +71,16 @@ const Header: React.FC<{}> = (props) => {
       <a className={useStyles().navtitle}>LINKS</a>
     </NavLink>,
     <span style={{ fontSize: "35px", color: "grey", marginTop: "8px" }}>/</span>,
-    <NavLink key="protocols" href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947" target="_blank">
+    <NavLink key="protocols" href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947">
       <a className={useStyles().navtitle}>PROTOCOLS</a>
     </NavLink>,
     <span style={{ fontSize: "35px", color: "grey", marginTop: "8px" }}>/</span>,
     <NavLink key="donations" href="/donations">
       <a className={useStyles().navtitle}>DONATIONS</a>
+    </NavLink>,
+    <span style={{ fontSize: "35px", color: "grey", marginTop: "8px" }}>/</span>,
+    <NavLink key="opportunities" href="/opportunities">
+      <a className={useStyles().navtitle}>OPPORTUNITIES</a>
     </NavLink>,
     <span style={{ fontSize: "35px", color: "grey", marginTop: "8px" }}>/</span>,
     // sign in and out

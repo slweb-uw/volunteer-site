@@ -10,6 +10,7 @@ const Footer: React.FC<{}> = () => {
         textAlign: "center",
         paddingTop: "1.5em",
         paddingBottom: "1.5em",
+        marginBottom: "0"
       }}
     >
       <img src="/uw-text-logo.png" style={{ width: "500px", height: "auto", marginBottom: "12px" }} />
