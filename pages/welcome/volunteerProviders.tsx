@@ -5,6 +5,7 @@ import {
   Typography,
   withStyles,
   Grid,
+  Link,
 } from "@material-ui/core";
 import IconBreadcrumbs from "components/breadcrumbs";
 import { BorderAllRounded } from "@material-ui/icons";
@@ -71,13 +72,13 @@ const VolunteerProviders : NextPage<Props> = ({ classes }) => {
                 <Typography style = {{fontSize: 24, marginTop: "20px", fontWeight: 700, marginBottom: "0.5em", fontFamily: "Uni Sans Book" }}>
                   Links
                     <ul>
-                        <li><a href="../onboarding">Onboarding</a></li>
-                        <li><a href="../opportunities">Find Opportunities</a></li>
-                        <li><a href="../calander">Calendar</a></li>
-                        <li><a href="https://collaborate.uw.edu/mobile/">Health Sciences Mobile Health Outreach Van</a></li>
-                        <li><a href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569">Training</a></li>
-                        <li><a href="categoriesOfService">Types of Service</a></li>
-                        <li><a href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947">Protocols</a></li>
+                        <li><Link href="../onboarding">Onboarding</Link></li>
+                        <li><Link href="../opportunities">Find Opportunities</Link></li>
+                        <li><Link href="/calendar">Calendar</Link></li>
+                        <li><Link href="https://collaborate.uw.edu/mobile/">Health Sciences Mobile Health Outreach Van</Link></li>
+                        <li><Link href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569">Training</Link></li>
+                        <li><Link href="categoriesOfService">Types of Service</Link></li>
+                        <li><Link href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947">Protocols</Link></li>
                     </ul>
                 </Typography>
             </Typography>
