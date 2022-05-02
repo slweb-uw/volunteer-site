@@ -44,7 +44,7 @@ const DonateCard: React.FC<Props> = (props) => {
         component="img"
         className={classes.cover}
         src={props.img}
-        alt={"Image for" + props.title}
+        alt={props.title}
       />
       <div className={classes.details}>
         <CardContent className={classes.content}>

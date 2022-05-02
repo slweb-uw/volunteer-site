@@ -18,6 +18,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
   return (
     <div>
       <Typography
+        id="select-location-label"
         gutterBottom
         display="inline"
         style={{ marginRight: "1em", fontFamily: "Uni Sans Book", fontSize: "1.5rem", verticalAlign: "-5%" }}
@@ -25,6 +26,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
         <b>Select a Location</b>{" "}
       </Typography>
       <Select
+        aria-labelledby="select-location-label"
         value={location}
         onChange={(e) => {
           const location = e.target.value as string;

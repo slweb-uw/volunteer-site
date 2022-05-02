@@ -19,7 +19,7 @@ const EventImage: React.FC<Props> = (props) => {
       src={
         props.imageURL ? props.imageURL : "/beigeSquare.png"
       }
-      alt={"Image for " + props.eventTitle}
+      alt={props.eventTitle}
     />
   );
 }

@@ -29,9 +29,15 @@ const useStyles = makeStyles((theme) => ({
     margin: "1em",
     paddingBottom: "5px",
     cursor: "pointer",
-    "&:hover, &:focus": {
+    "&:hover": {
       color: "#B7A57A",
       transition: ".25s",
+    },
+    "&:focus-visible": {
+      outline: "none",
+      boxShadow: "0 0 0 0.2rem #80bdff",
+      borderColor: "#80bdff",
+      borderRadius: "4px",
     }
   },
 }));
@@ -102,9 +108,10 @@ const Header: React.FC<{}> = (props) => {
   return (
     <div className={useStyles().root}>
       <Link href="/">
-        <a tabIndex={1}>
+        <a>
           <img
             src="/header-logo.png"
+            alt="University of Washington School of Medicine logo"
             style={{
               position: "relative",
               cursor: "pointer",
