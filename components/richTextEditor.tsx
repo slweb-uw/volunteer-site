@@ -395,7 +395,8 @@ type RichTextEditorProps = {
   // An HTML string representing the initial content of the editor, will be sanitized
   initialContent: string;
   // A callback that is called with the text editor contents as an HTML string
-  output: (content: string) => void;
+  // If the editor is empty, content is null
+  output: (content: string | null) => void;
   // Placeholder text that is displayed in the text box when the content is empty
   placeholder: string;
 }
@@ -448,7 +449,11 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
 
   React.useEffect(() => {
     if (editor) {
-      output(editor.getHTML());
+      if (editor.isEmpty) {
+        output(null);
+      } else {
+        output(editor.getHTML());
+      }
     }
   })
 

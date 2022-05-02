@@ -25,84 +25,97 @@ export const StyledLink = styled.a`
   }
 `;
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    backgroundColor: "#4B2E83",
+    padding: "1em",
+    width: "100%",
+    justifyContent: "space-between",
+    alignContent: "flex-end",
+    alignItems: "flex-start",
+    [theme.breakpoints.up("md")]: {
+      justifyContent: "space-between",
+    },
+    paddingBottom: "0px",
+  },
+  navtitle: {
+    fontFamily: "Encode Sans",
+    fontWeight: 600,
+    color: "white",
+    textDecoration: "none",
+    margin: "1em",
+    paddingBottom: "5px",
+    cursor: "pointer",
+    "&:hover": {
+      color: "#B7A57A",
+      transition: ".25s",
+    }
+  },
+}));
+
 const Header: React.FC<{}> = (props) => {
   const { user } = useAuth();
 
   const links: React.ReactNode[] = [
     <NavLink key="/" href="/">
-      <StyledLink style={{ fontFamily: "Encode Sans" }} tabIndex={2}>HOME</StyledLink>
+      <a className={useStyles().navtitle}>HOME</a>
     </NavLink>,
     <span style={{ fontSize: "35px", color: "grey", marginTop: "8px" }}>/</span>,
-    <a key="training" style={{marginTop:"1em", textDecoration:"none"}}
-       href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569"
-       target="_blank" tabIndex={-1}>
-      <StyledLink style={{ fontFamily: "Encode Sans" }} tabIndex={3}>TRAINING</StyledLink>
-    </a>,
+    <NavLink key="training" href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569">
+      <a className={useStyles().navtitle}>TRAINING</a>
+    </NavLink>,
     //*NOTE: Resources name was changed to Links*/
     <span style={{ fontSize: "35px", color: "grey", marginTop: "8px" }}>/</span>,
     <NavLink key="resources" href="/resources">
-      <StyledLink style={{ fontFamily: "Encode Sans" }} tabIndex={4}>LINKS</StyledLink>
+      <a className={useStyles().navtitle}>LINKS</a>
     </NavLink>,
     <span style={{ fontSize: "35px", color: "grey", marginTop: "8px" }}>/</span>,
-    <a key="protocols" style={{marginTop:"1em", textDecoration:"none", fontFamily: "Encode Sans"}}
-       href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947"
-       target="_blank" tabIndex={-1}>
-      <StyledLink style={{ fontFamily: "Encode Sans" }} tabIndex={5}>PROTOCOLS</StyledLink>
-    </a>,
+    <NavLink key="protocols" href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947">
+      <a className={useStyles().navtitle}>PROTOCOLS</a>
+    </NavLink>,
     <span style={{ fontSize: "35px", color: "grey", marginTop: "8px" }}>/</span>,
     <NavLink key="donations" href="/donations">
-      <StyledLink style={{ fontFamily: "Encode Sans" }} tabIndex={6}>DONATIONS</StyledLink>
+      <a className={useStyles().navtitle}>DONATIONS</a>
+    </NavLink>,
+    <span style={{ fontSize: "35px", color: "grey", marginTop: "8px" }}>/</span>,
+    <NavLink key="opportunities" href="/opportunities">
+      <a className={useStyles().navtitle}>OPPORTUNITIES</a>
     </NavLink>,
     <span style={{ fontSize: "35px", color: "grey", marginTop: "8px" }}>/</span>,
     // sign in and out
     user ? (
-      <StyledLink
-        key="sign out"
-        onClick={() => {
-          firebaseClient.auth().signOut();
-        }}
-        style={{ fontFamily: "Encode Sans" }}
-        tabIndex={7}
-      >
-        SIGN OUT
-      </StyledLink>
+      <NavLink key="sign out" href="">
+        <a
+          key="sign out"
+          onClick={() => {
+            firebaseClient.auth().signOut();
+          }}
+          className={useStyles().navtitle}
+        >
+          SIGN OUT
+        </a>
+      </NavLink>
     ) : (
-      <StyledLink
-        key="sign in"
-        onClick={() => {
-          var provider = new firebaseClient.auth.OAuthProvider("microsoft.com");
-          provider.setCustomParameters({
-            // Target uw login
-            tenant: "uw.edu",
-          });
-          firebaseClient.auth().signInWithPopup(provider);
-        }}
-        style={{ fontFamily: "Encode Sans" }}
-        tabIndex={7}
-      >
-        SIGN IN
-      </StyledLink>
+      <NavLink key="sign in" href="">
+        <a
+          key="sign in"
+          onClick={() => {
+            var provider = new firebaseClient.auth.OAuthProvider("microsoft.com");
+            provider.setCustomParameters({
+              // Target uw login
+              tenant: "uw.edu",
+            });
+            firebaseClient.auth().signInWithPopup(provider);
+          }}
+          className={useStyles().navtitle}
+        >
+          SIGN IN
+        </a>
+      </NavLink>
     ),
   ];
 
-  const useStyles = makeStyles((theme) => ({
-    root: {
-      display: "flex",
-      backgroundColor: "#4B2E83",
-      padding: "1em",
-      width: "100%",
-      justifyContent: "space-between",
-      alignContent: "flex-end",
-      alignItems: "flex-start",
-      [theme.breakpoints.up("md")]: {
-        justifyContent: "space-between",
-      },
-      paddingBottom: "0px",
-    },
-    navtitle: {
-      fontFamily: "Encode Sans"
-    },
-  }));
 
   return (
     <div className={useStyles().root}>

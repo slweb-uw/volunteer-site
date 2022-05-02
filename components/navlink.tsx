@@ -19,5 +19,5 @@ export default ({ href, children }: { href: string; children: any }) => {
     className = `${className} ${classes.active}`;
   }
 
-  return <Link href={href}><a tabIndex={-1}>{React.cloneElement(children, { className })}</a></Link>;
+  return <Link href={href}>{React.cloneElement(children, { className })}</Link>;
 };

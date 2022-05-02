@@ -48,7 +48,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
 
       <Typography
         variant="h4"
-        style={{ fontWeight: 600, paddingBottom: "0", fontFamily: "Encode Sans", textTransform: "uppercase" }}
+        style={{ fontWeight: 800, paddingBottom: "0", fontFamily: "Encode Sans", textTransform: "uppercase" }}
       >
         UW Health Sciences Service Learning Websites
       </Typography>
@@ -221,7 +221,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
 
       <Typography
         variant="h4"
-        style={{ fontWeight: 600, paddingBottom: "0", paddingTop: "2em", fontFamily: "Encode Sans", textTransform: "uppercase" }}
+        style={{ fontWeight: 800, paddingBottom: "0", paddingTop: "2em", fontFamily: "Encode Sans", textTransform: "uppercase" }}
       >
         SOM Community Partners
       </Typography>
@@ -717,7 +717,7 @@ const styles = createStyles({
   title: {
     color: "#4B2E83",
     fontSize: "1.5rem",
-    fontWeight: 2000,
+    fontWeight: 800,
     fontFamily: "Encode Sans",
   },
 

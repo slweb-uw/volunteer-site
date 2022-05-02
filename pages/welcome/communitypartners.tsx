@@ -25,10 +25,11 @@ const Communitypartners: NextPage<Props> = ({ classes }) => {
         crumbs = {["Welcome Community Partners"]} parentURL = {undefined} />
       <Typography
         variant='h4'
-        style={{ fontWeight: 1000, paddingBottom: "1em" }}
+        style={{ fontFamily: "Encode Sans", fontWeight: 800 }}
       >
-        Welcome Community Partners!
+        WELCOME COMMUNITY PARTNERS!
       </Typography>
+      <img src={"../goldbar.png"} style={{ width: "600px", height: "10px", marginBottom: "30px" }}/>
       <Grid container spacing={2}>
         <Grid item xs={12} md={6} lg={4}>
           <div
@@ -61,15 +62,15 @@ const Communitypartners: NextPage<Props> = ({ classes }) => {
           >
             <Typography style = {{fontSize: 20}}>
               Thank you for your interest in the University of Washington School of Medicine and Health Sciences
-              Service Learning Program! Our mission is to provide ways for our students to connect with and serve 
+              Service Learning Program! Our mission is to provide ways for our students to connect with and serve
               our local communities. You might see our students involved in a{" "}
               <a href='/resources'>variety of activities</a>
-              {" "}such as health screenings, 
+              {" "}such as health screenings,
               vaccination clinics, health education programs or street outreach.
               <Typography style = {{fontSize: 20, marginTop: "20px" }}>
                 To learn more about what students are working on now,{" "}
                 <a href='/donations'>click here</a>.
-                {" "}If you have an idea for a future program, 
+                {" "}If you have an idea for a future program,
                 please contact Leonora Clarke,{" "}
               <a href="mailto://clarkel@uw.edu">clarkel@uw.edu</a>.
               </Typography>
@@ -89,6 +90,7 @@ const styles = createStyles({
     width: "90%",
     paddingTop: "2em",
     paddingBottom: "5em",
+    fontFamily: "Open Sans"
   },
 
   header: {

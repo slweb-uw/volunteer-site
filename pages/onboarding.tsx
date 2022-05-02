@@ -23,6 +23,7 @@ import IconBreadcrumbs from "../components/breadcrumbs"
 import ArrowDropDownCircleOutlinedIcon from '@mui/icons-material/ArrowDropDownCircleOutlined';
 import { yellow } from "@material-ui/core/colors";
 import { WarningOutlined } from "@material-ui/icons";
+import HeadlineBar from "components/headlineBar";
 interface Props {
   classes?: any;
 }
@@ -39,12 +40,14 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
         crumbs = {["Onboarding Instructions"]} />
       <Typography
         variant="h4"
-        style={{ fontWeight: 600, paddingBottom: "0.5em" }}
+        style={{ fontFamily: "Encode Sans", fontWeight: 800 }}
       >
-        Volunteer Provider Onboarding Instructions
+        VOLUNTEER PROVIDER ONBOARDING INSTRUCTIONS
       </Typography>
 
-      <Alert severity="warning" style={{ backgroundColor: "#fef4e5", marginBottom: "2em" }}>
+      <HeadlineBar color="gold" width={900} height={10}/>
+
+      <Alert severity="warning" style={{ backgroundColor: "#fef4e5", marginBottom: "2em", marginTop: "2em" }}>
         <AlertTitle>
           <strong>All providers must fill out a brief survey here:{" "}</strong>
           <a target="_blank" href="https://forms.office.com/r/yyLvBx8HiT">
@@ -198,6 +201,7 @@ const styles = createStyles({
   title: {
     color: "#4B2E83",
     fontSize: "1.5rem",
+    fontFamily: "Encode Sans",
     fontWeight: 900,
   },
 

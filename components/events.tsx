@@ -1,49 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { firebaseClient } from "../firebaseClient";
-//import { useRouter } from "next/router";
-import { NextPage } from "next";
-import {
-  createStyles,
-  CssBaseline,
-  Typography,
-  Select,
-  MenuItem,
-  withStyles,
-  Grid,
-  Button,
-} from "@material-ui/core";
-import { withSnackbar } from "notistack";
-import EventCard from "../components/eventCard";
-import BootstrapInput from "components/bootstrapInput";
+import { Button, Grid, MenuItem, Select, Typography } from "@material-ui/core";
+import EventModal from "./eventModal";
+import BootstrapInput from "./bootstrapInput";
 import Link from "next/link";
-import EventModal from "components/eventModal";
-import AddModifyEventModal from "components/addModifyEventModal";
-import { useAuth } from "auth";
-import IconBreadcrumbs from "components/breadcrumbs";
+import AddModifyEventModal from "./addModifyEventModal";
+import EventCard from "./eventCard";
+import { useAuth } from "../auth";
+import { Location } from "../helpers/locations"
 
-interface Props {
-  classes?: any;
-  enqueueSnackbar: (message: string) => void;
+type EventsProps = {
+  location: Location;
 }
 
-const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
-  // const router = useRouter();
+const Events: React.FC<EventsProps> = ({
+  location
+}) => {
   const { user } = useAuth();
-  // const { location } = router.query; // string of current location (ex: "Seattle")
-  const [location, setLocation] = useState<string | undefined>();
-  const locations = [
-    "Alaska",
-    "Idaho",
-    "Montana",
-    "Seattle",
-    "Spokane",
-    "Wyoming",
-  ];
+
   const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
   const [events, setEvents] = useState<EventData[]>([]); // list of loaded events
   const [cursor, setCursor] = useState<
     firebaseClient.firestore.QueryDocumentSnapshot
-  >(); // cursor to last document loaded
+    >(); // cursor to last document loaded
   const [filter, setFilter] = useState<string | undefined>();
   const [showLoadButton, setShowLoadButton] = useState<boolean>(true);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -52,24 +31,16 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   const [sortField, setSortField] = useState<string>("timestamp");
 
   useEffect(() => {
-    firebaseClient.analytics().logEvent("location_page_visit");
-  }, []);
-
-  useEffect(() => {
-    // Load initial events
-    if (location) {
-      reloadEvents(undefined, "timestamp");
-      if (typeof location === "string") {
-        // pull organizations for this location from the metadata cache
-        firebaseClient
-          .firestore()
-          .collection("cache")
-          .doc(location)
-          .get()
-          .then((doc) => setOrganizations(Object.keys(doc.data() as string[])));
-      }
-    }
-  }, [location]); // location selected instead of router
+    // Load events
+    reloadEvents(undefined, "timestamp");
+    // pull organizations for this location from the metadata cache
+    firebaseClient
+      .firestore()
+      .collection("cache")
+      .doc(location.toString())
+      .get()
+      .then((doc) => setOrganizations(Object.keys(doc.data() as string[])));
+  }, [location]);
 
   const getOrder = (curSort: string) => {
     return curSort === "timestamp" ? "desc" : "asc";
@@ -165,19 +136,7 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   };
 
   return (
-    <div className={classes.page}>
-      <CssBaseline />
-      <IconBreadcrumbs crumbs={["Opportunities"]} parentURL={undefined} />
-      <Typography variant="h3" gutterBottom>
-        Opportunities
-      </Typography>
-      <EventModal
-        open={modalOpen}
-        event={selectedEvent}
-        location={location}
-        handleClose={() => setModalOpen(false)}
-      />
-
+    <div>
       <div
         style={{
           marginTop: "2em",
@@ -185,33 +144,15 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
           width: "100%",
         }}
       >
+        <EventModal
+          open={modalOpen}
+          event={selectedEvent}
+          location={location}
+          handleClose={() => setModalOpen(false)}
+        />
         <Grid container>
           <Grid item xs={12} sm={10}>
             <Grid container>
-              <Grid item xs={12}>
-                <Typography
-                  gutterBottom
-                  display="inline"
-                  style={{ marginRight: "1em", verticalAlign: "50%" }}
-                >
-                  <b>Select a Location</b>{" "}
-                </Typography>
-                <Select
-                  value={filter}
-                  onChange={(e) => {
-                    setLocation(e.target.value as string | undefined);
-                  }}
-                  style={{ width: 104 }}
-                  displayEmpty
-                  input={<BootstrapInput />}
-                >
-                  <MenuItem>Location</MenuItem>
-                  {locations.map((location) => (
-                    <MenuItem value={location}>{location}</MenuItem>
-                  ))}
-                </Select>
-              </Grid>
-
               <Grid item xs={12}>
                 <Typography
                   gutterBottom
@@ -290,23 +231,6 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
         </Grid>
       </div>
 
-      <Typography
-        variant="h6"
-        style={{ textAlign: "center", marginBottom: "3em", color: "#85754D" }}
-      >
-        <b>Providers: </b> Please review our{" "}
-        <i>
-          <Link href={"/onboarding/"}>
-            <u>
-              <a style={{ color: "#85754D", cursor: "pointer" }}>
-                Onboarding Instructions
-              </a>
-            </u>
-          </Link>
-        </i>{" "}
-        before signing up for an opportunity!
-      </Typography>
-
       {/* Button-Modal Module for adding new events */}
       {/* TODO: custom claims for admin access, currently hardcoded here and on backend check */}
       {user &&
@@ -372,19 +296,6 @@ const Location: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
       )}
     </div>
   );
-};
+}
 
-const styles = createStyles({
-  page: {
-    marginLeft: "auto",
-    marginRight: "auto",
-    minHeight: 1000,
-    maxWidth: 1500,
-    width: "95%",
-    paddingTop: "2em",
-    paddingBottom: "5em",
-  },
-});
-
-//@ts-ignore
-export default withStyles(styles)(withSnackbar(Location));
+export default Events;

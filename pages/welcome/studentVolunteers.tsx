@@ -12,6 +12,7 @@ import {
   Divider,
 } from "@material-ui/core";
 import IconBreadcrumbs from "components/breadcrumbs";
+import HeadlineBar from "components/headlineBar";
 
 interface Props {
   classes?: any;
@@ -25,10 +26,11 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
         crumbs = {["Welcome Students"]} parentURL = {undefined} />
       <Typography
         variant='h4'
-        style={{ fontWeight: 1000}}
+        style={{ fontFamily: "Encode Sans", fontWeight: 800 }}
       >
         Welcome Student Volunteers!
       </Typography>
+      <img src={"../goldbar.png"} style={{ width: "470px", height: "10px", marginBottom: "5px" }}/>
       <Grid container spacing={2}>
         <Grid item xs={12} md={6} lg={8}>
           <div
@@ -39,11 +41,11 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
               marginTop: "1em",
             }}
           >
-            <Typography style = {{fontSize: 20}}>
+            <Typography style = {{fontSize: 16}}>
             Thank you for your interest in volunteering to serve our communities! Sometimes we can get
             so caught up in our studies that we lose track of the reasons why we went into health care
             to begin with. Service learning can help.
-              <Typography style = {{fontSize: 20, marginTop: "20px" }}>
+              <Typography style = {{fontSize: 16, marginTop: "20px" }}>
                 <ul>
                     <li>Take advantage of real-life opportunities to get involved!</li> {/* LINK TO Find Opportunities PAGE */}
                     <li>Utilize the skills that you are gaining in the classroom to actualize your values!</li>
@@ -69,9 +71,8 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
                     width: "466px",
                     height: "255px",
                     margin: "0px",
-                    borderRadius: "10px",
+
                     objectFit: "cover",
-                    
                 }}
                 src='/studentVolunteers.png'
                 alt='Student Volunteer Sample Image'
@@ -79,18 +80,13 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
             </div>
         </Grid>
         <Grid item xs={12} md={6} lg={8}>
-            <Typography 
-                style={{ fontWeight: 700, fontSize: 20, marginTop: "53px" }}
-            >
-                Quote from previous Community Partner
-            </Typography>
-            <Typography style={{fontWeight: 400, fontSize: 20, fontStyle: "italic", marginTop: "39px", marginBottom: "39px"}}>
+            <Typography style={{fontWeight: 400, fontSize: 16, fontStyle: "italic", marginTop: "39px", marginBottom: "39px", fontFamily: "Open Sans"}}>
                 “Service Learning has helped me to get to know and build relationships in a community that I was new to.
                 I have bonded with my classmates as I work alongside them and I have grown to appreciate and respect the
-                locals in the place I now call home. What I love the most about this work is the inspiration I get from 
+                locals in the place I now call home. What I love the most about this work is the inspiration I get from
                 being surrounded by students and faculty who have such large hearts, helping hands and altruistic spirits.
                 I can only hope to model those characteristics for the rest of my life.”
-                <Typography style={{fontWeight: 700, fontSize: 20, fontStyle: "italic" }}>
+                <Typography style={{fontWeight: 700, fontSize: 20, marginTop: "20px", marginLeft: "20px" }}>
                 - Kierney Ross, Montana WWAMI
                 </Typography>
             </Typography>
