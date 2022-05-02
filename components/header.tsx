@@ -1,5 +1,4 @@
 import React from "react";
-import styled from "styled-components";
 import Link from "next/link";
 import NavLink from "./navlink";
 import Hidden from "@material-ui/core/Hidden";
@@ -7,23 +6,6 @@ import { useAuth } from "auth";
 import { firebaseClient } from "firebaseClient";
 import BasicMenu from "./basicMenu";
 import { makeStyles } from "@material-ui/core/styles";
-
-// Create more customizable media query @ line 18
-export const StyledLink = styled.a`
-  color: white;
-  text-decoration: none;
-  margin: 1em;
-  padding-bottom: 5px;
-  cursor: pointer;
-  @media screen and (max-width: 960px) {
-    color: black;
-  }
-
-  &:hover, &:focus {
-    color: #B7A57A;
-    transition: .25s;
-  }
-`;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     margin: "1em",
     paddingBottom: "5px",
     cursor: "pointer",
-    "&:hover": {
+    "&:hover, &:focus": {
       color: "#B7A57A",
       transition: ".25s",
     }
