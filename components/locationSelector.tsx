@@ -18,13 +18,15 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
   return (
     <div>
       <Typography
+        id="select-location-label"
         gutterBottom
         display="inline"
-        style={{ marginRight: "1em", verticalAlign: "50%" }}
+        style={{ marginRight: "1em", fontFamily: "Uni Sans Book", fontSize: "1.5rem", verticalAlign: "-5%" }}
       >
         <b>Select a Location</b>{" "}
       </Typography>
       <Select
+        aria-labelledby="select-location-label"
         value={location}
         onChange={(e) => {
           const location = e.target.value as string;
@@ -37,13 +39,14 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
         style={{ width: 104 }}
         input={<BootstrapInput />}
       >
-        <MenuItem value={defaultLocation}>Location</MenuItem>
+        <MenuItem value={defaultLocation} style={{ fontFamily: "Open Sans" }}>Location</MenuItem>
         {Object.values(Location).map((location) => (
-          <MenuItem value={location}>{location}</MenuItem>
+          <MenuItem style={{ fontFamily: "Open Sans" }} value={location}>{location}</MenuItem>
         ))}
       </Select>
     </div>
   )
 }
+
 
 export default LocationSelector;

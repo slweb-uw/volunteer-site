@@ -165,6 +165,7 @@ const Events: React.FC<EventsProps> = ({
               <Grid item style={{ marginBottom: "1em" }}>
                 <Typography
                   display="inline"
+                  id="category-label"
                   style={{
                     marginLeft: "1em",
                     marginRight: "0.5rem",
@@ -174,6 +175,7 @@ const Events: React.FC<EventsProps> = ({
                   Category{" "}
                 </Typography>
                 <Select
+                  aria-labelledby="category-label"
                   value={filter}
                   onChange={(e) => {
                     filterByCategory(e.target.value as string | undefined);
@@ -191,6 +193,7 @@ const Events: React.FC<EventsProps> = ({
               <Grid item style={{ marginBottom: "1em" }}>
                 <Typography
                   display="inline"
+                  id="sort-by-label"
                   style={{
                     marginLeft: "1em",
                     marginRight: "0.5rem",
@@ -200,6 +203,7 @@ const Events: React.FC<EventsProps> = ({
                   Sort By{" "}
                 </Typography>
                 <Select
+                  aria-labelledby="sort-by-label"
                   value={sortField}
                   onChange={(e) => {
                     changeSortField(e.target.value as string);
@@ -262,6 +266,7 @@ const Events: React.FC<EventsProps> = ({
             {events.map((event) => (
               <Grid item xs={12} lg={6}>
                 <EventCard
+                  tabIndex={0}
                   event={event}
                   handleClick={() => {
                     setModalOpen(true);
