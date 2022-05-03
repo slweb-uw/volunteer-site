@@ -1,5 +1,4 @@
 import React from "react";
-import styled from "styled-components";
 import Link from "next/link";
 import NavLink from "./navlink";
 import Hidden from "@material-ui/core/Hidden";
@@ -7,23 +6,6 @@ import { useAuth } from "auth";
 import { firebaseClient } from "firebaseClient";
 import BasicMenu from "./basicMenu";
 import { makeStyles } from "@material-ui/core/styles";
-
-// Create more customizable media query @ line 18
-export const StyledLink = styled.a`
-  color: white;
-  text-decoration: none;
-  margin: 1em;
-  padding-bottom: 5px;
-  cursor: pointer;
-  @media screen and (max-width: 960px) {
-    color: black;
-  }
-
-  &:hover {
-    color: #B7A57A;
-    transition: .25s;
-  }
-`;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,6 +32,12 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       color: "#B7A57A",
       transition: ".25s",
+    },
+    "&:focus-visible": {
+      outline: "none",
+      boxShadow: "0 0 0 0.2rem #80bdff",
+      borderColor: "#80bdff",
+      borderRadius: "4px",
     }
   },
 }));
@@ -120,19 +108,22 @@ const Header: React.FC<{}> = (props) => {
   return (
     <div className={useStyles().root}>
       <Link href="/">
-        <img
-          src="/header-logo.png"
-          style={{
-            position: "relative",
-            cursor: "pointer",
-            width: "25em",
-            minWidth: 5,
-            paddingBottom: "10px",
-            paddingLeft: "10px",
-            paddingTop: "5px",
-            marginBottom: "10px"
-          }}
-        />
+        <a>
+          <img
+            src="/header-logo.png"
+            alt="University of Washington School of Medicine logo"
+            style={{
+              position: "relative",
+              cursor: "pointer",
+              width: "25em",
+              minWidth: 5,
+              paddingBottom: "10px",
+              paddingLeft: "10px",
+              paddingTop: "5px",
+              marginBottom: "10px"
+            }}
+          />
+        </a>
       </Link>
 
       <Hidden only={["lg", "md", "xl"]}>

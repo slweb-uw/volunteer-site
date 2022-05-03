@@ -135,7 +135,7 @@ const Event: NextPage<Props> = ({ classes }) => {
           <img
             className={classes.detailsImage}
             src={eventData?.imageURL ? eventData?.imageURL : "/beigeSquare.png"}
-            alt={"Image for " + eventData.Title}
+            alt={eventData.Title}
           />
         </Grid>
         <Grid item sm={12} md={6}>

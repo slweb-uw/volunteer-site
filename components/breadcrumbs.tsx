@@ -31,6 +31,7 @@ export default function IconBreadcrumbs(props: { crumbs: string[]; parentURL: st
             separator={<NavigateNextIcon fontSize="small" />}
             className={classes.main}>
         <Link
+            aria-label="Home"
             color="inherit"
             href="/"
             className={classes.link}>

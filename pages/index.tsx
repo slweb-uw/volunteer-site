@@ -136,6 +136,7 @@ const App: React.FC<{}> = () => {
                 component="img"
                 src="./studentVolunteers.png"
                 style={{ height: "200px", width: "301px" }}
+                alt="Student volunteers"
               ></CardMedia>
               <CardActionArea href="/welcome/studentVolunteers" className={classes.cardhover}>
                 <CardContent>
@@ -179,6 +180,7 @@ const App: React.FC<{}> = () => {
                 component="img"
                 src="./volunteerProviders.jpg"
                 style={{ height: "200px", width: "301px", objectFit: "cover"}}
+                alt="University District Street Medicine volunteers"
               ></CardMedia>
               <CardActionArea href="/welcome/volunteerProviders" className={classes.cardhover}>
                 <CardContent>
@@ -231,6 +233,7 @@ const App: React.FC<{}> = () => {
                 component="img"
                 src="./home3.png"
                 style={{ height: "200px", width: "301px" }}
+                alt="Two hands shaking"
               ></CardMedia>
               <hr style={{border: ".2px solid #E5E5E5", width:"100%", margin:"0"}}></hr>
               <CardActionArea href="/welcome/communitypartners" className={classes.cardhover}>
@@ -359,7 +362,7 @@ const App: React.FC<{}> = () => {
                   borderRadius: "10px"
                 }}
                 src="/communityPartners.jpg"
-                alt="doctor caring for mom with child"
+                alt="Two students smiling"
               />
             </div>
           </Grid>
@@ -513,7 +516,7 @@ const useStyles = makeStyles((theme) => ({
       opacity: "60%",
       transition: "all .25s ease",
       textDecoration: "underline"
-    }
+    },
   },
   cardtitle: {
     fontFamily: "Open Sans",
