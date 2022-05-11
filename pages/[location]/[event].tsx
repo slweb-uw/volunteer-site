@@ -8,7 +8,6 @@ import {
   createStyles,
   CssBaseline,
   Typography,
-  Select,
   Divider,
   withStyles,
   Grid,
@@ -108,7 +107,8 @@ const Event: NextPage<Props> = ({ classes }) => {
     setEventData(next.data() as EventData);
   };
 
-  // console.log(eventData);
+  // console.log("eventData: ", eventData);
+
 
   const options = { year: "numeric", month: "long", day: "numeric" };
 
@@ -122,9 +122,10 @@ const Event: NextPage<Props> = ({ classes }) => {
     <div className={classes.page}>
       <CssBaseline />
       <IconBreadcrumbs
-        parentURL={"/location/" + location}
+        parentURL={"/opportunities/" + location}
         crumbs={["Opportunities in " + location, eventData.Title]}
       />
+      {/* EVENT TITLE */}
       <Typography variant="h5" style={{ fontWeight: 900, paddingBottom: 50 }}>
         {eventData?.Title}
       </Typography>
@@ -134,7 +135,7 @@ const Event: NextPage<Props> = ({ classes }) => {
           <img
             className={classes.detailsImage}
             src={eventData?.imageURL ? eventData?.imageURL : "/beigeSquare.png"}
-            alt={"Image for " + eventData.Title}
+            alt={eventData.Title}
           />
         </Grid>
         <Grid item sm={12} md={6}>
@@ -199,11 +200,12 @@ const Event: NextPage<Props> = ({ classes }) => {
 
       <Grid container spacing={4}>
         <EventField name="Project Description" value={<EventDescription event={eventData} />} />
-        {initialGridKeys.map((name) => (
+        {initialGridKeys.filter((name) => eventData[name] != null && eventData[name] != "").map((name) => (
           <EventField key={name} name={name} value={eventData[name]} />
         ))}
         {Object.keys(eventData)
           .filter((name) => !reservedKeys.includes(name))
+          .filter((name) => eventData[name] != null && eventData[name] != "")
           .map((name) => (
             <EventField key={name} name={name} value={eventData[name]} />
           ))}

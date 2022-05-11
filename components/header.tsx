@@ -1,5 +1,4 @@
 import React from "react";
-import styled from "styled-components";
 import Link from "next/link";
 import NavLink from "./navlink";
 import Hidden from "@material-ui/core/Hidden";
@@ -8,103 +7,125 @@ import { firebaseClient } from "firebaseClient";
 import BasicMenu from "./basicMenu";
 import { makeStyles } from "@material-ui/core/styles";
 
-// Create more customizable media query @ line 18
-export const StyledLink = styled.a`
-  color: white;
-  font-family: "Lato", sans-serif;
-  text-decoration: none;
-  margin: 1em;
-  cursor: pointer;
-  @media screen and (max-width: 960px) {
-    color: black;
-  }
-
-  &:hover {
-    font-weight: 600;
-  }
-`;
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    backgroundColor: "#4B2E83",
+    padding: "1em",
+    width: "100%",
+    justifyContent: "space-between",
+    alignContent: "flex-end",
+    alignItems: "flex-start",
+    [theme.breakpoints.up("md")]: {
+      justifyContent: "space-between",
+    },
+    paddingBottom: "0px",
+  },
+  navtitle: {
+    fontFamily: "Encode Sans",
+    fontWeight: 600,
+    color: "white",
+    textDecoration: "none",
+    margin: "1em",
+    paddingBottom: "5px",
+    cursor: "pointer",
+    "&:hover": {
+      color: "#B7A57A",
+      transition: ".25s",
+    },
+    "&:focus-visible": {
+      outline: "none",
+      boxShadow: "0 0 0 0.2rem #80bdff",
+      borderColor: "#80bdff",
+      borderRadius: "4px",
+    }
+  },
+}));
 
 const Header: React.FC<{}> = (props) => {
   const { user } = useAuth();
 
   const links: React.ReactNode[] = [
     <NavLink key="/" href="/">
-      <StyledLink style={{ fontFamily: "Encode Sans" }}>Home</StyledLink>
+      <a className={useStyles().navtitle}>HOME</a>
     </NavLink>,
-    <a key="training" style={{marginTop:"1em", textDecoration:"none"}} href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569" target="_blank">
-      <StyledLink style={{ fontFamily: "Encode Sans" }}>Training</StyledLink>
-    </a>,
+    <span style={{ fontSize: "35px", color: "grey", marginTop: "8px" }}>/</span>,
+    <NavLink key="training" href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569">
+      <a className={useStyles().navtitle}>TRAINING</a>
+    </NavLink>,
     //*NOTE: Resources name was changed to Links*/
+    <span style={{ fontSize: "35px", color: "grey", marginTop: "8px" }}>/</span>,
     <NavLink key="resources" href="/resources">
-      <StyledLink style={{ fontFamily: "Encode Sans" }}>Links</StyledLink>
+      <a className={useStyles().navtitle}>LINKS</a>
     </NavLink>,
-    <a key="protocols" style={{marginTop:"1em", textDecoration:"none", fontFamily: "Encode Sans"}} href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947" target="_blank">
-      <StyledLink style={{ fontFamily: "Encode Sans" }}>Protocols</StyledLink>
-    </a>,
+    <span style={{ fontSize: "35px", color: "grey", marginTop: "8px" }}>/</span>,
+    <NavLink key="protocols" href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947">
+      <a className={useStyles().navtitle}>PROTOCOLS</a>
+    </NavLink>,
+    <span style={{ fontSize: "35px", color: "grey", marginTop: "8px" }}>/</span>,
     <NavLink key="donations" href="/donations">
-      <StyledLink style={{ fontFamily: "Encode Sans" }}>Donations</StyledLink>
+      <a className={useStyles().navtitle}>DONATIONS</a>
     </NavLink>,
+    <span style={{ fontSize: "35px", color: "grey", marginTop: "8px" }}>/</span>,
+    <NavLink key="opportunities" href="/opportunities">
+      <a className={useStyles().navtitle}>OPPORTUNITIES</a>
+    </NavLink>,
+    <span style={{ fontSize: "35px", color: "grey", marginTop: "8px" }}>/</span>,
     // sign in and out
     user ? (
-      <StyledLink
-        key="sign out"
-        onClick={() => {
-          firebaseClient.auth().signOut();
-        }}
-        style={{ fontFamily: "Encode Sans" }}
-      >
-        Sign Out
-      </StyledLink>
+      <NavLink key="sign out" href="">
+        <a
+          key="sign out"
+          onClick={() => {
+            firebaseClient.auth().signOut();
+          }}
+          className={useStyles().navtitle}
+        >
+          SIGN OUT
+        </a>
+      </NavLink>
     ) : (
-      <StyledLink
-        key="sign in"
-        onClick={() => {
-          var provider = new firebaseClient.auth.OAuthProvider("microsoft.com");
-          provider.setCustomParameters({
-            // Target uw login
-            tenant: "uw.edu",
-          });
-          firebaseClient.auth().signInWithPopup(provider);
-        }}
-        style={{ fontFamily: "Encode Sans" }}
-      >
-        Sign In
-      </StyledLink>
+      <NavLink key="sign in" href="">
+        <a
+          key="sign in"
+          onClick={() => {
+            var provider = new firebaseClient.auth.OAuthProvider("microsoft.com");
+            provider.setCustomParameters({
+              // Target uw login
+              tenant: "uw.edu",
+            });
+            firebaseClient.auth().signInWithPopup(provider);
+          }}
+          className={useStyles().navtitle}
+        >
+          SIGN IN
+        </a>
+      </NavLink>
     ),
   ];
-
-  const useStyles = makeStyles((theme) => ({
-    root: {
-      display: "flex",
-      backgroundColor: "#4B2E83",
-      padding: "1em",
-      margin: "0em",
-      width: "100%",
-      justifyContent: "space-between",
-      alignContent: "flex-end",
-      [theme.breakpoints.up("md")]: {
-        justifyContent: "space-between",
-      },
-    },
-    navtitle: {
-      fontFamily: "Encode Sans"
-    },
-  }));
 
 
   return (
     <div className={useStyles().root}>
       <Link href="/">
-        <img
-          src="/header-logo.png"
-          style={{
-            cursor: "pointer",
-            width: "25em",
-            minWidth: 5,
-            padding: ".6em",
-          }}
-        />
+        <a>
+          <img
+            src="/header-logo.png"
+            alt="University of Washington School of Medicine logo"
+            style={{
+              position: "relative",
+              cursor: "pointer",
+              width: "25em",
+              minWidth: 5,
+              paddingBottom: "10px",
+              paddingLeft: "10px",
+              paddingTop: "5px",
+              marginBottom: "10px"
+            }}
+          />
+        </a>
       </Link>
+
       <Hidden only={["lg", "md", "xl"]}>
         <BasicMenu links={links} />
       </Hidden>

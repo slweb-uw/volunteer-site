@@ -41,6 +41,7 @@ import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import EventCard from "./eventCard";
 import RichTextEditor from "./richTextEditor";
+import { Location } from "../helpers/locations";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -186,7 +187,7 @@ const monthDayOptions = generateLabelValuePairs(31);
 interface AddModifyEventModalProps extends WithStyles<typeof styles> {
   open: boolean;
   event?: EventData;
-  location: string | string[] | undefined;
+  location: Location;
   handleClose: any;
 }
 
@@ -321,7 +322,7 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
   const [organizationList, setOrganizationList] = useState<string[]>([]);
   const [title, setTitle] = useState<string | undefined>();
   const [description, setDescription] = useState<string | undefined>();
-  const [details, setDetails] = useState<string | undefined>();
+  const [details, setDetails] = useState<string | null>(null);
   const [organization, setOrganization] = useState<string | undefined>();
   const [location, setLocation] = useState<string | undefined>();
   const [volunteersNeeded, setVolunteersNeeded] = useState<string[]>([]);
@@ -410,6 +411,8 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
 
     if (details) {
       uploadEvent.Details = details;
+    } else {
+      uploadEvent.Details = "";
     }
 
     if (startDateTime && endDateTime) {

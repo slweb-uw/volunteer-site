@@ -44,17 +44,17 @@ const DonateCard: React.FC<Props> = (props) => {
         component="img"
         className={classes.cover}
         src={props.img}
-        alt={"Image for" + props.title}
+        alt={props.title}
       />
       <div className={classes.details}>
         <CardContent className={classes.content}>
-          <Typography component="h6" variant="h6">
+          <Typography component="h6" variant="h6" style={{ fontFamily: "Encode Sans", textDecoration: "underline"}}>
             <b>{props.title}</b>
           </Typography>
-          <Typography variant="subtitle1" gutterBottom>
+          <Typography variant="subtitle1" gutterBottom style={{ fontFamily: "Open Sans" }}>
             {props.description}
           </Typography>
-          <Button style={{marginTop: "2rem"}} variant="contained" color="secondary" target="_blank" href={props.donate}>Donate {'>'}</Button>
+          <Button style={{marginTop: "2rem", fontFamily: "Encode Sans"}} variant="contained" color="secondary" target="_blank" href={props.donate}>Donate {'>'}</Button>
         </CardContent>
       </div>
     </Card>

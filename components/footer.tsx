@@ -10,9 +10,10 @@ const Footer: React.FC<{}> = () => {
         textAlign: "center",
         paddingTop: "1.5em",
         paddingBottom: "1.5em",
+        marginBottom: "0"
       }}
     >
-      <img src="/footer-logo.png" />
+      <img src="/uw-text-logo.png" alt="University of Washington logo" style={{ width: "500px", height: "auto", marginBottom: "12px" }} />
       <Typography style={{ color: "white", marginTop: "0.5em", fontFamily: "Open Sans" }} gutterBottom>
         Contact us: (206) 685-2009 or{" "}
         <a href="mailto://clarkel@uw.edu" style={{color: "white", marginTop: "0.5em", fontFamily: "Open Sans"}}>clarkel@uw.edu</a>

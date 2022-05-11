@@ -22,6 +22,7 @@ import ArrowDropDownCircleOutlinedIcon from '@mui/icons-material/ArrowDropDownCi
 
 import ResourceLink from "../components/resourceLink";
 import IconBreadcrumbs from "../components/breadcrumbs";
+import HeadlineBar from "components/headlineBar";
 import { ExpandMore } from "@material-ui/icons";
 
 interface Props {
@@ -46,11 +47,13 @@ const Resources: NextPage<Props> = ({ classes }) => {
         crumbs = {["Links"]} />
 
       <Typography
-        variant="h5"
-        style={{ fontWeight: 600, paddingBottom: "0.5em", fontFamily: "Encode Sans" }}
+        variant="h4"
+        style={{ fontWeight: 800, paddingBottom: "0", fontFamily: "Encode Sans", textTransform: "uppercase" }}
       >
         UW Health Sciences Service Learning Websites
       </Typography>
+
+      <HeadlineBar color="gold" width={850} height={10}></HeadlineBar>
 
       <Accordion
         square
@@ -88,6 +91,16 @@ const Resources: NextPage<Props> = ({ classes }) => {
                 href="https://education.uwmedicine.org/volunteer-opportunities-2-2/"
               >
                 SOM Intranet - Service Learning page
+              </ResourceLink>{" "}
+              (External)
+            </Typography>
+
+            <Typography className={classes.header}>
+              <ResourceLink
+                className={classes.links}
+                href="https://uwdpt-service-learning.rehab.washington.edu/"
+              >
+                Department of Rehabilitation Medicine Service Learning
               </ResourceLink>{" "}
               (External)
             </Typography>
@@ -207,11 +220,13 @@ const Resources: NextPage<Props> = ({ classes }) => {
 
 
       <Typography
-        variant="h5"
-        style={{ fontWeight: 600, paddingBottom: "0.5em", paddingTop: "2em", fontFamily: "Encode Sans" }}
+        variant="h4"
+        style={{ fontWeight: 800, paddingBottom: "0", paddingTop: "2em", fontFamily: "Encode Sans", textTransform: "uppercase" }}
       >
         SOM Community Partners
       </Typography>
+
+      <HeadlineBar color="gold" width={450} height={10}></HeadlineBar>
 
       <Accordion
         square
@@ -697,27 +712,21 @@ const styles = createStyles({
   links: {
     color: "#2436D9",
     textDecorationLine: "underline",
-    marginLeft: 50,
   },
 
   title: {
     color: "#4B2E83",
     fontSize: "1.5rem",
-    fontWeight: 2000,
+    fontWeight: 800,
     fontFamily: "Encode Sans",
   },
 
-  resource: {
-    fontWeight: 800,
-  },
 });
 
 const Accordion = withStyles({
   root: {
     boxShadow: "none",
-    "&:not(:last-child)": {
-      borderBottom: "2px solid #A0A0A0",
-    },
+    borderBottom: "2px solid #A0A0A0",
     "&:before": {
       display: "none",
     },

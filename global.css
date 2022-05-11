@@ -1,0 +1,9 @@
+@font-face {
+  font-family: "Uni Sans Book";
+  src: url(public/fonts/Fontfabric\ -\ UniSansBook.otf);
+}
+
+@font-face {
+  font-family: "Open Sans";
+  src: url(public/fonts/Open\ Sans\ regular.ttf);
+}

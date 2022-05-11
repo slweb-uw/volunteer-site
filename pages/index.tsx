@@ -17,7 +17,7 @@ import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import { firebaseClient } from "firebaseClient";
 import { ArrowForwardIos } from "@material-ui/icons";
-import { textAlign } from "@mui/system";
+import { textAlign, textTransform } from "@mui/system";
 import HeadlineBar from "components/headlineBar";
 
 const App: React.FC<{}> = () => {
@@ -48,22 +48,43 @@ const App: React.FC<{}> = () => {
             <Typography
               variant="h4"
               gutterBottom
-              style={{
+            >
+              <pre style={{
                 fontSize: "2.5rem",
-                width: "60%",
-                color: "#4B2E83",
+                color: "black",
+                fontFamily: "Encode Sans",
+                fontWeight: 800,
+                textTransform: "uppercase",
+                marginBottom: "2px"
+              }}>
+              {
+                "UW School of Medicine\nWWAMI/UW Health Sciences"
+              }
+              </pre>
+            </Typography>
+
+            <HeadlineBar color="purple" width={600} height={20}></HeadlineBar>
+
+            <Typography
+              variant="h5"
+              gutterBottom
+              style={{
+                fontSize: "2rem",
+                color: "black",
                 fontWeight: 700,
-                fontFamily: "Encode Sans"
+                fontFamily: "Uni Sans Book",
+                paddingTop: "12px"
               }}
             >
               {
-                "Welcome to Service Learning at the UW School of Medicine/WWAMI & UW Health Sciences"
+                "SERVICE LEARNING"
               }
             </Typography>
+
             <Typography
               variant="subtitle1"
               gutterBottom
-              style={{ fontSize: "1.2rem", width: "50%", fontFamily: "Open Sans"}}
+              style={{ fontSize: "1rem", width: "80%", fontFamily: "Open Sans", marginBottom: "20px"}}
             >
               Our program supports 50+ student led service projects throughout the region.
             </Typography>
@@ -71,7 +92,7 @@ const App: React.FC<{}> = () => {
               <Button
                 color="primary"
                 variant="contained"
-                style={{ width: "220px", fontFamily: "Encode Sans" }}
+                className={classes.findOppBtn}
               >
                 Find Opportunities
               </Button>
@@ -99,12 +120,12 @@ const App: React.FC<{}> = () => {
               alignItems: "center",
             }}
           >
-            <Typography style={{ fontSize: "1.5rem", fontWeight: 700, fontFamily: "Encode Sans" }}>
+            <Typography style={{ fontSize: "1.5rem", fontWeight: 800, fontFamily: "Encode Sans", textTransform: "uppercase" }}>
               Students
             </Typography>
 
-            <div style={{ position: "absolute", marginBottom: "0", marginTop: "28px", marginRight: "16px" }}>
-              <HeadlineBar color="gold" width={90} height={5}></HeadlineBar>
+            <div style={{ position: "absolute", marginBottom: "0", marginTop: "32px", marginRight: "12px" }}>
+              <HeadlineBar color="gold" width={120} height={10}></HeadlineBar>
             </div>
 
             <Card
@@ -115,8 +136,9 @@ const App: React.FC<{}> = () => {
                 component="img"
                 src="./studentVolunteers.png"
                 style={{ height: "200px", width: "301px" }}
+                alt="Student volunteers"
               ></CardMedia>
-              <CardActionArea href="/welcome/studentVolunteers">
+              <CardActionArea href="/welcome/studentVolunteers" className={classes.cardhover}>
                 <CardContent>
                   <div className={classes.cardlinks}>
                     <Typography className={classes.cardtitle}>Welcome</Typography>
@@ -125,7 +147,7 @@ const App: React.FC<{}> = () => {
                 </CardContent>
               </CardActionArea>
               <hr style={{border: ".2px solid #E5E5E5", width:"100%", margin:"0"}}></hr>
-              <CardActionArea href="/opportunities" style={{backgroundColor: "#4B2E83"}}>
+              <CardActionArea href="/opportunities" style={{backgroundColor: "#4B2E83", color: "#ffffff"}} className={classes.cardhover}>
                 <CardContent>
                   <div className={classes.cardlinks}>
                     <Typography className={classes.cardtitle} style={{color: "#ffffff"}}>Find Opportunities</Typography>
@@ -142,12 +164,12 @@ const App: React.FC<{}> = () => {
               alignItems: "center",
             }}
           >
-            <Typography style={{ fontSize: "1.5rem", fontWeight: 700, fontFamily: "Encode Sans" }}>
+            <Typography style={{ fontSize: "1.5rem", fontWeight: 700, fontFamily: "Encode Sans", textTransform: "uppercase" }}>
               Volunteer Providers
             </Typography>
 
-            <div style={{ position: "absolute", marginBottom: "0", marginTop: "28px", marginRight: "18px" }}>
-              <HeadlineBar color="gold" width={222} height={5}></HeadlineBar>
+            <div style={{ position: "absolute", marginBottom: "0", marginTop: "32px", marginRight: "20px" }}>
+              <HeadlineBar color="gold" width={280} height={10}></HeadlineBar>
             </div>
 
             <Card
@@ -158,8 +180,9 @@ const App: React.FC<{}> = () => {
                 component="img"
                 src="./volunteerProviders.jpg"
                 style={{ height: "200px", width: "301px", objectFit: "cover"}}
+                alt="University District Street Medicine volunteers"
               ></CardMedia>
-              <CardActionArea href="/welcome/volunteerProviders">
+              <CardActionArea href="/welcome/volunteerProviders" className={classes.cardhover}>
                 <CardContent>
                   <div className={classes.cardlinks}>
                     <Typography className={classes.cardtitle}>Welcome</Typography>
@@ -168,7 +191,7 @@ const App: React.FC<{}> = () => {
                 </CardContent>
               </CardActionArea>
               <hr style={{border: ".2px solid #E5E5E5", width:"100%", margin:"0"}}></hr>
-              <CardActionArea href="/onboarding">
+              <CardActionArea href="/onboarding" className={classes.cardhover}>
                 <CardContent>
                   <div className={classes.cardlinks}>
                     <Typography className={classes.cardtitle}>Onboarding</Typography>
@@ -177,7 +200,7 @@ const App: React.FC<{}> = () => {
                 </CardContent>
               </CardActionArea>
               <hr style={{border: ".2px solid #E5E5E5", width:"100%", margin:"0"}}></hr>
-              <CardActionArea href="/opportunities" style={{backgroundColor: "#4B2E83"}}>
+              <CardActionArea href="/opportunities" style={{backgroundColor: "#4B2E83", color: "#ffffff"}} className={classes.cardhover}>
                 <CardContent>
                   <div className={classes.cardlinks}>
                   <Typography className={classes.cardtitle} style={{color: "#ffffff"}}>Find Opportunities</Typography>
@@ -194,12 +217,12 @@ const App: React.FC<{}> = () => {
               alignItems: "center",
             }}
           >
-            <Typography style={{ fontSize: "1.5rem", fontWeight: 700, fontFamily: "Encode Sans" }}>
+            <Typography style={{ fontSize: "1.5rem", fontWeight: 700, fontFamily: "Encode Sans", textTransform: "uppercase" }}>
               Community Partners
             </Typography>
 
-            <div style={{ position: "absolute", marginBottom: "0", marginTop: "28px", marginRight: "24px" }}>
-              <HeadlineBar color="gold" width={220} height={5}></HeadlineBar>
+            <div style={{ position: "absolute", marginBottom: "0", marginTop: "32px", marginRight: "18px" }}>
+              <HeadlineBar color="gold" width={275} height={10}></HeadlineBar>
             </div>
 
             <Card
@@ -210,9 +233,10 @@ const App: React.FC<{}> = () => {
                 component="img"
                 src="./home3.png"
                 style={{ height: "200px", width: "301px" }}
+                alt="Two hands shaking"
               ></CardMedia>
               <hr style={{border: ".2px solid #E5E5E5", width:"100%", margin:"0"}}></hr>
-              <CardActionArea href="/welcome/communitypartners">
+              <CardActionArea href="/welcome/communitypartners" className={classes.cardhover}>
                 <CardContent>
                   <div className={classes.cardlinks}>
                     <Typography className={classes.cardtitle}>Become a Partner</Typography>
@@ -260,11 +284,11 @@ const App: React.FC<{}> = () => {
               <Typography
                 gutterBottom
                 variant="h4"
-                style={{ fontWeight: 700, paddingBottom: "0", marginBottom: "0", fontFamily: "Encode Sans" }}
+                style={{ fontWeight: 700, paddingBottom: "0", marginBottom: "0", fontFamily: "Encode Sans", textTransform: "uppercase" }}
               >
                 Serve With Us
               </Typography>
-              <HeadlineBar color="purple" width={220} height={10}></HeadlineBar>
+              <HeadlineBar color="purple" width={250} height={10}></HeadlineBar>
               <Typography style={{ fontFamily: "Open Sans" }}>
                 Volunteering with our programs is a wonderful way to practice your
                 skills, make a difference in our community and form meaningful
@@ -296,11 +320,11 @@ const App: React.FC<{}> = () => {
               <Typography
                 gutterBottom
                 variant="h4"
-                style={{ fontWeight: 700, paddingBottom: "0", marginBottom: "0", fontFamily: "Encode Sans" }}
+                style={{ fontWeight: 700, paddingBottom: "0", marginBottom: "0", fontFamily: "Encode Sans", textTransform: "uppercase" }}
               >
                 About Us
               </Typography>
-              <HeadlineBar color="gold" width={130} height={10}></HeadlineBar>
+              <HeadlineBar color="gold" width={160} height={10}></HeadlineBar>
               <Typography style={{ fontFamily: "Open Sans" }}>
                 The UW School of Medicine's Service Learning program strives to
                 enrich medical education by providing our students with
@@ -338,14 +362,14 @@ const App: React.FC<{}> = () => {
                   borderRadius: "10px"
                 }}
                 src="/communityPartners.jpg"
-                alt="doctor caring for mom with child"
+                alt="Two students smiling"
               />
             </div>
           </Grid>
         </Grid>
       </div>
 
-      {/** Contact Us section*/}
+      {/** Contact section*/}
       <div
         style={{
           backgroundColor: "#E8E3D3",
@@ -355,12 +379,12 @@ const App: React.FC<{}> = () => {
         <Typography
           gutterBottom
           variant="h4"
-          style={{ fontWeight: 700, marginLeft: "2em", textAlign: "center", fontFamily: "Encode Sans", marginBottom: "0" }}
+          style={{ fontWeight: 700, marginLeft: "2em", textAlign: "center", fontFamily: "Encode Sans", marginBottom: "0", textTransform: "uppercase" }}
         >
-          Contact Us
+          Contact
         </Typography>
-        <div style={{ marginLeft: "584px" }}>
-          <HeadlineBar color="purple" width={130} height={10}></HeadlineBar>
+        <div style={{ textAlign: "center", marginLeft: "43px" }}>
+          <HeadlineBar color="purple" width={140} height={10}></HeadlineBar>
         </div>
         <Grid container spacing={6} xs={12} sm={12} style={{ marginTop: "2em", display: "flex", justifyContent: "center"}}>
           <Grid item >
@@ -371,10 +395,10 @@ const App: React.FC<{}> = () => {
                     <img src="./profile-icon.png" alt="profile icon" />
                   </Grid>
                   <Grid item>
-                    <Typography style={{ fontSize: "1.2rem", fontFamily: "Encode Sans" }}>
+                    <Typography style={{ fontSize: "1.2rem", fontFamily: "Uni Sans Book" }}>
                       Leonora Clarke, Service Learning Manager
                     </Typography>
-                    <Typography style={{ fontSize: "1.2rem", fontFamily: "Encode Sans"}}>
+                    <Typography style={{ fontSize: "1.2rem", fontFamily: "Uni Sans Book"}}>
                       UW School of Medicine
                     </Typography>
                   </Grid>
@@ -387,7 +411,7 @@ const App: React.FC<{}> = () => {
                   style={{ marginLeft: "5em" }}
                 >
                   <Grid item>
-                    <Typography className={classes.contact}>clarkel@uw.edu</Typography>
+                    <Typography className={classes.contact}><a href="mailto://clarkel@uw.edu">clarkel@uw.edu</a></Typography>
                   </Grid>
                   <Grid item>
                     <Typography className={classes.contact}>206-685-2009</Typography>
@@ -409,7 +433,7 @@ const App: React.FC<{}> = () => {
                     <img src="./mail-icon.png" alt="mail icon" />
                   </Grid>
                   <Grid item>
-                    <Typography style={{ fontSize: "1.2rem", fontFamily: "Encode Sans" }}>
+                    <Typography style={{ fontSize: "1.2rem", fontFamily: "Uni Sans Book" }}>
                       Mailing Address
                     </Typography>
                   </Grid>
@@ -446,7 +470,7 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
   },
   background: {
-    backgroundImage: "url(./homeNew.png)",
+    backgroundImage: "url(./homeNew-gradient.png)",
     backgroundSize: "auto",
     backgroundPosition: "right center",
     backgroundRepeat: "no-repeat",
@@ -455,7 +479,7 @@ const useStyles = makeStyles((theme) => ({
     top: 0,
     right: 0,
     bottom: 0,
-    background: "#DFDFDF",
+    background: "#FFFFFF",
   },
   triangletop: {
     position: "absolute",
@@ -487,11 +511,27 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "row",
     justifyContent: "space-between",
   },
+  cardhover: {
+    "&:hover": {
+      opacity: "60%",
+      transition: "all .25s ease",
+      textDecoration: "underline"
+    },
+  },
   cardtitle: {
     fontFamily: "Open Sans",
   },
   contact: {
     fontFamily: "Open Sans",
+  },
+  findOppBtn: {
+    width: "220px",
+    fontFamily: "Encode Sans",
+    fontWeight: 800,
+    "&:hover": {
+      color: "#B7A57A",
+      transition: ".25s",
+    }
   }
 }));
 

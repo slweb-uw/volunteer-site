@@ -6,10 +6,10 @@ import React from "react";
 export default function Custom404() {
   return (
     <div style={{ minHeight: 1000, padding: "3em", textAlign: "center" }}>
-      <Typography variant="h4">Error: Page Not Found</Typography>
+      <Typography variant="h4" style={{ fontFamily: "Encode Sans", fontWeight: 800 }}>Error: Page Not Found</Typography>
       <div style={{ marginTop: "3em" }}>
         <Link href="/">
-          <Button color="secondary" variant="contained">
+          <Button color="secondary" variant="contained" style={{ fontFamily: "Encode Sans", fontWeight: 800 }}>
             Return Home
           </Button>
         </Link>

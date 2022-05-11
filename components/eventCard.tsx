@@ -13,7 +13,12 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     borderRadius: 10,
     flex: "1 0 auto",
-    // height: 300,
+    height: 300,
+    "&:focus-visible": {
+      outline: "none",
+      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+      borderColor: "#80bdff",
+    },
     "@media (max-width: 600px)": {
       flexDirection: "column",
       alignItems: "center",
@@ -56,9 +61,11 @@ const EventCard: React.FC<Props> = (props) => {
 
   return (
     <Card
+      tabIndex={0}
       className={classes.root}
       variant='outlined'
       onClick={props.handleClick}
+      onKeyDown={(e) => { if (e.key === 'Enter' && props.handleClick) { props.handleClick() }}}
     >
       <CardMedia>
         <EventImage
