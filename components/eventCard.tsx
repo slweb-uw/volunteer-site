@@ -5,18 +5,24 @@ import CardContent from "@material-ui/core/CardContent";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 import EventImage from "./eventImage";
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     cursor: "pointer",
     display: "flex",
     borderRadius: 10,
+    flex: "1 0 auto",
     height: 300,
     "&:focus-visible": {
       outline: "none",
       boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
       borderColor: "#80bdff",
-    }
+    },
+    "@media (max-width: 600px)": {
+      flexDirection: "column",
+      alignItems: "center",
+    },
   },
   details: {
     display: "-webkit-box",
@@ -26,12 +32,14 @@ const useStyles = makeStyles((theme) => ({
   },
   cover: {
     "@media (max-width: 600px)": {
-      width: 115
+      height: 150,
+      marginTop: '.5em',
+      display: "none",
     },
     "@media (min-width: 600px)": {
-      width: 230
+      height: 300,
+      width: 230,
     },
-    height: 300
   },
 }));
 
@@ -44,6 +52,12 @@ const NotSpecified = <i style={{color: 'gray'}}>Not specified</i>
 
 const EventCard: React.FC<Props> = (props) => {
   const classes = useStyles();
+  const mobileView = useMediaQuery('(max-width: 600px)');
+  let imageURL = props.event.cardImageURL ?? props.event.imageURL;
+  if (mobileView) {
+    imageURL = props.event.imageURL;
+  }
+
 
   return (
     <Card
@@ -56,7 +70,7 @@ const EventCard: React.FC<Props> = (props) => {
       <CardMedia>
         <EventImage
           className={classes.cover}
-          imageURL={props.event.cardImageURL ? props.event.cardImageURL : props.event.imageURL}
+          imageURL={imageURL}
           eventTitle={props.event.Title}
         />
       </CardMedia>
