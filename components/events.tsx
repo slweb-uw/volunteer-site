@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { firebaseClient } from "../firebaseClient";
-import { Button, Grid, MenuItem, Select, Typography } from "@material-ui/core";
+import { 
+  Button, 
+  Grid, 
+  MenuItem, 
+  Select, 
+  Typography, 
+  createStyles, 
+  withStyles, 
+  FormControlLabel, 
+  Switch, 
+  FormGroup } from "@material-ui/core";
 import EventModal from "./eventModal";
 import BootstrapInput from "./bootstrapInput";
 import Link from "next/link";
@@ -8,17 +18,20 @@ import AddModifyEventModal from "./addModifyEventModal";
 import EventCard from "./eventCard";
 import { useAuth } from "../auth";
 import { Location } from "../helpers/locations"
+import { withSnackbar } from "notistack";
 
 type EventsProps = {
   location: Location;
+  classes?: any,
 }
 
 const Events: React.FC<EventsProps> = ({
-  location
+  location, classes
 }) => {
   const { user } = useAuth();
 
   const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
+  const [studentTypes, setStudentTypes] = useState<string[]>([]); // student types at this location
   const [events, setEvents] = useState<EventData[]>([]); // list of loaded events
   const [cursor, setCursor] = useState<
     firebaseClient.firestore.QueryDocumentSnapshot
@@ -29,6 +42,8 @@ const Events: React.FC<EventsProps> = ({
   const [adminModalOpen, setAdminModalOpen] = useState<boolean>(false);
   const [selectedEvent, setSelectedEvent] = useState<EventData>();
   const [sortField, setSortField] = useState<string>("timestamp");
+  const [isProviderView, setProviderView] = useState<boolean>(false); // flag for whether provider view is on
+  const [topMessage, setTopMessage] = useState<any>();
 
   useEffect(() => {
     // Load events
@@ -41,6 +56,27 @@ const Events: React.FC<EventsProps> = ({
       .get()
       .then((doc) => setOrganizations(Object.keys(doc.data() as string[])));
   }, [location]);
+
+  // Adjusts the top message depending on whether provider view is on
+  useEffect(() => {
+    if (isProviderView) {
+      setTopMessage(
+        <Link href={ "/onboarding/" }>
+          <a style={{ color: "#85754D" }}>
+            Onboarding Instructions
+          </a>
+        </Link>
+      )
+    } else {
+      setTopMessage(
+          <a href={ "https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569" } 
+             style={{ color: "#85754D" }}
+             target="_blank">
+            Training Instructions
+          </a>
+      )
+    }
+  }, [isProviderView])
 
   const getOrder = (curSort: string) => {
     return curSort === "timestamp" ? "desc" : "asc";
@@ -162,6 +198,33 @@ const Events: React.FC<EventsProps> = ({
                   <b>Filters</b>{" "}
                 </Typography>
               </Grid>
+              <Grid item hidden={isProviderView} style={{ marginBottom: "1em" }}>
+                <Typography
+                  display="inline"
+                  style={{
+                    marginLeft: "1em",
+                    marginRight: "0.5rem",
+                    verticalAlign: "50%",
+                  }}
+                >
+                  Student Type{" "}
+                </Typography>
+                <Select
+                  value={filter}
+                  onChange={(e) => {
+                    filterByCategory(e.target.value as string | undefined);
+                  }}
+                  style={{ width: 200 }}
+                  displayEmpty
+                  input={<BootstrapInput />}
+                  disabled={ isProviderView }
+                >
+                  <MenuItem>Show All</MenuItem>
+                  {studentTypes.map((studentType) => (
+                    <MenuItem value={studentType}>{studentType}</MenuItem>
+                  ))}
+                </Select>
+              </Grid>
               <Grid item style={{ marginBottom: "1em" }}>
                 <Typography
                   display="inline"
@@ -172,7 +235,7 @@ const Events: React.FC<EventsProps> = ({
                     verticalAlign: "50%",
                   }}
                 >
-                  Category{" "}
+                  Opportunity Type{" "}
                 </Typography>
                 <Select
                   aria-labelledby="category-label"
@@ -190,34 +253,26 @@ const Events: React.FC<EventsProps> = ({
                   ))}
                 </Select>
               </Grid>
-              <Grid item style={{ marginBottom: "1em" }}>
-                <Typography
-                  display="inline"
-                  id="sort-by-label"
-                  style={{
-                    marginLeft: "1em",
-                    marginRight: "0.5rem",
-                    verticalAlign: "50%",
-                  }}
-                >
-                  Sort By{" "}
-                </Typography>
-                <Select
-                  aria-labelledby="sort-by-label"
-                  value={sortField}
-                  onChange={(e) => {
-                    changeSortField(e.target.value as string);
-                  }}
-                  style={{ width: 200 }}
-                  input={<BootstrapInput />}
-                >
-                  <MenuItem value={"timestamp"}>Date Added</MenuItem>
-                  <MenuItem value={"Title"}>Title</MenuItem>
-                </Select>
-              </Grid>
             </Grid>
           </Grid>
           <Grid item xs={12} sm={2} style={{ textAlign: "right" }}>
+            <FormGroup>
+              <FormControlLabel 
+                control={
+                  <Switch color="primary" 
+                          classes={{
+                            root: classes.root,
+                            switchBase: classes.switchBase,
+                            thumb: classes.thumb,
+                            track: classes.track,
+                            checked: classes.checked
+                          }}
+                          onChange={(e) => setProviderView(e.target.checked)}
+                  />
+                }
+                label={<Typography><b>Provider View</b></Typography>}
+                labelPlacement="start" />
+            </FormGroup>
             <Button
               variant="contained"
               color="primary"
@@ -234,6 +289,14 @@ const Events: React.FC<EventsProps> = ({
           </Grid>
         </Grid>
       </div>
+
+      <Typography variant="h6" style={{ textAlign: "center", marginBottom: "3em", color: "#85754D" }}>
+        <b>Note:</b> Please review our{" "}
+        <i>
+        { topMessage }
+        </i>{" "}
+        before signing up for an opportunity.
+      </Typography>
 
       {/* Button-Modal Module for adding new events */}
       {/* TODO: custom claims for admin access, currently hardcoded here and on backend check */}
@@ -266,7 +329,6 @@ const Events: React.FC<EventsProps> = ({
             {events.map((event) => (
               <Grid item xs={12} lg={6}>
                 <EventCard
-                  tabIndex={0}
                   event={event}
                   handleClick={() => {
                     setModalOpen(true);
@@ -303,4 +365,75 @@ const Events: React.FC<EventsProps> = ({
   );
 }
 
-export default Events;
+const styles = createStyles({
+  page: {
+    marginLeft: "auto",
+    marginRight: "auto",
+    minHeight: 1000,
+    maxWidth: 1500,
+    width: "95%",
+    paddingTop: "2em",
+    paddingBottom: "5em",
+  },
+  root: {
+    width: 80,
+    height: 48,
+    padding: 8,
+  },
+  // Styles for the switch component
+  switchBase: {
+    padding: 11,
+  },
+  thumb: {
+    width: 26,
+    height: 26,
+  },
+  track: {
+    background: 'gray',
+    opacity: '1 !important',
+    borderRadius: 20,
+    position: 'relative',
+    '&:before, &:after': {
+      display: 'inline-block',
+      position: 'absolute',
+      top: '50%',
+      width: '50%',
+      transform: 'translateY(-50%)',
+      color: '#fff',
+      textAlign: 'center',
+    },
+    '&:before': {
+      content: '"On"',
+      left: 4,
+      opacity: 0,
+    },
+    '&:after': {
+      content: '"Off"',
+      right: 4,
+    },
+  },
+  checked: {
+    '&$switchBase': {
+      color: '#185a9d',
+      transform: 'translateX(32px)',
+      '&:hover': {
+        backgroundColor: 'rgba(24,90,257,0.08)',
+      },
+    },
+    '& $thumb': {
+      backgroundColor: '#fff',
+    },
+    '& + $track': {
+      background: '#4B2E83',
+      '&:before': {
+        opacity: 1,
+      },
+      '&:after': {
+        opacity: 0,
+      }
+    },
+  },
+});
+
+//@ts-ignore
+export default withStyles(styles)(withSnackbar(Location));
