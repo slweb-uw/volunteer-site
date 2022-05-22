@@ -199,17 +199,13 @@ const Events: React.FC<EventsProps> = ({
               </Grid>
               <Grid item hidden={isProviderView} style={{ marginBottom: "1em" }}>
                 <Typography
-                  display="inline"
-                  style={{
-                    marginLeft: "1em",
-                    marginRight: "0.5rem",
-                    verticalAlign: "50%",
-                  }}
-                >
+                  id="student-type-filter"
+                  className={classes.filterField}>
                   {/* TODO: Need to populate filters by student type */}
                   Student Type{" "}
                 </Typography>
                 <Select
+                  aria-labelledby="student-type-filter"
                   value={filter}
                   onChange={(e) => {
                     filterByCategory(e.target.value as string | undefined);
@@ -227,18 +223,13 @@ const Events: React.FC<EventsProps> = ({
               </Grid>
               <Grid item style={{ marginBottom: "1em" }}>
                 <Typography
-                  display="inline"
-                  id="category-label"
-                  style={{
-                    marginLeft: "1em",
-                    marginRight: "0.5rem",
-                    verticalAlign: "50%",
-                  }}
+                  id="opportunity-type-filter"
+                  className={classes.filterField}
                 >
                   Opportunity Type{" "}
                 </Typography>
                 <Select
-                  aria-labelledby="category-label"
+                  aria-labelledby="opportunity-type-filter"
                   value={filter}
                   onChange={(e) => {
                     filterByCategory(e.target.value as string | undefined);
@@ -251,6 +242,27 @@ const Events: React.FC<EventsProps> = ({
                   {organizations.map((organization) => (
                     <MenuItem value={organization}>{organization}</MenuItem>
                   ))}
+                </Select>
+              </Grid>
+              <Grid item style={{ marginBottom: "1em" }}>
+                <Typography
+                  id="sort-by-filter"
+                  className={classes.filterField}
+                >
+                  Sort By{" "}
+                </Typography>
+                <Select
+                  aria-labelledby="sort-by-filter"
+                  value={sortField}
+                  onChange={(e) => {
+                    changeSortField(e.target.value as string);
+                  }}
+                  style={{ width: 200 }}
+                  displayEmpty
+                  input={<BootstrapInput />}
+                >
+                  <MenuItem value={"timestamp"}>Date Added</MenuItem>
+                  <MenuItem value={"Title"}>Title</MenuItem>
                 </Select>
               </Grid>
             </Grid>
@@ -379,6 +391,12 @@ const styles = createStyles({
     width: 80,
     height: 48,
     padding: 8,
+  },
+  filterField: {
+    display: "inline",
+    verticalAlign: "50%",
+    marginLeft: "1em",
+    marginRight: "0.5rem",
   },
   // Styles for the switch component
   switchBase: {
