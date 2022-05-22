@@ -206,6 +206,7 @@ const Events: React.FC<EventsProps> = ({
                     verticalAlign: "50%",
                   }}
                 >
+                  {/* TODO: Need to populate filters by student type */}
                   Student Type{" "}
                 </Typography>
                 <Select

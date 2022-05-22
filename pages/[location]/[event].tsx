@@ -150,7 +150,7 @@ const Event: NextPage<Props> = ({ classes }) => {
                     {eventData?.Location ?? NotSpecified}
                   </Typography>
                 </Grid>
-                <Grid item style={{ marginLeft: 100 }}>
+                <Grid item>
                   <Typography variant="h6" style={{ fontWeight: 600 }}>
                     Date and Time
                   </Typography>
