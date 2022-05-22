@@ -16,17 +16,17 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
   const location = (router.query.location && !Array.isArray(router.query.location)) ? router.query.location : defaultLocation;
 
   return (
-    <div>
+    <div style={{ display: "flex" }}>
       <Typography
-        id="select-location-label"
+        id="select-location-filter"
         gutterBottom
         display="inline"
-        style={{ marginRight: "1em", fontFamily: "Uni Sans Book", fontSize: "1.5rem", verticalAlign: "-5%" }}
+        style={{ marginRight: "1em", fontFamily: "Uni Sans Book", fontSize: "1.5rem"}}
       >
         <b>Select a Location</b>{" "}
       </Typography>
       <Select
-        aria-labelledby="select-location-label"
+        aria-labelledby="select-location-filter"
         value={location}
         onChange={(e) => {
           const location = e.target.value as string;
