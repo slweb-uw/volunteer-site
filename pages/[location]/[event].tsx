@@ -162,7 +162,7 @@ const Event: NextPage<Props> = ({ classes }) => {
             </Grid>
             <Grid item>
               <Typography variant="h6" style={{ fontWeight: 600 }}>
-                Contact Information & Cancellation Policy
+                Contact Information &amp; Cancellation Policy
               </Typography>
               <Typography>
                 {eventData["Contact Information and Cancellation Policy"] ??
