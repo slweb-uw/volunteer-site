@@ -18,7 +18,6 @@ import AddModifyEventModal from "./addModifyEventModal";
 import EventCard from "./eventCard";
 import { useAuth } from "../auth";
 import { Location } from "../helpers/locations"
-import { withSnackbar } from "notistack";
 
 type EventsProps = {
   location: Location;
@@ -436,4 +435,4 @@ const styles = createStyles({
 });
 
 //@ts-ignore
-export default withStyles(styles)(withSnackbar(Location));
+export default withStyles(styles)(Events);
