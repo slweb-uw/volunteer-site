@@ -71,7 +71,7 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
                     width: "466px",
                     height: "255px",
                     margin: "0px",
-
+                    borderRadius: "10px",
                     objectFit: "cover",
                 }}
                 src='/studentVolunteers.png'
