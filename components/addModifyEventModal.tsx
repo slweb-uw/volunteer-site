@@ -42,6 +42,7 @@ import "cropperjs/dist/cropper.css";
 import EventCard from "./eventCard";
 import RichTextEditor from "./richTextEditor";
 import { Location } from "../helpers/locations";
+import CollapsibleRichTextEditor from "./collapsibleRichTextEditor";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -141,7 +142,6 @@ const locations = [
 const initialFields = [
   "Contact Information and Cancellation Policy",
   "Website Link",
-  "Sign-up Link",
   "Parking and Directions",
   "Clinic Flow",
   "Clinic Schedule",
@@ -157,6 +157,7 @@ const reservedFields = new Set([
   "Title",
   "Project Description",
   "Details",
+  "Sign-up Link",
   "Types of Volunteers Needed",
   "Organization",
   "Order",
@@ -212,6 +213,18 @@ enum ModalState {
   CropSquare,
   CropCard
 }
+
+const RichFieldEditor = React.memo((props) => {
+  return (<CollapsibleRichTextEditor
+    innerProps={{
+      initialContent: props.initialContent,
+      output: (output) => {
+        props.setField(props.fieldName, output ?? "")
+      },
+      placeholder: props.fieldName
+    }}
+  />)
+})
 
 const ImageSelector = (props: ImageSelectorProps) => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -322,6 +335,7 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
   const [organizationList, setOrganizationList] = useState<string[]>([]);
   const [title, setTitle] = useState<string | undefined>();
   const [description, setDescription] = useState<string | undefined>();
+  const [signUpLink, setSignUpLink] = useState<string | undefined>();
   const [details, setDetails] = useState<string | null>(null);
   const [organization, setOrganization] = useState<string | undefined>();
   const [location, setLocation] = useState<string | undefined>();
@@ -332,9 +346,19 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
   const [cardImageURL, setCardImageURL] = useState<string | undefined>();
   const [modalState, setModalState] = useState(ModalState.Main);
   const [cropImage, setCropImage] = useState<string | undefined>();
-  const [otherFields, setOtherFields] = useState<
-    Record<string, string | string[] | undefined>
-  >({});
+  const [otherFields, dispatchOtherFields] = React.useReducer((state, action) => {
+    const { type, field, value } = action;
+    if (type === "set_all") {
+      return {...value};
+    } else if (type === "set_field") {
+      return {
+        ...state,
+        [field]: value
+      };
+    } else {
+      throw new Error("Unknown action type " + type);
+    }
+  }, {});
 
   // Recurrence fields
   const [recurrenceType, setRecurrencyType] = useState<string>("Daily");
@@ -391,7 +415,7 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
       setCropImage(reader.result as string);
     };
     reader.onerror = (error) => {
-      console.log("Image reader error: ", error);
+      console.error("Image reader error: ", error);
     };
   };
 
@@ -409,11 +433,8 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
       timestamp: new Date(),
     };
 
-    if (details) {
-      uploadEvent.Details = details;
-    } else {
-      uploadEvent.Details = "";
-    }
+    uploadEvent.Details = details ? details : ""
+    uploadEvent["Sign-up Link"] = signUpLink ? signUpLink : ""
 
     if (startDateTime && endDateTime) {
       uploadEvent.StartDate = startDateTime.toISOString();
@@ -589,6 +610,9 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
       setImageURL(props.event.imageURL);
       setCardImageURL(props.event.cardImageURL);
       setTitle(props.event.Title);
+      if (props.event["Sign-up Link"]) {
+        setSignUpLink(props.event["Sign-up Link"])
+      }
       setDescription(props.event["Project Description"]);
       setOrganization(props.event.Organization);
       setVolunteersNeeded(props.event["Types of Volunteers Needed"] ?? []);
@@ -598,7 +622,7 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
         }
       });
     }
-    setOtherFields(newFields);
+    dispatchOtherFields({ type: "set_all", value: newFields });
   }, [props.event]);
 
   useEffect(() => {
@@ -652,6 +676,14 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
       [event.target.name]: event.target.checked,
     });
   };
+
+  const setField = React.useCallback((fieldName, value) => {
+    dispatchOtherFields({
+      type: "set_field",
+      field: fieldName,
+      value: value
+    });
+  }, [dispatchOtherFields]);
 
   const compiled = compileEvent();
 
@@ -720,6 +752,11 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
             <RichTextEditor
               initialContent={event?.Details ?? ""}
               output={setDetails}
+              editorOptions={{
+                attributes: {
+                  style: "min-height: 250px"
+                }
+              }}
               placeholder="Add a detailed project description here. If left empty, the project summary will be used."
             />
           </Grid>
@@ -797,27 +834,29 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
             </FormControl>
           </Grid>
 
-          {Object.keys(otherFields).map((fieldName) => (
-            <Grid item xs={12} sm={6}>
-              <TextField
-                helperText={
-                  fieldName === "Clinic Schedule"
-                    ? "i.e. every other Saturday at 2:00-4:00pm"
-                    : ""
-                }
-                multiline
-                fullWidth
-                label={fieldName}
-                value={otherFields[fieldName]}
-                onChange={(e) =>
-                  setOtherFields({
-                    ...otherFields,
-                    [fieldName]: e.target.value as string,
-                  })
-                }
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Sign-up Link"
+              value={signUpLink}
+              placeholder="Enter a link starting with http:// or https://"
+              onChange={(e) => setSignUpLink(e.target.value as string)}
+            />
+          </Grid>
+
+          {Object.keys(otherFields).map((fieldName) => {
+            const val = otherFields[fieldName];
+            return <Grid key={fieldName} item xs={12} sm={6}>
+              <Typography style={{ paddingLeft: "10px" }}>
+                {fieldName}
+              </Typography>
+              <RichFieldEditor
+                fieldName={fieldName}
+                setField={setField}
+                initialContent={!Array.isArray(val) ? (val ?? "") : ""}
               />
-            </Grid>
-          ))}
+            </Grid>;
+          })}
 
           <Grid item sm={12}>{/* spacer so that the below components are always aligned */}</Grid>
 

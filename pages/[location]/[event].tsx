@@ -15,6 +15,7 @@ import {
 } from "@material-ui/core";
 import naturalJoin from "../../helpers/naturalJoin";
 import EventDescription from "../../components/eventDescription";
+import RichTextField from "../../components/richTextField";
 
 interface Props {
   classes?: any;
@@ -61,6 +62,12 @@ type EventFieldProps = {
   value: string | string[] | JSX.Element | undefined;
 }
 
+type RichEventFieldProps = {
+  name: string;
+  value: string | string[] | undefined;
+  removeTopMargin?: boolean;
+}
+
 const EventField: React.FC<EventFieldProps> = ({
   name,
   value
@@ -78,6 +85,29 @@ const EventField: React.FC<EventFieldProps> = ({
       </Typography>
 
       <Typography>{data ?? NotSpecified}</Typography>
+    </Grid>
+  );
+}
+
+const RichEventField: React.FC<RichEventFieldProps> = ({
+  name,
+  value,
+  removeTopMargin
+}) => {
+  let data: string | undefined;
+  if (value && Array.isArray(value)) {
+    data = naturalJoin(value);
+  } else {
+    data = value;
+  }
+  const remove = removeTopMargin ? data?.includes("<p>") : false;
+  return (
+    <Grid style={{ maxWidth: "100%" }} item sm={12} md={6}>
+      <Typography variant="h6" style={{ fontWeight: 600 }}>
+        {name}
+      </Typography>
+
+      {data ? <RichTextField value={data} removeTopMargin={remove ?? false} /> : NotSpecified}
     </Grid>
   );
 }
@@ -160,15 +190,16 @@ const Event: NextPage<Props> = ({ classes }) => {
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item>
-              <Typography variant="h6" style={{ fontWeight: 600 }}>
-                Contact Information & Cancellation Policy
-              </Typography>
-              <Typography>
-                {eventData["Contact Information and Cancellation Policy"] ??
-                  NotSpecified}
-              </Typography>
-            </Grid>
+            <RichEventField
+              name="Contact Information & Cancellation Policy"
+              value={eventData["Contact Information and Cancellation Policy"]}
+              removeTopMargin={true}
+            />
+            <RichEventField
+              name="Website Link"
+              value={eventData["Website Link"]}
+              removeTopMargin={true}
+            />
             <Grid item>
               <Typography variant="h6" style={{ fontWeight: 600 }}>
                 Types of Volunteers Needed
@@ -201,13 +232,13 @@ const Event: NextPage<Props> = ({ classes }) => {
       <Grid container spacing={4}>
         <EventField name="Project Description" value={<EventDescription event={eventData} />} />
         {initialGridKeys.filter((name) => eventData[name] != null && eventData[name] != "").map((name) => (
-          <EventField key={name} name={name} value={eventData[name]} />
+          <RichEventField key={name} name={name} value={eventData[name]} />
         ))}
         {Object.keys(eventData)
           .filter((name) => !reservedKeys.includes(name))
           .filter((name) => eventData[name] != null && eventData[name] != "")
           .map((name) => (
-            <EventField key={name} name={name} value={eventData[name]} />
+            <RichEventField key={name} name={name} value={eventData[name]} />
           ))}
       </Grid>
     </div>
