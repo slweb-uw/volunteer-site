@@ -1,4 +1,7 @@
-export default (list: string[]): string => {
+export default (list: string[] | string): string => {
+  if (!(list instanceof Array)) {
+    return list
+  }
   if (list.length == 0) {
     return "";
   } else if (list.length == 1) {
