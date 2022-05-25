@@ -74,7 +74,7 @@ type ActiveToolProps = ToolProps & {
 // This is necessary because between the user switching focus from the text box
 // to something else in the editor (such as the toolbar), there is a slight
 // delay before the toolbar registers that it is active
-const BLUR_TRANSITION_DELAY = 1;
+const BLUR_TRANSITION_DELAY = 100;
 
 const FormatTools: React.FC<ToolProps> = ({
   editor
