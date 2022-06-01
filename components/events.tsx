@@ -177,9 +177,11 @@ const Events: React.FC<EventsProps> = ({
                   disabled={ isProviderView }
                 >
                   <MenuItem value="">Show All</MenuItem>
-                  {volunteerTypes.map((studentType) => (
-                    <MenuItem value={studentType}>{studentType}</MenuItem>
-                  ))}
+                  {volunteerTypes
+                    .filter((studentType) => studentType !== "Providers")
+                    .map((studentType) => (
+                      <MenuItem value={studentType}>{studentType}</MenuItem>
+                    ))}
                 </Select>
               </Grid>
               <Grid item style={{ marginBottom: "1em" }}>
