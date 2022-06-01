@@ -116,7 +116,7 @@ const generateLabelValuePairs = (
   return ret;
 };
 
-const volunteerTypes = [
+export const volunteerTypes = [
   "School of Medicine",
   "School of Dentistry",
   "School of Nursing",
@@ -214,7 +214,13 @@ enum ModalState {
   CropCard
 }
 
-const RichFieldEditor = React.memo((props) => {
+interface RichFieldEditorProps {
+  initialContent: string;
+  fieldName: string;
+  setField: (fieldName: string, output: string) => void;
+}
+
+const RichFieldEditor = React.memo((props: RichFieldEditorProps) => {
   return (<CollapsibleRichTextEditor
     innerProps={{
       initialContent: props.initialContent,
@@ -346,7 +352,7 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
   const [cardImageURL, setCardImageURL] = useState<string | undefined>();
   const [modalState, setModalState] = useState(ModalState.Main);
   const [cropImage, setCropImage] = useState<string | undefined>();
-  const [otherFields, dispatchOtherFields] = React.useReducer((state, action) => {
+  const [otherFields, dispatchOtherFields] = React.useReducer((state: any, action: any) => {
     const { type, field, value } = action;
     if (type === "set_all") {
       return {...value};

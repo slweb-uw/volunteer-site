@@ -18,6 +18,8 @@ import AddModifyEventModal from "./addModifyEventModal";
 import EventCard from "./eventCard";
 import { useAuth } from "../auth";
 import { Location } from "../helpers/locations"
+import { volunteerTypes } from "./addModifyEventModal";
+import {CollectionReference, Query} from "@firebase/firestore-types";
 
 type EventsProps = {
   location: Location;
@@ -30,33 +32,33 @@ const Events: React.FC<EventsProps> = ({
   const { user } = useAuth();
 
   const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
-  const [studentTypes, setStudentTypes] = useState<string[]>([]); // student types at this location
   const [events, setEvents] = useState<EventData[]>([]); // list of loaded events
   const [cursor, setCursor] = useState<
     firebaseClient.firestore.QueryDocumentSnapshot
     >(); // cursor to last document loaded
-  const [filter, setFilter] = useState<string | undefined>();
+  const [organizationFilter, setOrganizationFilter] = useState<string>("");
+  const [studentTypeFilter, setStudentTypeFilter] = useState<string>("");
   const [showLoadButton, setShowLoadButton] = useState<boolean>(true);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [adminModalOpen, setAdminModalOpen] = useState<boolean>(false);
   const [selectedEvent, setSelectedEvent] = useState<EventData>();
-  const [sortField, setSortField] = useState<string>("timestamp");
+  const [sortField, setSortField] = useState<string>("Title");
   const [isProviderView, setProviderView] = useState<boolean>(false); // flag for whether provider view is on
   const [topMessage, setTopMessage] = useState<any>();
 
   useEffect(() => {
     // Load events
-    reloadEvents(undefined, "timestamp");
+    loadEvents(false);
     // pull organizations for this location from the metadata cache
     firebaseClient
       .firestore()
       .collection("cache")
       .doc(location.toString())
       .get()
-      .then((doc) => setOrganizations(Object.keys(doc.data() as string[])));
+      .then((doc) => setOrganizations(Object.keys(doc.data() as string[]).sort()));
   }, [location]);
 
-  // Adjusts the top message depending on whether provider view is on
+  // Adjusts state depending on whether provider view is on
   useEffect(() => {
     if (isProviderView) {
       setTopMessage(
@@ -66,6 +68,7 @@ const Events: React.FC<EventsProps> = ({
           </a>
         </Link>
       )
+      setStudentTypeFilter("Providers");
     } else {
       setTopMessage(
           <a href={ "https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569" } 
@@ -74,6 +77,7 @@ const Events: React.FC<EventsProps> = ({
             Training Instructions
           </a>
       )
+      setStudentTypeFilter("");
     }
   }, [isProviderView])
 
@@ -82,27 +86,23 @@ const Events: React.FC<EventsProps> = ({
   };
 
   // Append more events from Firestore onto this page from position of cursor
-  const loadEvents = async () => {
-    if (cursor === null) {
-      return;
-    }
+  const loadEvents = async (keepPrev: boolean) => {
     const order = getOrder(sortField);
-    const next = filter
-      ? await firebaseClient // There is a category filter, apply it
-          .firestore()
-          .collection("/" + location)
-          .where("organization", "==", filter)
-          .orderBy(sortField, order)
-          .startAfter(cursor)
-          .limit(10)
-          .get()
-      : await firebaseClient // There is no filter
-          .firestore()
-          .collection("/" + location)
-          .orderBy(sortField, order)
-          .startAfter(cursor)
-          .limit(10)
-          .get();
+    let query : CollectionReference | Query = firebaseClient.firestore().collection("/" + location);
+    if (organizationFilter) {
+      query = query.where("Organization", "==", organizationFilter);
+    }
+    if (studentTypeFilter) {
+      query = query.where("Types of Volunteers Needed", "array-contains", studentTypeFilter);
+    }
+
+    query = query.orderBy(sortField, order);
+    if (keepPrev && cursor) {
+      query = query.startAfter(cursor)
+    }
+    const next = await query.limit(10)
+      .get();
+
     const eventsToAdd: EventData[] = [];
     next.docs.forEach((document) => {
       let eventDoc = document.data() as EventData;
@@ -116,59 +116,20 @@ const Events: React.FC<EventsProps> = ({
       eventsToAdd.push(eventDoc);
     });
     setCursor(next.docs[next.docs.length - 1]);
-    setEvents((prevEvents) => [...prevEvents, ...eventsToAdd]);
+    if (keepPrev) {
+      setEvents((prevEvents) => [...prevEvents, ...eventsToAdd]);
+    } else {
+      setEvents(eventsToAdd);
+    }
     setShowLoadButton(eventsToAdd.length === 10);
   };
 
-  // Clear events and replace with 10 events using given filter and sort field
-  const reloadEvents = async (
-    curFilter: string | undefined,
-    curSort: string
-  ) => {
-    const order = getOrder(curSort);
-    const next = curFilter
-      ? await firebaseClient
-          .firestore()
-          .collection("/" + location)
-          .where("organization", "==", curFilter)
-          .orderBy(curSort, order)
-          .limit(10)
-          .get()
-      : await firebaseClient
-          .firestore()
-          .collection("/" + location)
-          .orderBy(curSort, order)
-          .limit(10)
-          .get();
-    const newEvents: EventData[] = [];
-    next.docs.forEach((document) => {
-      let eventDoc = document.data() as EventData;
-      eventDoc.id = document.id; // adds event id to the EventData object
-      const volunteersNeeded: string | string[] | undefined =
-        eventDoc["Types of Volunteers Needed"];
-      if (volunteersNeeded && typeof volunteersNeeded === "string") {
-        // If string, then obsolete. Remove data
-        eventDoc["Types of Volunteers Needed"] = [];
-      }
-      newEvents.push(eventDoc);
-    });
-    newEvents.sort((a, b) => a.Title.localeCompare(b.Title));
-    setCursor(next.docs[next.docs.length - 1]);
-    setEvents(newEvents);
-    setShowLoadButton(newEvents.length === 10);
-  };
-
-  // Filter events by given category, updates events
-  const filterByCategory = async (newFilter: string | undefined) => {
-    setFilter(newFilter);
-    reloadEvents(newFilter, sortField);
-  };
-
-  // Change field we're sorting by, updates events
-  const changeSortField = async (newSortField: string) => {
-    setSortField(newSortField);
-    reloadEvents(filter, newSortField);
-  };
+  useEffect(() => {
+    loadEvents(false)
+      /*.catch((err) => {
+        console.error("Error loading events: " + err);
+      });*/
+  }, [organizationFilter, studentTypeFilter])
 
   return (
     <div>
@@ -206,17 +167,17 @@ const Events: React.FC<EventsProps> = ({
                 </Typography>
                 <Select
                   aria-labelledby="student-type-filter"
-                  value={filter}
+                  value={studentTypeFilter}
                   onChange={(e) => {
-                    filterByCategory(e.target.value as string | undefined);
+                    setStudentTypeFilter(e.target.value as string);
                   }}
                   style={{ width: 200 }}
                   displayEmpty
                   input={<BootstrapInput />}
                   disabled={ isProviderView }
                 >
-                  <MenuItem>Show All</MenuItem>
-                  {studentTypes.map((studentType) => (
+                  <MenuItem value="">Show All</MenuItem>
+                  {volunteerTypes.map((studentType) => (
                     <MenuItem value={studentType}>{studentType}</MenuItem>
                   ))}
                 </Select>
@@ -230,39 +191,18 @@ const Events: React.FC<EventsProps> = ({
                 </Typography>
                 <Select
                   aria-labelledby="opportunity-type-filter"
-                  value={filter}
+                  value={organizationFilter}
                   onChange={(e) => {
-                    filterByCategory(e.target.value as string | undefined);
+                    setOrganizationFilter(e.target.value as string);
                   }}
                   style={{ width: 200 }}
                   displayEmpty
                   input={<BootstrapInput />}
                 >
-                  <MenuItem>Show All</MenuItem>
+                  <MenuItem value="">Show All</MenuItem>
                   {organizations.map((organization) => (
                     <MenuItem value={organization}>{organization}</MenuItem>
                   ))}
-                </Select>
-              </Grid>
-              <Grid item style={{ marginBottom: "1em" }}>
-                <Typography
-                  id="sort-by-filter"
-                  className={classes.filterField}
-                >
-                  Sort By{" "}
-                </Typography>
-                <Select
-                  aria-labelledby="sort-by-filter"
-                  value={sortField}
-                  onChange={(e) => {
-                    changeSortField(e.target.value as string);
-                  }}
-                  style={{ width: 200 }}
-                  displayEmpty
-                  input={<BootstrapInput />}
-                >
-                  <MenuItem value={"timestamp"}>Date Added</MenuItem>
-                  <MenuItem value={"Title"}>Title</MenuItem>
                 </Select>
               </Grid>
             </Grid>
@@ -354,7 +294,7 @@ const Events: React.FC<EventsProps> = ({
             <div style={{ textAlign: "center" }}>
               <Button
                 variant="outlined"
-                onClick={loadEvents}
+                onClick={() => { loadEvents(true);/*.catch((err) => { console.error("Error loading more events: " + err)*/ } }
                 style={{
                   marginTop: "2em",
                 }}
@@ -394,7 +334,6 @@ const styles = createStyles({
   },
   filterField: {
     display: "inline",
-    verticalAlign: "50%",
     marginLeft: "1em",
     marginRight: "0.5rem",
   },
