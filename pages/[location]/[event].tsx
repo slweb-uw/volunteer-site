@@ -34,6 +34,7 @@ const initialGridKeys = [
 const reservedKeys = [
   "Project Description",
   "Details",
+  "Clinic Schedule",
   "Types of Volunteers Needed",
   "Title",
   "Order",
@@ -65,7 +66,7 @@ type EventFieldProps = {
 type RichEventFieldProps = {
   name: string;
   value: string | string[] | undefined;
-  removeTopMargin?: boolean;
+  removeTopMargin: boolean;
 }
 
 const EventField: React.FC<EventFieldProps> = ({
@@ -100,7 +101,7 @@ const RichEventField: React.FC<RichEventFieldProps> = ({
   } else {
     data = value;
   }
-  const remove = removeTopMargin ? data?.includes("<p>") : false;
+  const remove: boolean | undefined = removeTopMargin ? data?.includes("<p>") : false;
   return (
     <Grid style={{ maxWidth: "100%" }} item sm={12} md={6}>
       <Typography variant="h6" style={{ fontWeight: 600 }}>
@@ -182,10 +183,10 @@ const Event: NextPage<Props> = ({ classes }) => {
                 </Grid>
                 <Grid item>
                   <Typography variant="h6" style={{ fontWeight: 600 }}>
-                    Date and Time
+                    Clinic Schedule
                   </Typography>
                   <Typography variant="body1">
-                    {eventData["StartDate"] ?? NotSpecified}
+                    {eventData["Clinic Schedule"] ?? NotSpecified}
                   </Typography>
                 </Grid>
               </Grid>
@@ -234,13 +235,13 @@ const Event: NextPage<Props> = ({ classes }) => {
       <Grid container spacing={4}>
         <EventField name="Project Description" value={<EventDescription event={eventData} />} />
         {initialGridKeys.filter((name) => eventData[name] != null && eventData[name] != "").map((name) => (
-          <RichEventField key={name} name={name} value={eventData[name]} />
+          <RichEventField key={name} name={name} value={eventData[name]} removeTopMargin={true} />
         ))}
         {Object.keys(eventData)
           .filter((name) => !reservedKeys.includes(name))
           .filter((name) => eventData[name] != null && eventData[name] != "")
           .map((name) => (
-            <RichEventField key={name} name={name} value={eventData[name]} />
+            <RichEventField key={name} name={name} value={eventData[name]} removeTopMargin={true} />
           ))}
       </Grid>
     </div>

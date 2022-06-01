@@ -12,7 +12,7 @@ const RichTextField: React.FC<RichTextFieldProps> = ({
 }) => {
   const style : any = {}
   if (removeTopMargin) {
-    style["margin-top"] = "-1em";
+    style.marginTop = "-1em";
   }
   /***********************************************************
    DO NOT EDIT THIS SECTION UNLESS YOU KNOW WHAT YOU ARE DOING
