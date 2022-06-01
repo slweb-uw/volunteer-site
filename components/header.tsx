@@ -20,6 +20,10 @@ const useStyles = makeStyles((theme) => ({
       justifyContent: "space-between",
     },
     paddingBottom: "0px",
+    fontFamily: "initial",
+    fontWeight: "initial",
+    lineHeight: "initial",
+    letterSpacing: "initial"
   },
   navtitle: {
     fontFamily: "Encode Sans",
@@ -42,6 +46,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const Divider = () => <span style={
+  {
+    fontSize: "35px",
+    color: "grey",
+    marginTop: "8px",
+  }
+}>/</span>;
+
 const Header: React.FC<{}> = (props) => {
   const { user } = useAuth();
 
@@ -49,28 +61,28 @@ const Header: React.FC<{}> = (props) => {
     <NavLink key="/" href="/">
       <a className={useStyles().navtitle}>HOME</a>
     </NavLink>,
-    <span style={{ fontSize: "35px", color: "grey", marginTop: "8px" }}>/</span>,
+    <Divider/>,
+    <NavLink key="opportunities" href="/opportunities">
+      <a className={useStyles().navtitle}>OPPORTUNITIES</a>
+    </NavLink>,
+    <Divider/>,
     <NavLink key="training" href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569">
       <a className={useStyles().navtitle}>TRAINING</a>
     </NavLink>,
     //*NOTE: Resources name was changed to Links*/
-    <span style={{ fontSize: "35px", color: "grey", marginTop: "8px" }}>/</span>,
+    <Divider/>,
     <NavLink key="resources" href="/resources">
       <a className={useStyles().navtitle}>LINKS</a>
     </NavLink>,
-    <span style={{ fontSize: "35px", color: "grey", marginTop: "8px" }}>/</span>,
+    <Divider/>,
     <NavLink key="protocols" href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947">
       <a className={useStyles().navtitle}>PROTOCOLS</a>
     </NavLink>,
-    <span style={{ fontSize: "35px", color: "grey", marginTop: "8px" }}>/</span>,
+    <Divider/>,
     <NavLink key="donations" href="/donations">
       <a className={useStyles().navtitle}>DONATIONS</a>
     </NavLink>,
-    <span style={{ fontSize: "35px", color: "grey", marginTop: "8px" }}>/</span>,
-    <NavLink key="opportunities" href="/opportunities">
-      <a className={useStyles().navtitle}>OPPORTUNITIES</a>
-    </NavLink>,
-    <span style={{ fontSize: "35px", color: "grey", marginTop: "8px" }}>/</span>,
+    <Divider/>,
     // sign in and out
     user ? (
       <NavLink key="sign out" href="">
