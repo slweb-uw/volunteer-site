@@ -375,6 +375,7 @@ const styles = createStyles({
   },
   filterField: {
     display: "inline",
+    verticalAlign: "50%",
     marginLeft: "1em",
     marginRight: "0.5rem",
   },
