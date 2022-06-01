@@ -252,7 +252,7 @@ const Events: React.FC<EventsProps> = ({
             <FormGroup>
               <FormControlLabel 
                 control={
-                  <Switch color="primary" 
+                  <Switch color="primary"
                           classes={{
                             root: classes.root,
                             switchBase: classes.switchBase,
@@ -260,6 +260,7 @@ const Events: React.FC<EventsProps> = ({
                             track: classes.track,
                             checked: classes.checked
                           }}
+                          checked={isProviderView}
                           onChange={(e) => setProviderView(e.target.checked)}
                   />
                 }
