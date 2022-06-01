@@ -19,7 +19,7 @@ import EventCard from "./eventCard";
 import { useAuth } from "../auth";
 import { Location } from "../helpers/locations"
 import { volunteerTypes } from "./addModifyEventModal";
-import {CollectionReference, Query} from "@firebase/firestore-types";
+import { CollectionReference, Query } from "@firebase/firestore-types";
 
 type EventsProps = {
   location: Location;
