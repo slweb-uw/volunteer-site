@@ -483,7 +483,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       Placeholder.configure({ placeholder }),
       Link.configure({
         openOnClick: false,
-        autolink: false
+        autolink: true
       }),
       TextSelection
     ],
