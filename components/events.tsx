@@ -20,6 +20,7 @@ import { useAuth } from "../auth";
 import { Location } from "../helpers/locations"
 import { volunteerTypes } from "./addModifyEventModal";
 import { CollectionReference, Query } from "@firebase/firestore-types";
+import {useRouter} from "next/router";
 
 type EventsProps = {
   location: Location;
@@ -30,21 +31,62 @@ const Events: React.FC<EventsProps> = ({
   location, classes
 }) => {
   const { user } = useAuth();
+  const router = useRouter();
 
   const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
   const [events, setEvents] = useState<EventData[]>([]); // list of loaded events
   const [cursor, setCursor] = useState<
     firebaseClient.firestore.QueryDocumentSnapshot
-    >(); // cursor to last document loaded
-  const [organizationFilter, setOrganizationFilter] = useState<string>("");
-  const [studentTypeFilter, setStudentTypeFilter] = useState<string>("");
+  >(); // cursor to last document loaded
+
+  const ORGANIZATION_FILTER_QUERY_KEY = "org";
+  const STUDENT_TYPE_FILTER_QUERY_KEY = "type";
+
+  const setQueryVar = (key: string, value: string) => {
+    if (!router.isReady) {
+      return;
+    }
+    const query = {...router.query}
+    if (value) {
+      query[key] = value;
+    } else {
+      delete query[key];
+    }
+    router.replace(
+      {
+        pathname: router.pathname,
+        query: query
+      },
+      undefined,
+      {
+        scroll: false
+      });
+  }
+
+  const organizationFilter = router.query[ORGANIZATION_FILTER_QUERY_KEY] ?? "";
+  const setOrganizationFilter = (value: string) => {
+    setQueryVar(ORGANIZATION_FILTER_QUERY_KEY, value);
+  }
+  const studentTypeFilter = router.query[STUDENT_TYPE_FILTER_QUERY_KEY] ?? "";
+  const setStudentTypeFilter = (value: string) => {
+    setQueryVar(STUDENT_TYPE_FILTER_QUERY_KEY, value);
+  }
+
   const [showLoadButton, setShowLoadButton] = useState<boolean>(true);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [adminModalOpen, setAdminModalOpen] = useState<boolean>(false);
   const [selectedEvent, setSelectedEvent] = useState<EventData>();
   const [sortField, setSortField] = useState<string>("Title");
-  const [isProviderView, setProviderView] = useState<boolean>(false); // flag for whether provider view is on
   const [topMessage, setTopMessage] = useState<any>();
+
+  const isProviderView = studentTypeFilter === "Providers";
+  const setProviderView = (enabled: boolean) => {
+    if (enabled) {
+      setStudentTypeFilter("Providers");
+    } else if (isProviderView) {
+      setStudentTypeFilter("");
+    }
+  }
 
   useEffect(() => {
     // Load events
@@ -68,7 +110,6 @@ const Events: React.FC<EventsProps> = ({
           </a>
         </Link>
       )
-      setStudentTypeFilter("Providers");
     } else {
       setTopMessage(
           <a href={ "https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569" } 
@@ -77,7 +118,6 @@ const Events: React.FC<EventsProps> = ({
             Training Instructions
           </a>
       )
-      setStudentTypeFilter("");
     }
   }, [isProviderView])
 
@@ -158,11 +198,10 @@ const Events: React.FC<EventsProps> = ({
                   <b>Filters</b>{" "}
                 </Typography>
               </Grid>
-              <Grid item hidden={isProviderView} style={{ marginBottom: "1em" }}>
+              {!isProviderView && <Grid item style={{ marginBottom: "1em" }}>
                 <Typography
                   id="student-type-filter"
                   className={classes.filterField}>
-                  {/* TODO: Need to populate filters by student type */}
                   Student Type{" "}
                 </Typography>
                 <Select
@@ -183,7 +222,7 @@ const Events: React.FC<EventsProps> = ({
                       <MenuItem value={studentType}>{studentType}</MenuItem>
                     ))}
                 </Select>
-              </Grid>
+              </Grid>}
               <Grid item style={{ marginBottom: "1em" }}>
                 <Typography
                   id="opportunity-type-filter"
