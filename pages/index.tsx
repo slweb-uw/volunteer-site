@@ -43,37 +43,26 @@ const App: React.FC<{}> = () => {
           <div className={classes.trianglebottom}></div>
           <div
             className={classes.text}
-            style={{ margin: "10px", marginLeft: "4rem" }}
           >
             <Typography
               variant="h4"
               gutterBottom
             >
-              <pre style={{
-                fontSize: "2.5rem",
-                color: "black",
-                fontFamily: "Encode Sans",
-                fontWeight: 800,
-                textTransform: "uppercase",
-                marginBottom: "2px"
-              }}>
+              <pre className={classes.medTitle}>
               {
                 "UW School of Medicine\nWWAMI/UW Health Sciences"
               }
               </pre>
             </Typography>
 
-            <HeadlineBar color="purple" width={600} height={20}></HeadlineBar>
+            <HeadlineBar color="purple" width={680} height={20} ></HeadlineBar>
 
             <Typography
               variant="h5"
               gutterBottom
+              className={classes.sevTitle}
               style={{
-                fontSize: "2rem",
-                color: "black",
-                fontWeight: 700,
-                fontFamily: "Uni Sans Book",
-                paddingTop: "12px"
+                
               }}
             >
               {
@@ -84,7 +73,7 @@ const App: React.FC<{}> = () => {
             <Typography
               variant="subtitle1"
               gutterBottom
-              style={{ fontSize: "1rem", width: "80%", fontFamily: "Open Sans", marginBottom: "20px"}}
+              style={{ display: "flex", fontSize: "3vw", width: "70%", fontFamily: "Open Sans", marginBottom: "20px"}}
             >
               Our program supports 50+ student led service projects throughout the region.
             </Typography>
@@ -100,11 +89,11 @@ const App: React.FC<{}> = () => {
           </div>
         </div>
       </div>
-
+      
+      {/** Cards */}
       <div style={{ textAlign: "center", marginTop: "2em"}}>
         <div
           style={{
-            margin: "2em",
             width: "100%",
             display: "flex",
             flexWrap: "wrap",
@@ -266,10 +255,8 @@ const App: React.FC<{}> = () => {
               }}
             >
               <img
-                style={{
-                  width: "20rem",
-                }}
-                src="/serve.png"
+                className={useStyles().img}
+                src="/serve.jpg"
                 alt="doctor caring for mom with child"
               />
             </div>
@@ -357,10 +344,7 @@ const App: React.FC<{}> = () => {
               }}
             >
               <img
-                style={{
-                  width: "25rem",
-                  borderRadius: "10px"
-                }}
+                className={useStyles().img}
                 src="/communityPartners.jpg"
                 alt="Two students smiling"
               />
@@ -505,6 +489,11 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     flexDirection: "column",
     height: "100%",
+    margin: "10px", 
+    marginLeft: "4rem",
+    "@media only screen and (max-width: 780px)":{
+      marginLeft: "1rem"
+    }
   },
   cardlinks: {
     display: "flex",
@@ -531,6 +520,35 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       color: "#B7A57A",
       transition: ".25s",
+    }
+  },
+  img: {
+    width: "25em",
+    borderRadius: "10px",
+    "@media only screen and (max-width: 600px)":{
+      display: "block",
+      width: "100%",
+    }
+  },
+  medTitle: {
+    fontSize: "2.5rem",
+    color: "black",
+    fontFamily: "Encode Sans",
+    fontWeight: 800,
+    textTransform: "uppercase",
+    marginBottom: "2px",
+    "@media only screen and (max-width: 780px)":{
+      fontSize: "5vw",
+    }
+  }, 
+  sevTitle: {   
+    fontSize: "2rem",
+    color: "black",
+    fontWeight: 700,
+    fontFamily: "Uni Sans Book",
+    paddingTop: "12px",
+    "@media only screen and (max-width: 780px)":{
+      fontSize: "4.2vw",
     }
   }
 }));

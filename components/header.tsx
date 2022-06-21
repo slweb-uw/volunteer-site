@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: "initial",
     fontWeight: "initial",
     lineHeight: "initial",
-    letterSpacing: "initial"
+    letterSpacing: "initial",
   },
   navtitle: {
     fontFamily: "Encode Sans",
@@ -42,17 +42,40 @@ const useStyles = makeStyles((theme) => ({
       boxShadow: "0 0 0 0.2rem #80bdff",
       borderColor: "#80bdff",
       borderRadius: "4px",
+    },
+    "@media only screen and (max-width: 960px)":{
+      color: "black",
+      margin: "0",
+      padding: "0", 
+    }
+
+  },
+  logo: {
+    position: "relative",
+    cursor: "pointer",
+    width: "25em",
+    minWidth: 5,
+    paddingBottom: "10px",
+    paddingLeft: "10px",
+    paddingTop: "5px",
+    marginBottom: "10px",
+    "@media only screen and (max-width: 960px)":{
+      width: "90%",
     }
   },
-}));
-
-const Divider = () => <span style={
-  {
+  divider:{
     fontSize: "35px",
     color: "grey",
     marginTop: "8px",
+    "@media only screen and (max-width: 960px)":{
+      padding: "0px",
+      fontSize: "0px",
+      margin: "0px",
+    }
   }
-}>/</span>;
+}));
+
+const Divider = () => <span className={useStyles().divider}>/</span>;
 
 const Header: React.FC<{}> = (props) => {
   const { user } = useAuth();
@@ -124,15 +147,9 @@ const Header: React.FC<{}> = (props) => {
           <img
             src="/header-logo.png"
             alt="University of Washington School of Medicine logo"
+            className={useStyles().logo}
             style={{
-              position: "relative",
-              cursor: "pointer",
-              width: "25em",
-              minWidth: 5,
-              paddingBottom: "10px",
-              paddingLeft: "10px",
-              paddingTop: "5px",
-              marginBottom: "10px"
+              
             }}
           />
         </a>
