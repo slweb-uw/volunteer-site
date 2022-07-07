@@ -245,13 +245,14 @@ const App: React.FC<{}> = () => {
           verticalAlign: "middle",
         }}
       >
-        <Grid container spacing={2}>
+        <Grid container spacing={4}>
           <Grid item xs={12} md={6} lg={4}>
             <div
               style={{
                 marginLeft: "auto",
                 marginRight: "auto",
                 textAlign: "center",
+                width: "100%"
               }}
             >
               <img
@@ -264,14 +265,16 @@ const App: React.FC<{}> = () => {
           <Grid item xs={12} md={6} lg={8}>
             <div
               style={{
-                marginLeft: "auto",
+                marginLeft: "4vw",
                 marginRight: "auto",
+                textAlign: "left",
+                width: "95%"
               }}
             >
               <Typography
                 gutterBottom
                 variant="h4"
-                style={{ fontWeight: 700, paddingBottom: "0", marginBottom: "0", fontFamily: "Encode Sans", textTransform: "uppercase" }}
+                style={{ fontWeight: 700, paddingBottom: "0", marginBottom: "0", fontFamily: "Encode Sans", textTransform: "uppercase"}}
               >
                 Serve With Us
               </Typography>
