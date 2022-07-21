@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
 import sanitizeHtmlRichText from "../helpers/sanitizeHtmlRichText";
-import deepEqual from "deep-equal";
+// import deepEqual from "deep-equal";
 
 // Material imports
 import {
@@ -564,4 +564,4 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   )
 }
 
-export default React.memo(RichTextEditor, deepEqual);
+export default React.memo(RichTextEditor);

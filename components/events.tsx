@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { firebaseClient } from "../firebaseClient";
-import { 
-  Button, 
-  Grid, 
-  MenuItem, 
-  Select, 
-  Typography, 
-  createStyles, 
-  withStyles, 
-  FormControlLabel, 
-  Switch, 
+import {
+  Button,
+  Grid,
+  MenuItem,
+  Select,
+  Typography,
+  createStyles,
+  withStyles,
+  FormControlLabel,
+  Switch,
   FormGroup } from "@material-ui/core";
 import EventModal from "./eventModal";
 import BootstrapInput from "./bootstrapInput";
@@ -112,9 +112,7 @@ const Events: React.FC<EventsProps> = ({
       )
     } else {
       setTopMessage(
-          <a href={ "https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569" } 
-             style={{ color: "#85754D" }}
-             target="_blank">
+          <a>
             Training Instructions
           </a>
       )
@@ -250,7 +248,7 @@ const Events: React.FC<EventsProps> = ({
           </Grid>
           <Grid item xs={12} sm={2} style={{ textAlign: "right" }}>
             <FormGroup>
-              <FormControlLabel 
+              <FormControlLabel
                 control={
                   <Switch color="primary"
                           classes={{

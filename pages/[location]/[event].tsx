@@ -26,7 +26,7 @@ const NotSpecified = <i style={{ color: "gray" }}>Not specified</i>;
 const initialGridKeys = [
   "Tips and Reminders",
   "Clinic Flow",
-  "Required Trainings",
+  "Required   ings",
   "Parking and Directions",
   "Provider Information",
 ];

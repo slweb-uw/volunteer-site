@@ -48,9 +48,16 @@ const App: React.FC<{}> = () => {
               variant="h4"
               gutterBottom
             >
-              <pre className={classes.medTitle}>
+              <pre style={{
+                fontSize: "2.3rem",
+                color: "black",
+                fontFamily: "Encode Sans",
+                fontWeight: 800,
+                textTransform: "uppercase",
+                marginBottom: "2px"
+              }}>
               {
-                "UW School of Medicine\nWWAMI/UW Health Sciences"
+                "UW School of Medicine WWAMI&\nUW Health Sciences"
               }
               </pre>
             </Typography>
@@ -62,7 +69,7 @@ const App: React.FC<{}> = () => {
               gutterBottom
               className={classes.sevTitle}
               style={{
-                
+
               }}
             >
               {
@@ -89,7 +96,7 @@ const App: React.FC<{}> = () => {
           </div>
         </div>
       </div>
-      
+
       {/** Cards */}
       <div style={{ textAlign: "center", marginTop: "2em"}}>
         <div
@@ -270,12 +277,11 @@ const App: React.FC<{}> = () => {
             >
               <Typography
                 gutterBottom
-                variant="h4"
-                style={{ fontWeight: 700, paddingBottom: "0", marginBottom: "0", fontFamily: "Encode Sans", textTransform: "uppercase" }}
+                style={{ fontSize: "29px", fontWeight: 700, paddingBottom: "0", marginBottom: "0", fontFamily: "Encode Sans", textTransform: "uppercase" }}
               >
                 Serve With Us
               </Typography>
-              <HeadlineBar color="purple" width={250} height={10}></HeadlineBar>
+              <HeadlineBar color="purple" width={210} height={10}></HeadlineBar>
               <Typography style={{ fontFamily: "Open Sans" }}>
                 Volunteering with our programs is a wonderful way to practice your
                 skills, make a difference in our community and form meaningful
@@ -306,12 +312,11 @@ const App: React.FC<{}> = () => {
             >
               <Typography
                 gutterBottom
-                variant="h4"
-                style={{ fontWeight: 700, paddingBottom: "0", marginBottom: "0", fontFamily: "Encode Sans", textTransform: "uppercase" }}
+                style={{ fontSize: "29px", fontWeight: 700, paddingBottom: "0", marginBottom: "0", fontFamily: "Encode Sans", textTransform: "uppercase" }}
               >
                 About Us
               </Typography>
-              <HeadlineBar color="gold" width={160} height={10}></HeadlineBar>
+              <HeadlineBar color="gold" width={130} height={10}></HeadlineBar>
               <Typography style={{ fontFamily: "Open Sans" }}>
                 The UW School of Medicine's Service Learning program strives to
                 enrich medical education by providing our students with
@@ -362,13 +367,12 @@ const App: React.FC<{}> = () => {
       >
         <Typography
           gutterBottom
-          variant="h4"
-          style={{ fontWeight: 700, marginLeft: "2em", textAlign: "center", fontFamily: "Encode Sans", marginBottom: "0", textTransform: "uppercase" }}
+          style={{ fontSize: "29px", fontWeight: 700, marginLeft: "2em", textAlign: "center", fontFamily: "Encode Sans", marginBottom: "0", textTransform: "uppercase" }}
         >
           Contact
         </Typography>
-        <div style={{ textAlign: "center", marginLeft: "43px" }}>
-          <HeadlineBar color="purple" width={140} height={10}></HeadlineBar>
+        <div style={{ textAlign: "center", marginLeft: "33px" }}>
+          <HeadlineBar color="purple" width={112} height={10}></HeadlineBar>
         </div>
         <Grid container spacing={6} xs={12} sm={12} style={{ marginTop: "2em", display: "flex", justifyContent: "center"}}>
           <Grid item >
@@ -489,7 +493,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     flexDirection: "column",
     height: "100%",
-    margin: "10px", 
+    margin: "10px",
     marginLeft: "4rem",
     "@media only screen and (max-width: 780px)":{
       marginLeft: "1rem"
@@ -540,8 +544,8 @@ const useStyles = makeStyles((theme) => ({
     "@media only screen and (max-width: 780px)":{
       fontSize: "5vw",
     }
-  }, 
-  sevTitle: {   
+  },
+  sevTitle: {
     fontSize: "2rem",
     color: "black",
     fontWeight: 700,
