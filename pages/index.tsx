@@ -80,7 +80,7 @@ const App: React.FC<{}> = () => {
             <Typography
               variant="subtitle1"
               gutterBottom
-              className={classes.description}
+              style={{ display: "flex", fontSize: "3vw", width: "70%", fontFamily: "Open Sans", marginBottom: "20px"}}
             >
               Our program supports 50+ student led service projects throughout the region.
             </Typography>
@@ -252,14 +252,13 @@ const App: React.FC<{}> = () => {
           verticalAlign: "middle",
         }}
       >
-        <Grid container spacing={4}>
+        <Grid container spacing={2}>
           <Grid item xs={12} md={6} lg={4}>
             <div
               style={{
                 marginLeft: "auto",
                 marginRight: "auto",
                 textAlign: "center",
-                width: "100%"
               }}
             >
               <img
@@ -272,16 +271,13 @@ const App: React.FC<{}> = () => {
           <Grid item xs={12} md={6} lg={8}>
             <div
               style={{
-                marginLeft: "4vw",
+                marginLeft: "auto",
                 marginRight: "auto",
-                textAlign: "left",
-                width: "95%"
               }}
             >
               <Typography
                 gutterBottom
-                variant="h4"
-                style={{ fontWeight: 700, paddingBottom: "0", marginBottom: "0", fontFamily: "Encode Sans", textTransform: "uppercase"}}
+                style={{ fontSize: "29px", fontWeight: 700, paddingBottom: "0", marginBottom: "0", fontFamily: "Encode Sans", textTransform: "uppercase" }}
               >
                 Serve With Us
               </Typography>
@@ -371,19 +367,18 @@ const App: React.FC<{}> = () => {
       >
         <Typography
           gutterBottom
-          variant="h4"
-          style={{ fontWeight: 700, textAlign: "center", fontFamily: "Encode Sans", marginBottom: "0", textTransform: "uppercase" }}
+          style={{ fontSize: "29px", fontWeight: 700, marginLeft: "2em", textAlign: "center", fontFamily: "Encode Sans", marginBottom: "0", textTransform: "uppercase" }}
         >
           Contact
         </Typography>
-        <div style={{textAlign:"center", marginRight:"23px"}}>
-          <HeadlineBar color="purple" width={140} height={10}></HeadlineBar>
+        <div style={{ textAlign: "center", marginLeft: "33px" }}>
+          <HeadlineBar color="purple" width={112} height={10}></HeadlineBar>
         </div>
         <Grid container spacing={6} xs={12} sm={12} style={{ marginTop: "2em", display: "flex", justifyContent: "center"}}>
           <Grid item >
             <Grid container direction="column" spacing={3}>
               <Grid item>
-                <Grid container direction="row" spacing={1}>
+                <Grid container direction="row" spacing={4}>
                   <Grid item>
                     <img src="./profile-icon.png" alt="profile icon" />
                   </Grid>
@@ -401,7 +396,7 @@ const App: React.FC<{}> = () => {
                 <Grid
                   container
                   direction="column"
-                  className={classes.contactMenu}
+                  style={{ marginLeft: "5em" }}
                 >
                   <Grid item>
                     <Typography className={classes.contact}><a href="mailto://clarkel@uw.edu">clarkel@uw.edu</a></Typography>
@@ -421,7 +416,7 @@ const App: React.FC<{}> = () => {
           <Grid item>
             <Grid container direction="column" spacing={3}>
               <Grid item>
-                <Grid container direction="row" spacing={1}>
+                <Grid container direction="row" spacing={4}>
                   <Grid item>
                     <img src="./mail-icon.png" alt="mail icon" />
                   </Grid>
@@ -436,7 +431,7 @@ const App: React.FC<{}> = () => {
                 <Grid
                   container
                   direction="column"
-                  className={classes.contactMenu}
+                  style={{ marginLeft: "5em" }}
                 >
                   <Grid item>
                     <Typography className={classes.contact}>1959 NE. Pacific Ave. Suite A-300</Typography>
@@ -557,30 +552,9 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: "Uni Sans Book",
     paddingTop: "12px",
     "@media only screen and (max-width: 780px)":{
-      fontSize: "3vw",
+      fontSize: "4.2vw",
     }
-  },
-  description: {
-    display: "flex",
-    fontSize: "1rem",
-
-    fontFamily: "Open Sans",
-    marginBottom: "20px",
-    "@media only screen and (max-width: 540px)":{
-      fontSize: "2.5vw",
-      width: "35%",
-    },
-    "@media only screen and (min-width: 540px) and (max-width: 960px)":{
-      fontSize: "2vw",
-      width: "50%",
-    }
-  },
-  contactMenu: {
-    marginLeft: "5em",
-    "@media only screen and (max-width: 780px)":{
-      marginLeft: "0",
-    }
-  },
+  }
 }));
 
 export default App;
