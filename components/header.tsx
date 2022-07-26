@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
     "@media only screen and (max-width: 960px)":{
       color: "black",
       margin: "0",
-      padding: "0",
+      padding: "0", 
     }
 
   },
@@ -92,14 +92,14 @@ const Header: React.FC<{}> = (props) => {
     <NavLink key="training" href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569">
       <a className={useStyles().navtitle}>TRAINING</a>
     </NavLink>,
-    <Divider/>,
-    <NavLink key="protocols" href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947">
-      <a className={useStyles().navtitle}>PROTOCOLS</a>
-    </NavLink>,
     //*NOTE: Resources name was changed to Links*/
     <Divider/>,
     <NavLink key="resources" href="/resources">
       <a className={useStyles().navtitle}>LINKS</a>
+    </NavLink>,
+    <Divider/>,
+    <NavLink key="protocols" href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947">
+      <a className={useStyles().navtitle}>PROTOCOLS</a>
     </NavLink>,
     <Divider/>,
     <NavLink key="donations" href="/donations">
@@ -149,7 +149,7 @@ const Header: React.FC<{}> = (props) => {
             alt="University of Washington School of Medicine logo"
             className={useStyles().logo}
             style={{
-
+              
             }}
           />
         </a>

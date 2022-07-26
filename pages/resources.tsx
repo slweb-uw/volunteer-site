@@ -47,12 +47,13 @@ const Resources: NextPage<Props> = ({ classes }) => {
         crumbs = {["Links"]} />
 
       <Typography
-        style={{ fontSize: "29px", fontWeight: 800, paddingBottom: "0", fontFamily: "Encode Sans", textTransform: "uppercase" }}
+        variant="h4"
+        style={{ fontWeight: 800, paddingBottom: "0", fontFamily: "Encode Sans", textTransform: "uppercase" }}
       >
         UW Health Sciences Service Learning Websites
       </Typography>
 
-      <HeadlineBar color="gold" width={765} height={10}></HeadlineBar>
+      <HeadlineBar color="gold" width={850} height={10}></HeadlineBar>
 
       <Accordion
         square

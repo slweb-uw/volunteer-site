@@ -31,6 +31,7 @@ const Footer: React.FC<{}> = () => {
         textAlign: "center",
         paddingTop: "1.5em",
         paddingBottom: "1.5em",
+        marginBottom: "0"
       }}
     >
       <img src="/uw-text-logo.png" alt="University of Washington logo" className={useStyles().logo} />

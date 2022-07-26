@@ -34,7 +34,8 @@ const Donations: NextPage<Props> = ({ classes }) => {
               Consider a Gift to the
             </Typography>
             <Typography
-              style={{ fontSize: "29px", paddingBottom: "0.5rem", fontWeight: 700, fontFamily: "Encode Sans", textTransform: "uppercase" }}
+              variant="h5"
+              style={{ paddingBottom: "0.5rem", fontWeight: 700, fontFamily: "Encode Sans", textTransform: "uppercase" }}
             >
               UW School of Medicine Service Learning Fund
             </Typography>
@@ -64,9 +65,9 @@ const Donations: NextPage<Props> = ({ classes }) => {
                 marginBottom: "2rem",
                 fontWeight: 700,
                 padding: "1rem",
-                fontSize: "1rem",
-                width: "250px",
-                height: "40px",
+                fontSize: "1.4rem",
+                width: "330px",
+                height: "90px",
                 fontFamily: "Encode Sans"
               }}
             >
