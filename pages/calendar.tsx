@@ -14,6 +14,8 @@ import {
   CssBaseline,
   Typography,
   withStyles,
+  Button,
+  Link,
 } from "@material-ui/core";
 import { withSnackbar } from "notistack";
 
@@ -54,6 +56,15 @@ const AddModifyOrdersPage: NextPage<Props> = ({
 
   return (
     <div>
+      <Link href="/opportunities">
+        <Button
+          color="primary"
+          variant="contained"
+          className={classes.backBtn}
+        >
+          Back
+        </Button>
+      </Link>
       <div className={classes.page} 
       style={{display: 'flex',  
       justifyContent:'center',
@@ -73,8 +84,19 @@ const styles = createStyles({
     marginRight: "auto",
     //maxWidth: 1000,
     width: "95%",
-    paddingTop: "2em",
   },
+  backBtn: {
+    width: "100px",
+    marginTop: "2vw",
+    marginLeft: "2vw",
+    marginBottom: "0",
+    fontFamily: "Encode Sans",
+    fontWeight: 800,
+    "&:hover": {
+      color: "#B7A57A",
+      transition: ".25s",
+    }
+  }
 });
 
 //@ts-ignore
