@@ -14,8 +14,6 @@ import {
   CssBaseline,
   Typography,
   withStyles,
-  Button,
-  Link,
 } from "@material-ui/core";
 import { withSnackbar } from "notistack";
 
@@ -56,23 +54,8 @@ const AddModifyOrdersPage: NextPage<Props> = ({
 
   return (
     <div>
-      <Link href="/opportunities">
-        <Button
-          color="primary"
-          variant="contained"
-          className={classes.backBtn}
-        >
-          Back
-        </Button>
-      </Link>
-      <div className={classes.page} 
-      style={{display: 'flex',  
-      justifyContent:'center',
-      alignItems:'center', 
-      height: '105vh'}}>
-        <Iframe url="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;ctz=America%2FLos_Angeles&amp;src=c2x3ZWJAdXcuZWR1&amp;src=ZW4udXNhI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&amp;color=%23039BE5&amp;color=%230B8043" 
-        styles={{ display: "block" }} width="1200vh" height="600vh" scrolling="yes">
-        </Iframe>
+      <div className={classes.page} style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '105vh'}}>
+        <Iframe url="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;ctz=America%2FLos_Angeles&amp;src=c2x3ZWJAdXcuZWR1&amp;src=ZW4udXNhI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&amp;color=%23039BE5&amp;color=%230B8043" styles={{ display: "block" }} width="1800" height="900" scrolling="yes"></Iframe>
       </div>
     </div>
   );
@@ -84,19 +67,8 @@ const styles = createStyles({
     marginRight: "auto",
     //maxWidth: 1000,
     width: "95%",
+    paddingTop: "2em",
   },
-  backBtn: {
-    width: "100px",
-    marginTop: "2vw",
-    marginLeft: "2vw",
-    marginBottom: "0",
-    fontFamily: "Encode Sans",
-    fontWeight: 800,
-    "&:hover": {
-      color: "#B7A57A",
-      transition: ".25s",
-    }
-  }
 });
 
 //@ts-ignore
