@@ -54,8 +54,14 @@ const AddModifyOrdersPage: NextPage<Props> = ({
 
   return (
     <div>
-      <div className={classes.page} style={{display: 'flex',  justifyContent:'center', alignItems:'center', height: '105vh'}}>
-        <Iframe url="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;ctz=America%2FLos_Angeles&amp;src=c2x3ZWJAdXcuZWR1&amp;src=ZW4udXNhI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&amp;color=%23039BE5&amp;color=%230B8043" styles={{ display: "block" }} width="1800" height="900" scrolling="yes"></Iframe>
+      <div className={classes.page} 
+      style={{display: 'flex',  
+      justifyContent:'center',
+      alignItems:'center', 
+      height: '105vh'}}>
+        <Iframe url="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;ctz=America%2FLos_Angeles&amp;src=c2x3ZWJAdXcuZWR1&amp;src=ZW4udXNhI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&amp;color=%23039BE5&amp;color=%230B8043" 
+        styles={{ display: "block" }} width="1200vh" height="600vh" scrolling="yes">
+        </Iframe>
       </div>
     </div>
   );
