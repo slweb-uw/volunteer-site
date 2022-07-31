@@ -59,7 +59,7 @@ const CategoriesOfService: NextPage<Props> = ({ classes }) => {
                 <Typography style = {{fontSize: 24, marginTop: "20px", fontWeight: 700, marginBottom: "0.5em" }}>
                     Advocacy
                 </Typography>
-                    Enter Advocacy information here.
+                    Advocacy projects enhance our understanding of root causes of health disparities. They also develop skills around listening, power analysis, research, and relational development that help students to build power with communities to bring about health equity.
             </Typography>
           </div>
         </Grid>
