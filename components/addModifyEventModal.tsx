@@ -34,7 +34,7 @@ import { firebaseClient } from "firebaseClient";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { DateTimePicker, LocalizationProvider, LoadingButton } from "@mui/lab";
 import { DialogActions } from "@mui/material";
-import RRule, { rrulestr } from "rrule";
+import { rrulestr, RRule } from "rrule";
 import { Guid } from "guid-typescript";
 import EventImage from "./eventImage";
 import Cropper from "react-cropper";
