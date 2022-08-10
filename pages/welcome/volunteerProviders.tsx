@@ -41,6 +41,15 @@ const VolunteerProviders : NextPage<Props> = ({ classes }) => {
                     Having qualified role models is a key component of our service-learning program at the University of Washington.
                     Your participation is greatly appreciated and absolutely necessary.
                 </Typography>
+                <Typography style={{fontWeight: 400, fontSize: 16, fontStyle: "italic", marginTop: "39px", marginBottom: "39px", fontFamily: "Open Sans"}}>
+                “Precepting can help you feel better about yourself and the world. This is one of the greatest positives about precepting. 
+                Taking a few hours to work with totally selfless health sciences students who are searching for ways to help the less fortunate
+                is the best antidote to the COVID blues and political cynicism that I’ve found. It is a joyful experience. Give it a try and see
+                if you don’t agree.”
+                <Typography style={{fontWeight: 700, fontSize: 20, marginTop: "20px", marginLeft: "20px" }}>
+                - Richard Arnold, MD
+                </Typography>
+                </Typography>
             </div>
             <div
             style={{
@@ -50,6 +59,7 @@ const VolunteerProviders : NextPage<Props> = ({ classes }) => {
               marginTop: "1em",
             }}
           >
+
             <Typography style = {{fontSize: 16}}>
                 <Typography style = {{fontSize: 24, marginTop: "20px", fontWeight: 700, marginBottom: "0.5em", fontFamily: "Uni Sans Book"}}>
                     Volunteer Provider Role
@@ -69,7 +79,7 @@ const VolunteerProviders : NextPage<Props> = ({ classes }) => {
                     health care to begin with. Service learning can help. It gives us a chance to serve the less fortunate in our communities, identifying their inherent
                     strengths, building on those. Service learning gives trainees real life opportunities to utilize the knowledge gained through course work and both actualize
                     and reflect on our values. Scratch that itch to do something positive in the world!
-                <Typography style = {{fontSize: 24, marginTop: "20px", fontWeight: 700, marginBottom: "0.5em", fontFamily: "Uni Sans Book" }}>
+                <Typography style = {{fontSize: 24, marginTop: "20px", fontWeight: 700, marginBottom: "0.5em", fontFamily: "Open Sans"}}>
                   Links
                     <ul>
                         <li><Link href="../onboarding">Onboarding</Link></li>

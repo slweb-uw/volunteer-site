@@ -65,13 +65,13 @@ const Donations: NextPage<Props> = ({ classes }) => {
                 marginBottom: "2rem",
                 fontWeight: 700,
                 padding: "1rem",
-                fontSize: "1.4rem",
+                fontSize: 16,
                 width: "330px",
                 height: "90px",
                 fontFamily: "Encode Sans"
               }}
             >
-              Make a Gift Today! {">"}{" "}
+              Make a Gift Today! {" "}
             </Button>
           </div>
         </Grid>

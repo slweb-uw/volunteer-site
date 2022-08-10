@@ -48,7 +48,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
 
       <Typography
         variant="h4"
-        style={{ fontWeight: 800, paddingBottom: "0", fontFamily: "Encode Sans", textTransform: "uppercase" }}
+        style={{ fontSize: "1.5rem", fontWeight: 800, fontFamily: "Encode Sans", textTransform: "uppercase" }}
       >
         UW Health Sciences Service Learning Websites
       </Typography>

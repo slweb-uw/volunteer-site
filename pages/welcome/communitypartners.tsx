@@ -27,7 +27,7 @@ const Communitypartners: NextPage<Props> = ({ classes }) => {
         variant='h4'
         style={{ fontFamily: "Encode Sans", fontWeight: 800 }}
       >
-        WELCOME COMMUNITY PARTNERS!
+        Welcome Community Partners!
       </Typography>
       <img src={"../goldbar.png"} style={{ width: "600px", height: "10px", marginBottom: "30px" }}/>
       <Grid container spacing={2}>
@@ -60,14 +60,12 @@ const Communitypartners: NextPage<Props> = ({ classes }) => {
               width: "80%"
             }}
           >
-            <Typography style = {{fontSize: 20}}>
+            <Typography style = {{fontSize: 16}}>
               Thank you for your interest in the University of Washington School of Medicine and Health Sciences
               Service Learning Program! Our mission is to provide ways for our students to connect with and serve
-              our local communities. You might see our students involved in a{" "}
-              <a href='/resources'>variety of activities</a>
-              {" "}such as health screenings,
+              our local communities. You might see our students involved in a variety of activities such as health screenings,
               vaccination clinics, health education programs or street outreach.
-              <Typography style = {{fontSize: 20, marginTop: "20px" }}>
+              <Typography style = {{fontSize: 16, marginTop: "20px" }}>
                 To learn more about what students are working on now,{" "}
                 <a href='/donations'>click here</a>.
                 {" "}If you have an idea for a future program,
@@ -76,17 +74,6 @@ const Communitypartners: NextPage<Props> = ({ classes }) => {
               </Typography>
             </Typography>
           </div>
-        </Grid>
-        <Grid item xs={12} md={6} lg={8}>
-            <Typography style={{fontWeight: 400, fontSize: 16, fontStyle: "italic", marginTop: "39px", marginBottom: "39px", fontFamily: "Open Sans"}}>
-                “Precepting can help you feel better about yourself and the world. This is one of the greatest positives about precepting. 
-                Taking a few hours to work with totally selfless health sciences students who are searching for ways to help the less fortunate
-                is the best antidote to the COVID blues and political cynicism that I’ve found. It is a joyful experience. Give it a try and see
-                if you don’t agree.”
-                <Typography style={{fontWeight: 700, fontSize: 20, marginTop: "20px", marginLeft: "20px" }}>
-                - Richard Arnold, MD
-                </Typography>
-            </Typography>
         </Grid>
       </Grid>
     </div>

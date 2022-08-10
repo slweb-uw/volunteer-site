@@ -264,7 +264,7 @@ const App: React.FC<{}> = () => {
           <Grid item xs={12} md={6} lg={8}>
             <div
               style={{
-                marginLeft: "auto",
+                marginLeft: 50,
                 marginRight: "auto",
               }}
             >
@@ -276,7 +276,7 @@ const App: React.FC<{}> = () => {
                 Serve With Us
               </Typography>
               <HeadlineBar color="purple" width={250} height={10}></HeadlineBar>
-              <Typography style={{ fontFamily: "Open Sans" }}>
+              <Typography style={{ fontFamily: "Open Sans"}}>
                 Volunteering with our programs is a wonderful way to practice your
                 skills, make a difference in our community and form meaningful
                 connections. We invite you to explore our opportunities for providers

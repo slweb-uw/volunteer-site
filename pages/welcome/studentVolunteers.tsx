@@ -41,11 +41,11 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
               marginTop: "1em",
             }}
           >
-            <Typography style = {{fontSize: 16}}>
+            <Typography style = {{fontSize: 16, fontFamily: "Open Sans"}}>
             Thank you for your interest in volunteering to serve our communities! Sometimes we can get
             so caught up in our studies that we lose track of the reasons why we went into health care
             to begin with. Service learning can help.
-              <Typography style = {{fontSize: 16, marginTop: "20px" }}>
+              <Typography style = {{fontSize: 16, marginTop: "20px", fontFamily: "Open Sans" }}>
                 <ul>
                     <li>Take advantage of real-life opportunities to get involved!</li> {/* LINK TO Find Opportunities PAGE */}
                     <li>Utilize the skills that you are gaining in the classroom to actualize your values!</li>
