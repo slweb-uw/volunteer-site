@@ -41,41 +41,37 @@ const App: React.FC<{}> = () => {
         <div className={classes.background}>
           <div className={classes.triangletop}></div>
           <div className={classes.trianglebottom}></div>
-          <div
-            className={classes.text}
-          >
-            <Typography
-              variant="h4"
-              gutterBottom
-            >
+          <div className={classes.text}>
+            <Typography variant="h4" gutterBottom>
               <pre className={classes.medTitle}>
-              {
-                "UW School of Medicine\nWWAMI/UW Health Sciences"
-              }
+                {"UW School of Medicine\nWWAMI/UW Health Sciences"}
               </pre>
             </Typography>
 
-            <HeadlineBar color="purple" width={680} height={20} ></HeadlineBar>
+            <HeadlineBar color="purple" width={680} height={20}></HeadlineBar>
 
             <Typography
               variant="h5"
               gutterBottom
               className={classes.sevTitle}
-              style={{
-                
-              }}
+              style={{}}
             >
-              {
-                "SERVICE LEARNING"
-              }
+              {"SERVICE LEARNING"}
             </Typography>
 
             <Typography
               variant="subtitle1"
               gutterBottom
-              style={{ display: "flex", fontSize: "3vw", width: "70%", fontFamily: "Open Sans", marginBottom: "20px"}}
+              style={{
+                display: "flex",
+                fontSize: "1rem",
+                width: "70%",
+                fontFamily: "Open Sans",
+                marginBottom: "20px",
+              }}
             >
-              Our program supports 50+ student led service projects throughout the region.
+              Our program supports 50+ student led service projects throughout
+              the region.
             </Typography>
             <Link href="/opportunities">
               <Button
@@ -89,9 +85,9 @@ const App: React.FC<{}> = () => {
           </div>
         </div>
       </div>
-      
+
       {/** Cards */}
-      <div style={{ textAlign: "center", marginTop: "2em"}}>
+      <div style={{ textAlign: "center", marginTop: "2em" }}>
         <div
           style={{
             width: "100%",
@@ -99,7 +95,7 @@ const App: React.FC<{}> = () => {
             flexWrap: "wrap",
             justifyContent: "center",
             columnGap: "5%",
-            textAlign: "center"
+            textAlign: "center",
           }}
         >
           <div
@@ -109,11 +105,25 @@ const App: React.FC<{}> = () => {
               alignItems: "center",
             }}
           >
-            <Typography style={{ fontSize: "1.5rem", fontWeight: 800, fontFamily: "Encode Sans", textTransform: "uppercase" }}>
+            <Typography
+              style={{
+                fontSize: "1.5rem",
+                fontWeight: 800,
+                fontFamily: "Encode Sans",
+                textTransform: "uppercase",
+              }}
+            >
               Students
             </Typography>
 
-            <div style={{ position: "absolute", marginBottom: "0", marginTop: "32px", marginRight: "12px" }}>
+            <div
+              style={{
+                position: "absolute",
+                marginBottom: "0",
+                marginTop: "32px",
+                marginRight: "12px",
+              }}
+            >
               <HeadlineBar color="gold" width={120} height={10}></HeadlineBar>
             </div>
 
@@ -127,20 +137,48 @@ const App: React.FC<{}> = () => {
                 style={{ height: "200px", width: "301px" }}
                 alt="Student volunteers"
               ></CardMedia>
-              <CardActionArea href="/welcome/studentVolunteers" className={classes.cardhover}>
+              <CardActionArea
+                href="/welcome/studentVolunteers"
+                className={classes.cardhover}
+              >
                 <CardContent>
                   <div className={classes.cardlinks}>
-                    <Typography className={classes.cardtitle}>Welcome</Typography>
-                    <Typography><ArrowForwardIos style={{fontSize: "1em", color: "#4B2E83"}}/></Typography>
+                    <Typography className={classes.cardtitle}>
+                      Welcome
+                    </Typography>
+                    <Typography>
+                      <ArrowForwardIos
+                        style={{ fontSize: "1em", color: "#4B2E83" }}
+                      />
+                    </Typography>
                   </div>
                 </CardContent>
               </CardActionArea>
-              <hr style={{border: ".2px solid #E5E5E5", width:"100%", margin:"0"}}></hr>
-              <CardActionArea href="/opportunities" style={{backgroundColor: "#4B2E83", color: "#ffffff"}} className={classes.cardhover}>
+              <hr
+                style={{
+                  border: ".2px solid #E5E5E5",
+                  width: "100%",
+                  margin: "0",
+                }}
+              ></hr>
+              <CardActionArea
+                href="/opportunities"
+                style={{ backgroundColor: "#4B2E83", color: "#ffffff" }}
+                className={classes.cardhover}
+              >
                 <CardContent>
                   <div className={classes.cardlinks}>
-                    <Typography className={classes.cardtitle} style={{color: "#ffffff"}}>Find Opportunities</Typography>
-                    <Typography><ArrowForwardIos style={{fontSize: "1em", color: "#ffffff"}}/></Typography>
+                    <Typography
+                      className={classes.cardtitle}
+                      style={{ color: "#ffffff" }}
+                    >
+                      Find Opportunities
+                    </Typography>
+                    <Typography>
+                      <ArrowForwardIos
+                        style={{ fontSize: "1em", color: "#ffffff" }}
+                      />
+                    </Typography>
                   </div>
                 </CardContent>
               </CardActionArea>
@@ -153,11 +191,25 @@ const App: React.FC<{}> = () => {
               alignItems: "center",
             }}
           >
-            <Typography style={{ fontSize: "1.5rem", fontWeight: 700, fontFamily: "Encode Sans", textTransform: "uppercase" }}>
+            <Typography
+              style={{
+                fontSize: "1.5rem",
+                fontWeight: 700,
+                fontFamily: "Encode Sans",
+                textTransform: "uppercase",
+              }}
+            >
               Volunteer Providers
             </Typography>
 
-            <div style={{ position: "absolute", marginBottom: "0", marginTop: "32px", marginRight: "20px" }}>
+            <div
+              style={{
+                position: "absolute",
+                marginBottom: "0",
+                marginTop: "32px",
+                marginRight: "20px",
+              }}
+            >
               <HeadlineBar color="gold" width={280} height={10}></HeadlineBar>
             </div>
 
@@ -168,32 +220,72 @@ const App: React.FC<{}> = () => {
               <CardMedia
                 component="img"
                 src="./volunteerProviders.jpg"
-                style={{ height: "200px", width: "301px", objectFit: "cover"}}
+                style={{ height: "200px", width: "301px", objectFit: "cover" }}
                 alt="University District Street Medicine volunteers"
               ></CardMedia>
-              <CardActionArea href="/welcome/volunteerProviders" className={classes.cardhover}>
+              <CardActionArea
+                href="/welcome/volunteerProviders"
+                className={classes.cardhover}
+              >
                 <CardContent>
                   <div className={classes.cardlinks}>
-                    <Typography className={classes.cardtitle}>Welcome</Typography>
-                    <Typography><ArrowForwardIos style={{fontSize: "1em", color: "#4B2E83"}}/></Typography>
+                    <Typography className={classes.cardtitle}>
+                      Welcome
+                    </Typography>
+                    <Typography>
+                      <ArrowForwardIos
+                        style={{ fontSize: "1em", color: "#4B2E83" }}
+                      />
+                    </Typography>
                   </div>
                 </CardContent>
               </CardActionArea>
-              <hr style={{border: ".2px solid #E5E5E5", width:"100%", margin:"0"}}></hr>
+              <hr
+                style={{
+                  border: ".2px solid #E5E5E5",
+                  width: "100%",
+                  margin: "0",
+                }}
+              ></hr>
               <CardActionArea href="/onboarding" className={classes.cardhover}>
                 <CardContent>
                   <div className={classes.cardlinks}>
-                    <Typography className={classes.cardtitle}>Onboarding</Typography>
-                    <Typography><ArrowForwardIos style={{fontSize: "1em", color: "#4B2E83"}}/></Typography>
+                    <Typography className={classes.cardtitle}>
+                      Onboarding
+                    </Typography>
+                    <Typography>
+                      <ArrowForwardIos
+                        style={{ fontSize: "1em", color: "#4B2E83" }}
+                      />
+                    </Typography>
                   </div>
                 </CardContent>
               </CardActionArea>
-              <hr style={{border: ".2px solid #E5E5E5", width:"100%", margin:"0"}}></hr>
-              <CardActionArea href="/opportunities" style={{backgroundColor: "#4B2E83", color: "#ffffff"}} className={classes.cardhover}>
+              <hr
+                style={{
+                  border: ".2px solid #E5E5E5",
+                  width: "100%",
+                  margin: "0",
+                }}
+              ></hr>
+              <CardActionArea
+                href="/opportunities"
+                style={{ backgroundColor: "#4B2E83", color: "#ffffff" }}
+                className={classes.cardhover}
+              >
                 <CardContent>
                   <div className={classes.cardlinks}>
-                  <Typography className={classes.cardtitle} style={{color: "#ffffff"}}>Find Opportunities</Typography>
-                    <Typography><ArrowForwardIos style={{fontSize: "1em", color: "#ffffff"}}/></Typography>
+                    <Typography
+                      className={classes.cardtitle}
+                      style={{ color: "#ffffff" }}
+                    >
+                      Find Opportunities
+                    </Typography>
+                    <Typography>
+                      <ArrowForwardIos
+                        style={{ fontSize: "1em", color: "#ffffff" }}
+                      />
+                    </Typography>
                   </div>
                 </CardContent>
               </CardActionArea>
@@ -206,11 +298,25 @@ const App: React.FC<{}> = () => {
               alignItems: "center",
             }}
           >
-            <Typography style={{ fontSize: "1.5rem", fontWeight: 700, fontFamily: "Encode Sans", textTransform: "uppercase" }}>
+            <Typography
+              style={{
+                fontSize: "1.5rem",
+                fontWeight: 700,
+                fontFamily: "Encode Sans",
+                textTransform: "uppercase",
+              }}
+            >
               Community Partners
             </Typography>
 
-            <div style={{ position: "absolute", marginBottom: "0", marginTop: "32px", marginRight: "18px" }}>
+            <div
+              style={{
+                position: "absolute",
+                marginBottom: "0",
+                marginTop: "32px",
+                marginRight: "18px",
+              }}
+            >
               <HeadlineBar color="gold" width={275} height={10}></HeadlineBar>
             </div>
 
@@ -224,12 +330,27 @@ const App: React.FC<{}> = () => {
                 style={{ height: "200px", width: "301px" }}
                 alt="Two hands shaking"
               ></CardMedia>
-              <hr style={{border: ".2px solid #E5E5E5", width:"100%", margin:"0"}}></hr>
-              <CardActionArea href="/welcome/communitypartners" className={classes.cardhover}>
+              <hr
+                style={{
+                  border: ".2px solid #E5E5E5",
+                  width: "100%",
+                  margin: "0",
+                }}
+              ></hr>
+              <CardActionArea
+                href="/welcome/communitypartners"
+                className={classes.cardhover}
+              >
                 <CardContent>
                   <div className={classes.cardlinks}>
-                    <Typography className={classes.cardtitle}>Become a Partner</Typography>
-                    <Typography><ArrowForwardIos style={{fontSize: "1em", color: "#4B2E83"}}/></Typography>
+                    <Typography className={classes.cardtitle}>
+                      Become a Partner
+                    </Typography>
+                    <Typography>
+                      <ArrowForwardIos
+                        style={{ fontSize: "1em", color: "#4B2E83" }}
+                      />
+                    </Typography>
                   </div>
                 </CardContent>
               </CardActionArea>
@@ -271,18 +392,25 @@ const App: React.FC<{}> = () => {
               <Typography
                 gutterBottom
                 variant="h4"
-                style={{ fontWeight: 700, paddingBottom: "0", marginBottom: "0", fontFamily: "Encode Sans", textTransform: "uppercase" }}
+                style={{
+                  fontWeight: 700,
+                  paddingBottom: "0",
+                  marginBottom: "0",
+                  fontFamily: "Encode Sans",
+                  textTransform: "uppercase",
+                }}
               >
                 Serve With Us
               </Typography>
               <HeadlineBar color="purple" width={250} height={10}></HeadlineBar>
-              <Typography style={{ fontFamily: "Open Sans"}}>
-                Volunteering with our programs is a wonderful way to practice your
-                skills, make a difference in our community and form meaningful
-                connections. We invite you to explore our opportunities for providers
-                and students alike. We are very flexible and try to make it easy to work
-                around busy schedules. There is no required hourly commitment. Simply
-                sign up when you have the time!
+              <Typography style={{ fontFamily: "Open Sans" }}>
+                Volunteering with our programs is a wonderful way to practice
+                your skills, make a difference in our community and form
+                meaningful connections. We invite you to explore our
+                opportunities for providers and students alike. We are very
+                flexible and try to make it easy to work around busy schedules.
+                There is no required hourly commitment. Simply sign up when you
+                have the time!
               </Typography>
             </div>
           </Grid>
@@ -307,7 +435,13 @@ const App: React.FC<{}> = () => {
               <Typography
                 gutterBottom
                 variant="h4"
-                style={{ fontWeight: 700, paddingBottom: "0", marginBottom: "0", fontFamily: "Encode Sans", textTransform: "uppercase" }}
+                style={{
+                  fontWeight: 700,
+                  paddingBottom: "0",
+                  marginBottom: "0",
+                  fontFamily: "Encode Sans",
+                  textTransform: "uppercase",
+                }}
               >
                 About Us
               </Typography>
@@ -363,15 +497,32 @@ const App: React.FC<{}> = () => {
         <Typography
           gutterBottom
           variant="h4"
-          style={{ fontWeight: 700, marginLeft: "2em", textAlign: "center", fontFamily: "Encode Sans", marginBottom: "0", textTransform: "uppercase" }}
+          style={{
+            fontWeight: 700,
+            marginLeft: "2em",
+            textAlign: "center",
+            fontFamily: "Encode Sans",
+            marginBottom: "0",
+            textTransform: "uppercase",
+          }}
         >
           Contact
         </Typography>
         <div style={{ textAlign: "center", marginLeft: "43px" }}>
           <HeadlineBar color="purple" width={140} height={10}></HeadlineBar>
         </div>
-        <Grid container spacing={6} xs={12} sm={12} style={{ marginTop: "2em", display: "flex", justifyContent: "center"}}>
-          <Grid item >
+        <Grid
+          container
+          spacing={6}
+          xs={12}
+          sm={12}
+          style={{
+            marginTop: "2em",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Grid item>
             <Grid container direction="column" spacing={3}>
               <Grid item>
                 <Grid container direction="row" spacing={4}>
@@ -379,10 +530,20 @@ const App: React.FC<{}> = () => {
                     <img src="./profile-icon.png" alt="profile icon" />
                   </Grid>
                   <Grid item>
-                    <Typography style={{ fontSize: "1.2rem", fontFamily: "Uni Sans Book" }}>
+                    <Typography
+                      style={{
+                        fontSize: "1.2rem",
+                        fontFamily: "Uni Sans Book",
+                      }}
+                    >
                       Leonora Clarke, Service Learning Manager
                     </Typography>
-                    <Typography style={{ fontSize: "1.2rem", fontFamily: "Uni Sans Book"}}>
+                    <Typography
+                      style={{
+                        fontSize: "1.2rem",
+                        fontFamily: "Uni Sans Book",
+                      }}
+                    >
                       UW School of Medicine
                     </Typography>
                   </Grid>
@@ -395,10 +556,14 @@ const App: React.FC<{}> = () => {
                   style={{ marginLeft: "5em" }}
                 >
                   <Grid item>
-                    <Typography className={classes.contact}><a href="mailto://clarkel@uw.edu">clarkel@uw.edu</a></Typography>
+                    <Typography className={classes.contact}>
+                      <a href="mailto://clarkel@uw.edu">clarkel@uw.edu</a>
+                    </Typography>
                   </Grid>
                   <Grid item>
-                    <Typography className={classes.contact}>206-685-2009</Typography>
+                    <Typography className={classes.contact}>
+                      206-685-2009
+                    </Typography>
                   </Grid>
                   <Grid item>
                     <Typography className={classes.contact}>
@@ -417,7 +582,12 @@ const App: React.FC<{}> = () => {
                     <img src="./mail-icon.png" alt="mail icon" />
                   </Grid>
                   <Grid item>
-                    <Typography style={{ fontSize: "1.2rem", fontFamily: "Uni Sans Book" }}>
+                    <Typography
+                      style={{
+                        fontSize: "1.2rem",
+                        fontFamily: "Uni Sans Book",
+                      }}
+                    >
                       Mailing Address
                     </Typography>
                   </Grid>
@@ -430,13 +600,19 @@ const App: React.FC<{}> = () => {
                   style={{ marginLeft: "5em" }}
                 >
                   <Grid item>
-                    <Typography className={classes.contact}>1959 NE. Pacific Ave. Suite A-300</Typography>
+                    <Typography className={classes.contact}>
+                      1959 NE. Pacific Ave. Suite A-300
+                    </Typography>
                   </Grid>
                   <Grid item>
-                    <Typography className={classes.contact}>Box 356340</Typography>
+                    <Typography className={classes.contact}>
+                      Box 356340
+                    </Typography>
                   </Grid>
                   <Grid item>
-                    <Typography className={classes.contact}>Seattle, WA 98195</Typography>
+                    <Typography className={classes.contact}>
+                      Seattle, WA 98195
+                    </Typography>
                   </Grid>
                 </Grid>
               </Grid>
@@ -447,7 +623,6 @@ const App: React.FC<{}> = () => {
     </div>
   );
 };
-
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -489,11 +664,11 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     flexDirection: "column",
     height: "100%",
-    margin: "10px", 
+    margin: "10px",
     marginLeft: "4rem",
-    "@media only screen and (max-width: 780px)":{
-      marginLeft: "1rem"
-    }
+    "@media only screen and (max-width: 780px)": {
+      marginLeft: "1rem",
+    },
   },
   cardlinks: {
     display: "flex",
@@ -504,7 +679,7 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       opacity: "60%",
       transition: "all .25s ease",
-      textDecoration: "underline"
+      textDecoration: "underline",
     },
   },
   cardtitle: {
@@ -520,15 +695,15 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       color: "#B7A57A",
       transition: ".25s",
-    }
+    },
   },
   img: {
     width: "25em",
     borderRadius: "10px",
-    "@media only screen and (max-width: 600px)":{
+    "@media only screen and (max-width: 600px)": {
       display: "block",
       width: "100%",
-    }
+    },
   },
   medTitle: {
     fontSize: "2.5rem",
@@ -537,20 +712,20 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 800,
     textTransform: "uppercase",
     marginBottom: "2px",
-    "@media only screen and (max-width: 780px)":{
+    "@media only screen and (max-width: 780px)": {
       fontSize: "5vw",
-    }
-  }, 
-  sevTitle: {   
+    },
+  },
+  sevTitle: {
     fontSize: "2rem",
     color: "black",
     fontWeight: 700,
     fontFamily: "Uni Sans Book",
     paddingTop: "12px",
-    "@media only screen and (max-width: 780px)":{
+    "@media only screen and (max-width: 780px)": {
       fontSize: "4.2vw",
-    }
-  }
+    },
+  },
 }));
 
 export default App;
