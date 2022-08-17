@@ -74,7 +74,7 @@ const Communitypartners: NextPage<Props> = ({ classes }) => {
               clinics, health education programs or street outreach.
               <Typography style={{ fontSize: 16, marginTop: "20px" }}>
                 To learn more about what students are working on now,{" "}
-                <a href="/donations">click here</a>. If you have an idea for a
+                <a href="/opportunities">click here</a>. If you have an idea for a
                 future program, please contact Leonora Clarke,{" "}
                 <a href="mailto://clarkel@uw.edu">clarkel@uw.edu</a>.
               </Typography>
