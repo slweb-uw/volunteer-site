@@ -42,9 +42,14 @@ const App: React.FC<{}> = () => {
           <div className={classes.triangletop}></div>
           <div className={classes.trianglebottom}></div>
           <div className={classes.text}>
-            <Typography variant="h4" gutterBottom>
-              <pre className={classes.medTitle}>
-                {"UW School of Medicine\nWWAMI/UW Health Sciences"}
+            <Typography 
+            variant="h4" 
+            gutterBottom
+            >
+              <pre className={classes.topTitle}>
+                {"SERVICE LEARNING & \nCOMMUNITY ENGAGEMENT"
+
+                }
               </pre>
             </Typography>
 
@@ -53,10 +58,9 @@ const App: React.FC<{}> = () => {
             <Typography
               variant="h5"
               gutterBottom
-              className={classes.sevTitle}
-              style={{}}
+              className={classes.bottomTitle}
             >
-              {"SERVICE LEARNING"}
+              {"UW School of Medicine/WWAMI \nUW Health Sciences"}
             </Typography>
 
             <Typography
@@ -705,7 +709,7 @@ const useStyles = makeStyles((theme) => ({
       width: "100%",
     },
   },
-  medTitle: {
+  topTitle: {
     fontSize: "2.5rem",
     color: "black",
     fontFamily: "Encode Sans",
@@ -716,14 +720,13 @@ const useStyles = makeStyles((theme) => ({
       fontSize: "5vw",
     },
   },
-  sevTitle: {
+  bottomTitle: {
     fontSize: "2rem",
     color: "black",
     fontWeight: 700,
     fontFamily: "Uni Sans Book",
-    paddingTop: "12px",
     "@media only screen and (max-width: 780px)": {
-      fontSize: "4.2vw",
+      fontSize: "3.5vw",
     },
   },
 }));
