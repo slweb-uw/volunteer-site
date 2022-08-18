@@ -58,21 +58,16 @@ const App: React.FC<{}> = () => {
             <Typography
               variant="h5"
               gutterBottom
-              className={classes.bottomTitle}
             >
-              {"UW School of Medicine/WWAMI \nUW Health Sciences"}
+              <pre className={classes.bottomTitle}>
+                {"UW School of Medicine/WWAMI\nUW Health Sciences"}
+              </pre>
             </Typography>
 
             <Typography
               variant="subtitle1"
               gutterBottom
-              style={{
-                display: "flex",
-                fontSize: "1rem",
-                width: "70%",
-                fontFamily: "Open Sans",
-                marginBottom: "20px",
-              }}
+              className={classes.description}
             >
               Our program supports 50+ student led service projects throughout
               the region.
@@ -723,12 +718,26 @@ const useStyles = makeStyles((theme) => ({
   bottomTitle: {
     fontSize: "2rem",
     color: "black",
-    fontWeight: 700,
-    fontFamily: "Uni Sans Book",
+    fontWeight: 800,
+    marginTop: "0",
+    marginBottom: "0",
+    fontFamily: "Encode Sans Compressed, sans-serif",
     "@media only screen and (max-width: 780px)": {
       fontSize: "3.5vw",
     },
   },
+  description: {
+      display: "inline flex",
+      fontSize: "1rem",
+      maxWidth: "70%",
+      overflow: "auto",
+      fontFamily: "Open Sans",
+      marginBottom: "20px",
+      "@media only screen and (max-width: 430px)": {
+        fontSize: "3vw",
+        width: "50%"
+      },
+  }
 }));
 
 export default App;
