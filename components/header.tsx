@@ -13,13 +13,15 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#4B2E83",
     padding: "1em",
     width: "100%",
+    height: "3.75rem",
+    paddingTop: "5px",
+    paddingBottom: "0",
     justifyContent: "space-between",
     alignContent: "flex-end",
     alignItems: "flex-start",
     [theme.breakpoints.up("md")]: {
       justifyContent: "space-between",
     },
-    paddingBottom: "0px",
     fontFamily: "initial",
     fontWeight: "initial",
     lineHeight: "initial",
@@ -28,7 +30,9 @@ const useStyles = makeStyles((theme) => ({
   navtitle: {
     fontFamily: "Encode Sans",
     fontWeight: 600,
+    fontSize: "14px",
     color: "white",
+    textAlign: "center",
     textDecoration: "none",
     margin: "1em",
     paddingBottom: "5px",
@@ -48,19 +52,19 @@ const useStyles = makeStyles((theme) => ({
       margin: "0",
       padding: "0", 
     }
-
   },
   logo: {
     position: "relative",
     cursor: "pointer",
     width: "25em",
     minWidth: 5,
-    paddingBottom: "10px",
     paddingLeft: "10px",
     paddingTop: "5px",
-    marginBottom: "10px",
-    "@media only screen and (max-width: 960px)":{
-      width: "90%",
+    "@media only screen and (max-width: 480px)":{
+      maxHeight: "100%",
+      paddingLeft: "0",
+      marginLeft: "0",
+      width: "80vw"
     }
   },
   divider:{
@@ -148,9 +152,6 @@ const Header: React.FC<{}> = (props) => {
             src="/header-logo.png"
             alt="University of Washington School of Medicine logo"
             className={useStyles().logo}
-            style={{
-              
-            }}
           />
         </a>
       </Link>

@@ -4,9 +4,8 @@ import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
   logo:{
-    width: "500px", 
+    width: "25rem", 
     height: "auto", 
-    marginBottom: "12px",
     "@media only screen and (max-width: 960px)":{
       width: "90%", 
       marginBottom: "1%"
@@ -16,23 +15,25 @@ const useStyles = makeStyles((theme) => ({
     color: "white", 
     marginTop: "0.5em", 
     fontFamily: "Open Sans",
+    fontSize: "14px",
     "@media only screen and (max-width: 600px)":{
       fontSize: "12px"
     }
+  }, 
+  footer: {
+    backgroundColor: "#4B2E83",
+    width: "100%",
+    textAlign: "center",
+    paddingTop: "1em",
+    paddingBottom: "0.5em",
+    marginBottom: "0"
   }
 }));
 
 const Footer: React.FC<{}> = () => {
   return (
     <footer
-      style={{
-        backgroundColor: "#4B2E83",
-        width: "100%",
-        textAlign: "center",
-        paddingTop: "1.5em",
-        paddingBottom: "1.5em",
-        marginBottom: "0"
-      }}
+      className={useStyles().footer}
     >
       <img src="/uw-text-logo.png" alt="University of Washington logo" className={useStyles().logo} />
       <Typography className={useStyles().text} gutterBottom>
