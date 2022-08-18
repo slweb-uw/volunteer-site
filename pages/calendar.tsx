@@ -53,9 +53,8 @@ const AddModifyOrdersPage: NextPage<Props> = ({
   //useEffect(() => {
     //firebaseClient.analytics().logEvent("calendar_page_visit");
   //})
-
   return (
-    <div>
+    <div >
       <Link href="/opportunities">
         <Button
           color="primary"
@@ -65,14 +64,9 @@ const AddModifyOrdersPage: NextPage<Props> = ({
           Back
         </Button>
       </Link>
-      <div className={classes.page} 
-      style={{display: 'flex',  
-      justifyContent:'center',
-      alignItems:'center', 
-      height: '105vh',
-      }}>
+      <div className={classes.calendar}>
         <Iframe url="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;ctz=America%2FLos_Angeles&amp;src=c2x3ZWJAdXcuZWR1&amp;src=ZW4udXNhI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&amp;color=%23039BE5&amp;color=%230B8043" 
-        styles={{ display: "block" }} width="1200vh" height="600vh" scrolling="yes">
+        styles={{ display: "block" }} width="1800vh" height="800vh" scrolling="yes">
         </Iframe>
       </div>
     </div>
@@ -80,17 +74,21 @@ const AddModifyOrdersPage: NextPage<Props> = ({
 };
 
 const styles = createStyles({
-  page: {
+  calendar: {
+    display: 'flex',  
+    justifyContent:'center',
+    alignItems:'center',
+    maxHeight: '100%',
+    width: "95%",
     marginLeft: "auto",
     marginRight: "auto",
-    //maxWidth: 1000,
-    width: "95%",
+    marginBottom: "2rem",
+    marginTop: "1.5rem",
   },
   backBtn: {
     width: "100px",
-    marginTop: "2vw",
+    marginTop: "1.5rem",
     marginLeft: "2.5vw",
-    marginBottom: "0",
     fontFamily: "Encode Sans",
     fontWeight: 800,
     "&:hover": {

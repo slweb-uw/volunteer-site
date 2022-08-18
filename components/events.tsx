@@ -77,7 +77,6 @@ const Events: React.FC<EventsProps> = ({
   const [adminModalOpen, setAdminModalOpen] = useState<boolean>(false);
   const [selectedEvent, setSelectedEvent] = useState<EventData>();
   const [sortField, setSortField] = useState<string>("Title");
-  const [topMessage, setTopMessage] = useState<any>();
 
   const isProviderView = studentTypeFilter === "Providers";
   const setProviderView = (enabled: boolean) => {
@@ -99,27 +98,6 @@ const Events: React.FC<EventsProps> = ({
       .get()
       .then((doc) => setOrganizations(Object.keys(doc.data() as string[]).sort()));
   }, [location]);
-
-  // Adjusts state depending on whether provider view is on
-  useEffect(() => {
-    if (isProviderView) {
-      setTopMessage(
-        <Link href={ "/onboarding/" }>
-          <a style={{ color: "#85754D" }}>
-            Onboarding Instructions
-          </a>
-        </Link>
-      )
-    } else {
-      setTopMessage(
-          <a href={ "https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569" } 
-             style={{ color: "#85754D" }}
-             target="_blank">
-            Training Instructions
-          </a>
-      )
-    }
-  }, [isProviderView])
 
   const getOrder = (curSort: string) => {
     return curSort === "timestamp" ? "desc" : "asc";
@@ -285,11 +263,7 @@ const Events: React.FC<EventsProps> = ({
       </div>
 
       <Typography variant="h6" style={{ textAlign: "center", marginBottom: "3em", color: "#85754D" }}>
-        <b>Note:</b> Please review our{" "}
-        <i>
-        { topMessage }
-        </i>{" "}
-        before signing up for an opportunity.
+        <b>Note:</b> Please review project specific training requirements before signing up for an opportunity.
       </Typography>
 
       {/* Button-Modal Module for adding new events */}
