@@ -357,12 +357,12 @@ const App: React.FC<{}> = () => {
           </div>
         </div>
       </div>
+
       {/** Serve With Us section*/}
       <div
+        className={useStyles().mobile}
         style={{
           backgroundColor: "#E8E3D3",
-          padding: "5em",
-          verticalAlign: "middle",
         }}
       >
         <Grid container spacing={2}>
@@ -384,8 +384,9 @@ const App: React.FC<{}> = () => {
           <Grid item xs={12} md={6} lg={8}>
             <div
               style={{
-                marginLeft: 50,
+                marginLeft: "auto",
                 marginRight: "auto",
+                width:"90%",
               }}
             >
               <Typography
@@ -396,6 +397,7 @@ const App: React.FC<{}> = () => {
                   paddingBottom: "0",
                   marginBottom: "0",
                   fontFamily: "Encode Sans",
+                  fontSize: "1.7rem",
                   textTransform: "uppercase",
                 }}
               >
@@ -418,10 +420,7 @@ const App: React.FC<{}> = () => {
 
       {/** About Us section*/}
       <div
-        style={{
-          padding: "5em",
-          verticalAlign: "middle",
-        }}
+        className={useStyles().mobile}
       >
         <Grid container spacing={4}>
           <Grid item xs={12} md={6} lg={8}>
@@ -439,6 +438,7 @@ const App: React.FC<{}> = () => {
                   paddingBottom: "0",
                   marginBottom: "0",
                   fontFamily: "Encode Sans",
+                  fontSize: "1.7rem",
                   textTransform: "uppercase",
                 }}
               >
@@ -488,27 +488,27 @@ const App: React.FC<{}> = () => {
 
       {/** Contact section*/}
       <div
+        className={useStyles().mobile}
         style={{
           backgroundColor: "#E8E3D3",
-          padding: "2em 5em 3em 5em",
         }}
       >
-        <Typography
-          gutterBottom
-          variant="h4"
-          style={{
-            fontWeight: 700,
-            marginLeft: "2em",
-            textAlign: "center",
-            fontFamily: "Encode Sans",
-            marginBottom: "0",
-            textTransform: "uppercase",
-          }}
-        >
-          Contact
-        </Typography>
-        <div style={{ textAlign: "center", marginLeft: "43px" }}>
-          <HeadlineBar color="purple" width={140} height={10}></HeadlineBar>
+        <div style={{ textAlign: "center"}}>
+          <Typography
+            gutterBottom
+            variant="h4"
+            style={{
+              fontWeight: 700,
+              fontFamily: "Encode Sans",
+              fontSize: "1.7rem",
+              marginBottom: "0",
+              textTransform: "uppercase",
+            }}
+          >
+            Contact
+          </Typography>
+        
+          <HeadlineBar color="purple" width={150} height={10}></HeadlineBar>
         </div>
         <Grid
           container
@@ -732,11 +732,19 @@ const useStyles = makeStyles((theme) => ({
       maxWidth: "70%",
       overflow: "auto",
       fontFamily: "Open Sans",
-      marginBottom: "20px",
+      marginBottom: "15px",
       "@media only screen and (max-width: 430px)": {
         fontSize: "3vw",
-        width: "50%"
+        width: "35%"
       },
+  },
+  mobile: {
+    padding: "5em",
+    verticalAlign: "middle",
+    paddingTop: "2em",
+    "@media only screen and (max-width: 430px)": {
+      padding: "3em",
+    },
   }
 }));
 

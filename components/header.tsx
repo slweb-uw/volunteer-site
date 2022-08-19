@@ -30,11 +30,13 @@ const useStyles = makeStyles((theme) => ({
   navtitle: {
     fontFamily: "Encode Sans",
     fontWeight: 600,
-    fontSize: "14px",
+    fontSize: "16px",
     color: "white",
     textAlign: "center",
     textDecoration: "none",
     margin: "1em",
+    marginLeft: "0.75em",
+    marginRight: "0.75em",
     paddingBottom: "5px",
     cursor: "pointer",
     "&:hover": {
@@ -86,28 +88,28 @@ const Header: React.FC<{}> = (props) => {
 
   const links: React.ReactNode[] = [
     <NavLink key="/" href="/">
-      <a className={useStyles().navtitle}>HOME</a>
+      <a className={useStyles().navtitle}>Home</a>
     </NavLink>,
     <Divider/>,
     <NavLink key="opportunities" href="/opportunities">
-      <a className={useStyles().navtitle}>OPPORTUNITIES</a>
+      <a className={useStyles().navtitle}>Opportunities</a>
     </NavLink>,
     <Divider/>,
     <NavLink key="training" href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569">
-      <a className={useStyles().navtitle}>TRAINING</a>
+      <a className={useStyles().navtitle}>Training</a>
     </NavLink>,
     //*NOTE: Resources name was changed to Links*/
     <Divider/>,
     <NavLink key="resources" href="/resources">
-      <a className={useStyles().navtitle}>LINKS</a>
+      <a className={useStyles().navtitle}>Links</a>
     </NavLink>,
     <Divider/>,
     <NavLink key="protocols" href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947">
-      <a className={useStyles().navtitle}>PROTOCOLS</a>
+      <a className={useStyles().navtitle}>Protocols</a>
     </NavLink>,
     <Divider/>,
     <NavLink key="donations" href="/donations">
-      <a className={useStyles().navtitle}>DONATIONS</a>
+      <a className={useStyles().navtitle}>Donations</a>
     </NavLink>,
     <Divider/>,
     // sign in and out
@@ -120,7 +122,7 @@ const Header: React.FC<{}> = (props) => {
           }}
           className={useStyles().navtitle}
         >
-          SIGN OUT
+          Sign Out
         </a>
       </NavLink>
     ) : (
@@ -137,7 +139,7 @@ const Header: React.FC<{}> = (props) => {
           }}
           className={useStyles().navtitle}
         >
-          SIGN IN
+          Sign In 
         </a>
       </NavLink>
     ),
