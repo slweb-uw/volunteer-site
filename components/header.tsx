@@ -13,13 +13,15 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#4B2E83",
     padding: "1em",
     width: "100%",
+    height: "3.75rem",
+    paddingTop: "5px",
+    paddingBottom: "0",
     justifyContent: "space-between",
     alignContent: "flex-end",
     alignItems: "flex-start",
     [theme.breakpoints.up("md")]: {
       justifyContent: "space-between",
     },
-    paddingBottom: "0px",
     fontFamily: "initial",
     fontWeight: "initial",
     lineHeight: "initial",
@@ -28,9 +30,13 @@ const useStyles = makeStyles((theme) => ({
   navtitle: {
     fontFamily: "Encode Sans",
     fontWeight: 600,
+    fontSize: "16px",
     color: "white",
+    textAlign: "center",
     textDecoration: "none",
     margin: "1em",
+    marginLeft: "0.75em",
+    marginRight: "0.75em",
     paddingBottom: "5px",
     cursor: "pointer",
     "&:hover": {
@@ -48,19 +54,19 @@ const useStyles = makeStyles((theme) => ({
       margin: "0",
       padding: "0", 
     }
-
   },
   logo: {
     position: "relative",
     cursor: "pointer",
     width: "25em",
     minWidth: 5,
-    paddingBottom: "10px",
     paddingLeft: "10px",
     paddingTop: "5px",
-    marginBottom: "10px",
-    "@media only screen and (max-width: 960px)":{
-      width: "90%",
+    "@media only screen and (max-width: 480px)":{
+      maxHeight: "100%",
+      paddingLeft: "0",
+      marginLeft: "0",
+      width: "80vw"
     }
   },
   divider:{
@@ -82,28 +88,28 @@ const Header: React.FC<{}> = (props) => {
 
   const links: React.ReactNode[] = [
     <NavLink key="/" href="/">
-      <a className={useStyles().navtitle}>HOME</a>
+      <a className={useStyles().navtitle}>Home</a>
     </NavLink>,
     <Divider/>,
     <NavLink key="opportunities" href="/opportunities">
-      <a className={useStyles().navtitle}>OPPORTUNITIES</a>
+      <a className={useStyles().navtitle}>Opportunities</a>
     </NavLink>,
     <Divider/>,
     <NavLink key="training" href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569">
-      <a className={useStyles().navtitle}>TRAINING</a>
+      <a className={useStyles().navtitle}>Training</a>
     </NavLink>,
     //*NOTE: Resources name was changed to Links*/
     <Divider/>,
     <NavLink key="resources" href="/resources">
-      <a className={useStyles().navtitle}>LINKS</a>
+      <a className={useStyles().navtitle}>Links</a>
     </NavLink>,
     <Divider/>,
     <NavLink key="protocols" href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947">
-      <a className={useStyles().navtitle}>PROTOCOLS</a>
+      <a className={useStyles().navtitle}>Protocols</a>
     </NavLink>,
     <Divider/>,
     <NavLink key="donations" href="/donations">
-      <a className={useStyles().navtitle}>DONATIONS</a>
+      <a className={useStyles().navtitle}>Donations</a>
     </NavLink>,
     <Divider/>,
     // sign in and out
@@ -116,7 +122,7 @@ const Header: React.FC<{}> = (props) => {
           }}
           className={useStyles().navtitle}
         >
-          SIGN OUT
+          Sign Out
         </a>
       </NavLink>
     ) : (
@@ -133,7 +139,7 @@ const Header: React.FC<{}> = (props) => {
           }}
           className={useStyles().navtitle}
         >
-          SIGN IN
+          Sign In 
         </a>
       </NavLink>
     ),
@@ -148,9 +154,6 @@ const Header: React.FC<{}> = (props) => {
             src="/header-logo.png"
             alt="University of Washington School of Medicine logo"
             className={useStyles().logo}
-            style={{
-              
-            }}
           />
         </a>
       </Link>
