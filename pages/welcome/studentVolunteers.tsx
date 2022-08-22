@@ -25,9 +25,9 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
       <IconBreadcrumbs crumbs={["Welcome Students"]} parentURL={undefined} />
       <Typography
         variant="h4"
-        style={{ fontFamily: "Encode Sans", fontWeight: 800 }}
+        style={{ fontFamily: "Encode Sans", fontWeight: 800, fontSize: "1.75rem" }}
       >
-        Welcome Student Volunteers!
+        WELCOME STUDENT VOLUNTEERS!
       </Typography>
       <img
         src={"../goldbar.png"}

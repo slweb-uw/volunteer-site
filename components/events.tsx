@@ -77,6 +77,7 @@ const Events: React.FC<EventsProps> = ({
   const [adminModalOpen, setAdminModalOpen] = useState<boolean>(false);
   const [selectedEvent, setSelectedEvent] = useState<EventData>();
   const [sortField, setSortField] = useState<string>("Title");
+  const [topMessage, setTopMessage] = useState<any>();
 
   const isProviderView = studentTypeFilter === "Providers";
   const setProviderView = (enabled: boolean) => {
@@ -98,6 +99,30 @@ const Events: React.FC<EventsProps> = ({
       .get()
       .then((doc) => setOrganizations(Object.keys(doc.data() as string[]).sort()));
   }, [location]);
+
+    // Adjusts state depending on whether provider view is on
+    useEffect(() => {
+      if (isProviderView) {
+        setTopMessage(
+          <span>
+           &nbsp;our&nbsp; 
+           <i>
+            <Link href={ "/onboarding/" }>
+              
+              <a style={{ color: "#85754D" }}>
+                Onboarding Instructions
+              </a>
+            </Link>
+          </i>
+          &nbsp;before signing up for an opportunity.
+          </span>
+        )
+      } else {
+        setTopMessage(
+            <span> project specific training requirements before signing up for an opportunity.</span>
+        )
+      }
+    }, [isProviderView])
 
   const getOrder = (curSort: string) => {
     return curSort === "timestamp" ? "desc" : "asc";
@@ -263,7 +288,8 @@ const Events: React.FC<EventsProps> = ({
       </div>
 
       <Typography variant="h6" style={{ textAlign: "center", marginBottom: "3em", color: "#85754D" }}>
-        <b>Note:</b> Please review project specific training requirements before signing up for an opportunity.
+        <b>Note:</b> Please review  
+        {topMessage}
       </Typography>
 
       {/* Button-Modal Module for adding new events */}

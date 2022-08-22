@@ -519,12 +519,13 @@ const App: React.FC<{}> = () => {
             marginTop: "2em",
             display: "flex",
             justifyContent: "center",
+            alignContent: "center"
           }}
         >
           <Grid item>
             <Grid container direction="column" spacing={3}>
               <Grid item>
-                <Grid container direction="row" spacing={4}>
+                <Grid container direction="row" spacing={2}>
                   <Grid item>
                     <img src="./profile-icon.png" alt="profile icon" />
                   </Grid>
@@ -552,7 +553,7 @@ const App: React.FC<{}> = () => {
                 <Grid
                   container
                   direction="column"
-                  style={{ marginLeft: "5em" }}
+                  className={classes.contactContainer}
                 >
                   <Grid item>
                     <Typography className={classes.contact}>
@@ -576,7 +577,7 @@ const App: React.FC<{}> = () => {
           <Grid item>
             <Grid container direction="column" spacing={3}>
               <Grid item>
-                <Grid container direction="row" spacing={4}>
+                <Grid container direction="row" spacing={2}>
                   <Grid item>
                     <img src="./mail-icon.png" alt="mail icon" />
                   </Grid>
@@ -596,7 +597,7 @@ const App: React.FC<{}> = () => {
                 <Grid
                   container
                   direction="column"
-                  style={{ marginLeft: "5em" }}
+                  className={classes.contactContainer}
                 >
                   <Grid item>
                     <Typography className={classes.contact}>
@@ -686,6 +687,12 @@ const useStyles = makeStyles((theme) => ({
   },
   contact: {
     fontFamily: "Open Sans",
+  },
+  contactContainer:{
+    marginLeft: "4em",
+    "@media only screen and (max-width: 480px)": {
+      marginLeft: "0" 
+    },
   },
   findOppBtn: {
     width: "220px",

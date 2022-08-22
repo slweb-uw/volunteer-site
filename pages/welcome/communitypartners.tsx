@@ -27,9 +27,9 @@ const Communitypartners: NextPage<Props> = ({ classes }) => {
       />
       <Typography
         variant="h4"
-        style={{ fontFamily: "Encode Sans", fontWeight: 800 }}
+        style={{ fontFamily: "Encode Sans", fontWeight: 800, fontSize: "1.75rem" }}
       >
-        Welcome Community Partners!
+        WELCOME COMMUNITY PARTNERS!
       </Typography>
       <img
         src={"../goldbar.png"}
@@ -65,14 +65,14 @@ const Communitypartners: NextPage<Props> = ({ classes }) => {
               width: "80%",
             }}
           >
-            <Typography style={{ fontSize: 16 }}>
+            <Typography style={{ fontSize: 16, fontFamily: "Open sans" }}>
               Thank you for your interest in the University of Washington School
               of Medicine and Health Sciences Service Learning Program! Our
               mission is to provide ways for our students to connect with and
               serve our local communities. You might see our students involved
               in a variety of activities such as health screenings, vaccination
               clinics, health education programs or street outreach.
-              <Typography style={{ fontSize: 16, marginTop: "20px" }}>
+              <Typography style={{ fontSize: 16, marginTop: "20px",  fontFamily: "Open sans"  }}>
                 To learn more about what students are working on now,{" "}
                 <a href="/donations">click here</a>. If you have an idea for a
                 future program, please contact Leonora Clarke,{" "}

@@ -24,7 +24,7 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
       <IconBreadcrumbs crumbs={["Welcome Providers"]} parentURL={undefined} />
       <Typography
         variant="h4"
-        style={{ fontWeight: 800, fontFamily: "Encode Sans" }}
+        style={{ fontWeight: 800, fontFamily: "Encode Sans", fontSize: "1.75rem", color: "#4b2e83"}}
       >
         WELCOME VOLUNTEER PROVIDERS!
       </Typography>
@@ -54,34 +54,7 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
               University of Washington. Your participation is greatly
               appreciated and absolutely necessary.
             </Typography>
-            <Typography
-              style={{
-                fontWeight: 400,
-                fontSize: 16,
-                fontStyle: "italic",
-                marginTop: "39px",
-                marginBottom: "39px",
-                fontFamily: "Open Sans",
-              }}
-            >
-              “Precepting can help you feel better about yourself and the world.
-              This is one of the greatest positives about precepting. Taking a
-              few hours to work with totally selfless health sciences students
-              who are searching for ways to help the less fortunate is the best
-              antidote to the COVID blues and political cynicism that I’ve
-              found. It is a joyful experience. Give it a try and see if you
-              don’t agree.”
-              <Typography
-                style={{
-                  fontWeight: 700,
-                  fontSize: 20,
-                  marginTop: "20px",
-                  marginLeft: "20px",
-                }}
-              >
-                - Richard Arnold, MD
-              </Typography>
-            </Typography>
+            
           </div>
           <div
             style={{
@@ -91,15 +64,9 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
               marginTop: "1em",
             }}
           >
-            <Typography style={{ fontSize: 16 }}>
+            <Typography style={{ fontSize: 16, fontFamily: "Open sans" }}>
               <Typography
-                style={{
-                  fontSize: 24,
-                  marginTop: "20px",
-                  fontWeight: 700,
-                  marginBottom: "0.5em",
-                  fontFamily: "Uni Sans Book",
-                }}
+                className={classes.header}
               >
                 Volunteer Provider Role
               </Typography>
@@ -110,13 +77,7 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
               to their education. Thank you so much for sharing your wisdom and
               passion for patient care!
               <Typography
-                style={{
-                  fontSize: 24,
-                  marginTop: "20px",
-                  fontWeight: 700,
-                  marginBottom: "0.5em",
-                  fontFamily: "Uni Sans Book",
-                }}
+                className={classes.header}
               >
                 Interprofessional Approach
               </Typography>
@@ -125,13 +86,7 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
               understand the roles of other health professionals and their own
               place and contribution to a well-functioning health care system.
               <Typography
-                style={{
-                  fontSize: 24,
-                  marginTop: "20px",
-                  fontWeight: 700,
-                  marginBottom: "0.5em",
-                  fontFamily: "Uni Sans Book",
-                }}
+                className={classes.header}
               >
                 Thank you
               </Typography>
@@ -145,16 +100,10 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
               actualize and reflect on our values. Scratch that itch to do
               something positive in the world!
               <Typography
-                style={{
-                  fontSize: 24,
-                  marginTop: "20px",
-                  fontWeight: 700,
-                  marginBottom: "0.5em",
-                  fontFamily: "Open Sans",
-                }}
+                className={classes.header}
               >
                 Links
-                <ul>
+                <ul style={{fontSize: "16px"}}>
                   <li>
                     <Link href="../onboarding">Onboarding</Link>
                   </li>
@@ -186,6 +135,34 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
                   </li>
                 </ul>
               </Typography>
+              <Typography
+              style={{
+                fontWeight: 400,
+                fontSize: 16,
+                fontStyle: "italic",
+                marginTop: "39px",
+                marginBottom: "39px",
+                fontFamily: "Open Sans",
+              }}
+            >
+              “Precepting can help you feel better about yourself and the world.
+              This is one of the greatest positives about precepting. Taking a
+              few hours to work with totally selfless health sciences students
+              who are searching for ways to help the less fortunate is the best
+              antidote to the COVID blues and political cynicism that I’ve
+              found. It is a joyful experience. Give it a try and see if you
+              don’t agree.”
+              <Typography
+                style={{
+                  fontWeight: 700,
+                  fontSize: 20,
+                  marginTop: "20px",
+                  marginLeft: "20px",
+                }}
+              >
+                - Richard Arnold, MD
+              </Typography>
+            </Typography>
             </Typography>
           </div>
         </div>
@@ -227,9 +204,14 @@ const styles = createStyles({
   },
 
   header: {
+    fontSize: 24,
+    marginTop: "20px",
     fontWeight: 600,
-    paddingTop: "1em",
+    marginBottom: "0.5em",
+    fontFamily: "Encode Sans",
+    color: "#4b2e83"
   },
+
 });
 
 export default withStyles(styles)(VolunteerProviders);
