@@ -24,7 +24,11 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
       <IconBreadcrumbs crumbs={["Welcome Providers"]} parentURL={undefined} />
       <Typography
         variant="h4"
-        style={{ fontWeight: 800, fontFamily: "Encode Sans", fontSize: "1.75rem", color: "#4b2e83"}}
+        style={{ 
+          fontWeight: 800, 
+          fontFamily: "Encode Sans", 
+          fontSize: "1.75rem", 
+        }}
       >
         WELCOME VOLUNTEER PROVIDERS!
       </Typography>
@@ -103,33 +107,33 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
                 className={classes.header}
               >
                 Links
-                <ul style={{fontSize: "16px"}}>
+                <ul style={{fontSize: "16px", color: "black"}}>
                   <li>
-                    <Link href="../onboarding">Onboarding</Link>
+                    <Link href="../onboarding"  className={classes.link}>Onboarding</Link>
                   </li>
                   <li>
-                    <Link href="../opportunities">Find Opportunities</Link>
+                    <Link href="../opportunities" className={classes.link}>Find Opportunities</Link>
                   </li>
                   <li>
-                    <Link href="/calendar">Calendar</Link>
+                    <Link href="/calendar" className={classes.link}>Calendar</Link>
                   </li>
                   <li>
-                    <Link href="https://collaborate.uw.edu/mobile/">
+                    <Link href="https://collaborate.uw.edu/mobile/" className={classes.link}>
                       Health Sciences Mobile Health Outreach Van
                     </Link>
                   </li>
                   <li>
-                    <Link href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569">
+                    <Link href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569" className={classes.link}>
                       Training
                     </Link>
                   </li>
                   <li>
-                    <Link href="categoriesOfService">
+                    <Link href="categoriesOfService" className={classes.link}>
                       Categories of Service
                     </Link>
                   </li>
                   <li>
-                    <Link href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947">
+                    <Link href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947" className={classes.link}>
                       Protocols
                     </Link>
                   </li>
@@ -211,7 +215,9 @@ const styles = createStyles({
     fontFamily: "Encode Sans",
     color: "#4b2e83"
   },
-
+  link: {
+    color: "black"
+  }
 });
 
 export default withStyles(styles)(VolunteerProviders);

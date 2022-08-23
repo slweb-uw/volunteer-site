@@ -25,7 +25,11 @@ const CategoriesOfService: NextPage<Props> = ({ classes }) => {
       />
       <Typography
         variant="h4"
-        style={{ fontFamily: "Encode Sans", fontWeight: 800, fontSize: "1.75rem" }}
+        style={{ 
+          fontFamily: "Encode Sans", 
+          fontWeight: 800, 
+          fontSize: "1.75rem", 
+        }}
       >
         CATEGORIES OF SERVICE
       </Typography>
