@@ -25,13 +25,17 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
       <IconBreadcrumbs crumbs={["Welcome Students"]} parentURL={undefined} />
       <Typography
         variant="h4"
-        style={{ fontFamily: "Encode Sans", fontWeight: 800 }}
+        style={{ 
+          fontFamily: "Encode Sans", 
+          fontWeight: 800, 
+          fontSize: "2rem",
+        }}
       >
-        Welcome Student Volunteers!
+        WELCOME STUDENT VOLUNTEERS!
       </Typography>
       <img
         src={"../goldbar.png"}
-        style={{ width: "470px", height: "10px", marginBottom: "5px" }}
+        style={{ width: "535px", height: "10px", marginBottom: "5px" }}
       />
       <Grid container spacing={2}>
         <Grid item xs={12} md={6} lg={8}>

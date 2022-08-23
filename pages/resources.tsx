@@ -48,12 +48,17 @@ const Resources: NextPage<Props> = ({ classes }) => {
 
       <Typography
         variant="h4"
-        style={{ fontSize: "1.7rem", fontWeight: 800, fontFamily: "Encode Sans", textTransform: "uppercase" }}
+        style={{ 
+          fontSize: "1.75rem", 
+          fontWeight: 800, 
+          fontFamily: "Encode Sans", 
+          textTransform: "uppercase" 
+        }}
       >
         UW Health Sciences Service Learning Websites
       </Typography>
 
-      <HeadlineBar color="gold" width={850} height={10}></HeadlineBar>
+      <HeadlineBar color="gold" width={750} height={10}></HeadlineBar>
 
       <Accordion
         square
@@ -221,12 +226,19 @@ const Resources: NextPage<Props> = ({ classes }) => {
 
       <Typography
         variant="h4"
-        style={{ fontWeight: 800, fontSize: "1.7rem", paddingBottom: "0", paddingTop: "2em", fontFamily: "Encode Sans", textTransform: "uppercase" }}
+        style={{ 
+          fontWeight: 800, 
+          paddingBottom: "0", 
+          paddingTop: "2em", 
+          fontFamily: "Encode Sans", 
+          textTransform: "uppercase", 
+          fontSize: "1.75rem" 
+        }}
       >
         SOM Community Partners
       </Typography>
 
-      <HeadlineBar color="gold" width={450} height={10}></HeadlineBar>
+      <HeadlineBar color="gold" width={400} height={10}></HeadlineBar>
 
       <Accordion
         square
@@ -435,12 +447,12 @@ const Resources: NextPage<Props> = ({ classes }) => {
             </Typography>
             <Typography>
               <ResourceLink
-                href="https://lihi.org/tiny-houses/"
+                href="https://www.lihihousing.org/tinyhouses"
                 className={classes.resource}
               >
                 Low Income Housing Institute (LIHI) Tiny Houses
               </ResourceLink>{" "}
-              - https://lihi.org/tiny-houses/
+              - https://www.lihihousing.org/tinyhouses
             </Typography>
             <Typography>
               <ResourceLink

@@ -24,13 +24,17 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
       <IconBreadcrumbs crumbs={["Welcome Providers"]} parentURL={undefined} />
       <Typography
         variant="h4"
-        style={{ fontWeight: 800, fontFamily: "Encode Sans" }}
+        style={{ 
+          fontWeight: 800, 
+          fontFamily: "Encode Sans", 
+          fontSize: "2rem", 
+        }}
       >
         WELCOME VOLUNTEER PROVIDERS!
       </Typography>
       <img
         src={"../goldbar.png"}
-        style={{ width: "480px", height: "10px", marginBottom: "5px" }}
+        style={{ width: "550px", height: "10px", marginBottom: "5px" }}
       />
       <div style={{ display: "flex" }}>
         <div>
@@ -54,7 +58,88 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
               University of Washington. Your participation is greatly
               appreciated and absolutely necessary.
             </Typography>
-            <Typography
+            
+          </div>
+          <div
+            style={{
+              marginLeft: "0px",
+              marginRight: "82px",
+              textAlign: "left",
+              marginTop: "1em",
+            }}
+          >
+            <Typography style={{ fontSize: 16, fontFamily: "Open sans" }}>
+              <Typography
+                className={classes.header}
+              >
+                Volunteer Provider Role
+              </Typography>
+              As an experienced professional you will model for our students how
+              you think through a problem and how you communicate and
+              collaborate with patients. The students may know some of the
+              science of medicine, but not the art. You have a great deal to add
+              to their education. Thank you so much for sharing your wisdom and
+              passion for patient care!
+              <Typography
+                className={classes.header}
+              >
+                Interprofessional Approach
+              </Typography>
+              Many of our projects are now interdisciplinary! The development of
+              interprofessional teams has the added benefit of helping learners
+              understand the roles of other health professionals and their own
+              place and contribution to a well-functioning health care system.
+              <Typography
+                className={classes.header}
+              >
+                Thank you
+              </Typography>
+              Thank you for your interest in our programming. Sometimes we can
+              get so caught up in our studies that we lose track of the reasons
+              why we went into health care to begin with. Service learning can
+              help. It gives us a chance to serve the less fortunate in our
+              communities, identifying their inherent strengths, building on
+              those. Service learning gives trainees real life opportunities to
+              utilize the knowledge gained through course work and both
+              actualize and reflect on our values. Scratch that itch to do
+              something positive in the world!
+              <Typography
+                className={classes.header}
+              >
+                Links
+                <ul style={{fontSize: "16px", color: "black"}}>
+                  <li>
+                    <Link href="../onboarding"  className={classes.link}>Onboarding</Link>
+                  </li>
+                  <li>
+                    <Link href="../opportunities" className={classes.link}>Find Opportunities</Link>
+                  </li>
+                  <li>
+                    <Link href="/calendar" className={classes.link}>Calendar</Link>
+                  </li>
+                  <li>
+                    <Link href="https://collaborate.uw.edu/mobile/" className={classes.link}>
+                      Health Sciences Mobile Health Outreach Van
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569" className={classes.link}>
+                      Training
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="categoriesOfService" className={classes.link}>
+                      Categories of Service
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947" className={classes.link}>
+                      Protocols
+                    </Link>
+                  </li>
+                </ul>
+              </Typography>
+              <Typography
               style={{
                 fontWeight: 400,
                 fontSize: 16,
@@ -82,110 +167,6 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
                 - Richard Arnold, MD
               </Typography>
             </Typography>
-          </div>
-          <div
-            style={{
-              marginLeft: "0px",
-              marginRight: "82px",
-              textAlign: "left",
-              marginTop: "1em",
-            }}
-          >
-            <Typography style={{ fontSize: 16 }}>
-              <Typography
-                style={{
-                  fontSize: 24,
-                  marginTop: "20px",
-                  fontWeight: 700,
-                  marginBottom: "0.5em",
-                  fontFamily: "Uni Sans Book",
-                }}
-              >
-                Volunteer Provider Role
-              </Typography>
-              As an experienced professional you will model for our students how
-              you think through a problem and how you communicate and
-              collaborate with patients. The students may know some of the
-              science of medicine, but not the art. You have a great deal to add
-              to their education. Thank you so much for sharing your wisdom and
-              passion for patient care!
-              <Typography
-                style={{
-                  fontSize: 24,
-                  marginTop: "20px",
-                  fontWeight: 700,
-                  marginBottom: "0.5em",
-                  fontFamily: "Uni Sans Book",
-                }}
-              >
-                Interprofessional Approach
-              </Typography>
-              Many of our projects are now interdisciplinary! The development of
-              interprofessional teams has the added benefit of helping learners
-              understand the roles of other health professionals and their own
-              place and contribution to a well-functioning health care system.
-              <Typography
-                style={{
-                  fontSize: 24,
-                  marginTop: "20px",
-                  fontWeight: 700,
-                  marginBottom: "0.5em",
-                  fontFamily: "Uni Sans Book",
-                }}
-              >
-                Thank you
-              </Typography>
-              Thank you for your interest in our programming. Sometimes we can
-              get so caught up in our studies that we lose track of the reasons
-              why we went into health care to begin with. Service learning can
-              help. It gives us a chance to serve the less fortunate in our
-              communities, identifying their inherent strengths, building on
-              those. Service learning gives trainees real life opportunities to
-              utilize the knowledge gained through course work and both
-              actualize and reflect on our values. Scratch that itch to do
-              something positive in the world!
-              <Typography
-                style={{
-                  fontSize: 24,
-                  marginTop: "20px",
-                  fontWeight: 700,
-                  marginBottom: "0.5em",
-                  fontFamily: "Open Sans",
-                }}
-              >
-                Links
-                <ul>
-                  <li>
-                    <Link href="../onboarding">Onboarding</Link>
-                  </li>
-                  <li>
-                    <Link href="../opportunities">Find Opportunities</Link>
-                  </li>
-                  <li>
-                    <Link href="/calendar">Calendar</Link>
-                  </li>
-                  <li>
-                    <Link href="https://collaborate.uw.edu/mobile/">
-                      Health Sciences Mobile Health Outreach Van
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569">
-                      Training
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="categoriesOfService">
-                      Categories of Service
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947">
-                      Protocols
-                    </Link>
-                  </li>
-                </ul>
-              </Typography>
             </Typography>
           </div>
         </div>
@@ -227,9 +208,16 @@ const styles = createStyles({
   },
 
   header: {
+    fontSize: 24,
+    marginTop: "20px",
     fontWeight: 600,
-    paddingTop: "1em",
+    marginBottom: "0.5em",
+    fontFamily: "Encode Sans",
+    color: "#4b2e83"
   },
+  link: {
+    color: "black"
+  }
 });
 
 export default withStyles(styles)(VolunteerProviders);

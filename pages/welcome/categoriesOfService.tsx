@@ -25,13 +25,17 @@ const CategoriesOfService: NextPage<Props> = ({ classes }) => {
       />
       <Typography
         variant="h4"
-        style={{ fontFamily: "Encode Sans", fontWeight: 800 }}
+        style={{ 
+          fontFamily: "Encode Sans", 
+          fontWeight: 800, 
+          fontSize: "2rem", 
+        }}
       >
-        Categories of Service
+        CATEGORIES OF SERVICE
       </Typography>
       <img
         src={"../goldbar.png"}
-        style={{ width: "330px", height: "10px", marginBottom: "5px" }}
+        style={{ width: "380px", height: "10px", marginBottom: "5px" }}
       />
       <Grid container spacing={2}>
         <Grid item xs={12} md={6} lg={8}>
@@ -43,10 +47,10 @@ const CategoriesOfService: NextPage<Props> = ({ classes }) => {
               marginTop: "1em",
             }}
           >
-            <Typography style={{ fontSize: 20 }}>
+            <Typography style={{ fontSize: 16 }}>
               Our service-learning projects build off community strengths and
               address community identified needs. We tend to think of our
-              service-learning projects as falling into one of three categories.
+              service-learning projects as falling into one of four categories.
               <Typography
                 style={{
                   fontSize: 24,
@@ -126,7 +130,7 @@ const styles = createStyles({
     width: "90%",
     paddingTop: "2em",
     paddingBottom: "5em",
-    fontFamily: "Open Sans",
+    fontFamily: "!important Open Sans",
   },
 
   header: {

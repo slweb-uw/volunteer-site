@@ -53,7 +53,7 @@ const App: React.FC<{}> = () => {
               </pre>
             </Typography>
 
-            <HeadlineBar color="purple" width={680} height={20}></HeadlineBar>
+            <HeadlineBar color="purple" width={630} height={20}></HeadlineBar>
 
             <Typography
               variant="h5"
@@ -403,7 +403,7 @@ const App: React.FC<{}> = () => {
               >
                 Serve With Us
               </Typography>
-              <HeadlineBar color="purple" width={250} height={10}></HeadlineBar>
+              <HeadlineBar color="purple" width={210} height={10}></HeadlineBar>
               <Typography style={{ fontFamily: "Open Sans" }}>
                 Volunteering with our programs is a wonderful way to practice
                 your skills, make a difference in our community and form
@@ -444,7 +444,7 @@ const App: React.FC<{}> = () => {
               >
                 About Us
               </Typography>
-              <HeadlineBar color="gold" width={160} height={10}></HeadlineBar>
+              <HeadlineBar color="gold" width={130} height={10}></HeadlineBar>
               <Typography style={{ fontFamily: "Open Sans" }}>
                 The UW School of Medicine's Service Learning program strives to
                 enrich medical education by providing our students with
@@ -507,8 +507,10 @@ const App: React.FC<{}> = () => {
           >
             Contact
           </Typography>
-        
-          <HeadlineBar color="purple" width={150} height={10}></HeadlineBar>
+          <div style={{marginRight: "20px"}}>
+            <HeadlineBar color="purple" width={110} height={10} ></HeadlineBar>
+          </div>
+          
         </div>
         <Grid
           container
@@ -519,12 +521,13 @@ const App: React.FC<{}> = () => {
             marginTop: "2em",
             display: "flex",
             justifyContent: "center",
+            alignContent: "center"
           }}
         >
           <Grid item>
             <Grid container direction="column" spacing={3}>
               <Grid item>
-                <Grid container direction="row" spacing={4}>
+                <Grid container direction="row" spacing={2}>
                   <Grid item>
                     <img src="./profile-icon.png" alt="profile icon" />
                   </Grid>
@@ -552,7 +555,7 @@ const App: React.FC<{}> = () => {
                 <Grid
                   container
                   direction="column"
-                  style={{ marginLeft: "5em" }}
+                  className={classes.contactContainer}
                 >
                   <Grid item>
                     <Typography className={classes.contact}>
@@ -576,7 +579,7 @@ const App: React.FC<{}> = () => {
           <Grid item>
             <Grid container direction="column" spacing={3}>
               <Grid item>
-                <Grid container direction="row" spacing={4}>
+                <Grid container direction="row" spacing={2}>
                   <Grid item>
                     <img src="./mail-icon.png" alt="mail icon" />
                   </Grid>
@@ -596,7 +599,7 @@ const App: React.FC<{}> = () => {
                 <Grid
                   container
                   direction="column"
-                  style={{ marginLeft: "5em" }}
+                  className={classes.contactContainer}
                 >
                   <Grid item>
                     <Typography className={classes.contact}>
@@ -686,6 +689,12 @@ const useStyles = makeStyles((theme) => ({
   },
   contact: {
     fontFamily: "Open Sans",
+  },
+  contactContainer:{
+    marginLeft: "4em",
+    "@media only screen and (max-width: 480px)": {
+      marginLeft: "0" 
+    },
   },
   findOppBtn: {
     width: "220px",
