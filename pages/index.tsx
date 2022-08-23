@@ -53,7 +53,7 @@ const App: React.FC<{}> = () => {
               </pre>
             </Typography>
 
-            <HeadlineBar color="purple" width={680} height={20}></HeadlineBar>
+            <HeadlineBar color="purple" width={630} height={20}></HeadlineBar>
 
             <Typography
               variant="h5"
@@ -403,7 +403,7 @@ const App: React.FC<{}> = () => {
               >
                 Serve With Us
               </Typography>
-              <HeadlineBar color="purple" width={250} height={10}></HeadlineBar>
+              <HeadlineBar color="purple" width={210} height={10}></HeadlineBar>
               <Typography style={{ fontFamily: "Open Sans" }}>
                 Volunteering with our programs is a wonderful way to practice
                 your skills, make a difference in our community and form
@@ -444,7 +444,7 @@ const App: React.FC<{}> = () => {
               >
                 About Us
               </Typography>
-              <HeadlineBar color="gold" width={160} height={10}></HeadlineBar>
+              <HeadlineBar color="gold" width={130} height={10}></HeadlineBar>
               <Typography style={{ fontFamily: "Open Sans" }}>
                 The UW School of Medicine's Service Learning program strives to
                 enrich medical education by providing our students with
@@ -507,8 +507,10 @@ const App: React.FC<{}> = () => {
           >
             Contact
           </Typography>
-        
-          <HeadlineBar color="purple" width={150} height={10}></HeadlineBar>
+          <div style={{marginRight: "20px"}}>
+            <HeadlineBar color="purple" width={110} height={10} ></HeadlineBar>
+          </div>
+          
         </div>
         <Grid
           container

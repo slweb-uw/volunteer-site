@@ -28,14 +28,14 @@ const CategoriesOfService: NextPage<Props> = ({ classes }) => {
         style={{ 
           fontFamily: "Encode Sans", 
           fontWeight: 800, 
-          fontSize: "1.75rem", 
+          fontSize: "2rem", 
         }}
       >
         CATEGORIES OF SERVICE
       </Typography>
       <img
         src={"../goldbar.png"}
-        style={{ width: "400px", height: "10px", marginBottom: "5px" }}
+        style={{ width: "380px", height: "10px", marginBottom: "5px" }}
       />
       <Grid container spacing={2}>
         <Grid item xs={12} md={6} lg={8}>

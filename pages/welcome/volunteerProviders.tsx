@@ -27,14 +27,14 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
         style={{ 
           fontWeight: 800, 
           fontFamily: "Encode Sans", 
-          fontSize: "1.75rem", 
+          fontSize: "2rem", 
         }}
       >
         WELCOME VOLUNTEER PROVIDERS!
       </Typography>
       <img
         src={"../goldbar.png"}
-        style={{ width: "480px", height: "10px", marginBottom: "5px" }}
+        style={{ width: "550px", height: "10px", marginBottom: "5px" }}
       />
       <div style={{ display: "flex" }}>
         <div>

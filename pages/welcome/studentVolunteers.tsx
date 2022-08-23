@@ -28,14 +28,14 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
         style={{ 
           fontFamily: "Encode Sans", 
           fontWeight: 800, 
-          fontSize: "1.75rem",
+          fontSize: "2rem",
         }}
       >
         WELCOME STUDENT VOLUNTEERS!
       </Typography>
       <img
         src={"../goldbar.png"}
-        style={{ width: "470px", height: "10px", marginBottom: "5px" }}
+        style={{ width: "535px", height: "10px", marginBottom: "5px" }}
       />
       <Grid container spacing={2}>
         <Grid item xs={12} md={6} lg={8}>

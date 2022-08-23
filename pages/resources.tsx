@@ -58,7 +58,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
         UW Health Sciences Service Learning Websites
       </Typography>
 
-      <HeadlineBar color="gold" width={850} height={10}></HeadlineBar>
+      <HeadlineBar color="gold" width={750} height={10}></HeadlineBar>
 
       <Accordion
         square
@@ -238,7 +238,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
         SOM Community Partners
       </Typography>
 
-      <HeadlineBar color="gold" width={450} height={10}></HeadlineBar>
+      <HeadlineBar color="gold" width={400} height={10}></HeadlineBar>
 
       <Accordion
         square

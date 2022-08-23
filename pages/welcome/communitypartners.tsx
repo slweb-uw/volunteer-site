@@ -30,14 +30,14 @@ const Communitypartners: NextPage<Props> = ({ classes }) => {
         style={{ 
           fontFamily: "Encode Sans", 
           fontWeight: 800, 
-          fontSize: "1.75rem", 
+          fontSize: "2rem", 
         }}
       >
         WELCOME COMMUNITY PARTNERS!
       </Typography>
       <img
         src={"../goldbar.png"}
-        style={{ width: "500px", height: "10px", marginBottom: "30px" }}
+        style={{ width: "550px", height: "10px", marginBottom: "30px" }}
       />
       <Grid container spacing={2}>
         <Grid item xs={12} md={6} lg={4}>
