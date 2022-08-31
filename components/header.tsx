@@ -28,9 +28,9 @@ const useStyles = makeStyles((theme) => ({
     letterSpacing: "initial",
   },
   navtitle: {
-    fontFamily: "Encode Sans Compressed",
+    fontFamily: "Encode Sans",
     fontWeight: 600,
-    fontSize: "17px",
+    fontSize: "16px",
     color: "white",
     textAlign: "center",
     textDecoration: "none",

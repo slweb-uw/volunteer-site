@@ -210,6 +210,7 @@ const Events: React.FC<EventsProps> = ({
                 <Select
                   aria-labelledby="student-type-filter"
                   value={studentTypeFilter}
+                  className={classes.studentFilter}
                   onChange={(e) => {
                     setStudentTypeFilter(e.target.value as string);
                   }}
@@ -251,7 +252,7 @@ const Events: React.FC<EventsProps> = ({
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={12} sm={2} style={{ textAlign: "right" }}>
+          <Grid item xs={12} sm={2} style={{ textAlign: "right", maxWidth: "100%"}}>
             <FormGroup>
               <FormControlLabel 
                 control={
@@ -267,14 +268,16 @@ const Events: React.FC<EventsProps> = ({
                           onChange={(e) => setProviderView(e.target.checked)}
                   />
                 }
-                label={<Typography><b>Provider View</b></Typography>}
-                labelPlacement="start" />
+                label={<Typography style= {{textAlign: "center"}}><b>Provider View</b></Typography>}
+                labelPlacement="start"
+                 />
             </FormGroup>
             <Button
               variant="contained"
               color="primary"
               style={{
                 float: "right",
+                minWidth: "150px"
               }}
             >
               <Typography>
@@ -433,6 +436,11 @@ const styles = createStyles({
       }
     },
   },
+  studentFilter: {
+    "@media only screen and (max-width: 853px)":{
+      marginLeft: "29px"
+    }
+  }
 });
 
 //@ts-ignore

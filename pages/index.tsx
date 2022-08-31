@@ -744,7 +744,7 @@ const useStyles = makeStyles((theme) => ({
       marginBottom: "15px",
       "@media only screen and (max-width: 430px)": {
         fontSize: "3vw",
-        width: "35%"
+        width: "70%"
       },
   },
   mobile: {

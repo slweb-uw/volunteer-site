@@ -85,9 +85,10 @@ const Donations: NextPage<Props> = ({ classes }) => {
           >
             <img
               style={{
-                height: "20rem",
+                height: "auto",
                 width: "auto",
                 borderRadius: "5px",
+                maxWidth: "90%"
               }}
               src="/Foot Care 2.jpg"
               alt="person holding home care kit"
@@ -102,7 +103,7 @@ const Donations: NextPage<Props> = ({ classes }) => {
         Donate to a Specific Project
       </Typography>
 
-      <Grid container direction="row" spacing={6}>
+      <Grid container direction="row" spacing={6} style={{padding: "5px"}}>
         <Grid item xs={12} lg={6}>
           <DonateCard
             title="Health Sciences Mobile Health Van"
