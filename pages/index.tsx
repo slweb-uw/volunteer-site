@@ -641,6 +641,9 @@ const useStyles = makeStyles((theme) => ({
     right: 0,
     bottom: 0,
     background: "#FFFFFF",
+    "@media only screen and (max-width: 430px)": {
+      height: "500px"
+    },
   },
   triangletop: {
     position: "absolute",
@@ -650,6 +653,10 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
     borderTop: "661px solid #FFFFFF95",
     borderRight: "100px solid transparent",
+    "@media only screen and (max-width: 430px)": {
+      borderTop: "500px solid #FFFFFF95",
+      borderRight: "100px solid transparent",
+    },
   },
   trianglebottom: {
     position: "absolute",
@@ -659,6 +666,9 @@ const useStyles = makeStyles((theme) => ({
     height: 0,
     borderBottom: "661px solid #FFFFFF95",
     borderRight: "100px solid transparent",
+    "@media only screen and (max-width: 430px)": {
+      borderBottom: "500px solid #FFFFFF95",
+    },
   },
   text: {
     display: "flex",
@@ -670,6 +680,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: "4rem",
     "@media only screen and (max-width: 780px)": {
       marginLeft: "1rem",
+      marginTop: "-30px"
     },
   },
   cardlinks: {
@@ -721,7 +732,7 @@ const useStyles = makeStyles((theme) => ({
     textTransform: "uppercase",
     marginBottom: "2px",
     "@media only screen and (max-width: 780px)": {
-      fontSize: "5vw",
+      fontSize: "6vw",
     },
   },
   bottomTitle: {
@@ -732,7 +743,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: "0",
     fontFamily: "Encode Sans Compressed, sans-serif",
     "@media only screen and (max-width: 780px)": {
-      fontSize: "3.5vw",
+      fontSize: "4vw",
     },
   },
   description: {

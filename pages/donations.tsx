@@ -66,8 +66,8 @@ const Donations: NextPage<Props> = ({ classes }) => {
                 fontWeight: 700,
                 padding: "1rem",
                 fontSize: 16,
-                width: "330px",
-                height: "90px",
+                width: "216px",
+                height: "60px",
                 fontFamily: "Encode Sans"
               }}
             >

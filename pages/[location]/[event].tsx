@@ -204,7 +204,7 @@ const Event: NextPage<Props> = ({ classes }) => {
             />
 
             <Grid item>
-              <Typography variant="h6" style={{ fontWeight: 600 }}>
+              <Typography variant="h6" style={{ fontWeight: 600, maxWidth: "100%" }}>
                 Types of Volunteers Needed
               </Typography>
               <Typography>
