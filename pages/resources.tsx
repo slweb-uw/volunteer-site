@@ -45,7 +45,8 @@ const Resources: NextPage<Props> = ({ classes }) => {
     <div className={classes.page}>
       <IconBreadcrumbs
         crumbs = {["Links"]} />
-
+      
+       {/* UW Health Sciences Service Learning Websites Section */}
       <Typography
         variant="h4"
         style={{ 
@@ -77,7 +78,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 School of Medicine Service Learning
               </ResourceLink>{" "}
-              (External)
             </Typography>
 
             <Typography className={classes.header}>
@@ -87,7 +87,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 SOM Service Learning Canvas Site
               </ResourceLink>{" "}
-              (Internal - Logistics Site)
             </Typography>
 
             <Typography className={classes.header}>
@@ -97,7 +96,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 SOM Intranet - Service Learning page
               </ResourceLink>{" "}
-              (External)
             </Typography>
 
             <Typography className={classes.header}>
@@ -107,7 +105,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Department of Rehabilitation Medicine Service Learning
               </ResourceLink>{" "}
-              (External)
             </Typography>
           </div>
         </AccordionDetails>
@@ -217,13 +214,12 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Center for Health Sciences Interprofessional Education
               </ResourceLink>{" "}
-              (CHSIE)
             </Typography>
           </div>
         </AccordionDetails>
       </Accordion>
 
-
+        {/* SOM Community Partners Section */}
       <Typography
         variant="h4"
         style={{ 
@@ -251,13 +247,12 @@ const Resources: NextPage<Props> = ({ classes }) => {
         <AccordionDetails>
           <div>
             <Typography>
-              <a
+              <ResourceLink
                 href="https://www.cssalaska.org/our-programs/brother-francis-shelter/"
                 className={classes.resource}
               >
                 Brother Francis Shelter
-              </a>{" "}
-              - https://www.cssalaska.org/our-programs/brother-francis-shelter/
+              </ResourceLink>{" "}
             </Typography>
             <Typography>
               <ResourceLink
@@ -266,7 +261,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Four A’s. (Alaskan AIDS Assistance Association)
               </ResourceLink>{" "}
-              - https://www.alaskanaids.org/
             </Typography>
             <Typography>
               <ResourceLink
@@ -275,8 +269,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Project Homelessness Connect
               </ResourceLink>{" "}
-              -
-              https://www.facebook.com/events/egan-center/anchorage-project-homeless-connect/437372703642603/
             </Typography>
           </div>
         </AccordionDetails>
@@ -298,7 +290,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Area Center on Aging
               </ResourceLink>{" "}
-              - https://www.cap4action.org/aaa/
             </Typography>
             <Typography>
               <ResourceLink
@@ -307,7 +298,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Gritman Medical Center
               </ResourceLink>{" "}
-              - https://gritman.org/
             </Typography>
             <Typography>
               <ResourceLink
@@ -316,7 +306,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Marie Blanchard Friendship Clinic
               </ResourceLink>{" "}
-              - https://friendshipclinic.com/
             </Typography>
             <Typography>
               <ResourceLink
@@ -325,7 +314,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Palouse Free Clinic
               </ResourceLink>{" "}
-              - https://www.facebook.com/palousefreeclinic/
             </Typography>
             <Typography>
               <ResourceLink
@@ -334,7 +322,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Snake River Community Clinic
               </ResourceLink>{" "}
-              - https://www.srccfreeclinic.org/
             </Typography>
           </div>
         </AccordionDetails>
@@ -356,7 +343,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 AIDS Outreach
               </ResourceLink>{" "}
-              - https://www.aidsoutreachmt.org/
             </Typography>
             <Typography>
               <ResourceLink
@@ -365,7 +351,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 CHP (Community Health Partners)
               </ResourceLink>{" "}
-              - https://chphealthmt.org/
             </Typography>
             <Typography>
               <ResourceLink
@@ -374,7 +359,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Hopa Mountain
               </ResourceLink>{" "}
-              - https://www.hopamountain.org/
             </Typography>
             <Typography>
               <ResourceLink
@@ -383,7 +367,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 HRDC (Human Resource Development Council)
               </ResourceLink>{" "}
-              - https://thehrdc.org/
             </Typography>
           </div>
         </AccordionDetails>
@@ -406,8 +389,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Aloha Inn
               </ResourceLink>{" "}
-              -
-              https://www.co.washResourceLinkngton.or.us/Housing/SupportiveHousingServices/Shelters/aloha-inn-permanent-supportive-housing.cfm
             </Typography>
             <Typography>
               <ResourceLink
@@ -416,7 +397,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Casa Latina
               </ResourceLink>{" "}
-              - https://casa-latina.org/
             </Typography>
             <Typography>
               <ResourceLink
@@ -425,7 +405,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Downtown Emergency Service Center (DESC)
               </ResourceLink>{" "}
-              - https://www.desc.org/
             </Typography>
             <Typography>
               <ResourceLink
@@ -434,7 +413,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Elizabeth Gregory Home
               </ResourceLink>{" "}
-              - https://eghseattle.org/
             </Typography>
             <Typography>
               <ResourceLink
@@ -443,7 +421,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 ICHS (International Community Health Services)
               </ResourceLink>{" "}
-              - https://www.ichs.com/
             </Typography>
             <Typography>
               <ResourceLink
@@ -452,7 +429,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Low Income Housing Institute (LIHI) Tiny Houses
               </ResourceLink>{" "}
-              - https://www.lihihousing.org/tinyhouses
             </Typography>
             <Typography>
               <ResourceLink
@@ -461,7 +437,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Mercy Housing Northwest
               </ResourceLink>{" "}
-              - https://www.mercyhousing.org/northwest/
             </Typography>
             <Typography>
               <ResourceLink
@@ -470,7 +445,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Harborview Medical Center
               </ResourceLink>{" "}
-              - https://www.uwmedicine.org/locations/harborview-medical-center
             </Typography>
             <Typography>
               <ResourceLink
@@ -479,8 +453,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 International Resuce Committee
               </ResourceLink>{" "}
-              -
-              https://help.rescue.org/donate?ms=gs_brand_best_charity_es_fy18&initialms=gs_brand_best_charity_es_fy18&gclid=CjwKCAjw-e2EBhAhEiwAJI5jgwiwHEGgUTQKXzfSXc32Wq9klMzmC4Imn23JcSm6I1z2h7HbgYxGWBoCQuMQAvD_BwE
             </Typography>
             <Typography>
               <ResourceLink
@@ -489,7 +461,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 New Horizons
               </ResourceLink>{" "}
-              - https://nhmin.org/
             </Typography>
             <Typography>
               <ResourceLink
@@ -498,7 +469,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Peer Seattle
               </ResourceLink>{" "}
-              - https://www.peerseattle.org/
             </Typography>
             <Typography>
               <ResourceLink
@@ -507,7 +477,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Pioneer Square Clinic
               </ResourceLink>{" "}
-              - https://www.uwmedicine.org/locations/pioneer-square
             </Typography>
             <Typography>
               <ResourceLink
@@ -516,7 +485,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Public Health Seattle/King County
               </ResourceLink>{" "}
-              - https://kingcounty.gov/depts/health.aspx
             </Typography>
             <Typography>
               <ResourceLink
@@ -525,7 +493,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 ROOTS Youth Shelter
               </ResourceLink>{" "}
-              - https://rootsinfo.org/
             </Typography>
             <Typography>
               <ResourceLink
@@ -534,7 +501,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Rotacare Free Clinic
               </ResourceLink>{" "}
-              - http://www.rotacarelakecity.org/
             </Typography>
             <Typography>
               <ResourceLink
@@ -543,7 +509,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 SeaMar
               </ResourceLink>{" "}
-              - https://www.seamar.org/king-medical-seattle.html
             </Typography>
             <Typography>
               <ResourceLink
@@ -552,8 +517,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Seattle Cancer Care Alliance
               </ResourceLink>{" "}
-              -
-              https://www.seattlecca.org/?gclid=CjwKCAjw-e2EBhAhEiwAJI5jg3vYWEYCyEpmvQD6b_5W6uX4m_iH_-uNVB1_zaId9ghcdP4msAOAShoCLv8QAvD_BwE
             </Typography>
             <Typography>
               <ResourceLink
@@ -562,7 +525,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Seattle/King County Clinic
               </ResourceLink>{" "}
-              - https://seattlecenter.org/skcclinic/
             </Typography>
             <Typography>
               <ResourceLink
@@ -571,7 +533,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Somali Health Board
               </ResourceLink>{" "}
-              - https://somalihealthboard.org/
             </Typography>
             <Typography>
               <ResourceLink
@@ -580,7 +541,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 St. Vincent de Paul
               </ResourceLink>{" "}
-              - https://svdpseattle.org/
             </Typography>
             <Typography>
               <ResourceLink
@@ -589,7 +549,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 University of Washington Medical Center
               </ResourceLink>{" "}
-              - https://www.uwmedicine.org/
             </Typography>
           </div>
         </AccordionDetails>
@@ -611,7 +570,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 CHAS Health
               </ResourceLink>{" "}
-              - https://chas.org/
             </Typography>
             <Typography>
               <ResourceLink
@@ -620,7 +578,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 House of Charity
               </ResourceLink>{" "}
-              - https://www.cceasternwa.org/house-of-charity
             </Typography>
             <Typography>
               <ResourceLink
@@ -629,8 +586,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Refugee Connections
               </ResourceLink>{" "}
-              -
-              http://www.refugeeconnectionsspokane.org/store/c1/Featured_Products.html
             </Typography>
             <Typography>
               <ResourceLink
@@ -639,7 +594,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Range Community Health
               </ResourceLink>{" "}
-              - https://www.rangecommunityclinic.org/
             </Typography>
             <Typography>
               <ResourceLink
@@ -648,7 +602,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Rogers High School
               </ResourceLink>{" "}
-              - https://www.spokaneschools.org/rogers
             </Typography>
             <Typography>
               <ResourceLink
@@ -657,7 +610,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Spokane Regional Health District
               </ResourceLink>{" "}
-              - https://srhd.org/
             </Typography>
             <Typography>
               <ResourceLink
@@ -666,7 +618,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Union Gospel Mission
               </ResourceLink>{" "}
-              - https://www.facebook.com/UGMSpokane/
             </Typography>
           </div>
         </AccordionDetails>
@@ -688,7 +639,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Downtown Clinic
               </ResourceLink>{" "}
-              - https://www.downtownclinic.org/
             </Typography>
             <Typography>
               <ResourceLink
@@ -697,7 +647,6 @@ const Resources: NextPage<Props> = ({ classes }) => {
               >
                 Hospice of Laramie
               </ResourceLink>{" "}
-              - https://hospiceoflaramie.org/
             </Typography>
           </div>
         </AccordionDetails>

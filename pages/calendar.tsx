@@ -69,6 +69,7 @@ const AddModifyOrdersPage: NextPage<Props> = ({
         styles={{ display: "block" }} width="1800vh" height="800vh" scrolling="yes">
         </Iframe>
       </div>
+      <Typography style={{marginLeft: "2.5vw", marginBottom: "1rem", fontFamily: "Encode Sans", color:"gray"}}>* To import the calendar, click the blue plus button at the bottom right of the calendar.</Typography>
     </div>
   );
 };
