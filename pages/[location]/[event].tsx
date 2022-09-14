@@ -169,7 +169,7 @@ const Event: NextPage<Props> = ({ classes }) => {
             alt={eventData.Title}
           />
         </Grid>
-        <Grid item sm={12} md={6}>
+        <Grid item sm={12} md={6} style={{maxWidth: "100%"}}>
           <Grid container direction="column" spacing={5} style={{ paddingTop: 8, maxWidth: "100%" }}>
             <Grid item>
               <Grid container direction="row" spacing={10}>
