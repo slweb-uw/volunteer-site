@@ -358,12 +358,83 @@ const App: React.FC<{}> = () => {
         </div>
       </div>
 
-      {/** Serve With Us section*/}
+      {/** Mobile Health Outreach Section*/}
       <div
         className={useStyles().mobile}
         style={{
           backgroundColor: "#E8E3D3",
         }}
+      >
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6} lg={6}>
+            <div
+              style={{
+                marginLeft: "auto",
+                marginRight: "auto",
+                width:"90%",
+              }}
+            >
+              <Typography
+                gutterBottom
+                variant="h4"
+                style={{
+                  fontWeight: 700,
+                  paddingBottom: "0",
+                  marginBottom: "0",
+                  fontFamily: "Encode Sans",
+                  fontSize: "1.7rem",
+                  textTransform: "uppercase",
+                }}
+              >
+               <span style={{color:"#4B2E83"}}>New!</span>  Mobile Health Outreach Clinic (Seattle only)
+              </Typography>
+              <Typography style={{ fontFamily: "Open Sans", marginTop: "1rem" }}>
+              This Fall marks the beginning of an exciting new student run free clinic.  
+              UW Health Sciences students will be partnering with Harborview Medical Center 
+              (HMC) Downtown programs to provide urgent care services to residents of Low Income 
+              Housing Institute’s Tiny House Villages.   Health sciences students will work on 
+              interprofessional teams to respond to community identified health needs while further 
+              developing their teamwork and clinical skills. 
+              </Typography>
+              <Link href="https://collaborate.uw.edu/student-portal/mobile-health">
+              <Button
+                color="primary"
+                variant="contained"
+                style={{marginTop: "1rem"}}
+                className={classes.learnMoreBtn}
+              >
+                Learn More
+              </Button>
+            </Link>
+            </div>
+          </Grid>
+          <Grid item xs={12} md={6} lg={6}>
+            <div
+              style={{
+                marginLeft: "auto",
+                marginRight: "auto",
+                textAlign: "center",
+              }}
+            >
+              <img
+                style={{
+                  width: "30em",
+                  maxWidth:"100%",
+                  height: "auto",
+                  borderRadius: "10px",
+                }}
+                //className={useStyles().img}
+                src="/Mobile_Outreach_Clinic_resized.jpg"
+                alt="doctor caring for mom with child"
+              />
+            </div>
+          </Grid>
+        </Grid>
+      </div>
+
+      {/** Serve With Us section*/}
+      <div
+        className={useStyles().mobile}
       >
         <Grid container spacing={2}>
           <Grid item xs={12} md={6} lg={4}>
@@ -421,6 +492,9 @@ const App: React.FC<{}> = () => {
       {/** About Us section*/}
       <div
         className={useStyles().mobile}
+        style={{
+          backgroundColor: "#E8E3D3",
+        }}
       >
         <Grid container spacing={4}>
           <Grid item xs={12} md={6} lg={8}>
@@ -489,9 +563,6 @@ const App: React.FC<{}> = () => {
       {/** Contact section*/}
       <div
         className={useStyles().mobile}
-        style={{
-          backgroundColor: "#E8E3D3",
-        }}
       >
         <div style={{ textAlign: "center"}}>
           <Typography
@@ -716,8 +787,18 @@ const useStyles = makeStyles((theme) => ({
       transition: ".25s",
     },
   },
+  learnMoreBtn: {
+    width: "135px",
+    fontFamily: "Encode Sans",
+    fontWeight: 800,
+    "&:hover": {
+      color: "#B7A57A",
+      transition: ".25s",
+    },
+  },
   img: {
     width: "25em",
+    height: "auto",
     borderRadius: "10px",
     "@media only screen and (max-width: 600px)": {
       display: "block",

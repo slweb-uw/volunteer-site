@@ -216,7 +216,7 @@ export default function EventModal(props: {
                         deleteEvent(event);
                       }}
                     >
-                      Delete Event
+                      Delete Project
                     </Button>
                   </div>
                 )}

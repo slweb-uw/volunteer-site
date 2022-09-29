@@ -900,7 +900,7 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
               </span>
             </LocalizationProvider>
           </Grid>
-
+          {/*
           <Grid item xs={12} sm={6}>
             <Typography
               variant="h6"
@@ -1104,7 +1104,7 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
               </Box>
             )}
           </Grid>
-
+          */}
           <Grid item sm={12}>
             <Grid
                 container
