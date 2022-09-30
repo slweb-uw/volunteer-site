@@ -885,7 +885,7 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
                   setStartDateTime(newValue);
                 }}
               />
-              <span style={{ marginLeft: "1em" }}>
+              {/* <span style={{ marginLeft: "1em" }}>
                 <DateTimePicker
                   renderInput={(props) => {
                     //@ts-ignore
@@ -897,7 +897,7 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
                     setEndDateTime(newValue);
                   }}
                 />
-              </span>
+              </span> */}
             </LocalizationProvider>
           </Grid>
           {/* Recurrences Section - Not in use */}
