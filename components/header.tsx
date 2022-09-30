@@ -151,7 +151,7 @@ const Header: React.FC<{}> = (props) => {
       <Link href="/">
         <a>
           <img
-            src="/header-logo.png"
+            src="/header-logo.svg"
             alt="University of Washington School of Medicine logo"
             className={useStyles().logo}
           />

@@ -396,16 +396,19 @@ const App: React.FC<{}> = () => {
               interprofessional teams to respond to community identified health needs while further 
               developing their teamwork and clinical skills. 
               </Typography>
-              <Link href="https://collaborate.uw.edu/student-portal/mobile-health">
-              <Button
-                color="primary"
-                variant="contained"
-                style={{marginTop: "1rem"}}
-                className={classes.learnMoreBtn}
-              >
-                Learn More
-              </Button>
-            </Link>
+              <div className={classes.mobileLearnMoreBtn}>
+                <Link href="https://collaborate.uw.edu/student-portal/mobile-health">
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    style={{marginTop: "1rem", alignItems: "center"}}
+                    className={classes.learnMoreBtn}
+                  >
+                    Learn More
+                  </Button>
+                </Link>
+              </div>
+             
             </div>
           </Grid>
           <Grid item xs={12} md={6} lg={6}>
@@ -794,6 +797,11 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       color: "#B7A57A",
       transition: ".25s",
+    },
+  },
+  mobileLearnMoreBtn:{
+    "@media only screen and (max-width: 600px)": {
+      textAlign: "center"
     },
   },
   img: {

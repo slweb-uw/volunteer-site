@@ -179,12 +179,6 @@ const Event: NextPage<Props> = ({ classes }) => {
                     value={eventData?.Location}
                     removeTopMargin={true}
                   />
-                  {/* <Typography variant="h6" style={{ fontWeight: 600 }}>
-                    Location
-                  </Typography>
-                  <Typography variant="body1">
-                    {eventData?.Location ?? NotSpecified}
-                  </Typography> */}
                 </Grid>
                 <Grid item>
                   <RichEventField
@@ -192,12 +186,6 @@ const Event: NextPage<Props> = ({ classes }) => {
                     value={eventData["Clinic Schedule"]}
                     removeTopMargin={true}
                   />
-                  {/* <Typography variant="h6" style={{ fontWeight: 600 }}>
-                    Clinic Schedule
-                  </Typography>
-                  <Typography variant="body1">
-                    {eventData["Clinic Schedule"] ?? NotSpecified}
-                  </Typography> */}
                 </Grid>
               </Grid>
             </Grid>

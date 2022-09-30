@@ -14,6 +14,9 @@ const useStyles = makeStyles((theme) => ({
     height: 300,
     display: "flex",
     flexDirection: "column",
+    "@media only screen and (max-width: 600px)": {
+      height: "auto",
+    },
   },
   content: {
     flex: "1 0 auto",
@@ -22,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
     width: 230,
     height: 300,
     "@media only screen and (max-width: 600px)": {
-      height: 150,
       marginTop: '.5em',
       display: "none",
     },
