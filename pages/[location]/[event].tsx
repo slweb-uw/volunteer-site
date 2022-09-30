@@ -174,20 +174,30 @@ const Event: NextPage<Props> = ({ classes }) => {
             <Grid item>
               <Grid container direction="row" spacing={10}>
                 <Grid item>
-                  <Typography variant="h6" style={{ fontWeight: 600 }}>
+                  <RichEventField
+                    name="Location"
+                    value={eventData?.Location}
+                    removeTopMargin={true}
+                  />
+                  {/* <Typography variant="h6" style={{ fontWeight: 600 }}>
                     Location
                   </Typography>
                   <Typography variant="body1">
                     {eventData?.Location ?? NotSpecified}
-                  </Typography>
+                  </Typography> */}
                 </Grid>
                 <Grid item>
-                  <Typography variant="h6" style={{ fontWeight: 600 }}>
+                  <RichEventField
+                    name="Clinic Schedule"
+                    value={eventData["Clinic Schedule"]}
+                    removeTopMargin={true}
+                  />
+                  {/* <Typography variant="h6" style={{ fontWeight: 600 }}>
                     Clinic Schedule
                   </Typography>
                   <Typography variant="body1">
                     {eventData["Clinic Schedule"] ?? NotSpecified}
-                  </Typography>
+                  </Typography> */}
                 </Grid>
               </Grid>
             </Grid>

@@ -272,6 +272,7 @@ const Events: React.FC<EventsProps> = ({
                 labelPlacement="start"
                  />
             </FormGroup>
+            {location === "Seattle" &&(
             <Button
               variant="contained"
               color="primary"
@@ -286,6 +287,7 @@ const Events: React.FC<EventsProps> = ({
                 </Link>
               </Typography>
             </Button>
+            )}
           </Grid>
         </Grid>
       </div>

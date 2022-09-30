@@ -900,6 +900,7 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
               </span>
             </LocalizationProvider>
           </Grid>
+          {/* Recurrences Section - Not in use */}
           {/*
           <Grid item xs={12} sm={6}>
             <Typography
