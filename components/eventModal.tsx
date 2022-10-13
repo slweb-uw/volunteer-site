@@ -171,6 +171,7 @@ export default function EventModal(props: {
                   </Button>
                 </a>
               </Link>
+              {/*
               {event?.["Sign-up Link"] &&
                 typeof event?.["Sign-up Link"] === "string" && (
                   <a
@@ -186,6 +187,7 @@ export default function EventModal(props: {
                     </Button>
                   </a>
                 )}
+              */}
               {user &&
                 (user.email === "slweb@uw.edu" ||
                   user.email === "slwebuw@gmail.com") && (
