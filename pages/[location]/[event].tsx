@@ -209,6 +209,7 @@ const Event: NextPage<Props> = ({ classes }) => {
                 {eventData["Types of Volunteers Needed"] ? naturalJoin(eventData["Types of Volunteers Needed"]) : NotSpecified}
               </Typography>
             </Grid>
+            {/* ------------------ Sign up link ------------------
             <Grid item>
               <Button
                 autoFocus
@@ -221,6 +222,7 @@ const Event: NextPage<Props> = ({ classes }) => {
                 {buttonText}
               </Button>
             </Grid>
+            */}
           </Grid>
           <Grid container>
             <Grid item>{Object.keys(eventData).map((fieldName) => {})}</Grid>
