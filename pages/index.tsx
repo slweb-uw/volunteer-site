@@ -94,7 +94,7 @@ const App: React.FC<{}> = () => {
             flexWrap: "wrap",
             justifyContent: "center",
             columnGap: "5%",
-            textAlign: "center",
+            textAlign: "left",
           }}
         >
           <div
@@ -397,7 +397,7 @@ const App: React.FC<{}> = () => {
               developing their teamwork and clinical skills. 
               </Typography>
               <div className={classes.mobileLearnMoreBtn}>
-                <Link href="https://collaborate.uw.edu/student-portal/mobile-health">
+                <Link href="https://collaborate.uw.edu/student-portal/mobile-health-outreach/">
                   <Button
                     color="primary"
                     variant="contained"
@@ -523,25 +523,23 @@ const App: React.FC<{}> = () => {
               </Typography>
               <HeadlineBar color="gold" width={130} height={10}></HeadlineBar>
               <Typography style={{ fontFamily: "Open Sans" }}>
-                The UW School of Medicine's Service Learning program strives to
-                enrich medical education by providing our students with
-                opportunities to hone their skills while addressing the health
-                needs of our underserved communities. We seek to foster the joy
-                of service in our students who are preparing for lives of civic
-                and social responsibility in an increasingly diverse and complex
-                global society.
+              Our Service Learning and Community Engagement programs strive to enrich
+               health sciences education by providing our students with opportunities
+                to hone their skills while addressing the health needs of our underserved
+                communities. We seek to foster the joy of service in our students who are
+                preparing for lives of civic and social responsibility in an increasingly
+                diverse and complex global society.
               </Typography>
               <br></br>
               <Typography style={{ fontFamily: "Open Sans" }}>
-                These goals could not be achieved without strong community
-                partnerships, dedicated supervising providers, and collaboration
-                with the other six health sciences schools.
+              These goals could not be achieved without strong community partnerships,
+               dedicated supervising providers, and mutual collaboration within our six
+                health sciences schools.
               </Typography>
               <br></br>
               <Typography style={{ fontFamily: "Open Sans" }}>
-                Please take a moment to glance through the amazing clinical and
-                mentoring projects on this website that have been developed by
-                our students over the past ten years.
+              Please take a moment to glance through the amazing clinical and mentoring
+               projects that have been developed by our students over the past ten years.
               </Typography>
             </div>
           </Grid>
