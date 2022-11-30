@@ -397,7 +397,7 @@ const App: React.FC<{}> = () => {
               developing their teamwork and clinical skills. 
               </Typography>
               <div className={classes.mobileLearnMoreBtn}>
-                <Link href="https://collaborate.uw.edu/student-portal/mobile-health">
+                <Link href="https://collaborate.uw.edu/student-portal/mobile-health-outreach/">
                   <Button
                     color="primary"
                     variant="contained"
