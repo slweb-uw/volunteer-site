@@ -205,7 +205,7 @@ const Events: React.FC<EventsProps> = ({
                 <Typography
                   id="student-type-filter"
                   className={classes.filterField}>
-                  Student Type{" "}
+                  Student Discipline{" "}
                 </Typography>
                 <Select
                   aria-labelledby="student-type-filter"
