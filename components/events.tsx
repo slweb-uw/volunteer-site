@@ -192,6 +192,7 @@ const Events: React.FC<EventsProps> = ({
         <Grid container>
           <Grid item xs={12} sm={10}>
             <Grid container>
+              {/**
               <Grid item xs={12}>
                 <Typography
                   gutterBottom
@@ -201,11 +202,12 @@ const Events: React.FC<EventsProps> = ({
                   <b>Filters</b>{" "}
                 </Typography>
               </Grid>
+              */}
               {!isProviderView && <Grid item style={{ marginBottom: "1em" }}>
                 <Typography
                   id="student-type-filter"
                   className={classes.filterField}>
-                  Student Type{" "}
+                  Student Discipline{" "}
                 </Typography>
                 <Select
                   aria-labelledby="student-type-filter"
