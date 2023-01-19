@@ -114,7 +114,6 @@ const Header: React.FC<{}> = (props) => {
         </a>
       </NavLink>
     ) : (
-      <NavLink key="sign in" href="">
         <a
           key="sign in"
           onClick={() => {
@@ -129,22 +128,20 @@ const Header: React.FC<{}> = (props) => {
         >
           Sign In 
         </a>
-      </NavLink>
     ),
   ];
 
 
   return (
     <div className={useStyles().root}>
-      <Link href="/">
         <a>
           <img
+            href="/"
             src="/header-logo.png"
             alt="University of Washington School of Medicine logo"
             className={useStyles().logo}
           />
         </a>
-      </Link>
 
       <Hidden only={["lg", "md", "xl"]}>
         <BasicMenu links={links} />
