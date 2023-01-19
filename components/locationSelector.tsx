@@ -21,7 +21,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
         id="select-location-filter"
         gutterBottom
         display="inline"
-        style={{ marginRight: "1em", fontFamily: "Uni Sans Book", fontSize: "1.5rem"}}
+        style={{ marginRight: "1em", fontFamily: "Uni Sans Book", fontSize: "1rem", textAlign: "center", paddingTop: "7px"}}
       >
         <b>Select a Location</b>{" "}
       </Typography>
