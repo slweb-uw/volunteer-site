@@ -87,30 +87,18 @@ const Header: React.FC<{}> = (props) => {
   const { user } = useAuth();
 
   const links: React.ReactNode[] = [
-    <NavLink key="/" href="/">
-      <a className={useStyles().navtitle}>Home</a>
-    </NavLink>,
+      <a  href="/" className={useStyles().navtitle}>Home</a>,
     <Divider/>,
-    <NavLink key="opportunities" href="/opportunities">
-      <a className={useStyles().navtitle}>Opportunities</a>
-    </NavLink>,
+      <a href="/opportunities" className={useStyles().navtitle}>Opportunities</a>,
     <Divider/>,
-    <NavLink key="training" href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569">
-      <a className={useStyles().navtitle}>Training</a>
-    </NavLink>,
+      <a className={useStyles().navtitle} href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569">Training</a>,
     //*NOTE: Resources name was changed to Links*/
     <Divider/>,
-    <NavLink key="resources" href="/resources">
-      <a className={useStyles().navtitle}>Links</a>
-    </NavLink>,
+      <a  href="/resources" className={useStyles().navtitle}>Links</a>,
     <Divider/>,
-    <NavLink key="protocols" href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947">
-      <a className={useStyles().navtitle}>Protocols</a>
-    </NavLink>,
+      <a href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947" className={useStyles().navtitle}>Protocols</a>,
     <Divider/>,
-    <NavLink key="donations" href="/donations">
-      <a className={useStyles().navtitle}>Donations</a>
-    </NavLink>,
+      <a href="/donations" className={useStyles().navtitle}>Donations</a>,
     <Divider/>,
     // sign in and out
     user ? (
