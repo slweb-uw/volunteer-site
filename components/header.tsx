@@ -87,9 +87,7 @@ const Header: React.FC<{}> = (props) => {
   const { user } = useAuth();
 
   const links: React.ReactNode[] = [
-    <NavLink key="/" href="/">
-      <a className={useStyles().navtitle}>Home</a>
-    </NavLink>,
+      <a className={useStyles().navtitle}>Home</a>,
     <Divider/>,
     <NavLink key="opportunities" href="/opportunities">
       <a className={useStyles().navtitle}>Opportunities</a>
