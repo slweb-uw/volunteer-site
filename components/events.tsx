@@ -107,12 +107,9 @@ const Events: React.FC<EventsProps> = ({
           <span>
            &nbsp;our&nbsp; 
            <i>
-            <Link href={ "/onboarding/" }>
-              
-              <a style={{ color: "#85754D" }}>
-                Onboarding Instructions
-              </a>
-            </Link>
+            <a style={{ color: "#85754D" }} href="/onboarding/">
+              Onboarding Instructions
+            </a>
           </i>
           &nbsp;before signing up for an opportunity.
           </span>
@@ -192,17 +189,6 @@ const Events: React.FC<EventsProps> = ({
         <Grid container>
           <Grid item xs={12} sm={10}>
             <Grid container>
-              {/**
-              <Grid item xs={12}>
-                <Typography
-                  gutterBottom
-                  display="inline"
-                  style={{ marginRight: "1em" }}
-                >
-                  <b>Filters</b>{" "}
-                </Typography>
-              </Grid>
-              */}
               {!isProviderView && <Grid item style={{ marginBottom: "1em" }}>
                 <Typography
                   id="student-type-filter"
@@ -242,7 +228,7 @@ const Events: React.FC<EventsProps> = ({
                   onChange={(e) => {
                     setOrganizationFilter(e.target.value as string);
                   }}
-                  style={{ width: 200 }}
+                  style={{ width: 200}}
                   displayEmpty
                   input={<BootstrapInput />}
                 >
@@ -280,7 +266,9 @@ const Events: React.FC<EventsProps> = ({
               color="primary"
               style={{
                 float: "right",
-                minWidth: "150px"
+                minWidth: "150px",
+                borderRadius: 10,
+
               }}
             >
               <Typography>
@@ -382,9 +370,10 @@ const styles = createStyles({
     padding: 8,
   },
   filterField: {
+    fontFamily: "Uni Sans Book", 
+    fontSize: "1rem",
     display: "inline",
-    verticalAlign: "50%",
-    marginLeft: "1em",
+    fontWeight: 600,
     marginRight: "0.5rem",
   },
   // Styles for the switch component
@@ -441,9 +430,7 @@ const styles = createStyles({
     },
   },
   studentFilter: {
-    "@media only screen and (max-width: 853px)":{
-      marginLeft: "29px"
-    }
+    marginRight: "1em",
   }
 });
 

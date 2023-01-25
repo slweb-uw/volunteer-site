@@ -45,15 +45,14 @@ const App: React.FC<{}> = () => {
             <Typography 
             variant="h4" 
             gutterBottom
+            style={{marginBottom: 0}}
             >
               <pre className={classes.topTitle}>
-                {"SERVICE LEARNING & \nCOMMUNITY ENGAGEMENT"
-
-                }
+                {"SERVICE LEARNING & \nCOMMUNITY ENGAGEMENT"}
               </pre>
             </Typography>
 
-            <HeadlineBar color="purple" width={630} height={20}></HeadlineBar>
+            <HeadlineBar color="purple" width={590} height={15}></HeadlineBar>
 
             <Typography
               variant="h5"
@@ -86,7 +85,7 @@ const App: React.FC<{}> = () => {
       </div>
 
       {/** Cards */}
-      <div style={{ textAlign: "center", marginTop: "2em" }}>
+      <div style={{marginTop: "1em" }}>
         <div
           style={{
             width: "100%",
@@ -94,9 +93,9 @@ const App: React.FC<{}> = () => {
             flexWrap: "wrap",
             justifyContent: "center",
             columnGap: "5%",
-            textAlign: "left",
           }}
         >
+          {/* Students */}
           <div
             style={{
               display: "flex",
@@ -119,11 +118,10 @@ const App: React.FC<{}> = () => {
               style={{
                 position: "absolute",
                 marginBottom: "0",
-                marginTop: "32px",
-                marginRight: "12px",
+                marginTop: "2em",
               }}
             >
-              <HeadlineBar color="gold" width={120} height={10}></HeadlineBar>
+              <HeadlineBar color="gold" width={130} height={10}></HeadlineBar>
             </div>
 
             <Card
@@ -183,6 +181,7 @@ const App: React.FC<{}> = () => {
               </CardActionArea>
             </Card>
           </div>
+           {/* Volunteer Providers */}
           <div
             style={{
               display: "flex",
@@ -193,7 +192,7 @@ const App: React.FC<{}> = () => {
             <Typography
               style={{
                 fontSize: "1.5rem",
-                fontWeight: 700,
+                fontWeight: 800,
                 fontFamily: "Encode Sans",
                 textTransform: "uppercase",
               }}
@@ -205,8 +204,7 @@ const App: React.FC<{}> = () => {
               style={{
                 position: "absolute",
                 marginBottom: "0",
-                marginTop: "32px",
-                marginRight: "20px",
+                marginTop: "2em",
               }}
             >
               <HeadlineBar color="gold" width={280} height={10}></HeadlineBar>
@@ -290,6 +288,7 @@ const App: React.FC<{}> = () => {
               </CardActionArea>
             </Card>
           </div>
+          {/* Volunteer Providers */}
           <div
             style={{
               display: "flex",
@@ -300,7 +299,7 @@ const App: React.FC<{}> = () => {
             <Typography
               style={{
                 fontSize: "1.5rem",
-                fontWeight: 700,
+                fontWeight: 800,
                 fontFamily: "Encode Sans",
                 textTransform: "uppercase",
               }}
@@ -312,8 +311,7 @@ const App: React.FC<{}> = () => {
               style={{
                 position: "absolute",
                 marginBottom: "0",
-                marginTop: "32px",
-                marginRight: "18px",
+                marginTop: "2em",
               }}
             >
               <HeadlineBar color="gold" width={275} height={10}></HeadlineBar>
@@ -528,14 +526,11 @@ const App: React.FC<{}> = () => {
                 to hone their skills while addressing the health needs of our underserved
                 communities. We seek to foster the joy of service in our students who are
                 preparing for lives of civic and social responsibility in an increasingly
-                diverse and complex global society.
+                diverse and complex global society.These goals could not be achieved without
+                strong community partnerships, dedicated supervising providers, and mutual 
+                collaboration within our six health sciences schools.
               </Typography>
               <br></br>
-              <Typography style={{ fontFamily: "Open Sans" }}>
-                These goals could not be achieved without strong community partnerships,
-                dedicated supervising providers, and mutual collaboration within our six
-                health sciences schools.
-              </Typography>
               <br></br>
               <Typography style={{ fontFamily: "Open Sans" }}>
                 Please take a moment to glance through the amazing clinical and mentoring
@@ -565,7 +560,7 @@ const App: React.FC<{}> = () => {
       <div
         className={useStyles().mobile}
       >
-        <div style={{ textAlign: "center"}}>
+        <div style={{textAlign: "center", alignItems: "center"}}>
           <Typography
             gutterBottom
             variant="h4"
@@ -579,18 +574,14 @@ const App: React.FC<{}> = () => {
           >
             Contact
           </Typography>
-          <div style={{marginRight: "20px"}}>
+          <div style={{textAlign: "center"}}>
             <HeadlineBar color="purple" width={110} height={10} ></HeadlineBar>
           </div>
-          
         </div>
-        <Grid
-          container
-          spacing={6}
-          xs={12}
-          sm={12}
+        <Grid container spacing={6} xs={12} sm={12}
           style={{
-            marginTop: "2em",
+            marginTop: "0.5em",
+            marginBottom: "0.5em",
             display: "flex",
             justifyContent: "center",
             alignContent: "center"
@@ -748,7 +739,6 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     flexDirection: "column",
     height: "100%",
-    margin: "10px",
     marginLeft: "4rem",
     "@media only screen and (max-width: 780px)": {
       marginLeft: "1rem",
@@ -817,7 +807,7 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: "Encode Sans",
     fontWeight: 800,
     textTransform: "uppercase",
-    marginBottom: "2px",
+    marginBottom: "0",
     "@media only screen and (max-width: 780px)": {
       fontSize: "6vw",
     },
@@ -848,11 +838,12 @@ const useStyles = makeStyles((theme) => ({
   mobile: {
     padding: "5em",
     verticalAlign: "middle",
-    paddingTop: "2em",
+    paddingTop: "1em",
+    paddingBottom: "1em",
     "@media only screen and (max-width: 430px)": {
       padding: "3em",
     },
-  }
+  },
 }));
 
 export default App;

@@ -24,8 +24,8 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#4B2E83",
     width: "100%",
     textAlign: "center",
-    paddingTop: "1em",
-    paddingBottom: "0.5em",
+    paddingTop: "3rem",
+    paddingBottom: "3em",
     marginBottom: "0"
   }
 }));
