@@ -7,3 +7,13 @@
   font-family: "Open Sans";
   src: url(public/fonts/Open\ Sans\ regular.ttf);
 }
+@font-face {
+  font-family: "Encode Sans Compressed";
+  src: url(public/fonts/EncodeSansCompressed-400-Regular.ttf);
+  font-weight: 400;
+}
+@font-face {
+  font-family: "Encode Sans Compressed";
+  src: url(public/fonts/EncodeSansCompressed-600-SemiBold.ttf);
+  font-weight: 600;
+}

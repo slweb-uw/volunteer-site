@@ -28,9 +28,9 @@ const useStyles = makeStyles((theme) => ({
     letterSpacing: "initial",
   },
   navtitle: {
-    fontFamily: "Encode Sans",
+    fontFamily: "Encode Sans Compressed, sans-serif",
     fontWeight: 600,
-    fontSize: "16px",
+    fontSize: "17px",
     color: "white",
     textAlign: "center",
     textDecoration: "none",
@@ -38,10 +38,12 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: "0.5em",
     marginRight: "0.5em",
     paddingBottom: "5px",
+    letterSpacing: ".01em",
     cursor: "pointer",
     "&:hover": {
       color: "#B7A57A",
       transition: ".25s",
+      textDecoration: "underline"
     },
     "&:focus-visible": {
       outline: "none",

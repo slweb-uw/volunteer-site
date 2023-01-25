@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     cursor: "pointer",
     display: "flex",
-    borderRadius: 10,
+    borderRadius: 35,
     flex: "1 0 auto",
     height: 300,
     "&:focus-visible": {
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
       boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
       borderColor: "#80bdff",
     },
-    "@media (max-width: 600px)": {
+    "@media (max-width: 500px)": {
       flexDirection: "column",
       alignItems: "center",
     },
@@ -57,7 +57,6 @@ const EventCard: React.FC<Props> = (props) => {
   if (mobileView) {
     imageURL = props.event.imageURL;
   }
-
 
   return (
     <Card

@@ -42,10 +42,10 @@ const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
     <div className={classes.page}>
       <CssBaseline />
       <IconBreadcrumbs crumbs={["Opportunities"]} parentURL={undefined} />
-      <Typography variant="h3" gutterBottom style={{ fontFamily: "Encode Sans", fontWeight: 800, marginBottom: ".5rem", fontSize: "2.5rem"}}>
+      <Typography variant="h3" gutterBottom className={classes.header}>
         OPPORTUNITIES
       </Typography>
-      <img src={"../goldbar.png"} alt="" style={{ width: "310px", height: "13px", marginBottom: "30px" }}/>
+      <img src={"../goldbar.png"} alt=""  className={classes.bar} style={{ }}/>
       <div style={{
         marginTop: "2em"
       }}>
@@ -63,9 +63,26 @@ const styles = createStyles({
     minHeight: 1000,
     maxWidth: 1500,
     width: "95%",
-    paddingTop: "2em",
+    paddingTop: "1em",
     paddingBottom: "5em",
   },
+  header: {
+    fontFamily: "Encode Sans", 
+    fontWeight: 800, 
+    marginBottom: "0rem", 
+    fontSize: "2.5rem",
+    "@media only screen and (max-width: 600px)": {
+      fontSize: "2rem",
+    },
+  },
+  bar:{
+    width: "310px", 
+    height: "11px", 
+    marginBottom: "30px",
+    "@media only screen and (max-width: 600px)": {
+      width: "245px", 
+    },
+  }
 });
 
 //@ts-ignore

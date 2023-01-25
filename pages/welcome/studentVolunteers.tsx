@@ -61,22 +61,22 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
               >
                 <ul>
                   <li>
-                    Take advantage of real-life opportunities to get involved!
+                    Take advantage of real-life opportunities to get involved.
                   </li>{" "}
                   {/* LINK TO Find Opportunities PAGE */}
                   <li>
                     Utilize the skills that you are gaining in the classroom to
-                    actualize your values!
+                    actualize your values.
                   </li>
                   <li>
-                    Take time to reflect on what medicine means in our world!
+                    Take time to reflect on what medicine means in our world.
                   </li>
                   <li>
                     Serve in the way that fits your interests - Clinical, Health
-                    Education, Mentorship, or Advocacy!
+                    Education, Mentorship, or Advocacy.
                   </li>{" "}
                   <li>
-                    Scratch that itch to do something positive in the world!
+                    Scratch that itch to do something positive in the world.
                   </li>
                 </ul>
               </Typography>
