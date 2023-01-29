@@ -268,7 +268,6 @@ const Events: React.FC<EventsProps> = ({
                 float: "right",
                 minWidth: "150px",
                 borderRadius: 10,
-
               }}
             >
               <Typography>

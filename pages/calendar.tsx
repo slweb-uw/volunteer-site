@@ -92,6 +92,7 @@ const styles = createStyles({
     marginLeft: "2.5vw",
     fontFamily: "Encode Sans",
     fontWeight: 800,
+    borderRadius: 10,
     "&:hover": {
       color: "#B7A57A",
       transition: ".25s",

@@ -104,7 +104,6 @@ const Header: React.FC<{}> = (props) => {
     <Divider/>,
     // sign in and out
     user ? (
-      <NavLink key="sign out" href="">
         <a
           key="sign out"
           onClick={() => {
@@ -114,7 +113,6 @@ const Header: React.FC<{}> = (props) => {
         >
           Sign Out
         </a>
-      </NavLink>
     ) : (
         <a
           key="sign in"
