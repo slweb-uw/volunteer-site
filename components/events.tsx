@@ -261,21 +261,22 @@ const Events: React.FC<EventsProps> = ({
                  />
             </FormGroup>
             {location === "Seattle" &&(
-            <Button
-              variant="contained"
-              color="primary"
-              style={{
-                float: "right",
-                minWidth: "150px",
-                borderRadius: 10,
-              }}
-            >
-              <Typography>
-                <Link href="/calendar">
-                  <div style={{ color: "white" }}>See Calendar</div>
-                </Link>
-              </Typography>
-            </Button>
+            <Link href="/calendar">
+              <Button
+                variant="contained"
+                color="primary"
+                style={{
+                  float: "right",
+                  minWidth: "130px",
+                  borderRadius: 10,
+                  fontFamily: "Encode Sans",
+                  fontWeight: 800,
+                  textAlign: "center"
+                }}
+              >
+                Calendar
+              </Button>
+            </Link>
             )}
           </Grid>
         </Grid>
