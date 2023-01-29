@@ -134,9 +134,8 @@ const Header: React.FC<{}> = (props) => {
 
   return (
     <div className={useStyles().root}>
-        <a>
+        <a href="/">
           <img
-            href="/"
             src="/header-logo.png"
             alt="University of Washington School of Medicine logo"
             className={useStyles().logo}
