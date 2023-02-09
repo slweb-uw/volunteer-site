@@ -42,7 +42,11 @@ const App: React.FC<{}> = () => {
           <div className={classes.triangletop}></div>
           <div className={classes.trianglebottom}></div>
           <div className={classes.text}>
-            <Typography variant="h4" gutterBottom style={{ marginBottom: 0 }}>
+            <Typography 
+            variant="h4" 
+            gutterBottom
+            style={{marginBottom: 0}}
+            >
               <pre className={classes.topTitle}>
                 {"SERVICE LEARNING & \nCOMMUNITY ENGAGEMENT"}
               </pre>
@@ -50,7 +54,10 @@ const App: React.FC<{}> = () => {
 
             <HeadlineBar color="purple" width={590} height={15}></HeadlineBar>
 
-            <Typography variant="h5" gutterBottom>
+            <Typography
+              variant="h5"
+              gutterBottom
+            >
               <pre className={classes.bottomTitle}>
                 {"UW School of Medicine/WWAMI\nUW Health Sciences"}
               </pre>
@@ -78,7 +85,7 @@ const App: React.FC<{}> = () => {
       </div>
 
       {/** Cards */}
-      <div style={{ marginTop: "1em" }}>
+      <div style={{marginTop: "1em" }}>
         <div
           style={{
             width: "100%",
@@ -174,7 +181,7 @@ const App: React.FC<{}> = () => {
               </CardActionArea>
             </Card>
           </div>
-          {/* Volunteer Providers */}
+           {/* Volunteer Providers */}
           <div
             style={{
               display: "flex",
@@ -362,7 +369,7 @@ const App: React.FC<{}> = () => {
               style={{
                 marginLeft: "auto",
                 marginRight: "auto",
-                width: "90%",
+                width:"90%",
               }}
             >
               <Typography
@@ -377,33 +384,29 @@ const App: React.FC<{}> = () => {
                   textTransform: "uppercase",
                 }}
               >
-                <span style={{ color: "#4B2E83" }}>New!</span> Mobile Health
-                Outreach Clinic (Seattle only)
+               <span style={{color:"#4B2E83"}}>New!</span>  Mobile Health Outreach Clinic (Seattle only)
               </Typography>
-              <Typography
-                style={{ fontFamily: "Open Sans", marginTop: "1rem" }}
-              >
-                This Fall marks the beginning of an exciting new student run
-                free clinic. UW Health Sciences students will be partnering with
-                Harborview Medical Center (HMC) Downtown programs to provide
-                urgent care services to residents of Low Income Housing
-                Institute’s Tiny House Villages. Health sciences students will
-                work on interprofessional teams to respond to community
-                identified health needs while further developing their teamwork
-                and clinical skills.
+              <Typography style={{ fontFamily: "Open Sans", marginTop: "1rem" }}>
+              This Fall marks the beginning of an exciting new student run free clinic.  
+              UW Health Sciences students will be partnering with Harborview Medical Center 
+              (HMC) Downtown programs to provide urgent care services to residents of Low Income 
+              Housing Institute’s Tiny House Villages.   Health sciences students will work on 
+              interprofessional teams to respond to community identified health needs while further 
+              developing their teamwork and clinical skills. 
               </Typography>
               <div className={classes.mobileLearnMoreBtn}>
                 <Link href="https://collaborate.uw.edu/student-portal/mobile-health-outreach/">
                   <Button
                     color="primary"
                     variant="contained"
-                    style={{ marginTop: "1rem", alignItems: "center" }}
+                    style={{marginTop: "1rem", alignItems: "center"}}
                     className={classes.learnMoreBtn}
                   >
                     Learn More
                   </Button>
                 </Link>
               </div>
+             
             </div>
           </Grid>
           <Grid item xs={12} md={6} lg={6}>
@@ -417,7 +420,7 @@ const App: React.FC<{}> = () => {
               <img
                 style={{
                   width: "30em",
-                  maxWidth: "100%",
+                  maxWidth:"100%",
                   height: "auto",
                   borderRadius: "10px",
                 }}
@@ -431,7 +434,9 @@ const App: React.FC<{}> = () => {
       </div>
 
       {/** Serve With Us section*/}
-      <div className={useStyles().mobile}>
+      <div
+        className={useStyles().mobile}
+      >
         <Grid container spacing={2}>
           <Grid item xs={12} md={6} lg={4}>
             <div
@@ -453,7 +458,7 @@ const App: React.FC<{}> = () => {
               style={{
                 marginLeft: "auto",
                 marginRight: "auto",
-                width: "90%",
+                width:"90%",
               }}
             >
               <Typography
@@ -516,22 +521,20 @@ const App: React.FC<{}> = () => {
               </Typography>
               <HeadlineBar color="gold" width={130} height={10}></HeadlineBar>
               <Typography style={{ fontFamily: "Open Sans" }}>
-                Our Service Learning and Community Engagement programs strive to
-                enrich health sciences education by providing our students with
-                opportunities to hone their skills while addressing the health
-                needs of our underserved communities. We seek to foster the joy
-                of service in our students who are preparing for lives of civic
-                and social responsibility in an increasingly diverse and complex
-                global society.These goals could not be achieved without strong
-                community partnerships, dedicated supervising providers, and
-                mutual collaboration within our six health sciences schools.
+                Our Service Learning and Community Engagement programs strive to enrich
+                health sciences education by providing our students with opportunities
+                to hone their skills while addressing the health needs of our underserved
+                communities. We seek to foster the joy of service in our students who are
+                preparing for lives of civic and social responsibility in an increasingly
+                diverse and complex global society.These goals could not be achieved without
+                strong community partnerships, dedicated supervising providers, and mutual 
+                collaboration within our six health sciences schools.
               </Typography>
               <br></br>
               <br></br>
               <Typography style={{ fontFamily: "Open Sans" }}>
-                Please take a moment to glance through the amazing clinical and
-                mentoring projects that have been developed by our students over
-                the past ten years.
+                Please take a moment to glance through the amazing clinical and mentoring
+                projects that have been developed by our students over the past ten years.
               </Typography>
             </div>
           </Grid>
@@ -545,9 +548,6 @@ const App: React.FC<{}> = () => {
             >
               <img
                 className={useStyles().img}
-                style={{
-                  marginTop: "7px",
-                }}
                 src="/communityPartners.jpg"
                 alt="Two students smiling"
               />
@@ -557,8 +557,10 @@ const App: React.FC<{}> = () => {
       </div>
 
       {/** Contact section*/}
-      <div className={useStyles().mobile}>
-        <div style={{ textAlign: "center", alignItems: "center" }}>
+      <div
+        className={useStyles().mobile}
+      >
+        <div style={{textAlign: "center", alignItems: "center"}}>
           <Typography
             gutterBottom
             variant="h4"
@@ -572,21 +574,17 @@ const App: React.FC<{}> = () => {
           >
             Contact
           </Typography>
-          <div style={{ textAlign: "center" }}>
-            <HeadlineBar color="purple" width={110} height={10}></HeadlineBar>
+          <div style={{textAlign: "center"}}>
+            <HeadlineBar color="purple" width={110} height={10} ></HeadlineBar>
           </div>
         </div>
-        <Grid
-          container
-          spacing={6}
-          xs={12}
-          sm={12}
+        <Grid container spacing={6} xs={12} sm={12}
           style={{
             marginTop: "0.5em",
             marginBottom: "0.5em",
             display: "flex",
             justifyContent: "center",
-            alignContent: "center",
+            alignContent: "center"
           }}
         >
           <Grid item>
@@ -707,7 +705,7 @@ const useStyles = makeStyles((theme) => ({
     bottom: 0,
     background: "#FFFFFF",
     "@media only screen and (max-width: 430px)": {
-      height: "500px",
+      height: "500px"
     },
   },
   triangletop: {
@@ -744,7 +742,7 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: "4rem",
     "@media only screen and (max-width: 780px)": {
       marginLeft: "1rem",
-      marginTop: "-30px",
+      marginTop: "-30px"
     },
   },
   cardlinks: {
@@ -765,10 +763,10 @@ const useStyles = makeStyles((theme) => ({
   contact: {
     fontFamily: "Open Sans",
   },
-  contactContainer: {
+  contactContainer:{
     marginLeft: "4em",
     "@media only screen and (max-width: 480px)": {
-      marginLeft: "0",
+      marginLeft: "0" 
     },
   },
   findOppBtn: {
@@ -789,9 +787,9 @@ const useStyles = makeStyles((theme) => ({
       transition: ".25s",
     },
   },
-  mobileLearnMoreBtn: {
+  mobileLearnMoreBtn:{
     "@media only screen and (max-width: 600px)": {
-      textAlign: "center",
+      textAlign: "center"
     },
   },
   img: {
@@ -826,16 +824,16 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   description: {
-    display: "inline flex",
-    fontSize: "1rem",
-    maxWidth: "70%",
-    overflow: "auto",
-    fontFamily: "Open Sans",
-    marginBottom: "15px",
-    "@media only screen and (max-width: 430px)": {
-      fontSize: "3vw",
-      width: "70%",
-    },
+      display: "inline flex",
+      fontSize: "1rem",
+      maxWidth: "70%",
+      overflow: "auto",
+      fontFamily: "Open Sans",
+      marginBottom: "15px",
+      "@media only screen and (max-width: 430px)": {
+        fontSize: "3vw",
+        width: "70%"
+      },
   },
   mobile: {
     padding: "5em",

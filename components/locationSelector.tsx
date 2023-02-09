@@ -6,17 +6,14 @@ import { Location, setLocation } from "../helpers/locations";
 
 type LocationSelectorProps = {
   defaultLocation: string;
-};
+}
 
 const LocationSelector: React.FC<LocationSelectorProps> = ({
-  defaultLocation,
+  defaultLocation
 }) => {
   const router = useRouter();
 
-  const location =
-    router.query.location && !Array.isArray(router.query.location)
-      ? router.query.location
-      : defaultLocation;
+  const location = (router.query.location && !Array.isArray(router.query.location)) ? router.query.location : defaultLocation;
 
   return (
     <div style={{ display: "flex" }}>
@@ -24,13 +21,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
         id="select-location-filter"
         gutterBottom
         display="inline"
-        style={{
-          marginRight: "1.1em",
-          fontFamily: "Uni Sans Book",
-          fontSize: "1rem",
-          textAlign: "center",
-          paddingTop: "7px",
-        }}
+        style={{ marginRight: "1em", fontFamily: "Uni Sans Book", fontSize: "1rem", textAlign: "center", paddingTop: "7px"}}
       >
         <b>Select a Location</b>{" "}
       </Typography>
@@ -48,17 +39,14 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
         style={{ width: 104 }}
         input={<BootstrapInput />}
       >
-        <MenuItem value={defaultLocation} style={{ fontFamily: "Open Sans" }}>
-          Location
-        </MenuItem>
+        <MenuItem value={defaultLocation} style={{ fontFamily: "Open Sans" }}>Location</MenuItem>
         {Object.values(Location).map((location) => (
-          <MenuItem style={{ fontFamily: "Open Sans" }} value={location}>
-            {location}
-          </MenuItem>
+          <MenuItem style={{ fontFamily: "Open Sans" }} value={location}>{location}</MenuItem>
         ))}
       </Select>
     </div>
-  );
-};
+  )
+}
+
 
 export default LocationSelector;

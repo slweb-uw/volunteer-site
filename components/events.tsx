@@ -1,41 +1,43 @@
 import React, { useEffect, useState } from "react";
 import { firebaseClient } from "../firebaseClient";
-import {
-  Button,
-  Grid,
-  MenuItem,
-  Select,
-  Typography,
-  createStyles,
-  withStyles,
-  FormControlLabel,
-  Switch,
-  FormGroup,
-} from "@material-ui/core";
+import { 
+  Button, 
+  Grid, 
+  MenuItem, 
+  Select, 
+  Typography, 
+  createStyles, 
+  withStyles, 
+  FormControlLabel, 
+  Switch, 
+  FormGroup } from "@material-ui/core";
 import EventModal from "./eventModal";
 import BootstrapInput from "./bootstrapInput";
 import Link from "next/link";
 import AddModifyEventModal from "./addModifyEventModal";
 import EventCard from "./eventCard";
 import { useAuth } from "../auth";
-import { Location } from "../helpers/locations";
+import { Location } from "../helpers/locations"
 import { volunteerTypes } from "./addModifyEventModal";
 import { CollectionReference, Query } from "@firebase/firestore-types";
-import { useRouter } from "next/router";
+import {useRouter} from "next/router";
 
 type EventsProps = {
   location: Location;
-  classes?: any;
-};
+  classes?: any,
+}
 
-const Events: React.FC<EventsProps> = ({ location, classes }) => {
+const Events: React.FC<EventsProps> = ({
+  location, classes
+}) => {
   const { user } = useAuth();
   const router = useRouter();
 
   const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
   const [events, setEvents] = useState<EventData[]>([]); // list of loaded events
-  const [cursor, setCursor] =
-    useState<firebaseClient.firestore.QueryDocumentSnapshot>(); // cursor to last document loaded
+  const [cursor, setCursor] = useState<
+    firebaseClient.firestore.QueryDocumentSnapshot
+  >(); // cursor to last document loaded
 
   const ORGANIZATION_FILTER_QUERY_KEY = "org";
   const STUDENT_TYPE_FILTER_QUERY_KEY = "type";
@@ -44,7 +46,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
     if (!router.isReady) {
       return;
     }
-    const query = { ...router.query };
+    const query = {...router.query}
     if (value) {
       query[key] = value;
     } else {
@@ -53,23 +55,22 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
     router.replace(
       {
         pathname: router.pathname,
-        query: query,
+        query: query
       },
       undefined,
       {
-        scroll: false,
-      }
-    );
-  };
+        scroll: false
+      });
+  }
 
   const organizationFilter = router.query[ORGANIZATION_FILTER_QUERY_KEY] ?? "";
   const setOrganizationFilter = (value: string) => {
     setQueryVar(ORGANIZATION_FILTER_QUERY_KEY, value);
-  };
+  }
   const studentTypeFilter = router.query[STUDENT_TYPE_FILTER_QUERY_KEY] ?? "";
   const setStudentTypeFilter = (value: string) => {
     setQueryVar(STUDENT_TYPE_FILTER_QUERY_KEY, value);
-  };
+  }
 
   const [showLoadButton, setShowLoadButton] = useState<boolean>(true);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -85,7 +86,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
     } else if (isProviderView) {
       setStudentTypeFilter("");
     }
-  };
+  }
 
   useEffect(() => {
     // Load events
@@ -96,35 +97,29 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
       .collection("cache")
       .doc(location.toString())
       .get()
-      .then((doc) =>
-        setOrganizations(Object.keys(doc.data() as string[]).sort())
-      );
+      .then((doc) => setOrganizations(Object.keys(doc.data() as string[]).sort()));
   }, [location]);
 
-  // Adjusts state depending on whether provider view is on
-  useEffect(() => {
-    if (isProviderView) {
-      setTopMessage(
-        <span>
-          &nbsp;our&nbsp;
-          <i>
+    // Adjusts state depending on whether provider view is on
+    useEffect(() => {
+      if (isProviderView) {
+        setTopMessage(
+          <span>
+           &nbsp;our&nbsp; 
+           <i>
             <a style={{ color: "#85754D" }} href="/onboarding/">
               Onboarding Instructions
             </a>
           </i>
           &nbsp;before signing up for an opportunity.
-        </span>
-      );
-    } else {
-      setTopMessage(
-        <span>
-          {" "}
-          project specific training requirements before signing up for an
-          opportunity.
-        </span>
-      );
-    }
-  }, [isProviderView]);
+          </span>
+        )
+      } else {
+        setTopMessage(
+            <span> project specific training requirements before signing up for an opportunity.</span>
+        )
+      }
+    }, [isProviderView])
 
   const getOrder = (curSort: string) => {
     return curSort === "timestamp" ? "desc" : "asc";
@@ -133,25 +128,20 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
   // Append more events from Firestore onto this page from position of cursor
   const loadEvents = async (keepPrev: boolean) => {
     const order = getOrder(sortField);
-    let query: CollectionReference | Query = firebaseClient
-      .firestore()
-      .collection("/" + location);
+    let query : CollectionReference | Query = firebaseClient.firestore().collection("/" + location);
     if (organizationFilter) {
       query = query.where("Organization", "==", organizationFilter);
     }
     if (studentTypeFilter) {
-      query = query.where(
-        "Types of Volunteers Needed",
-        "array-contains",
-        studentTypeFilter
-      );
+      query = query.where("Types of Volunteers Needed", "array-contains", studentTypeFilter);
     }
 
     query = query.orderBy(sortField, order);
     if (keepPrev && cursor) {
-      query = query.startAfter(cursor);
+      query = query.startAfter(cursor)
     }
-    const next = await query.limit(10).get();
+    const next = await query.limit(10)
+      .get();
 
     const eventsToAdd: EventData[] = [];
     next.docs.forEach((document) => {
@@ -175,11 +165,11 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
   };
 
   useEffect(() => {
-    loadEvents(false);
-    /*.catch((err) => {
+    loadEvents(false)
+      /*.catch((err) => {
         console.error("Error loading events: " + err);
       });*/
-  }, [organizationFilter, studentTypeFilter]);
+  }, [organizationFilter, studentTypeFilter])
 
   return (
     <div>
@@ -199,35 +189,32 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
         <Grid container>
           <Grid item xs={12} sm={10}>
             <Grid container>
-              {!isProviderView && (
-                <Grid item style={{ marginBottom: "1em" }}>
-                  <Typography
-                    id="student-type-filter"
-                    className={classes.filterField}
-                  >
-                    Student Discipline{" "}
-                  </Typography>
-                  <Select
-                    aria-labelledby="student-type-filter"
-                    value={studentTypeFilter}
-                    className={classes.studentFilter}
-                    onChange={(e) => {
-                      setStudentTypeFilter(e.target.value as string);
-                    }}
-                    style={{ width: 200 }}
-                    displayEmpty
-                    input={<BootstrapInput />}
-                    disabled={isProviderView}
-                  >
-                    <MenuItem value="">Show All</MenuItem>
-                    {volunteerTypes
-                      .filter((studentType) => studentType !== "Providers")
-                      .map((studentType) => (
-                        <MenuItem value={studentType}>{studentType}</MenuItem>
-                      ))}
-                  </Select>
-                </Grid>
-              )}
+              {!isProviderView && <Grid item style={{ marginBottom: "1em" }}>
+                <Typography
+                  id="student-type-filter"
+                  className={classes.filterField}>
+                  Student Discipline{" "}
+                </Typography>
+                <Select
+                  aria-labelledby="student-type-filter"
+                  value={studentTypeFilter}
+                  className={classes.studentFilter}
+                  onChange={(e) => {
+                    setStudentTypeFilter(e.target.value as string);
+                  }}
+                  style={{ width: 200 }}
+                  displayEmpty
+                  input={<BootstrapInput />}
+                  disabled={ isProviderView }
+                >
+                  <MenuItem value="">Show All</MenuItem>
+                  {volunteerTypes
+                    .filter((studentType) => studentType !== "Providers")
+                    .map((studentType) => (
+                      <MenuItem value={studentType}>{studentType}</MenuItem>
+                    ))}
+                </Select>
+              </Grid>}
               <Grid item style={{ marginBottom: "1em" }}>
                 <Typography
                   id="opportunity-type-filter"
@@ -241,7 +228,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
                   onChange={(e) => {
                     setOrganizationFilter(e.target.value as string);
                   }}
-                  style={{ width: 200 }}
+                  style={{ width: 200}}
                   displayEmpty
                   input={<BootstrapInput />}
                 >
@@ -253,63 +240,50 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
               </Grid>
             </Grid>
           </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={2}
-            style={{ textAlign: "right", maxWidth: "100%" }}
-          >
+          <Grid item xs={12} sm={2} style={{ textAlign: "right", maxWidth: "100%"}}>
             <FormGroup>
-              <FormControlLabel
+              <FormControlLabel 
                 control={
-                  <Switch
-                    color="primary"
-                    classes={{
-                      root: classes.root,
-                      switchBase: classes.switchBase,
-                      thumb: classes.thumb,
-                      track: classes.track,
-                      checked: classes.checked,
-                    }}
-                    checked={isProviderView}
-                    onChange={(e) => setProviderView(e.target.checked)}
+                  <Switch color="primary"
+                          classes={{
+                            root: classes.root,
+                            switchBase: classes.switchBase,
+                            thumb: classes.thumb,
+                            track: classes.track,
+                            checked: classes.checked
+                          }}
+                          checked={isProviderView}
+                          onChange={(e) => setProviderView(e.target.checked)}
                   />
                 }
-                label={
-                  <Typography style={{ textAlign: "center" }}>
-                    <b>Provider View</b>
-                  </Typography>
-                }
+                label={<Typography style= {{textAlign: "center"}}><b>Provider View</b></Typography>}
                 labelPlacement="start"
-              />
+                 />
             </FormGroup>
-            {location === "Seattle" && (
-              <Link href="/calendar">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  style={{
-                    float: "right",
-                    minWidth: "130px",
-                    borderRadius: 10,
-                    fontFamily: "Encode Sans",
-                    fontWeight: 800,
-                    textAlign: "center",
-                  }}
-                >
-                  Calendar
-                </Button>
-              </Link>
+            {location === "Seattle" &&(
+            <Link href="/calendar">
+              <Button
+                variant="contained"
+                color="primary"
+                style={{
+                  float: "right",
+                  minWidth: "130px",
+                  borderRadius: 10,
+                  fontFamily: "Encode Sans",
+                  fontWeight: 800,
+                  textAlign: "center"
+                }}
+              >
+                Calendar
+              </Button>
+            </Link>
             )}
           </Grid>
         </Grid>
       </div>
 
-      <Typography
-        variant="h6"
-        style={{ textAlign: "center", marginBottom: "3em", color: "#85754D" }}
-      >
-        <b>Note:</b> Please review
+      <Typography variant="h6" style={{ textAlign: "center", marginBottom: "3em", color: "#85754D" }}>
+        <b>Note:</b> Please review  
         {topMessage}
       </Typography>
 
@@ -357,11 +331,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
             <div style={{ textAlign: "center" }}>
               <Button
                 variant="outlined"
-                onClick={() => {
-                  loadEvents(
-                    true
-                  ); /*.catch((err) => { console.error("Error loading more events: " + err)*/
-                }}
+                onClick={() => { loadEvents(true);/*.catch((err) => { console.error("Error loading more events: " + err)*/ } }
                 style={{
                   marginTop: "2em",
                 }}
@@ -382,7 +352,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
       )}
     </div>
   );
-};
+}
 
 const styles = createStyles({
   page: {
@@ -400,7 +370,7 @@ const styles = createStyles({
     padding: 8,
   },
   filterField: {
-    fontFamily: "Uni Sans Book",
+    fontFamily: "Uni Sans Book", 
     fontSize: "1rem",
     display: "inline",
     fontWeight: 600,
@@ -415,53 +385,53 @@ const styles = createStyles({
     height: 26,
   },
   track: {
-    background: "gray",
-    opacity: "1 !important",
+    background: 'gray',
+    opacity: '1 !important',
     borderRadius: 20,
-    position: "relative",
-    "&:before, &:after": {
-      display: "inline-block",
-      position: "absolute",
-      top: "50%",
-      width: "50%",
-      transform: "translateY(-50%)",
-      color: "#fff",
-      textAlign: "center",
+    position: 'relative',
+    '&:before, &:after': {
+      display: 'inline-block',
+      position: 'absolute',
+      top: '50%',
+      width: '50%',
+      transform: 'translateY(-50%)',
+      color: '#fff',
+      textAlign: 'center',
     },
-    "&:before": {
+    '&:before': {
       content: '"On"',
       left: 4,
       opacity: 0,
     },
-    "&:after": {
+    '&:after': {
       content: '"Off"',
       right: 4,
     },
   },
   checked: {
-    "&$switchBase": {
-      color: "#185a9d",
-      transform: "translateX(32px)",
-      "&:hover": {
-        backgroundColor: "rgba(24,90,257,0.08)",
+    '&$switchBase': {
+      color: '#185a9d',
+      transform: 'translateX(32px)',
+      '&:hover': {
+        backgroundColor: 'rgba(24,90,257,0.08)',
       },
     },
-    "& $thumb": {
-      backgroundColor: "#fff",
+    '& $thumb': {
+      backgroundColor: '#fff',
     },
-    "& + $track": {
-      background: "#4B2E83",
-      "&:before": {
+    '& + $track': {
+      background: '#4B2E83',
+      '&:before': {
         opacity: 1,
       },
-      "&:after": {
+      '&:after': {
         opacity: 0,
-      },
+      }
     },
   },
   studentFilter: {
     marginRight: "1em",
-  },
+  }
 });
 
 //@ts-ignore
