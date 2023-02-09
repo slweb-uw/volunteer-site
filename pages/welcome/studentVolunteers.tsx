@@ -25,9 +25,9 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
       <IconBreadcrumbs crumbs={["Welcome Students"]} parentURL={undefined} />
       <Typography
         variant="h4"
-        style={{ 
-          fontFamily: "Encode Sans", 
-          fontWeight: 800, 
+        style={{
+          fontFamily: "Encode Sans",
+          fontWeight: 800,
           fontSize: "2rem",
         }}
       >
@@ -114,6 +114,7 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
               marginTop: "39px",
               marginBottom: "39px",
               fontFamily: "Open Sans",
+              alignItems: "center",
             }}
           >
             “Service Learning has helped me to get to know and build
