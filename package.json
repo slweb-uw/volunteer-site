@@ -27,6 +27,7 @@
     "@tiptap/extension-placeholder": "^2.0.0-beta.48",
     "@tiptap/extension-text-align": "^2.0.0-beta.29",
     "@tiptap/extension-underline": "^2.0.0-beta.23",
+    "@tiptap/pm": "^2.0.0-beta.217",
     "@tiptap/react": "^2.0.0-beta.108",
     "@tiptap/starter-kit": "^2.0.0-beta.183",
     "@types/micro-cors": "^0.1.1",
