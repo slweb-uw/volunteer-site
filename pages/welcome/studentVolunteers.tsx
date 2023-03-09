@@ -25,9 +25,9 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
       <IconBreadcrumbs crumbs={["Welcome Students"]} parentURL={undefined} />
       <Typography
         variant="h4"
-        style={{ 
-          fontFamily: "Encode Sans", 
-          fontWeight: 800, 
+        style={{
+          fontFamily: "Encode Sans",
+          fontWeight: 800,
           fontSize: "2rem",
         }}
       >
@@ -105,7 +105,7 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
             />
           </div>
         </Grid>
-        <Grid item xs={12} md={6} lg={8}>
+        <div style={{ display: "flex", justifyContent: "center" }}>
           <Typography
             style={{
               fontWeight: 400,
@@ -114,6 +114,7 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
               marginTop: "39px",
               marginBottom: "39px",
               fontFamily: "Open Sans",
+              textAlign: "center",
             }}
           >
             “Service Learning has helped me to get to know and build
@@ -128,14 +129,14 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
               style={{
                 fontWeight: 700,
                 fontSize: 20,
-                marginTop: "20px",
+                marginTop: "15px",
                 marginLeft: "20px",
               }}
             >
               - Kierney Ross, Montana WWAMI
             </Typography>
           </Typography>
-        </Grid>
+        </div>
       </Grid>
     </div>
   );
