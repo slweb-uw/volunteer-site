@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import firebase from "firebase/app";
 import "firebase/firestore";
+import { firebaseClient } from "../firebaseClient";
 import { makeStyles } from '@material-ui/core/styles';
+import DeleteIcon from "@material-ui/icons/Delete";
 import { 
   Typography, 
   TextField, 
@@ -10,10 +12,16 @@ import {
   ListItem, 
   ListItemText, 
   ListItemSecondaryAction, 
-  IconButton, Divider 
+  IconButton, 
+  Divider,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions 
   } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
-import { firestore } from "firebase-admin";
+
+
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 800,
@@ -62,9 +70,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AdminPage = () => {
-  // const user = firebase.auth().currentUser;
-  // if(!user || (user.email !== "slweb@uw.edu" && user.email !== "bruno.futino@gmail.com")){
-  //         return <div>You are not authorized to access this page.</div>
+  // const user = firebaseClient.auth().currentUser;
+  // const authorizedEmails = ["slweb@uw.edu", "bruno.futino@gmail.com"]; // Hardcoded to limit who can manage admins
+  // if (!user || !authorizedEmails.includes(user.email)) {
+  //   return <div>You are not authorized to access this page.</div>;
   // }
 
   const classes = useStyles();
@@ -106,14 +115,16 @@ const AdminPage = () => {
       });
   };
 
-
-  const removeAdmin = (adminId) => {
+  const removeAdmin = (adminEmail) => {
     firebase
       .firestore()
       .collection("Admins")
-      .doc(adminId)
-      .delete()
-      .then(() => {
+      .where("email", "==", adminEmail)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          doc.ref.delete();
+        });
         console.log("Admin removed successfully!");
       })
       .catch((error) => {
@@ -121,8 +132,15 @@ const AdminPage = () => {
       });
   };
 
-    
+  const [confirmationOpen, setConfirmationOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [selectedAdmin, setSelectedAdmin] = useState({});
 
+  const openConfirmation = (admin) => {
+    setConfirmationOpen(true);
+    setSelectedAdmin(admin.email);
+  };
+  
   return (
     <div className={classes.root}>
     <Typography variant="h4" className={classes.heading}>
@@ -143,32 +161,47 @@ const AdminPage = () => {
     </form>
     <Divider className={classes.divider} />
     <List>
-    {admins.map((admin, index) => (
-          <React.Fragment key={admin.id}>
-            <ListItem
-              className={classes.listItem + " " + (index % 2 === 0 ? classes.evenListItem : "")}
-              onClick={() => openConfirmation(admin)}
-            >
-              <ListItemText
-                primary={admin.email}
-                classes={{ primary: classes.listItemText }}
-              />
-              <ListItemSecondaryAction>
-                <IconButton
-                  edge="end"
-                  aria-label="delete"
-                  className={classes.removeButton}
-                  onClick={() => removeAdmin(admin.id)}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </ListItemSecondaryAction>
-            </ListItem>
-            <Divider />
-          </React.Fragment>
-        ))}
-      </List>
-    </div>
+      {admins.map((admin, index) => (
+        <React.Fragment key={admin.id}>
+          <ListItem
+            className={classes.listItem + " " + (index % 2 === 0 ? classes.evenListItem : "")}
+          >
+            <ListItemText
+              primary={admin.email}
+              classes={{ primary: classes.listItemText }}
+            />
+            <ListItemSecondaryAction>
+              <IconButton
+                edge="end"
+                aria-label="delete"
+                className={classes.removeButton}
+                onClick={() => openConfirmation(admin)}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </ListItemSecondaryAction>
+          </ListItem>
+          <Divider />
+        </React.Fragment>
+      ))}
+    </List>
+    <Dialog open={confirmationOpen} onClose={() => setConfirmationOpen(false)}>
+      <DialogTitle>{"Delete Admin?"}</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          Are you sure you want to remove the admin with email: {selectedAdmin}?
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setConfirmationOpen(false)} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={() => {removeAdmin(selectedAdmin); setConfirmationOpen(false);}} color="primary" autoFocus>
+          Delete
+        </Button>
+      </DialogActions>
+    </Dialog>
+  </div>
   );
 };
 
