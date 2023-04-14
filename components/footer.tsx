@@ -1,6 +1,8 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import { firebaseClient } from "firebaseClient";
+import { useAuth } from "auth";
 
 const useStyles = makeStyles((theme) => ({
   logo:{
@@ -31,6 +33,29 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Footer: React.FC<{}> = () => {
+  const { user } = useAuth();
+  const [isAdmin, setIsAdmin] = React.useState(false);
+  const [isLoadingUser, setIsLoadingUser] = React.useState(true);
+
+  const checkUser = async () => {
+    const user = firebaseClient.auth().currentUser;
+    
+    if(user && (user.email === "slweb@uw.edu" || user.email === "bruno.futino@gmail.com")){
+      setIsAdmin(true);
+    }else{
+      setIsAdmin(false);
+    }
+    setIsLoadingUser(false);
+  }
+    
+  React.useEffect(() => {
+    checkUser();
+  }, []);
+
+  React.useEffect(() => {
+    checkUser();
+  }, [user]);
+
   return (
     <footer
       className={useStyles().footer}
@@ -46,6 +71,9 @@ const Footer: React.FC<{}> = () => {
           experience on this website.
         </i>
       </Typography>
+      {user && isAdmin && (
+          <a href="/adminManager" style={{color: "white", paddingTop: "100px"}}>Admin Manager</a>
+      )}
     </footer>
   );
 };
