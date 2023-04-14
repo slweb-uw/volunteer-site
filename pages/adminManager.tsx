@@ -25,10 +25,13 @@ import {
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 800,
+    minHeight: 600,
     margin: "0 auto",
     padding: 20,
-    paddingTop: 100,
+    marginTop: "2rem",
+    marginBottom: "2rem",
     boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.2)",
+    textAlign: "center",
   },
   heading: {
     marginBottom: 20,
@@ -39,18 +42,20 @@ const useStyles = makeStyles((theme) => ({
   },
   textField: {
     marginRight: 20,
+    width: "700px",
   },
   addButton: {
     backgroundColor: "#4b2e83",
     color: "#fff",
+    width: "100px",
     "&:hover": {
-      backgroundColor: "#388e3c",
+      backgroundColor: "#B7A57A",
     },
   },
   removeButton: {
-    color: "#f44336",
+    color: "#808080",
     "&:hover": {
-      backgroundColor: "#e57373",
+      backgroundColor: "#DDDDDD",
     },
   },
   listItem: {
@@ -96,6 +101,8 @@ const AdminPage = () => {
 
   const addAdmin = (e) => {
     e.preventDefault();
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
     const existingAdmin = admins.find((admin) => admin.email === newAdminEmail);
     if (existingAdmin) {
       console.log("Admin already exists");
@@ -144,7 +151,7 @@ const AdminPage = () => {
   return (
     <div className={classes.root}>
     <Typography variant="h4" className={classes.heading}>
-      Admin Panel
+      Admin Manager
     </Typography>
     <form className={classes.form} onSubmit={addAdmin}>
       <TextField
