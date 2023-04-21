@@ -2,10 +2,13 @@ import React from "react";
 import Link from "next/link";
 import NavLink from "./navlink";
 import Hidden from "@material-ui/core/Hidden";
-import { useAuth } from "auth";
 import { firebaseClient } from "firebaseClient";
+import { useAuth } from "auth";
 import BasicMenu from "./basicMenu";
 import { makeStyles } from "@material-ui/core/styles";
+import { useCollectionData } from "react-firebase-hooks/firestore";
+import 'firebase/firestore';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -85,8 +88,13 @@ const useStyles = makeStyles((theme) => ({
 
 const Divider = () => <span className={useStyles().divider}>/</span>;
 
+
+
 const Header: React.FC<{}> = (props) => {
   const { user } = useAuth();
+  // const [admins, loading] = useCollectionData(firebaseClient.firestore().collection("Admins"));
+  // const isAdmin = !loading && admins?.some((admin) => admin.email === user?.email);
+  const isAdmin = true; // demo purposes
 
   const links: React.ReactNode[] = [
       <a  href="/" className={useStyles().navtitle}>Home</a>,
@@ -104,6 +112,7 @@ const Header: React.FC<{}> = (props) => {
     <Divider/>,
     // sign in and out
     user ? (
+      <>
         <a
           key="sign out"
           onClick={() => {
@@ -112,7 +121,12 @@ const Header: React.FC<{}> = (props) => {
           className={useStyles().navtitle}
         >
           Sign Out
+          {isAdmin ? (
+          <p style={{color: "gold", margin: 0, fontSize: "12px"}}>ADMIN</p>
+        ) : null}
         </a>
+        
+      </>
     ) : (
         <a
           key="sign in"
