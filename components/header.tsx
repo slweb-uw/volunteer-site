@@ -122,7 +122,9 @@ const Header: React.FC<{}> = (props) => {
               // Target uw login
               tenant: "uw.edu",
             });
-            firebaseClient.auth().signInWithPopup(provider);
+            firebaseClient.auth().signOut().then(() => {
+              firebaseClient.auth().signInWithRedirect(provider);
+            });
           }}
           className={useStyles().navtitle}
         >
@@ -150,7 +152,6 @@ const Header: React.FC<{}> = (props) => {
           {links.map((element: React.ReactNode) => {
             return element;
           })}
-          {/* <NavLink href="/training"><StyledLink>Training</StyledLink></NavLink> */}
         </div>
       </Hidden>
     </div>
