@@ -1,11 +1,16 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import NavLink from "./navlink";
 import Hidden from "@material-ui/core/Hidden";
-import { useAuth } from "auth";
 import { firebaseClient } from "firebaseClient";
+import { useAuth } from "auth";
 import BasicMenu from "./basicMenu";
 import { makeStyles } from "@material-ui/core/styles";
+import { useCollectionData } from "react-firebase-hooks/firestore";
+
+
+import firebase from "firebase/app";
+import "firebase/firestore";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -85,8 +90,27 @@ const useStyles = makeStyles((theme) => ({
 
 const Divider = () => <span className={useStyles().divider}>/</span>;
 
+
+
 const Header: React.FC<{}> = (props) => {
   const { user } = useAuth();
+  const [admins, setAdmins] = useState([]);
+
+  useEffect(() => {
+    const fetchAdmins = async () => {
+      try {
+        const snapshot = await firebase.firestore().collection("Admins").get();
+        const adminsData = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        setAdmins(adminsData);
+      } catch (error) {
+        console.error("Error fetching admins", error);
+      }
+    };
+  
+    fetchAdmins();
+  }, []);
+
+  const isAdmin = admins.find((admin) => admin.email === user?.email);
 
   const links: React.ReactNode[] = [
       <a  href="/" className={useStyles().navtitle}>Home</a>,
@@ -104,6 +128,7 @@ const Header: React.FC<{}> = (props) => {
     <Divider/>,
     // sign in and out
     user ? (
+      <>
         <a
           key="sign out"
           onClick={() => {
@@ -112,7 +137,12 @@ const Header: React.FC<{}> = (props) => {
           className={useStyles().navtitle}
         >
           Sign Out
+          {isAdmin ? (
+          <p style={{color: "gold", margin: 0, fontSize: "12px"}}>ADMIN</p>
+        ) : null}
         </a>
+        
+      </>
     ) : (
         <a
           key="sign in"
@@ -122,9 +152,11 @@ const Header: React.FC<{}> = (props) => {
               // Target uw login
               tenant: "uw.edu",
             });
+
             firebaseClient.auth().signOut().then(() => {
               firebaseClient.auth().signInWithRedirect(provider);
             });
+
           }}
           className={useStyles().navtitle}
         >
