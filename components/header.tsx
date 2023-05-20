@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
-import NavLink from "./navlink";
 import Hidden from "@material-ui/core/Hidden";
 import { firebaseClient } from "firebaseClient";
 import { useAuth } from "auth";
 import BasicMenu from "./basicMenu";
 import { makeStyles } from "@material-ui/core/styles";
-import { useCollectionData } from "react-firebase-hooks/firestore";
-
-
 import firebase from "firebase/app";
 import "firebase/firestore";
 
