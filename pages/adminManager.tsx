@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import firebase from "firebase/app";
 import "firebase/firestore";
 import { firebaseClient } from "../firebaseClient";
+import { useAuth } from "auth";
 import { makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from "@material-ui/icons/Delete";
 import { 
@@ -18,12 +19,13 @@ import {
   DialogTitle,
   DialogContent,
   DialogContentText,
-  DialogActions 
+  DialogActions,
   } from "@material-ui/core";
 
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    fontFamily: "Encode Sans Compressed, sans-serif",
     maxWidth: 800,
     minHeight: 600,
     margin: "0 auto",
@@ -72,18 +74,30 @@ const useStyles = makeStyles((theme) => ({
   divider: {
     margin: "20px 0",
   },
+  message: {
+    display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: 600,
+  },
+  popup: {
+    position: "relative",
+    fontWeight: 600,
+    left: -20,
+    width: 150,
+    height: 20,
+    fontSize: 12,
+    margin: 0,
+    padding: 0,
+    color: "red",
+  }
 }));
 
 const AdminPage = () => {
-  // const user = firebaseClient.auth().currentUser;
-  // const authorizedEmails = ["slweb@uw.edu", "bruno.futino@gmail.com"]; // Hardcoded to limit who can manage admins
-  // if (!user || !authorizedEmails.includes(user.email)) {
-  //   return <div>You are not authorized to access this page.</div>;
-  // }
-
+  const { user } = useAuth();
   const classes = useStyles();
   const [admins, setAdmins] = useState([]);
   const [newAdminEmail, setNewAdminEmail] = useState("");
+  const authorizedEmails = ["slweb@uw.edu", "bruno.futino@gmail.com"]; // Hardcoded to limit who can manage admins
+  const [emailValid, setEmailValid] = useState(true);
+  const [existentAdmin, setExistentAdmin] = useState(false);
 
   useEffect(() => {
     const unsubscribe = firebase.
@@ -102,13 +116,21 @@ const AdminPage = () => {
   const addAdmin = (e) => {
     e.preventDefault();
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    setExistentAdmin(false);
+    setEmailValid(true);
+
+    if(!emailPattern.test(newAdminEmail)){
+      setEmailValid(false);
+      return;
+    }
     
     const existingAdmin = admins.find((admin) => admin.email === newAdminEmail);
     if (existingAdmin) {
-      console.log("Admin already exists");
+      setExistentAdmin(true);
       setNewAdminEmail("");
       return;
     }
+    
     firebase
       .firestore()
       .collection("Admins")
@@ -147,6 +169,14 @@ const AdminPage = () => {
     setConfirmationOpen(true);
     setSelectedAdmin(admin.email);
   };
+
+  if (!user || !authorizedEmails.includes(user.email)) {
+    return (
+      <div className={`${classes.root} ${classes.message}`}>
+        <div>You are not authorized to access this page{!user ? ". Please login." : "."}</div>
+      </div>
+    );
+  }
   
   return (
     <div className={classes.root}>
@@ -166,6 +196,12 @@ const AdminPage = () => {
         Add
       </Button>
     </form>
+    {!emailValid && (
+      <div className={classes.popup}>*Invalid email format</div>
+    )}
+    {existentAdmin && (
+      <div className={classes.popup} style={{color:'orange'}}>*Admin already exists</div>
+    )}
     <Divider className={classes.divider} />
     <List>
       {admins.map((admin, index) => (
