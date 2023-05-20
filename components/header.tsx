@@ -104,7 +104,6 @@ const Header: React.FC<{}> = (props) => {
   
     fetchAdmins();
   }, []);
-
   const isAdmin = admins.find((admin) => admin.email === user?.email);
 
   const links: React.ReactNode[] = [

@@ -171,6 +171,26 @@ const Events: React.FC<EventsProps> = ({
       });*/
   }, [organizationFilter, studentTypeFilter])
 
+
+  // Admin Authentication
+  const [admins, setAdmins] = useState([]);
+  useEffect(() => {
+    const fetchAdmins = async () => {
+      try {
+        const snapshot = await firebase.firestore().collection("Admins").get();
+        const adminsData = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        setAdmins(adminsData);
+      } catch (error) {
+        console.error("Error fetching admins", error);
+      }
+    };
+  
+    fetchAdmins();
+  }, []);
+
+  const isAdmin = admins.find((admin) => admin.email === user?.email);
+
+
   return (
     <div>
       <div
@@ -289,9 +309,7 @@ const Events: React.FC<EventsProps> = ({
 
       {/* Button-Modal Module for adding new events */}
       {/* TODO: custom claims for admin access, currently hardcoded here and on backend check */}
-      {user &&
-        (user.email === "slweb@uw.edu" ||
-          user.email === "slwebuw@gmail.com") && (
+      {isAdmin && (
           <div style={{ paddingBottom: "2em" }}>
             <AddModifyEventModal
               open={adminModalOpen}
