@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
     }
   }, 
   footer: {
+    fontFamily: "Encode Sans Compressed, sans-serif",
     backgroundColor: "#4B2E83",
     width: "100%",
     textAlign: "center",
@@ -72,7 +73,7 @@ const Footer: React.FC<{}> = () => {
         </i>
       </Typography>
       {user && isAdmin && (
-          <a href="/adminManager" style={{color: "white", paddingTop: "100px"}}>Admin Manager</a>
+          <a href="/adminManager" style={{color: "white", paddingTop: "100px", fontWeight: 600}}>Admin Manager</a>
       )}
     </footer>
   );

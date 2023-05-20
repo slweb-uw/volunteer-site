@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   createStyles,
   Theme,
@@ -113,6 +113,24 @@ export default function EventModal(props: {
 
   const { user } = useAuth();
 
+  // Admin Authentication
+  const [admins, setAdmins] = useState([]);
+  useEffect(() => {
+    const fetchAdmins = async () => {
+      try {
+        const snapshot = await firebase.firestore().collection("Admins").get();
+        const adminsData = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        setAdmins(adminsData);
+      } catch (error) {
+        console.error("Error fetching admins", error);
+      }
+    };
+  
+    fetchAdmins();
+  }, []);
+
+  const isAdmin = admins.find((admin) => admin.email === user?.email);
+
   return (
     <Dialog
       onClose={handleClose}
@@ -188,9 +206,7 @@ export default function EventModal(props: {
                   </a>
                 )}
               */}
-              {user &&
-                (user.email === "slweb@uw.edu" ||
-                  user.email === "slwebuw@gmail.com") && (
+              {isAdmin && (
                   <div style={{ paddingBottom: "2em", paddingTop: "2em" }}>
                     <div style={{ display: "inline-block" }}>
                       <AddModifyEventModal
