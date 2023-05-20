@@ -122,7 +122,7 @@ const Header: React.FC<{}> = (props) => {
     <Divider/>,
       <a  href="/resources" className={useStyles().navtitle}>Links</a>,
     <Divider/>,
-      <a href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947" className={useStyles().navtitle}>Protocols</a>,
+      <a href="https://canvas.uw.edu/courses/1176739/modules/items/15194947" className={useStyles().navtitle}>Protocols</a>,
     <Divider/>,
       <a href="/donations" className={useStyles().navtitle}>Donations</a>,
     <Divider/>,
@@ -152,7 +152,11 @@ const Header: React.FC<{}> = (props) => {
               // Target uw login
               tenant: "uw.edu",
             });
-            firebaseClient.auth().signInWithRedirect(provider);
+
+            firebaseClient.auth().signOut().then(() => {
+              firebaseClient.auth().signInWithRedirect(provider);
+            });
+
           }}
           className={useStyles().navtitle}
         >
