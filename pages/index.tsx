@@ -4,25 +4,177 @@ import {
   createStyles,
   Typography,
   Grid,
-  NoSsr,
   makeStyles,
   Button,
   CardActionArea,
-  ListItemIcon,
+  Card,
+  CardContent,
+  CardMedia
 } from "@material-ui/core";
 import Link from "next/link";
 
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
 import { firebaseClient } from "firebaseClient";
 import { ArrowForwardIos } from "@material-ui/icons";
-import { textAlign, textTransform } from "@mui/system";
 import HeadlineBar from "components/headlineBar";
 
-const App: React.FC<{}> = () => {
-  // Page where customers can check their order status
+const useStyles = makeStyles((theme) => ({
+  container: {
+    height: "100%",
+  },
+  background: {
+    backgroundImage: "url(./homeNew-gradient.png)",
+    backgroundSize: "auto",
+    backgroundPosition: "right center",
+    backgroundRepeat: "no-repeat",
+    height: "661px",
+    position: "relative",
+    top: 0,
+    right: 0,
+    bottom: 0,
+    background: "#FFFFFF",
+    "@media only screen and (max-width: 430px)": {
+      height: "500px",
+    },
+  },
+  triangletop: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "50%",
+    height: "100%",
+    borderTop: "661px solid #FFFFFF95",
+    borderRight: "100px solid transparent",
+    "@media only screen and (max-width: 430px)": {
+      borderTop: "500px solid #FFFFFF95",
+      borderRight: "100px solid transparent",
+    },
+  },
+  trianglebottom: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "50%",
+    height: 0,
+    borderBottom: "661px solid #FFFFFF95",
+    borderRight: "100px solid transparent",
+    "@media only screen and (max-width: 430px)": {
+      borderBottom: "500px solid #FFFFFF95",
+    },
+  },
+  text: {
+    display: "flex",
+    position: "absolute",
+    justifyContent: "center",
+    flexDirection: "column",
+    height: "100%",
+    marginLeft: "4rem",
+    "@media only screen and (max-width: 780px)": {
+      marginLeft: "1rem",
+      marginTop: "-30px",
+    },
+  },
+  cardlinks: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  cardhover: {
+    "&:hover": {
+      opacity: "60%",
+      transition: "all .25s ease",
+      textDecoration: "underline",
+    },
+  },
+  cardtitle: {
+    fontFamily: "Open Sans",
+  },
+  contact: {
+    fontFamily: "Open Sans",
+  },
+  contactContainer: {
+    marginLeft: "4em",
+    "@media only screen and (max-width: 480px)": {
+      marginLeft: "0",
+    },
+  },
+  findOppBtn: {
+    width: "220px",
+    fontFamily: "Encode Sans",
+    fontWeight: 800,
+    "&:hover": {
+      color: "#B7A57A",
+      transition: ".25s",
+    },
+  },
+  learnMoreBtn: {
+    width: "135px",
+    fontFamily: "Encode Sans",
+    fontWeight: 800,
+    "&:hover": {
+      color: "#B7A57A",
+      transition: ".25s",
+    },
+  },
+  mobileLearnMoreBtn: {
+    "@media only screen and (max-width: 600px)": {
+      textAlign: "center",
+    },
+  },
+  img: {
+    width: "25em",
+    height: "auto",
+    borderRadius: "10px",
+    "@media only screen and (max-width: 600px)": {
+      display: "block",
+      width: "100%",
+    },
+  },
+  topTitle: {
+    fontSize: "2.5rem",
+    color: "black",
+    fontFamily: "Encode Sans",
+    fontWeight: 800,
+    textTransform: "uppercase",
+    marginBottom: "0",
+    "@media only screen and (max-width: 780px)": {
+      fontSize: "6vw",
+    },
+  },
+  bottomTitle: {
+    fontSize: "2rem",
+    color: "black",
+    fontWeight: 800,
+    marginTop: "0",
+    marginBottom: "0",
+    fontFamily: "Encode Sans Compressed, sans-serif",
+    "@media only screen and (max-width: 780px)": {
+      fontSize: "4vw",
+    },
+  },
+  description: {
+    display: "inline flex",
+    fontSize: "1rem",
+    maxWidth: "70%",
+    overflow: "auto",
+    fontFamily: "Open Sans",
+    marginBottom: "15px",
+    "@media only screen and (max-width: 430px)": {
+      fontSize: "3vw",
+      width: "70%",
+    },
+  },
+  mobile: {
+    padding: "5em",
+    verticalAlign: "middle",
+    paddingTop: "1em",
+    paddingBottom: "1em",
+    "@media only screen and (max-width: 430px)": {
+      padding: "3em",
+    },
+  },
+}));
 
+const App: React.FC<{}> = () => {
   const classes = useStyles();
 
   useEffect(() => {
@@ -689,161 +841,6 @@ const App: React.FC<{}> = () => {
   );
 };
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    height: "100%",
-  },
-  background: {
-    backgroundImage: "url(./homeNew-gradient.png)",
-    backgroundSize: "auto",
-    backgroundPosition: "right center",
-    backgroundRepeat: "no-repeat",
-    height: "661px",
-    position: "relative",
-    top: 0,
-    right: 0,
-    bottom: 0,
-    background: "#FFFFFF",
-    "@media only screen and (max-width: 430px)": {
-      height: "500px",
-    },
-  },
-  triangletop: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "50%",
-    height: "100%",
-    borderTop: "661px solid #FFFFFF95",
-    borderRight: "100px solid transparent",
-    "@media only screen and (max-width: 430px)": {
-      borderTop: "500px solid #FFFFFF95",
-      borderRight: "100px solid transparent",
-    },
-  },
-  trianglebottom: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    width: "50%",
-    height: 0,
-    borderBottom: "661px solid #FFFFFF95",
-    borderRight: "100px solid transparent",
-    "@media only screen and (max-width: 430px)": {
-      borderBottom: "500px solid #FFFFFF95",
-    },
-  },
-  text: {
-    display: "flex",
-    position: "absolute",
-    justifyContent: "center",
-    flexDirection: "column",
-    height: "100%",
-    marginLeft: "4rem",
-    "@media only screen and (max-width: 780px)": {
-      marginLeft: "1rem",
-      marginTop: "-30px",
-    },
-  },
-  cardlinks: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  cardhover: {
-    "&:hover": {
-      opacity: "60%",
-      transition: "all .25s ease",
-      textDecoration: "underline",
-    },
-  },
-  cardtitle: {
-    fontFamily: "Open Sans",
-  },
-  contact: {
-    fontFamily: "Open Sans",
-  },
-  contactContainer: {
-    marginLeft: "4em",
-    "@media only screen and (max-width: 480px)": {
-      marginLeft: "0",
-    },
-  },
-  findOppBtn: {
-    width: "220px",
-    fontFamily: "Encode Sans",
-    fontWeight: 800,
-    "&:hover": {
-      color: "#B7A57A",
-      transition: ".25s",
-    },
-  },
-  learnMoreBtn: {
-    width: "135px",
-    fontFamily: "Encode Sans",
-    fontWeight: 800,
-    "&:hover": {
-      color: "#B7A57A",
-      transition: ".25s",
-    },
-  },
-  mobileLearnMoreBtn: {
-    "@media only screen and (max-width: 600px)": {
-      textAlign: "center",
-    },
-  },
-  img: {
-    width: "25em",
-    height: "auto",
-    borderRadius: "10px",
-    "@media only screen and (max-width: 600px)": {
-      display: "block",
-      width: "100%",
-    },
-  },
-  topTitle: {
-    fontSize: "2.5rem",
-    color: "black",
-    fontFamily: "Encode Sans",
-    fontWeight: 800,
-    textTransform: "uppercase",
-    marginBottom: "0",
-    "@media only screen and (max-width: 780px)": {
-      fontSize: "6vw",
-    },
-  },
-  bottomTitle: {
-    fontSize: "2rem",
-    color: "black",
-    fontWeight: 800,
-    marginTop: "0",
-    marginBottom: "0",
-    fontFamily: "Encode Sans Compressed, sans-serif",
-    "@media only screen and (max-width: 780px)": {
-      fontSize: "4vw",
-    },
-  },
-  description: {
-    display: "inline flex",
-    fontSize: "1rem",
-    maxWidth: "70%",
-    overflow: "auto",
-    fontFamily: "Open Sans",
-    marginBottom: "15px",
-    "@media only screen and (max-width: 430px)": {
-      fontSize: "3vw",
-      width: "70%",
-    },
-  },
-  mobile: {
-    padding: "5em",
-    verticalAlign: "middle",
-    paddingTop: "1em",
-    paddingBottom: "1em",
-    "@media only screen and (max-width: 430px)": {
-      padding: "3em",
-    },
-  },
-}));
+
 
 export default App;

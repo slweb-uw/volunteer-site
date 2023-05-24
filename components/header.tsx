@@ -107,18 +107,18 @@ const Header: React.FC<{}> = (props) => {
   const isAdmin = admins.find((admin) => admin.email === user?.email);
 
   const links: React.ReactNode[] = [
-      <a  href="/" className={useStyles().navtitle}>Home</a>,
+      <a  href="/" className={useStyles().navtitle} tabIndex={0}>Home</a>,
     <Divider/>,
-      <a href="/opportunities" className={useStyles().navtitle}>Opportunities</a>,
+      <a href="/opportunities" className={useStyles().navtitle} tabIndex={0}>Opportunities</a>,
     <Divider/>,
-      <a className={useStyles().navtitle} href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569">Training</a>,
+      <a className={useStyles().navtitle} href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569" target="_blank" tabIndex={0}>Training</a>,
     //*NOTE: Resources name was changed to Links*/
     <Divider/>,
-      <a  href="/resources" className={useStyles().navtitle}>Links</a>,
+      <a  href="/resources" className={useStyles().navtitle} tabIndex={0}>Links</a>,
     <Divider/>,
-      <a href="https://canvas.uw.edu/courses/1176739/modules/items/15194947" className={useStyles().navtitle}>Protocols</a>,
+      <a href="https://canvas.uw.edu/courses/1176739/modules/items/15194947" className={useStyles().navtitle} target="_blank" tabIndex={0}>Protocols</a>,
     <Divider/>,
-      <a href="/donations" className={useStyles().navtitle}>Donations</a>,
+      <a href="/donations" className={useStyles().navtitle} tabIndex={0}>Donations</a>,
     <Divider/>,
     // sign in and out
     user ? (
@@ -129,6 +129,7 @@ const Header: React.FC<{}> = (props) => {
             firebaseClient.auth().signOut();
           }}
           className={useStyles().navtitle}
+          tabIndex={0}
         >
           Sign Out
           {isAdmin ? (
@@ -153,6 +154,7 @@ const Header: React.FC<{}> = (props) => {
 
           }}
           className={useStyles().navtitle}
+          tabIndex={0}
         >
           Sign In 
         </a>
@@ -162,7 +164,7 @@ const Header: React.FC<{}> = (props) => {
 
   return (
     <div className={useStyles().root}>
-        <a href="/">
+        <a href="/" tabIndex={0}>
           <img
             src="/header-logo.png"
             alt="University of Washington School of Medicine logo"
