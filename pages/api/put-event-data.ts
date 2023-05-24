@@ -1,5 +1,8 @@
+import { useState, useEffect } from "react";
 import { NextApiRequest, NextApiResponse } from "next";
 import { firebaseAdmin } from "../../firebaseAdmin";
+import firebase from "firebase/app";
+import "firebase/firestore";
 
 export const config = {
   api: {
@@ -20,48 +23,49 @@ export const config = {
 //  show them all in modifiable text boxes with a save button at the bottom.
 //  Should also have a way to add new fields and delete them
 
-export default async (req: NextApiRequest, resolve: NextApiResponse) => {
-  const {
-    eventData,
-    userToken,
-  }: { eventData: CalendarEventData; userToken: string } = JSON.parse(req.body);
+export default async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    const { eventData, userToken }: { eventData: CalendarEventData; userToken: string } = JSON.parse(req.body);
+    const token = await firebaseAdmin.auth().verifyIdToken(userToken);
+    const user = await firebaseAdmin.auth().getUser(token.uid);
+    
+    // Admin authentication
+    const [admins, setAdmins] = useState<any[]>([]);
 
-  const token = await firebaseAdmin.auth().verifyIdToken(userToken);
-  const user = await firebaseAdmin.auth().getUser(token.uid);
-
-  // Verify user and that user has custom claim "authorization" to edit events
-  if (user.email === "slweb@uw.edu" || user.email === "slwebuw@gmail.com") {
-    if (req.method === "POST") {
-      try {
-        let document = null;
-        if (eventData.id != null) {
-          document = firebaseAdmin
-            .firestore()
-            .collection(eventData.Location)
-            .doc(eventData.id);
+    useEffect(() => {
+      const fetchAdmins = async () => {
+        try {
+          const snapshot = await firebase.firestore().collection("Admins").get();
+          const adminsData = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+          setAdmins(adminsData);
+        } catch (error) {
+          console.error("Error fetching admins", error);
         }
-        const {
-          update,
-          updateEventId,
-        }: { update: boolean; updateEventId: string | null } = await checkEvent(
-          eventData,
-          document
-        );
-        const res = await addOrUpdateEvent(
-          update,
-          updateEventId,
-          eventData,
-          document
-        );
-        resolve.status(200).send(JSON.stringify(res));
-      } catch (err) {
-        resolve.status(400).send("Bad request: " + err);
+      };
+    
+      fetchAdmins();
+    }, []);
+  
+    const isAdmin = admins.find((admin) => admin.email === user?.email);
+
+    // Verify user and that the user has custom claim "authorization" to edit events
+    if (isAdmin) {
+      if (req.method === "POST") {
+        let document: any = null;
+        if (eventData.id != null) {
+          document = firebaseAdmin.firestore().collection(eventData.Location).doc(eventData.id);
+        }
+        const { update, updateEventId }: { update: boolean; updateEventId: string | null } = await checkEvent(eventData, document);
+        const response = await addOrUpdateEvent(update, updateEventId, eventData, document);
+        return res.status(200).json(response);
+      } else {
+        return res.status(400).json({ error: "Invalid request method" });
       }
     } else {
-      resolve.status(400).send("Invalid request method");
+      return res.status(400).json({ error: "Error: Unauthorized User" });
     }
-  } else {
-    resolve.status(400).send("Error: Unauthorized User");
+  } catch (err) {
+    return res.status(400).json({ error: "Bad request: " + err.message });
   }
 };
 
@@ -74,23 +78,18 @@ async function checkEvent(event: CalendarEventData, document: any) {
     let update: boolean = false;
     let updateEventId: string | null = null;
 
-    // check firestore if there is an existing event with matching location and name and organization
+    // Check Firestore if there is an existing event with matching location and name and organization
     if (document && event.id) {
       update = true;
       updateEventId = event.id;
     }
+    
     return { update, updateEventId };
   } catch (err) {
     return { update: false, updateEventId: null };
   }
 }
 
-/**
- * add or update an event
- * @param {boolean} update Check if we need to update an exist event or add a new event instead.
- * @param {string | null} updateEventId The Id of the event which need to be updated or null if no event.
- * @param {CalendarEventData} event Event related information.
- */
 async function addOrUpdateEvent(
   update: boolean,
   updateEventId: string | null,
@@ -103,63 +102,34 @@ async function addOrUpdateEvent(
       await document.update({ ...body });
       return body;
     } else {
-      // const res = await calendar.events.insert({
-      //   calendarId: 'slweb@uw.edu',
-      //   requestBody: body,
-      // });
-      document = firebaseAdmin
-        .firestore()
-        .collection(event.Location)
-        .doc();
+      document = firebaseAdmin.firestore().collection(event.Location).doc();
       body["id"] = document.id;
       await document.set(body);
 
-      // check if this event is part of a new organization not existing in current cache of orgs.
-      document = firebaseAdmin
-        .firestore()
-        .collection("cache")
-        .doc(event.Location);
-
-      let organizations = await document.get();
-
-      // organizations = organizations.then((snapshot) => {
-      //   return snapshot.data();
-      // });
-
-      organizations = await organizations.data();
-
-      console.log(organizations);
+      const orgDocument = firebaseAdmin.firestore().collection("cache").doc(event.Location);
+      const organizations = await orgDocument.get().then((snapshot) => snapshot.data());
 
       if (!Object.keys(organizations).includes(event.Organization)) {
         let key = event.Organization;
         let res = { [key]: true };
-        await document.set(res, { merge: true });
+        await orgDocument.set(res, { merge: true });
       }
       return body;
     }
   } catch (err) {
-    throw new Error("Error from change:" + err);
+    throw new Error("Error from change: " + err);
   }
 }
 
-/**
- * construct the request body for addOrUpdateEvent function.
- * @param {CalendarEventData} event Event data.
- * @param {boolean} update Check if this is a update request body or insert event request body
- */
 function createRequestBody(event: CalendarEventData, update: boolean) {
   let result: any = {};
-  // result['description'] = event.Description;
-  // if (!update) {
-  //   result['location'] = event.Location;
-  //   result['organization'] = { 'displayName': event.Organization }
-  // }
-
+  
   Object.keys(event).forEach((element) => {
     if (event[element] != null) {
       result[element] = event[element];
     }
   });
+  
   result["timestamp"] = new Date().toISOString();
   return result;
 }

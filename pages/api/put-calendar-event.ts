@@ -1,3 +1,6 @@
+import { useState, useEffect } from "react";
+import firebase from "firebase/app";
+import "firebase/firestore";
 import { NextApiRequest, NextApiResponse } from "next";
 import { firebaseAdmin } from "../../firebaseAdmin";
 import { promises as fsPromises } from "fs";
@@ -46,8 +49,26 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
   const token = await firebaseAdmin.auth().verifyIdToken(userToken);
   const user = await firebaseAdmin.auth().getUser(token.uid);
 
+  // Admin authentication
+  const [admins, setAdmins] = useState([]);
+
+  useEffect(() => {
+    const fetchAdmins = async () => {
+      try {
+        const snapshot = await firebase.firestore().collection("Admins").get();
+        const adminsData = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        setAdmins(adminsData);
+      } catch (error) {
+        console.error("Error fetching admins", error);
+      }
+    };
+  
+    fetchAdmins();
+  }, []);
+  const isAdmin = admins.find((admin) => admin.email === user?.email);
+
   // Verify user
-  if (user.email === "slweb@uw.edu" || user.email === "slwebuw@gmail.com") {
+  if (isAdmin) {
     if (req.method === "POST") {
       try {
         const fcontent: Creds = calendarSecret;
