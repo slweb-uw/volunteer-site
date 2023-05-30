@@ -343,19 +343,27 @@ const Events: React.FC<EventsProps> = ({
 
       {location ? (
         <div style={{ paddingBottom: "4em" }}>
-          <Grid container spacing={6}>
-            {events.map((event) => (
-              <Grid item xs={12} lg={6}>
-                <EventCard
-                  event={event}
-                  handleClick={() => {
-                    setModalOpen(true);
-                    setSelectedEvent(event);
-                  }}
-                />
-              </Grid>
-            ))}
-          </Grid>
+          {events.length > 0 ? (
+            <Grid container spacing={6}>
+              {events.map((event) => (
+                <Grid item xs={12} lg={6}>
+                  <EventCard
+                    event={event}
+                    handleClick={() => {
+                      setModalOpen(true);
+                      setSelectedEvent(event);
+                    }}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          ) : (
+            <div style={{ textAlign: "center" }}>
+              <Typography className={classes.filterField}>
+                <b>No results found.</b>
+              </Typography>
+            </div>
+          )}
           {showLoadButton && (
             <div style={{ textAlign: "center" }}>
               <Button
@@ -402,7 +410,7 @@ const styles = createStyles({
     fontFamily: 'Encode Sans',
     fontSize: "1rem",
     display: "inline",
-    fontWeight: 600,
+    fontWeight: 700,
     marginRight: "0.5rem",
   },
   // Styles for the switch component
