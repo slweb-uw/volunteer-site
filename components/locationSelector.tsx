@@ -21,7 +21,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
         id="select-location-filter"
         gutterBottom
         display="inline"
-        style={{ marginRight: "1em", fontFamily: "Uni Sans Book", fontSize: "1rem", textAlign: "center", paddingTop: "7px"}}
+        style={{ marginRight: "1em", fontFamily: "Encode Sans", fontSize: "1rem", textAlign: "center", paddingTop: "7px"}}
       >
         <b>Select a Location</b>{" "}
       </Typography>
@@ -39,9 +39,9 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
         style={{ width: 104 }}
         input={<BootstrapInput />}
       >
-        <MenuItem value={defaultLocation} style={{ fontFamily: "Open Sans" }}>Location</MenuItem>
+        <MenuItem value={defaultLocation} style={{ fontFamily: "Encode Sans" }}>Location</MenuItem>
         {Object.values(Location).map((location) => (
-          <MenuItem style={{ fontFamily: "Open Sans" }} value={location}>{location}</MenuItem>
+          <MenuItem style={{ fontFamily: "Encode Sans" }} value={location}>{location}</MenuItem>
         ))}
       </Select>
     </div>
