@@ -61,7 +61,7 @@ const DonateCard: React.FC<Props> = (props) => {
           <Typography variant="subtitle1" gutterBottom style={{ fontFamily: "Open Sans" }}>
             {props.description}
           </Typography>
-          <Button style={{marginTop: "1rem", fontFamily: "Encode Sans", marginBottom: "0"}} variant="contained" color="secondary" target="_blank" href={props.donate}>Donate {'>'}</Button>
+          <Button style={{marginTop: "1rem", fontFamily: "Encode Sans", marginBottom: "0"}} variant="contained" color="secondary" target="_blank" href={props.donate} alt={"Donate to " + props.title}>Donate</Button>
         </CardContent>
       </div>
     </Card>

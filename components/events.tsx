@@ -8,9 +8,8 @@ import {
   Typography, 
   createStyles, 
   withStyles, 
-  FormControlLabel, 
-  Switch, 
-  FormGroup } from "@material-ui/core";
+  Switch,
+  } from "@material-ui/core";
 import EventModal from "./eventModal";
 import BootstrapInput from "./bootstrapInput";
 import Link from "next/link";
@@ -21,6 +20,8 @@ import { Location } from "../helpers/locations"
 import { volunteerTypes } from "./addModifyEventModal";
 import { CollectionReference, Query } from "@firebase/firestore-types";
 import {useRouter} from "next/router";
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import Tooltip from '@material-ui/core/Tooltip';
 
 type EventsProps = {
   location: Location;
@@ -207,7 +208,7 @@ const Events: React.FC<EventsProps> = ({
           handleClose={() => setModalOpen(false)}
         />
         <Grid container>
-          <Grid item xs={12} sm={10}>
+          <Grid item xs={12} sm={6}>
             <Grid container>
               {!isProviderView && <Grid item style={{ marginBottom: "1em" }}>
                 <Typography
@@ -260,44 +261,54 @@ const Events: React.FC<EventsProps> = ({
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={12} sm={2} style={{ textAlign: "right", maxWidth: "100%"}}>
-            <FormGroup>
-              <FormControlLabel 
-                control={
-                  <Switch color="primary"
-                          classes={{
-                            root: classes.root,
-                            switchBase: classes.switchBase,
-                            thumb: classes.thumb,
-                            track: classes.track,
-                            checked: classes.checked
-                          }}
-                          checked={isProviderView}
-                          onChange={(e) => setProviderView(e.target.checked)}
-                  />
-                }
-                label={<Typography style= {{textAlign: "center"}}><b>Provider View</b></Typography>}
-                labelPlacement="start"
-                 />
-            </FormGroup>
-            {location === "Seattle" &&(
-            <Link href="/calendar">
-              <Button
-                variant="contained"
-                color="primary"
-                style={{
-                  float: "right",
-                  minWidth: "130px",
-                  borderRadius: 10,
-                  fontFamily: "Encode Sans",
-                  fontWeight: 800,
-                  textAlign: "center"
-                }}
+          <Grid container item xs={10} sm={6} style={{ textAlign: 'right', flexDirection: "column" }}>
+          <Grid item container style={{justifyContent:'flex-end', alignItems:"center"}} >
+            <Typography style= {{display: 'flex', alignItems: 'center'}}>
+              <b style={{marginRight: '0.25rem',fontSize:'1rem'}}>Provider View</b>
+              <Tooltip 
+              title={
+                <Typography>
+                  Providers are clinicians who supervise our students in providing medical care to underserved patients.
+                </Typography>
+              }
+              style={{}}
               >
-                Calendar
-              </Button>
-            </Link>
-            )}
+                <InfoOutlinedIcon style={{fontSize:'2rem', color: "#808080"}}/>
+              </Tooltip>
+            </Typography>
+            <Switch
+              color="primary"
+              classes={{
+                root: classes.root,
+                switchBase: classes.switchBase,
+                thumb: classes.thumb,
+                track: classes.track,
+                checked: classes.checked
+              }}
+              checked={isProviderView}
+              onChange={(e) => setProviderView(e.target.checked)}
+            />
+          </Grid>
+          {location === "Seattle" && (
+            <Grid item container style={{justifyContent:'flex-end'}}>
+              <Link href="/calendar">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  style={{
+                    minWidth: "130px",
+                    borderRadius: 10,
+                    fontFamily: "Encode Sans",
+                    fontWeight: 800,
+                    textAlign: "center",
+                    marginTop: "0.5rem"
+                  }}
+                >
+                  Calendar
+                </Button>
+              </Link>
+            </Grid>
+          )}
           </Grid>
         </Grid>
       </div>
@@ -332,19 +343,27 @@ const Events: React.FC<EventsProps> = ({
 
       {location ? (
         <div style={{ paddingBottom: "4em" }}>
-          <Grid container spacing={6}>
-            {events.map((event) => (
-              <Grid item xs={12} lg={6}>
-                <EventCard
-                  event={event}
-                  handleClick={() => {
-                    setModalOpen(true);
-                    setSelectedEvent(event);
-                  }}
-                />
-              </Grid>
-            ))}
-          </Grid>
+          {events.length > 0 ? (
+            <Grid container spacing={6}>
+              {events.map((event) => (
+                <Grid item xs={12} lg={6}>
+                  <EventCard
+                    event={event}
+                    handleClick={() => {
+                      setModalOpen(true);
+                      setSelectedEvent(event);
+                    }}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          ) : (
+            <div style={{ textAlign: "center" }}>
+              <Typography className={classes.filterField}>
+                <b>No results found.</b>
+              </Typography>
+            </div>
+          )}
           {showLoadButton && (
             <div style={{ textAlign: "center" }}>
               <Button
@@ -363,7 +382,7 @@ const Events: React.FC<EventsProps> = ({
         </div>
       ) : (
         <div style={{ textAlign: "center" }}>
-          <Typography variant="h6">
+          <Typography className={classes.filterField}>
             <b>Please select a location.</b>
           </Typography>
         </div>
@@ -388,10 +407,10 @@ const styles = createStyles({
     padding: 8,
   },
   filterField: {
-    fontFamily: "Uni Sans Book", 
+    fontFamily: 'Encode Sans',
     fontSize: "1rem",
     display: "inline",
-    fontWeight: 600,
+    fontWeight: 700,
     marginRight: "0.5rem",
   },
   // Styles for the switch component
