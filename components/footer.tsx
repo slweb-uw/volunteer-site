@@ -37,11 +37,12 @@ const Footer: React.FC<{}> = () => {
   const { user } = useAuth();
   const [isAdmin, setIsAdmin] = React.useState(false);
   const [isLoadingUser, setIsLoadingUser] = React.useState(true);
+  const authorizedUsers = ["clarkel@uw.edu","dnakas4@uw.edu", "bruno.futino@gmail.com"]; // Hardcoded to limit who can manage admins
 
   const checkUser = async () => {
     const user = firebaseClient.auth().currentUser;
     
-    if(user && (user.email === "slweb@uw.edu" || user.email === "bruno.futino@gmail.com")){
+    if(user && (authorizedUsers.includes(user.email))){
       setIsAdmin(true);
     }else{
       setIsAdmin(false);

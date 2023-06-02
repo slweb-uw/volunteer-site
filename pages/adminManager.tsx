@@ -94,7 +94,7 @@ const AdminPage = () => {
   const classes = useStyles();
   const [admins, setAdmins] = useState([]);
   const [newAdminEmail, setNewAdminEmail] = useState("");
-  const authorizedEmails = ["clarkel@uw.edu","dnakas4@uw.edu", "bruno.futino@gmail.com"]; // Hardcoded to limit who can manage admins
+  const authorizedUsers = ["clarkel@uw.edu","dnakas4@uw.edu", "bruno.futino@gmail.com"]; // Hardcoded to limit who can manage admins
   const [emailValid, setEmailValid] = useState(true);
   const [existentAdmin, setExistentAdmin] = useState(false);
 
@@ -170,10 +170,10 @@ const AdminPage = () => {
     setSelectedAdmin(admin.email);
   };
 
-  if (!user || !authorizedEmails.includes(user.email)) {
+  if (!user || !authorizedUsers.includes(user.email)) {
     return (
       <div className={`${classes.root} ${classes.message}`}>
-        <div>You are not authorized to access this page{!user ? ". Please login." : "."}</div>
+        <div>You are not authorized to access this page.{!user ? " Please login." : "."}</div>
       </div>
     );
   }
