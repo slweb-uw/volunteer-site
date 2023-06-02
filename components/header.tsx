@@ -142,10 +142,11 @@ const Header: React.FC<{}> = (props) => {
         <a
           key="sign in"
           onClick={() => {
-            var provider = new firebaseClient.auth.OAuthProvider("microsoft.com");
+            var provider = new firebaseClient.auth.OAuthProvider("google.com");
             provider.setCustomParameters({
               // Target uw login
               tenant: "uw.edu",
+              prompt: 'select_account',
             });
 
             firebaseClient.auth().signOut().then(() => {
