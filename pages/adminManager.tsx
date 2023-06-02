@@ -94,7 +94,7 @@ const AdminPage = () => {
   const classes = useStyles();
   const [admins, setAdmins] = useState([]);
   const [newAdminEmail, setNewAdminEmail] = useState("");
-  const authorizedEmails = ["slweb@uw.edu", "bruno.futino@gmail.com"]; // Hardcoded to limit who can manage admins
+  const authorizedEmails = ["clarkel@uw.edu","dnakas4@uw.edu", "bruno.futino@gmail.com"]; // Hardcoded to limit who can manage admins
   const [emailValid, setEmailValid] = useState(true);
   const [existentAdmin, setExistentAdmin] = useState(false);
 
@@ -107,6 +107,7 @@ const AdminPage = () => {
         snapshot.forEach((doc) => {
           adminsData.push({id: doc.id, ...doc.data() });
         });
+        adminsData.sort((a, b) => (a.email > b.email ? 1 : -1));
         setAdmins(adminsData);
       });
       return unsubscribe;
