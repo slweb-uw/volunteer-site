@@ -42,13 +42,13 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 20,
   },
   textField: {
-    marginRight: 20,
-    width: "700px",
+    marginRight: 10,
+    width: "90%",
   },
   addButton: {
     backgroundColor: "#4b2e83",
     color: "#fff",
-    width: "100px",
+    width: "10%",
     "&:hover": {
       backgroundColor: "#B7A57A",
     },
@@ -86,18 +86,32 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
     padding: 0,
     color: "red",
-  }
+  },
+  header: {
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: theme.spacing(2),
+  },
+  headerButton: {
+    margin: theme.spacing(0, 1),
+    textTransform: "none",
+  },
 }));
 
 const AdminPage = () => {
-  const { user } = useAuth();
-  const classes = useStyles();
-  const [admins, setAdmins] = useState([]);
-  const [newAdminEmail, setNewAdminEmail] = useState("");
-  const authorizedEmails = ["slweb@uw.edu", "bruno.futino@gmail.com"]; // Hardcoded to limit who can manage admins
-  const [emailValid, setEmailValid] = useState(true);
-  const [existentAdmin, setExistentAdmin] = useState(false);
+  const authorizedUsers = ["clarkel@uw.edu","dnakas4@uw.edu", "bruno.futino@gmail.com"]; // Hardcoded to limit who can manage admins
 
+  const classes = useStyles();
+  const { user } = useAuth();
+  const [admins, setAdmins] = useState([]);
+  const [newUserEmail, setNewUserEmail] = useState("");
+  const [validEmail, setValidEmail] = useState(true);
+  const [existentEmail, setExistentEmail] = useState(false);
+
+  const [volunteers, setVolunteers] = useState([]);
+  const [activeSection, setActiveSection] = useState("admins");
+
+  // Loads Admins
   useEffect(() => {
     const unsubscribe = firebase.
       firestore()
@@ -107,103 +121,153 @@ const AdminPage = () => {
         snapshot.forEach((doc) => {
           adminsData.push({id: doc.id, ...doc.data() });
         });
+        adminsData.sort((a, b) => (a.email > b.email ? 1 : -1));
         setAdmins(adminsData);
       });
       return unsubscribe;
   }, []);
 
-  const addAdmin = (e) => {
+   // Loads Volunteers
+   useEffect(() => {
+    const unsubscribe = firebase.
+      firestore()
+      .collection("Volunteers")
+      .onSnapshot((snapshot) => {
+        const volunteerData = [];
+        snapshot.forEach((doc) => {
+          volunteerData.push({id: doc.id, ...doc.data() });
+        });
+        volunteerData.sort((a, b) => (a.email > b.email ? 1 : -1));
+        setVolunteers(volunteerData);
+      });
+      return unsubscribe;
+  }, []);
+
+  const addUser = (e) => {
     e.preventDefault();
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    setExistentAdmin(false);
-    setEmailValid(true);
+    setExistentEmail(false);
+    setValidEmail(true);
 
-    if(!emailPattern.test(newAdminEmail)){
-      setEmailValid(false);
+    if(!emailPattern.test(newUserEmail)){
+      setValidEmail(false);
       return;
     }
     
-    const existingAdmin = admins.find((admin) => admin.email === newAdminEmail);
-    if (existingAdmin) {
-      setExistentAdmin(true);
-      setNewAdminEmail("");
+    var existentEmail;
+    if(activeSection === "admins"){
+      existentEmail= admins.find((admin) => admin.email === newUserEmail);
+    }else{
+      existentEmail= volunteers.find((volunteer) => volunteer.email === newUserEmail);
+    }
+    if (existentEmail) {
+      setExistentEmail(true);
+      setNewUserEmail("");
       return;
     }
     
+    var userType = "Volunteers";
+    if(activeSection === "admins") userType = "Admins";
     firebase
       .firestore()
-      .collection("Admins")
-      .add({ email: newAdminEmail })
+      .collection(userType)
+      .add({ email: newUserEmail })
       .then(() => {
         console.log("Admin added successfully!");
-        setNewAdminEmail("");
+        setNewUserEmail("");
       })
       .catch((error) => {
         console.error("Error adding admin", error);
       });
   };
 
-  const removeAdmin = (adminEmail) => {
+  const removeUser = (userEmail) => {
+    var userType = "Volunteers";
+    if(activeSection === "admins") userType = "Admins";
+    
     firebase
       .firestore()
-      .collection("Admins")
-      .where("email", "==", adminEmail)
+      .collection(userType)
+      .where("email", "==", userEmail)
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
           doc.ref.delete();
         });
-        console.log("Admin removed successfully!");
+        console.log("User removed successfully!");
       })
       .catch((error) => {
-        console.error("Error removing admin: ", error);
+        console.error("Error removing user: ", error);
       });
   };
 
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [open, setOpen] = useState(false);
-  const [selectedAdmin, setSelectedAdmin] = useState({});
+  const [selectedUser, setSelectedUser] = useState({});
 
-  const openConfirmation = (admin) => {
+  const openConfirmation = (user) => {
     setConfirmationOpen(true);
-    setSelectedAdmin(admin.email);
+    setSelectedUser(user.email);
   };
 
-  if (!user || !authorizedEmails.includes(user.email)) {
+  if (!user || !authorizedUsers.includes(user.email)) {
     return (
       <div className={`${classes.root} ${classes.message}`}>
-        <div>You are not authorized to access this page{!user ? ". Please login." : "."}</div>
+        <div>You are not authorized to access this page.{!user ? <span style={{color: "red"}}> Please login.</span>: ""}</div>
       </div>
     );
   }
   
+  const handleSectionChange = (section) => {
+    setActiveSection(section);
+  };
+
   return (
     <div className={classes.root}>
-    <Typography variant="h4" className={classes.heading}>
-      Admin Manager
-    </Typography>
-    <form className={classes.form} onSubmit={addAdmin}>
+      <Typography variant="h4" className={classes.heading}>
+        User Manager
+      </Typography>
+      <div className={classes.header}>
+        <Button
+          className={classes.headerButton}
+          variant={activeSection === "admins" ? "contained" : "outlined"}
+          color="primary"
+          onClick={() => handleSectionChange("admins")}
+        >
+          Admins
+        </Button>
+        <Button
+          className={classes.headerButton}
+          variant={activeSection === "volunteers" ? "contained" : "outlined"}
+          color="primary"
+          onClick={() => handleSectionChange("volunteers")}
+        >
+          Volunteers
+        </Button>
+      </div>
+
+    <form className={classes.form} onSubmit={addUser}>
       <TextField
-        label="Add new admin"
+        label={`Add new ${activeSection === "admins" ? "admin" : "volunteer"}`}
         variant="outlined"
         className={classes.textField}
-        value={newAdminEmail}
-        onChange={(e) => setNewAdminEmail(e.target.value)}
+        value={newUserEmail}
+        onChange={(e) => setNewUserEmail(e.target.value.toLowerCase())}
         required
       />
       <Button type="submit" variant="contained" className={classes.addButton}>
         Add
       </Button>
     </form>
-    {!emailValid && (
+    {!validEmail && (
       <div className={classes.popup}>*Invalid email format</div>
     )}
-    {existentAdmin && (
+    {existentEmail && (
       <div className={classes.popup} style={{color:'orange'}}>*Admin already exists</div>
     )}
     <Divider className={classes.divider} />
     <List>
-      {admins.map((admin, index) => (
+      {activeSection === "admins" ? (admins.map((admin, index) => (
         <React.Fragment key={admin.id}>
           <ListItem
             className={classes.listItem + " " + (index % 2 === 0 ? classes.evenListItem : "")}
@@ -225,20 +289,43 @@ const AdminPage = () => {
           </ListItem>
           <Divider />
         </React.Fragment>
-      ))}
+      ))) : (volunteers.map((volunteer, index) => (
+        <React.Fragment key={volunteer.id}>
+          <ListItem
+            className={classes.listItem + " " + (index % 2 === 0 ? classes.evenListItem : "")}
+          >
+            <ListItemText
+              primary={volunteer.email}
+              classes={{ primary: classes.listItemText }}
+            />
+            <ListItemSecondaryAction>
+              <IconButton
+                edge="end"
+                aria-label="delete"
+                className={classes.removeButton}
+                onClick={() => openConfirmation(volunteer)}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </ListItemSecondaryAction>
+          </ListItem>
+          <Divider />
+        </React.Fragment>
+        
+      )))}
     </List>
     <Dialog open={confirmationOpen} onClose={() => setConfirmationOpen(false)}>
-      <DialogTitle>{"Delete Admin?"}</DialogTitle>
+      <DialogTitle>Delete {activeSection === "admins" ?  "admin" : "volunteer"}?</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Are you sure you want to remove the admin with email: {selectedAdmin}?
+          Are you sure you want to remove the {activeSection === "admins" ?  "admin" : "volunteer"} with email: {selectedUser}?
         </DialogContentText>
       </DialogContent>
       <DialogActions>
         <Button onClick={() => setConfirmationOpen(false)} color="primary">
           Cancel
         </Button>
-        <Button onClick={() => {removeAdmin(selectedAdmin); setConfirmationOpen(false);}} color="primary" autoFocus>
+        <Button onClick={() => {removeUser(selectedUser); setConfirmationOpen(false);}} color="primary" autoFocus>
           Delete
         </Button>
       </DialogActions>
