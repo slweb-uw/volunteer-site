@@ -223,7 +223,6 @@ const Events: React.FC<EventsProps> = ({
                   onChange={(e) => {
                     setStudentTypeFilter(e.target.value as string);
                   }}
-                  style={{ width: 200 }}
                   displayEmpty
                   input={<BootstrapInput />}
                   disabled={ isProviderView }
@@ -249,8 +248,8 @@ const Events: React.FC<EventsProps> = ({
                   onChange={(e) => {
                     setOrganizationFilter(e.target.value as string);
                   }}
-                  style={{ width: 200}}
                   displayEmpty
+                  className={classes.studentFilter}
                   input={<BootstrapInput />}
                 >
                   <MenuItem value="">Show All</MenuItem>
@@ -271,9 +270,8 @@ const Events: React.FC<EventsProps> = ({
                   Providers are clinicians who supervise our students in providing medical care to underserved patients.
                 </Typography>
               }
-              style={{}}
               >
-                <InfoOutlinedIcon style={{fontSize:'2rem', color: "#808080"}}/>
+                <InfoOutlinedIcon style={{fontSize:'1.5 rem', color: "#808080"}}/>
               </Tooltip>
             </Typography>
             <Switch
@@ -468,6 +466,7 @@ const styles = createStyles({
   },
   studentFilter: {
     marginRight: "1em",
+    width: "205px",
   }
 });
 

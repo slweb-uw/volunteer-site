@@ -36,7 +36,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
             setLocation(router, location as Location);
           }
         }}
-        style={{ width: 104 }}
+        style={{ width: "fit-content"}}
         input={<BootstrapInput />}
       >
         <MenuItem value={defaultLocation} style={{ fontFamily: "Encode Sans" }}>Location</MenuItem>
