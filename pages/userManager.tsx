@@ -74,7 +74,10 @@ const useStyles = makeStyles((theme) => ({
     margin: "20px 0",
   },
   message: {
-    display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: 600,
+    display: 'flex', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    fontWeight: 600,
   },
   popup: {
     position: "relative",
