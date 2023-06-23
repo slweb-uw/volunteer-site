@@ -150,7 +150,7 @@ const Header: React.FC<{}> = (props) => {
             });
 
             firebaseClient.auth().signOut().then(() => {
-              firebaseClient.auth().signInWithRedirect(provider);
+              firebaseClient.auth().signInWithPopup(provider);
             });
 
           }}
