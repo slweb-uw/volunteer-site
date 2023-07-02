@@ -83,9 +83,9 @@ const Resources: NextPage<Props> = ({ classes }) => {
             <Typography className={classes.header}>
               <ResourceLink
                 className={classes.links}
-                href="https://canvas.uw.edu/courses/1176739"
+                href="https://canvas.uw.edu/courses/1693188"
               >
-                SOM Service Learning Canvas Site
+                Service Learning Canvas Site
               </ResourceLink>{" "}
             </Typography>
 

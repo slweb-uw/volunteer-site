@@ -114,7 +114,7 @@ const Header: React.FC<{}> = (props) => {
       <a className={useStyles().navtitle} href="https://canvas.uw.edu/courses/1693188/pages/training-modules?module_item_id=18595279" target="_blank" tabIndex={0}>Training</a>,
     //*NOTE: Resources name was changed to Links*/
     <Divider/>,
-      <a  href="https://canvas.uw.edu/courses/1693188" className={useStyles().navtitle} tabIndex={0}>Service Learning Canvas Site</a>,
+      <a  href="/resources" className={useStyles().navtitle} tabIndex={0}>Links</a>,
     <Divider/>,
       <a href="https://canvas.uw.edu/courses/1693188/pages/protocols?module_item_id=18595280" className={useStyles().navtitle} target="_blank" tabIndex={0}>Protocols</a>,
     <Divider/>,
