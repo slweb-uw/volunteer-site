@@ -70,7 +70,7 @@ const Footer: React.FC<{}> = () => {
       <Typography className={useStyles().text} gutterBottom>
         <i>
           Please use browsers other than internet explorer for the best
-          experience on this website.
+          experience on this website
         </i>
       </Typography>
       {user && isAdmin && (
