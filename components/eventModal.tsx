@@ -106,10 +106,7 @@ export default function EventModal(props: {
   const { open, event, location, handleClose } = props;
   const [adminModalOpen, setAdminModalOpen] = useState<boolean>(false);
 
-  let eventLink = "/";
-  if (event) {
-    eventLink = "/" + location + "/" + event.id;
-  }
+  let eventLink = event ?  "/" + location + "/" + event.id : "/";
 
   const { user } = useAuth();
 
@@ -177,17 +174,15 @@ export default function EventModal(props: {
               </div>
             )}
             <div style={{ marginTop: "2em" }}>
-              <Link passHref href={eventLink}>
-                <a style={{ textDecoration: "none" }} target="_blank">
-                  <Button
-                    onClick={handleClose}
-                    color="secondary"
-                    variant="contained"
-                    style={{ marginRight: "1em" }}
-                  >
-                    Learn more
-                  </Button>
-                </a>
+              <Link href={eventLink} style={{ textDecoration: "none" }} target="_blank">
+                <Button
+                  onClick={handleClose}
+                  color="secondary"
+                  variant="contained"
+                  style={{ marginRight: "1em" }}
+                >
+                  Learn more
+                </Button>
               </Link>
               {/*
               {event?.["Sign-up Link"] &&

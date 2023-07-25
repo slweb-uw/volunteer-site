@@ -40,8 +40,8 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
         input={<BootstrapInput />}
       >
         <MenuItem value={defaultLocation} style={{ fontFamily: "Encode Sans" }}>Location</MenuItem>
-        {Object.values(Location).map((location) => (
-          <MenuItem style={{ fontFamily: "Encode Sans" }} value={location}>{location}</MenuItem>
+        {Object.values(Location).map((location, index) => (
+          <MenuItem key={index} style={{ fontFamily: "Encode Sans" }} value={location}>{location}</MenuItem>
         ))}
       </Select>
     </div>
