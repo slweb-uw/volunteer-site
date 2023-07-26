@@ -811,7 +811,7 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
               <Select
                 fullWidth
                 multiple
-                value={volunteersNeeded}
+                value={!Array.isArray(volunteersNeeded) ? [] : volunteersNeeded}
                 onChange={(e) => {
                   const value = e.target.value;
                   setVolunteersNeeded(

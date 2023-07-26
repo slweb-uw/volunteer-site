@@ -230,8 +230,8 @@ const Events: React.FC<EventsProps> = ({
                   <MenuItem value="">Show All</MenuItem>
                   {volunteerTypes
                     .filter((studentType) => studentType !== "Providers")
-                    .map((studentType) => (
-                      <MenuItem value={studentType}>{studentType}</MenuItem>
+                    .map((studentType, index) => (
+                      <MenuItem key={index} value={studentType}>{studentType}</MenuItem>
                     ))}
                 </Select>
               </Grid>}
@@ -253,8 +253,8 @@ const Events: React.FC<EventsProps> = ({
                   input={<BootstrapInput />}
                 >
                   <MenuItem value="">Show All</MenuItem>
-                  {organizations.map((organization) => (
-                    <MenuItem value={organization}>{organization}</MenuItem>
+                  {organizations.map((organization, index) => (
+                    <MenuItem key={index} value={organization}>{organization}</MenuItem>
                   ))}
                 </Select>
               </Grid>
@@ -343,8 +343,8 @@ const Events: React.FC<EventsProps> = ({
         <div style={{ paddingBottom: "4em" }}>
           {events.length > 0 ? (
             <Grid container spacing={6}>
-              {events.map((event) => (
-                <Grid item xs={12} lg={6}>
+              {events.map((event, index) => (
+                <Grid key={index} item xs={12} lg={6}>
                   <EventCard
                     event={event}
                     handleClick={() => {
