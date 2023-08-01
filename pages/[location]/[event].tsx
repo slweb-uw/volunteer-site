@@ -16,6 +16,7 @@ import {
 import naturalJoin from "../../helpers/naturalJoin";
 import EventDescription from "../../components/eventDescription";
 import RichTextField from "../../components/richTextField";
+import Box from '@mui/material/Box';
 
 interface Props {
   classes?: any;
@@ -80,13 +81,13 @@ const EventField: React.FC<EventFieldProps> = ({
     data = value;
   }
   return (
-    <Grid style={{ maxWidth: "100%" }} item sm={12} md={6}>
+    <Box style={{ pageBreakInside: "avoid", breakInside: "avoid-column", marginBottom: "5%", marginLeft: "5%"}} >
       <Typography variant="h6" style={{ fontWeight: 600 }}>
         {name}
       </Typography>
 
       <Typography>{data ?? NotSpecified}</Typography>
-    </Grid>
+    </Box>
   );
 }
 
@@ -103,13 +104,21 @@ const RichEventField: React.FC<RichEventFieldProps> = ({
   }
   const remove: boolean | undefined = removeTopMargin ? data?.includes("<p>") : false;
   return (
-    <Grid style={{ maxWidth: "100%" }} item sm={12} md={6}>
-      <Typography variant="h6" style={{ fontWeight: 600 }}>
-        {name}
-      </Typography>
-
-      {data ? <RichTextField value={data} removeTopMargin={remove ?? false} /> : NotSpecified}
-    </Grid>
+    <>
+      {name == "DateObject" ?
+      <Box style={{ pageBreakInside: "avoid", breakInside: "avoid-column", marginBottom: "5%", marginLeft: "5%"}} >
+        <Typography variant="h6" style={{ fontWeight: 600 }}>
+          Date
+        </Typography>
+        {data ? <RichTextField value={data.toLocaleString()} removeTopMargin={remove ?? false} /> : NotSpecified}
+      </Box> :
+      <Box style={{ pageBreakInside: "avoid", breakInside: "avoid-column", marginBottom: "5%", marginLeft: "5%"}} >
+        <Typography variant="h6" style={{ fontWeight: 600 }}>
+          {name}
+        </Typography>
+        {data ? <RichTextField value={data} removeTopMargin={remove ?? false} /> : NotSpecified}
+      </Box>}
+    </>
   );
 }
 
@@ -138,7 +147,6 @@ const Event: NextPage<Props> = ({ classes }) => {
     setEventData(next.data() as EventData);
   };
 
-  // console.log("eventData: ", eventData);
 
 
   const options = { year: "numeric", month: "long", day: "numeric" };
@@ -232,7 +240,7 @@ const Event: NextPage<Props> = ({ classes }) => {
 
       <Divider style={{ marginBottom: "3em", marginTop: "3em", height: 3, borderRadius: "25px"}}></Divider>
 
-      <Grid container spacing={4}>
+      <Box sx={{columns: 2}}>
         <EventField name="Project Description" value={<EventDescription event={eventData} />} />
         {initialGridKeys.filter((name) => eventData[name] != null && eventData[name] != "").map((name) => (
           <RichEventField key={name} name={name} value={eventData[name]} removeTopMargin={true} />
@@ -243,7 +251,7 @@ const Event: NextPage<Props> = ({ classes }) => {
           .map((name) => (
             <RichEventField key={name} name={name} value={eventData[name]} removeTopMargin={true} />
           ))}
-      </Grid>
+      </Box>
     </div>
   );
 };

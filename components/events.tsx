@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { firebaseClient } from "../firebaseClient";
 import { 
-  Button, 
-  Grid, 
+  Button,
   MenuItem, 
   Select, 
   Typography, 
@@ -10,6 +9,10 @@ import {
   withStyles, 
   Switch,
   } from "@material-ui/core";
+import Stack from '@mui/material/Stack';
+import Grid from '@mui/material/Grid';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import Tooltip from '@material-ui/core/Tooltip';
 import EventModal from "./eventModal";
 import BootstrapInput from "./bootstrapInput";
 import Link from "next/link";
@@ -20,8 +23,7 @@ import { Location } from "../helpers/locations"
 import { volunteerTypes } from "./addModifyEventModal";
 import { CollectionReference, Query } from "@firebase/firestore-types";
 import {useRouter} from "next/router";
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import Tooltip from '@material-ui/core/Tooltip';
+
 
 type EventsProps = {
   location: Location;
@@ -207,88 +209,90 @@ const Events: React.FC<EventsProps> = ({
           location={location}
           handleClose={() => setModalOpen(false)}
         />
-        <Grid container>
-          <Grid item xs={12} sm={6}>
-            <Grid container>
-              {!isProviderView && <Grid item style={{ marginBottom: "1em" }}>
-                <Typography
-                  id="student-type-filter"
-                  className={classes.filterField}>
-                  Student Discipline{" "}
-                </Typography>
-                <Select
-                  aria-labelledby="student-type-filter"
-                  value={studentTypeFilter}
-                  className={classes.studentFilter}
-                  onChange={(e) => {
-                    setStudentTypeFilter(e.target.value as string);
-                  }}
-                  displayEmpty
-                  input={<BootstrapInput />}
-                  disabled={ isProviderView }
-                >
-                  <MenuItem value="">Show All</MenuItem>
-                  {volunteerTypes
-                    .filter((studentType) => studentType !== "Providers")
-                    .map((studentType, index) => (
-                      <MenuItem key={index} value={studentType}>{studentType}</MenuItem>
-                    ))}
-                </Select>
-              </Grid>}
-              <Grid item style={{ marginBottom: "1em" }}>
-                <Typography
-                  id="opportunity-type-filter"
-                  className={classes.filterField}
-                >
-                  Opportunity Type{" "}
-                </Typography>
-                <Select
-                  aria-labelledby="opportunity-type-filter"
-                  value={organizationFilter}
-                  onChange={(e) => {
-                    setOrganizationFilter(e.target.value as string);
-                  }}
-                  displayEmpty
-                  className={classes.studentFilter}
-                  input={<BootstrapInput />}
-                >
-                  <MenuItem value="">Show All</MenuItem>
-                  {organizations.map((organization, index) => (
-                    <MenuItem key={index} value={organization}>{organization}</MenuItem>
-                  ))}
-                </Select>
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid container item xs={10} sm={6} style={{ textAlign: 'right', flexDirection: "column" }}>
-          <Grid item container style={{justifyContent:'flex-end', alignItems:"center"}} >
-            <Typography style= {{display: 'flex', alignItems: 'center'}}>
-              <b style={{marginRight: '0.25rem',fontSize:'1rem'}}>Provider View</b>
-              <Tooltip 
-              title={
-                <Typography>
-                  Providers are clinicians who supervise our students in providing medical care to underserved patients.
-                </Typography>
-              }
-              >
-                <InfoOutlinedIcon style={{fontSize:'1.5 rem', color: "#808080"}}/>
-              </Tooltip>
+        <Grid container columns={16}>
+          <Grid item xs={5}>
+            <Typography
+              id="opportunity-type-filter"
+              className={classes.filterField}
+            >
+              Opportunity Type{" "}
             </Typography>
-            <Switch
-              color="primary"
-              classes={{
-                root: classes.root,
-                switchBase: classes.switchBase,
-                thumb: classes.thumb,
-                track: classes.track,
-                checked: classes.checked
+            <Select
+              aria-labelledby="opportunity-type-filter"
+              value={organizationFilter}
+              onChange={(e) => {
+                setOrganizationFilter(e.target.value as string);
               }}
-              checked={isProviderView}
-              onChange={(e) => setProviderView(e.target.checked)}
-            />
+              displayEmpty
+              className={classes.studentFilter}
+              input={<BootstrapInput />}
+            >
+              <MenuItem value="">Show All</MenuItem>
+              {organizations.map((organization, index) => (
+                <MenuItem key={index} value={organization}>{organization}</MenuItem>
+              ))}
+            </Select>
           </Grid>
-          {location === "Seattle" && (
-            <Grid item container style={{justifyContent:'flex-end'}}>
+          <Grid item xs={5}>
+            {!isProviderView &&
+            <>
+              <Typography
+                id="student-type-filter"
+                className={classes.filterField}>
+                Student Discipline{" "}
+              </Typography>
+              <Select
+                aria-labelledby="student-type-filter"
+                value={studentTypeFilter}
+                className={classes.studentFilter}
+                onChange={(e) => {
+                  setStudentTypeFilter(e.target.value as string);
+                }}
+                displayEmpty
+                input={<BootstrapInput />}
+                disabled={ isProviderView }
+              >
+                <MenuItem value="">Show All</MenuItem>
+                {volunteerTypes
+                  .filter((studentType) => studentType !== "Providers")
+                  .map((studentType, index) => (
+                    <MenuItem key={index} value={studentType}>{studentType}</MenuItem>
+                  ))}
+              </Select>
+            </>}
+          </Grid>
+          <Grid item xs={1} />
+          <Grid item xs={3}>
+            <Stack direction="row" spacing={1}>
+              <Typography style= {{display: 'flex', alignItems: 'center'}}>
+                  <b style={{marginRight: '0.25rem',fontSize:'1rem'}}>Provider View</b>
+                  <Tooltip 
+                    title={
+                      <Typography>
+                        Providers are clinicians who supervise our students in providing medical care to underserved patients.
+                      </Typography>
+                    }
+                  >
+                    <InfoOutlinedIcon style={{fontSize:'1.5 rem', color: "#808080"}}/>
+                  </Tooltip>
+                </Typography>
+
+                <Switch
+                  color="primary"
+                  classes={{
+                    root: classes.root,
+                    switchBase: classes.switchBase,
+                    thumb: classes.thumb,
+                    track: classes.track,
+                    checked: classes.checked
+                  }}
+                  checked={isProviderView}
+                  onChange={(e) => setProviderView(e.target.checked)}
+                />
+              </Stack>
+            </Grid>
+            {location === "Seattle" && (
+            <Grid item xs={2}>
               <Link href="/calendar">
                 <Button
                   variant="contained"
@@ -305,12 +309,10 @@ const Events: React.FC<EventsProps> = ({
                   Calendar
                 </Button>
               </Link>
-            </Grid>
-          )}
-          </Grid>
+             </Grid>
+            )}
         </Grid>
       </div>
-
       <Typography variant="h6" style={{ textAlign: "center", marginBottom: "3em", color: "#85754D" }}>
         <b>Note:</b> Please review  
         {topMessage}
