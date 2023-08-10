@@ -10,7 +10,7 @@ const EventDescription: React.FC<EventDescriptionProps> = ({
   event
 }) => {
   if (event.Details) {
-    return <RichTextField value={event.Details} removeTopMargin={false} />
+    return <RichTextField value={event.Details} removeTopMargin={true} />
   }
 
   return (

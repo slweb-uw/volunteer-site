@@ -140,7 +140,7 @@ const locations = [
 ];
 
 const initialFields = [
-  "Contact Information and Cancellation Policy",
+  "Contact Information",
   "Website Link",
   "Parking and Directions",
   "Clinic Flow",
@@ -151,6 +151,8 @@ const initialFields = [
   "Provider Information",
   "HS Grad Student Information",
   "Undergraduate Information",
+  "Cancellation Policy",
+  "Protocols",
 ];
 
 const reservedFields = new Set([
