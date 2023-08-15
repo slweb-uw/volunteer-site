@@ -209,8 +209,8 @@ const Events: React.FC<EventsProps> = ({
           location={location}
           handleClose={() => setModalOpen(false)}
         />
-        <Grid container columns={16}>
-          <Grid item xs={5}>
+        <Grid container columns={16} spacing={2}>
+          <Grid item xs={12} md={5}>
             <Typography
               id="opportunity-type-filter"
               className={classes.filterField}
@@ -233,7 +233,7 @@ const Events: React.FC<EventsProps> = ({
               ))}
             </Select>
           </Grid>
-          <Grid item xs={5}>
+          <Grid item xs={12} md={5}>
             {!isProviderView &&
             <>
               <Typography
@@ -261,8 +261,8 @@ const Events: React.FC<EventsProps> = ({
               </Select>
             </>}
           </Grid>
-          <Grid item xs={1} />
-          <Grid item xs={3}>
+          <Grid item xs={0} md={1}/>
+          <Grid item xs={12} md={3}>
             <Stack direction="row" spacing={1}>
               <Typography style= {{display: 'flex', alignItems: 'center'}}>
                   <b style={{marginRight: '0.25rem',fontSize:'1rem'}}>Provider View</b>
@@ -292,7 +292,7 @@ const Events: React.FC<EventsProps> = ({
               </Stack>
             </Grid>
             {location === "Seattle" && (
-            <Grid item xs={2}>
+            <Grid item xs={12} md={2}>
               <Link href="/calendar">
                 <Button
                   variant="contained"
