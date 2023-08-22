@@ -220,7 +220,7 @@ const Event: NextPage<Props> = ({ classes }) => {
 
       <Divider style={{ marginBottom: "3em", marginTop: "3em", height: 3, borderRadius: "25px"}}></Divider>
 
-      <Box sx={{columns: 2}}>
+      <Box sx={{ columns: { xs: 1, md: 2 }, columnGap: 8 }}>
         <EventField name="Project Description" value={<EventDescription event={eventData} />} />
         {initialGridKeys.filter((name) => eventData[name] != null && eventData[name] != "").map((name) => (
           <RichEventField key={name} name={name} value={eventData[name]} removeTopMargin={true} />
