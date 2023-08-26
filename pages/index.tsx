@@ -213,7 +213,7 @@ const App: React.FC<{}> = () => {
               gutterBottom
               className={classes.description}
             >
-              Our program supports <b>50+ student</b> led service projects throughout
+              Our program supports 50+ student led service projects throughout
               the region.
             </Typography>
             <Link href="/opportunities">
@@ -287,6 +287,27 @@ const App: React.FC<{}> = () => {
                   <div className={classes.cardlinks}>
                     <Typography className={classes.cardtitle}>
                       Welcome
+                    </Typography>
+                    <Typography>
+                      <ArrowForwardIos
+                        style={{ fontSize: "1em", color: "#4B2E83" }}
+                      />
+                    </Typography>
+                  </div>
+                </CardContent>
+              </CardActionArea>
+              <hr
+                style={{
+                  border: ".2px solid #E5E5E5",
+                  width: "100%",
+                  margin: "0",
+                }}
+              ></hr>
+              <CardActionArea href="/requiredTraining" className={classes.cardhover}>
+                <CardContent>
+                  <div className={classes.cardlinks}>
+                    <Typography className={classes.cardtitle}>
+                      Required Training
                     </Typography>
                     <Typography>
                       <ArrowForwardIos
