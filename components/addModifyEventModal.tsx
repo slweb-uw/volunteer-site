@@ -140,7 +140,7 @@ const locations = [
 ];
 
 const initialFields = [
-  "Contact Information and Cancellation Policy",
+  "Contact Information",
   "Website Link",
   "Parking and Directions",
   "Clinic Flow",
@@ -151,6 +151,8 @@ const initialFields = [
   "Provider Information",
   "HS Grad Student Information",
   "Undergraduate Information",
+  "Cancellation Policy",
+  "Protocols",
 ];
 
 const reservedFields = new Set([
@@ -811,7 +813,7 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
               <Select
                 fullWidth
                 multiple
-                value={volunteersNeeded}
+                value={!Array.isArray(volunteersNeeded) ? [] : volunteersNeeded}
                 onChange={(e) => {
                   const value = e.target.value;
                   setVolunteersNeeded(

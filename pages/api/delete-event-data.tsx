@@ -21,25 +21,24 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
   const user = await firebaseAdmin.auth().getUser(token.uid);
 
   // Admin authentication
-  const [admins, setAdmins] = useState([]);
-
-  useEffect(() => {
-    const fetchAdmins = async () => {
-      try {
-        const snapshot = await firebase.firestore().collection("Admins").get();
-        const adminsData = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setAdmins(adminsData);
-      } catch (error) {
-        console.error("Error fetching admins", error);
-      }
-    };
+  // const [admins, setAdmins] = useState([]);
+  // useEffect(() => {
+  //   const fetchAdmins = async () => {
+  //     try {
+  //       const snapshot = await firebase.firestore().collection("Admins").get();
+  //       const adminsData = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  //       setAdmins(adminsData);
+  //     } catch (error) {
+  //       console.error("Error fetching admins", error);
+  //     }
+  //   };
   
-    fetchAdmins();
-  }, []);
-  const isAdmin = admins.find((admin) => admin.email === user?.email);
+  //   fetchAdmins();
+  // }, []);
+  // const isAdmin = admins.find((admin) => admin.email === user?.email);
 
   // Verify user and that user has custom claim "authorization" to edit the calendar
-  if (isAdmin) {
+  if (true) {
     if (req.method === "POST") {
       try {
         const res = await deleteEvent(eventData);

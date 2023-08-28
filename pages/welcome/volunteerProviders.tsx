@@ -112,7 +112,7 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
                   </li>
                   <li>
                     <Link
-                      href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569"
+                      href="https://canvas.uw.edu/courses/1693188/pages/training-modules?module_item_id=18595279"
                       className={classes.link}
                     >
                       Training
@@ -125,7 +125,7 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
                   </li>
                   <li>
                     <Link
-                      href="https://canvas.uw.edu/courses/1176739/pages/protocols?module_item_id=15194947"
+                      href="https://canvas.uw.edu/courses/1693188/pages/protocols?module_item_id=18595280"
                       className={classes.link}
                     >
                       Protocols

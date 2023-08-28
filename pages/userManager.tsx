@@ -176,11 +176,11 @@ const AdminPage = () => {
       .collection(userType)
       .add({ email: newUserEmail })
       .then(() => {
-        console.log("Admin added successfully!");
+        console.log("User added successfully!");
         setNewUserEmail("");
       })
       .catch((error) => {
-        console.error("Error adding admin", error);
+        console.error("Error adding user", error);
       });
   };
 

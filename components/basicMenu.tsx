@@ -40,8 +40,8 @@ const BasicMenu: React.FC<Props> = (Props) => {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
-        {Props.links.map((element: React.ReactNode) => {
-          return <ListItem>{element}</ListItem>;
+        {Props.links.map((element: React.ReactNode, index) => {
+          return <ListItem key={index}>{element}</ListItem>;
         })}
       </List>
     </Box>

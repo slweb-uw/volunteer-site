@@ -111,12 +111,12 @@ const Header: React.FC<{}> = (props) => {
     <Divider/>,
       <a href="/opportunities" className={useStyles().navtitle} tabIndex={0}>Opportunities</a>,
     <Divider/>,
-      <a className={useStyles().navtitle} href="https://canvas.uw.edu/courses/1176739/pages/service-learning-skills-training-modules?module_item_id=11110569" target="_blank" tabIndex={0}>Training</a>,
+      <a className={useStyles().navtitle} href="https://canvas.uw.edu/courses/1693188/pages/training-modules?module_item_id=18595279" target="_blank" tabIndex={0}>Training</a>,
     //*NOTE: Resources name was changed to Links*/
     <Divider/>,
       <a  href="/resources" className={useStyles().navtitle} tabIndex={0}>Links</a>,
     <Divider/>,
-      <a href="https://canvas.uw.edu/courses/1176739/modules/items/15194947" className={useStyles().navtitle} target="_blank" tabIndex={0}>Protocols</a>,
+      <a href="https://canvas.uw.edu/courses/1693188/pages/protocols?module_item_id=18595280" className={useStyles().navtitle} target="_blank" tabIndex={0}>Protocols</a>,
     <Divider/>,
       <a href="/donations" className={useStyles().navtitle} tabIndex={0}>Donations</a>,
     <Divider/>,
@@ -150,7 +150,7 @@ const Header: React.FC<{}> = (props) => {
             });
 
             firebaseClient.auth().signOut().then(() => {
-              firebaseClient.auth().signInWithRedirect(provider);
+              firebaseClient.auth().signInWithPopup(provider);
             });
 
           }}

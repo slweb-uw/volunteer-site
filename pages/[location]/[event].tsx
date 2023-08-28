@@ -16,6 +16,8 @@ import {
 import naturalJoin from "../../helpers/naturalJoin";
 import EventDescription from "../../components/eventDescription";
 import RichTextField from "../../components/richTextField";
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
 
 interface Props {
   classes?: any;
@@ -41,6 +43,7 @@ const reservedKeys = [
   "Organization",
   "Location",
   "Contact Information and Cancellation Policy",
+  "Contact Information",
   "Website Link",
   "Sign-up Link",
   "Parking and Directions",
@@ -55,7 +58,8 @@ const reservedKeys = [
   "recurrences",
   "original recurrence",
   "imageURL",
-  "cardImageURL"
+  "cardImageURL",
+  "DateObject"
 ];
 
 type EventFieldProps = {
@@ -80,13 +84,12 @@ const EventField: React.FC<EventFieldProps> = ({
     data = value;
   }
   return (
-    <Grid style={{ maxWidth: "100%" }} item sm={12} md={6}>
+    <Box style={{ pageBreakInside: "avoid", breakInside: "avoid-column", marginBottom: "5%"}}>
       <Typography variant="h6" style={{ fontWeight: 600 }}>
         {name}
       </Typography>
-
       <Typography>{data ?? NotSpecified}</Typography>
-    </Grid>
+    </Box>
   );
 }
 
@@ -103,13 +106,14 @@ const RichEventField: React.FC<RichEventFieldProps> = ({
   }
   const remove: boolean | undefined = removeTopMargin ? data?.includes("<p>") : false;
   return (
-    <Grid style={{ maxWidth: "100%" }} item sm={12} md={6}>
-      <Typography variant="h6" style={{ fontWeight: 600 }}>
-        {name}
-      </Typography>
-
-      {data ? <RichTextField value={data} removeTopMargin={remove ?? false} /> : NotSpecified}
-    </Grid>
+    <>
+      <Box style={{ pageBreakInside: "avoid", breakInside: "avoid-column", marginBottom: "5%" }} >
+        <Typography variant="h6" style={{ fontWeight: 600 }}>
+          {name}
+        </Typography>
+        {data ? <RichTextField value={data} removeTopMargin={remove ?? false} /> : NotSpecified}
+      </Box>
+    </>
   );
 }
 
@@ -138,7 +142,6 @@ const Event: NextPage<Props> = ({ classes }) => {
     setEventData(next.data() as EventData);
   };
 
-  // console.log("eventData: ", eventData);
 
 
   const options = { year: "numeric", month: "long", day: "numeric" };
@@ -169,70 +172,55 @@ const Event: NextPage<Props> = ({ classes }) => {
             alt={eventData.Title}
           />
         </Grid>
-        <Grid item sm={12} md={6} style={{maxWidth: "100%"}}>
-          <Grid container direction="column" spacing={5} style={{ paddingTop: 8, maxWidth: "100%" }}>
-            <Grid item>
-              <Grid container direction="row" spacing={10}>
-                <Grid item>
-                  <RichEventField
-                    name="Location"
-                    value={eventData?.Location}
-                    removeTopMargin={true}
-                  />
-                </Grid>
-                <Grid item>
-                  <RichEventField
-                    name="Clinic Schedule"
-                    value={eventData["Clinic Schedule"]}
-                    removeTopMargin={true}
-                  />
-                </Grid>
-              </Grid>
-            </Grid>
-
+        <Grid item container direction="column" sm={12} md={6}>
+          <Stack direction="row" spacing={6} sx={{marginTop: "5%"}}>
             <RichEventField
-              name="Contact Information & Cancellation Policy"
-              value={eventData["Contact Information and Cancellation Policy"]}
+              name="Location"
+              value={eventData?.Location}
               removeTopMargin={true}
             />
             <RichEventField
-              name="Website Link"
-              value={eventData["Website Link"]}
+              name="Clinic Schedule"
+              value={eventData["Clinic Schedule"]}
               removeTopMargin={true}
             />
+          </Stack>
+          <RichEventField
+            name="Contact Information"
+            value={eventData["Contact Information"] || eventData["Contact Information and Cancellation Policy"]}
+            removeTopMargin={true}
+          />
+          <RichEventField
+            name="Website Link"
+            value={eventData["Website Link"]}
+            removeTopMargin={true}
+          />
+          <RichEventField 
+            name="Types of Volunteers Needed"
+            value={eventData["Types of Volunteers Needed"] ? naturalJoin(eventData["Types of Volunteers Needed"]) : undefined}
+            removeTopMargin={true}
+          />
 
-            <Grid item>
-              <Typography variant="h6" style={{ fontWeight: 600, maxWidth: "100%" }}>
-                Types of Volunteers Needed
-              </Typography>
-              <Typography>
-                {eventData["Types of Volunteers Needed"] ? naturalJoin(eventData["Types of Volunteers Needed"]) : NotSpecified}
-              </Typography>
-            </Grid>
-            {/* ------------------ Sign up link ------------------
-            <Grid item>
-              <Button
-                autoFocus
-                color="secondary"
-                variant="contained"
-                style={{ marginRight: "1em", marginBottom: "2em" }}
-                href={eventData["Sign-up Link"]}
-                disabled={!eventData["Sign-up Link"]}
-              >
-                {buttonText}
-              </Button>
-            </Grid>
-            */}
+          {/* ------------------ Sign up link ------------------
+          <Grid item>
+            <Button
+              autoFocus
+              color="secondary"
+              variant="contained"
+              style={{ marginRight: "1em", marginBottom: "2em" }}
+              href={eventData["Sign-up Link"]}
+              disabled={!eventData["Sign-up Link"]}
+            >
+              {buttonText}
+            </Button>
           </Grid>
-          <Grid container>
-            <Grid item>{Object.keys(eventData).map((fieldName) => {})}</Grid>
-          </Grid>
+          */}
         </Grid>
       </Grid>
 
       <Divider style={{ marginBottom: "3em", marginTop: "3em", height: 3, borderRadius: "25px"}}></Divider>
 
-      <Grid container spacing={4}>
+      <Box sx={{ columns: { xs: 1, md: 2 }, columnGap: 8 }}>
         <EventField name="Project Description" value={<EventDescription event={eventData} />} />
         {initialGridKeys.filter((name) => eventData[name] != null && eventData[name] != "").map((name) => (
           <RichEventField key={name} name={name} value={eventData[name]} removeTopMargin={true} />
@@ -243,7 +231,7 @@ const Event: NextPage<Props> = ({ classes }) => {
           .map((name) => (
             <RichEventField key={name} name={name} value={eventData[name]} removeTopMargin={true} />
           ))}
-      </Grid>
+      </Box>
     </div>
   );
 };
@@ -260,13 +248,7 @@ const styles = createStyles({
   },
   detailsImageContainer: {
     display: "flex",
-    margin: "1rem",
-    justifyContent: "center",
-    overflow: "hidden",
     maxWidth: "500px",
-    maxHeight: "500px",
-    paddingRight: "0px !important",
-    marginLeft: "0px"
   },
   detailsImage: {
     minWidth: "100%",

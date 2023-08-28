@@ -213,7 +213,7 @@ const App: React.FC<{}> = () => {
               gutterBottom
               className={classes.description}
             >
-              Our program supports 50+ student led service projects throughout
+              Our program supports <b>50+ student</b> led service projects throughout
               the region.
             </Typography>
             <Link href="/opportunities">
@@ -352,8 +352,10 @@ const App: React.FC<{}> = () => {
                 marginTop: "2em",
               }}
             >
+            <div style={{ marginRight: "1em" }}>
               <HeadlineBar color="gold" width={280} height={10}></HeadlineBar>
             </div>
+          </div>
 
             <Card
               variant="outlined"
@@ -434,7 +436,7 @@ const App: React.FC<{}> = () => {
               </Link>
             </Card>
           </div>
-          {/* Volunteer Providers */}
+          {/* Community Partners */}
           <div
             style={{
               display: "flex",
@@ -460,8 +462,10 @@ const App: React.FC<{}> = () => {
                 marginTop: "2em",
               }}
             >
+              <div style={{ marginRight: "1em" }}>
               <HeadlineBar color="gold" width={275} height={10}></HeadlineBar>
             </div>
+          </div>
 
             <Card
               variant="outlined"
@@ -723,7 +727,7 @@ const App: React.FC<{}> = () => {
             Contact
           </Typography>
           <div style={{ textAlign: "center" }}>
-            <HeadlineBar color="purple" width={110} height={10}></HeadlineBar>
+            <HeadlineBar color="purple" width={130} height={10}></HeadlineBar>
           </div>
         </div>
         <Grid
