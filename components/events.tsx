@@ -143,11 +143,11 @@ const Events: React.FC<EventsProps> = ({
     if (keepPrev && cursor) {
       query = query.startAfter(cursor)
     }
-    const next = await query.limit(10)
+    const next = await query.limit(11)
       .get();
 
     const eventsToAdd: EventData[] = [];
-    next.docs.forEach((document) => {
+    next.docs.slice(0, 10).forEach((document) => {
       let eventDoc = document.data() as EventData;
       eventDoc.id = document.id; // adds event id to the EventData object
       const volunteersNeeded: string | string[] | undefined =
@@ -158,13 +158,13 @@ const Events: React.FC<EventsProps> = ({
       }
       eventsToAdd.push(eventDoc);
     });
-    setCursor(next.docs[next.docs.length - 1]);
+    setCursor(next.docs[next.docs.length - 2]);
     if (keepPrev) {
       setEvents((prevEvents) => [...prevEvents, ...eventsToAdd]);
     } else {
       setEvents(eventsToAdd);
     }
-    setShowLoadButton(eventsToAdd.length === 10);
+    setShowLoadButton(next.docs.length > 10);
   };
 
   useEffect(() => {
