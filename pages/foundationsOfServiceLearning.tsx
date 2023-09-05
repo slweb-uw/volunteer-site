@@ -26,6 +26,7 @@ const ServiceLearningPage: NextPage<Props> = ({ classes }) => {
           fontFamily: "Encode Sans",
           fontWeight: 800,
           fontSize: "2rem",
+          color: "#4b2e83",
         }}
       >
         Foundations of Service Learning
@@ -34,33 +35,41 @@ const ServiceLearningPage: NextPage<Props> = ({ classes }) => {
         src={"../goldbar.png"}
         style={{ width: "550px", height: "10px", marginBottom: "30px" }}
       />
-      <Grid container spacing={2}>
+      <Grid container spacing={1}>
         <Grid item xs={12} md={6} lg={8}>
           <div
             style={{
               marginLeft: "auto",
               marginRight: "auto",
               textAlign: "left",
-              marginTop: "1em",
+              marginTop: "0em",
               width: "100%",
             }}
           >
-            <Typography style={{ fontSize: 16, fontFamily: "Open sans" }}>
+            <Typography style={{ fontSize: 16, fontFamily: "Open Sans" }}>
               The need to prepare for and reflect on service learning experiences is
               a key value that we hope to instill in health professions learners. At
               each service learning event, it is important to strengthen your learning
               by taking the time to consider the following:
             </Typography>
-            <div style={{ paddingLeft: "20px" }}>
-              <Typography style={{ fontSize: 16, fontFamily: "Open sans" }}>
+            <div style={{ paddingTop: "20px" }}>
+              <Typography
+                variant="h6"
+                style={{
+                  fontSize: 24,
+                  fontFamily: "Encode Sans",
+                  color: "#4b2e83",
+                  fontWeight: 600, // Make it bold
+                }}
+              >
                 Preparation
               </Typography>
-              <ul style={{ listStyleType: "disc", paddingLeft: "20px" }}>
+              <ul style={{ listStyleType: "disc" }}>
                 <li>
                   Understand the centering of community-identified needs in the context
                   of the upcoming event. This may include research into historical
-                  healthcare interactions, knowledge of current interventions,
-                  familiarity with cultural considerations for the community, etc.
+                  healthcare interactions, knowledge of current interventions, familiarity
+                  with cultural considerations for the community, etc.
                 </li>
                 <li>
                   Understand the scope of care/service that you will be providing and
@@ -71,10 +80,18 @@ const ServiceLearningPage: NextPage<Props> = ({ classes }) => {
                   potential harm to both volunteers and community members.
                 </li>
               </ul>
-              <Typography style={{ fontSize: 16, fontFamily: "Open sans" }}>
+              <Typography
+                variant="h6"
+                style={{
+                  fontSize: 24,
+                  fontFamily: "Encode Sans",
+                  color: "#4b2e83",
+                  fontWeight: 600, // Make it bold
+                }}
+              >
                 Reflection
               </Typography>
-              <ul style={{ listStyleType: "disc", paddingLeft: "20px" }}>
+              <ul style={{ listStyleType: "disc" }}>
                 <li>Ethical considerations</li>
                 <li>Quality improvement</li>
                 <li>Safety for volunteers and community members</li>
@@ -82,6 +99,11 @@ const ServiceLearningPage: NextPage<Props> = ({ classes }) => {
                 <li>Reflections on the impacts of social determinants of health</li>
                 <li>Identification of opportunities for advocacy that recognize gaps in care, duplication of effort, and ???</li>
               </ul>
+              <Typography style={{ fontSize: 16, fontFamily: "Open Sans" }}>
+                Remember that early exposure to service work will help shape your 
+                professional identity and increase the likelihood that you will continue to do 
+                community service work as a licensed provider!
+              </Typography>
             </div>
           </div>
         </Grid>
