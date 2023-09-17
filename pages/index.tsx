@@ -213,7 +213,7 @@ const App: React.FC<{}> = () => {
               gutterBottom
               className={classes.description}
             >
-              Our program supports <b>50+ student</b> led service projects throughout
+              Our program supports 50+ student led service projects throughout
               the region.
             </Typography>
             <Link href="/opportunities">
