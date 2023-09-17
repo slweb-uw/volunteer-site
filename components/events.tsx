@@ -23,6 +23,7 @@ import { Location } from "../helpers/locations"
 import { volunteerTypes } from "./addModifyEventModal";
 import { CollectionReference, Query } from "@firebase/firestore-types";
 import {useRouter} from "next/router";
+import { useMediaQuery } from '@material-ui/core';
 
 
 type EventsProps = {
@@ -193,6 +194,7 @@ const Events: React.FC<EventsProps> = ({
 
   const isAdmin = admins.find((admin) => admin.email === user?.email);
 
+  const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'));
 
   return (
     <div>
@@ -344,7 +346,7 @@ const Events: React.FC<EventsProps> = ({
       {location ? (
         <div style={{ paddingBottom: "4em" }}>
           {events.length > 0 ? (
-            <Grid container spacing={6}>
+            <Grid container  spacing={isMobile ? 2 : 6}>
               {events.map((event, index) => (
                 <Grid key={index} item xs={12} lg={6}>
                   <EventCard
