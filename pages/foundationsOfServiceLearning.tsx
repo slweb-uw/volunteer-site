@@ -26,10 +26,10 @@ const ServiceLearningPage: NextPage<Props> = ({ classes }) => {
           fontFamily: "Encode Sans",
           fontWeight: 800,
           fontSize: "2rem",
-          color: "#4b2e83",
+          color: "#000000",
         }}
       >
-        Foundations of Service Learning
+        Preparation and Reflection
       </Typography>
       <img
         src={"../goldbar.png"}
@@ -47,10 +47,8 @@ const ServiceLearningPage: NextPage<Props> = ({ classes }) => {
             }}
           >
             <Typography style={{ fontSize: 16, fontFamily: "Open Sans" }}>
-              The need to prepare for and reflect on service learning experiences is
-              a key value that we hope to instill in health professions learners. At
-              each service learning event, it is important to strengthen your learning
-              by taking the time to consider the following:
+              At each service learning event, it is important to strengthen your learning
+              by taking the time to prepare and reflect.
             </Typography>
             <div style={{ paddingTop: "20px" }}>
               <Typography
@@ -66,18 +64,18 @@ const ServiceLearningPage: NextPage<Props> = ({ classes }) => {
               </Typography>
               <ul style={{ listStyleType: "disc" }}>
                 <li>
-                  Understand the centering of community-identified needs in the context
-                  of the upcoming event. This may include research into historical
-                  healthcare interactions, knowledge of current interventions, familiarity
-                  with cultural considerations for the community, etc.
+                Actively consider the community that you will be entering in preparation 
+                for each event. This may include historical healthcare interactions, 
+                knowledge of current interventions, familiarity with cultural considerations 
+                for the community, etc. 
                 </li>
                 <li>
-                  Understand the scope of care/service that you will be providing and
-                  ensure that you have completed the proper training prior to the event.
+                Understand your roles and responsibilities as well as the scope of care that will 
+                be provided at the event. Ensure that you have completed the proper training (modules/skills sessions). 
                 </li>
                 <li>
-                  Create a safety/de-escalation plan with your team that addresses
-                  potential harm to both volunteers and community members.
+                Discuss safety/de-escalation plan with your team that addresses potential harm
+                 to both volunteers and community members. 
                 </li>
               </ul>
               <Typography
@@ -91,6 +89,17 @@ const ServiceLearningPage: NextPage<Props> = ({ classes }) => {
               >
                 Reflection
               </Typography>
+              <div>
+                <Typography
+                  variant="h6"
+                  style={{
+                  fontSize: 19,
+                  fontFamily: "Encode Sans",
+                  }}
+               >
+                  Consider the following with your team:
+                </Typography>
+              </div>
               <ul style={{ listStyleType: "disc" }}>
                 <li>Ethical considerations</li>
                 <li>Quality improvement</li>
@@ -100,9 +109,11 @@ const ServiceLearningPage: NextPage<Props> = ({ classes }) => {
                 <li>Identification of opportunities for advocacy that recognize gaps in care, duplication of effort, and ???</li>
               </ul>
               <Typography style={{ fontSize: 16, fontFamily: "Open Sans" }}>
-                Remember that early exposure to service work will help shape your 
-                professional identity and increase the likelihood that you will continue to do 
-                community service work as a licensed provider!
+              Successful participation in Service Learning while in medical school 
+              will require a balancing act as you learn to navigate personal, clinical, 
+              and academic responsibilities.  However, learning to integrate service 
+              into your life as a medical student will teach you the skills that you 
+              will need to incorporate this meaningful work into your future practice. 
               </Typography>
             </div>
           </div>

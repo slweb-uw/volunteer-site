@@ -27,7 +27,7 @@ const StandardsOfCarePage: NextPage<Props> = ({ classes }) => {
           fontFamily: "Encode Sans",
           fontWeight: 800,
           fontSize: "2rem",
-          color: "#4b2e83",
+          color: "#000000",
         }}
       >
         Standards of Care: Expectations and Goals
@@ -71,7 +71,7 @@ const StandardsOfCarePage: NextPage<Props> = ({ classes }) => {
                   create barriers to better health.
                 </li>
                 <li>
-                  Understand the significance of rooting service in ongoing assessments
+                  Understand the significance of grounding service in ongoing assessments
                   of community-identified needs.
                 </li>
                 <li>
@@ -81,12 +81,11 @@ const StandardsOfCarePage: NextPage<Props> = ({ classes }) => {
                   increase clinical and cultural humility.
                 </li>
                 <li>
-                  Remember that the main goal is to get patients connected with
-                  sustained, clinic-based care.
+                Remember that the main goal of clinical service learning is to connect 
+                patients with sustainable, high-quality care.
                 </li>
                 <li>
-                  Appreciate the richness and strengths of the communities that you
-                  work with.
+                  Appreciate the richness and strengths of partner communities.
                 </li>
               </ul>
               <Typography
@@ -115,8 +114,8 @@ const StandardsOfCarePage: NextPage<Props> = ({ classes }) => {
                   have other connections to the health professional world.
                 </li>
                 <li>
-                  Appreciate the richness and strengths of the students that you work 
-                  with.
+                Gain experience in career-long mentorship skills considerate
+                 of ethics of working with minors, boundary setting and reciprocity.
                 </li>
               </ul>
               <Typography

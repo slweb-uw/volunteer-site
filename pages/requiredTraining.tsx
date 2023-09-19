@@ -27,7 +27,7 @@ const RequiredTraining: NextPage<Props> = ({ classes }) => {
           fontFamily: "Encode Sans",
           fontWeight: 800,
           fontSize: "2rem",
-          color: "#4b2e83",
+          color: "#000000",
         }}
       >
         REQUIRED TRAINING
@@ -48,32 +48,13 @@ const RequiredTraining: NextPage<Props> = ({ classes }) => {
             }}
           >
             <Typography style={{ fontSize: 16, fontFamily: "Open Sans" }}>
-              Ensuring that our student and provider volunteers are properly trained is
-              central to the mission of our program. Please check out the following links
-              prior to participation in outreach events:
+            Ensuring that our student volunteers are appropriately trained is 
+            central to the mission of our program.  Prior to participation in 
+            service learning events, please review the materials below.
             </Typography>
             <div style={{ listStyleType: "none", paddingTop: "20px" }}>
               <li>
-                <Typography
-                  variant="h6"
-                  style={{
-                    fontSize: 20,
-                    fontFamily: "Encode Sans",
-                    color: "#4b2e83",
-                    fontWeight: 400, // Make it bold
-                  }}
-                >
-                  <Link
-                    href="/foundationsOfServiceLearning"
-                    className={classes.link}
-                    color="inherit"
-                  >
-                    Foundations of Service Learning: Preparation and Reflection (required to review)
-                  </Link>
-                </Typography>
-              </li>
-              <li>
-                <Typography
+              <Typography
                   variant="h6"
                   style={{
                     fontSize: 20,
@@ -92,6 +73,26 @@ const RequiredTraining: NextPage<Props> = ({ classes }) => {
                 </Typography>
               </li>
               <li>
+              <Typography
+                  variant="h6"
+                  style={{
+                    fontSize: 20,
+                    fontFamily: "Encode Sans",
+                    color: "#4b2e83",
+                    fontWeight: 400, // Make it bold
+                  }}
+                >
+                  <Link
+                    href="/foundationsOfServiceLearning"
+                    className={classes.link}
+                    color="inherit"
+                  >
+                    Foundations of Service Learning: Preparation and Reflection (required to review)
+                  </Link>
+                </Typography>
+                
+              </li>
+              <li>
                 <Typography
                   variant="h6"
                   style={{
@@ -107,7 +108,7 @@ const RequiredTraining: NextPage<Props> = ({ classes }) => {
                     rel="noopener noreferrer"
                     className={classes.link}
                   >
-                    Online skills training modules (see individual projects for details)
+                    Skills training modules (see individual projects for site specific requirements)
                   </Link>
                 </Typography>
               </li>

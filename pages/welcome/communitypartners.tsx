@@ -33,7 +33,7 @@ const Communitypartners: NextPage<Props> = ({ classes }) => {
           fontSize: "2rem", 
         }}
       >
-        WELCOME COMMUNITY PARTNERS!
+        WELCOME COMMUNITY PARTNERS
       </Typography>
       <img
         src={"../goldbar.png"}

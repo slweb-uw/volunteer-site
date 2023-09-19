@@ -159,8 +159,7 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: "Open Sans",
     marginBottom: "15px",
     "@media only screen and (max-width: 430px)": {
-      fontSize: "3vw",
-      width: "70%",
+      fontSize: "16px",
     },
   },
   mobile: {
