@@ -74,7 +74,10 @@ const useStyles = makeStyles((theme) => ({
     margin: "20px 0",
   },
   message: {
-    display: 'flex', justifyContent: 'center', alignItems: 'center', fontWeight: 600,
+    display: 'block', 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    fontWeight: 600,
   },
   popup: {
     position: "relative",
@@ -99,7 +102,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AdminPage = () => {
-  const authorizedUsers = ["clarkel@uw.edu","dnakas4@uw.edu", "bruno.futino@gmail.com"]; // Hardcoded to limit who can manage admins
+  const authorizedUsers = ["clarkel@uw.edu", "dnakas4@uw.edu", "bruno.futino@gmail.com"]; // Hardcoded to limit who can manage admins
 
   const classes = useStyles();
   const { user } = useAuth();
@@ -212,8 +215,48 @@ const AdminPage = () => {
 
   if (!user || !authorizedUsers.includes(user.email)) {
     return (
-      <div className={`${classes.root} ${classes.message}`}>
-        <div>You are not authorized to access this page.{!user ? <span style={{color: "red"}}> Please login.</span>: ""}</div>
+      <div 
+        className={`${classes.root} ${classes.message}`} 
+        >
+        <div style={{marginTop: "25vh", marginBottom: "1rem"}}>You are not authorized to access this page!</div>
+        <div>
+          {
+            !user ? 
+              <Button
+              className={classes.headerButton}
+              variant="contained"
+              color="primary"
+              onClick={() => {
+                var provider = new firebase.auth.OAuthProvider("google.com");
+                provider.setCustomParameters({
+                  // Target uw login
+                  tenant: "uw.edu",
+                  prompt: 'select_account',
+                });
+
+                firebase.auth().signOut().then(() => {
+                  firebase.auth().signInWithPopup(provider);
+                });
+
+              }}
+              tabIndex={0}
+            >
+              Sign in
+            </Button>
+            : ""
+          }
+          
+          <a href="/">
+            <Button
+              className={classes.headerButton}
+              variant="outlined"
+              color="grey"
+            >
+              Return
+            </Button>
+          </a>
+          
+        </div>
       </div>
     );
   }
