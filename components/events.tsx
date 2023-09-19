@@ -23,6 +23,7 @@ import { Location } from "../helpers/locations"
 import { volunteerTypes } from "./addModifyEventModal";
 import { CollectionReference, Query } from "@firebase/firestore-types";
 import {useRouter} from "next/router";
+import { useMediaQuery } from '@material-ui/core';
 
 
 type EventsProps = {
@@ -143,11 +144,11 @@ const Events: React.FC<EventsProps> = ({
     if (keepPrev && cursor) {
       query = query.startAfter(cursor)
     }
-    const next = await query.limit(10)
+    const next = await query.limit(11)
       .get();
 
     const eventsToAdd: EventData[] = [];
-    next.docs.forEach((document) => {
+    next.docs.slice(0, 10).forEach((document) => {
       let eventDoc = document.data() as EventData;
       eventDoc.id = document.id; // adds event id to the EventData object
       const volunteersNeeded: string | string[] | undefined =
@@ -158,13 +159,13 @@ const Events: React.FC<EventsProps> = ({
       }
       eventsToAdd.push(eventDoc);
     });
-    setCursor(next.docs[next.docs.length - 1]);
+    setCursor(next.docs[next.docs.length - 2]);
     if (keepPrev) {
       setEvents((prevEvents) => [...prevEvents, ...eventsToAdd]);
     } else {
       setEvents(eventsToAdd);
     }
-    setShowLoadButton(eventsToAdd.length === 10);
+    setShowLoadButton(next.docs.length > 10);
   };
 
   useEffect(() => {
@@ -193,6 +194,7 @@ const Events: React.FC<EventsProps> = ({
 
   const isAdmin = admins.find((admin) => admin.email === user?.email);
 
+  const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'));
 
   return (
     <div>
@@ -344,7 +346,7 @@ const Events: React.FC<EventsProps> = ({
       {location ? (
         <div style={{ paddingBottom: "4em" }}>
           {events.length > 0 ? (
-            <Grid container spacing={6}>
+            <Grid container  spacing={isMobile ? 2 : 6}>
               {events.map((event, index) => (
                 <Grid key={index} item xs={12} lg={6}>
                   <EventCard
