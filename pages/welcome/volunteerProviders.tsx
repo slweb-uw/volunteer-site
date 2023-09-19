@@ -30,7 +30,7 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
           fontSize: "2rem",
         }}
       >
-        WELCOME VOLUNTEER PROVIDERS!
+        WELCOME VOLUNTEER PROVIDERS
       </Typography>
       <img
         src={"../goldbar.png"}

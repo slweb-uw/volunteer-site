@@ -31,7 +31,7 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
           fontSize: "2rem",
         }}
       >
-        WELCOME STUDENT VOLUNTEERS!
+        WELCOME STUDENT VOLUNTEERS
       </Typography>
       <img
         src={"../goldbar.png"}

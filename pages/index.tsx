@@ -159,8 +159,7 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: "Open Sans",
     marginBottom: "15px",
     "@media only screen and (max-width: 430px)": {
-      fontSize: "3vw",
-      width: "70%",
+      fontSize: "16px",
     },
   },
   mobile: {
@@ -287,6 +286,27 @@ const App: React.FC<{}> = () => {
                   <div className={classes.cardlinks}>
                     <Typography className={classes.cardtitle}>
                       Welcome
+                    </Typography>
+                    <Typography>
+                      <ArrowForwardIos
+                        style={{ fontSize: "1em", color: "#4B2E83" }}
+                      />
+                    </Typography>
+                  </div>
+                </CardContent>
+              </CardActionArea>
+              <hr
+                style={{
+                  border: ".2px solid #E5E5E5",
+                  width: "100%",
+                  margin: "0",
+                }}
+              ></hr>
+              <CardActionArea href="/requiredTraining" className={classes.cardhover}>
+                <CardContent>
+                  <div className={classes.cardlinks}>
+                    <Typography className={classes.cardtitle}>
+                      Required Training
                     </Typography>
                     <Typography>
                       <ArrowForwardIos
