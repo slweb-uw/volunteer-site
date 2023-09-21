@@ -554,20 +554,15 @@ const App: React.FC<{}> = () => {
                   textTransform: "uppercase",
                 }}
               >
-                <span style={{ color: "#4B2E83" }}>New!</span> Mobile Health
-                Outreach Clinic (Seattle only)
+                Mobile Health Outreach Clinic (Seattle only)
               </Typography>
               <Typography
                 style={{ fontFamily: "Open Sans", marginTop: "1rem" }}
               >
-                This Fall marks the beginning of an exciting new student run
-                free clinic. UW Health Sciences students will be partnering with
-                Harborview Medical Center (HMC) Downtown programs to provide
-                urgent care services to residents of Low Income Housing
-                Institute’s Tiny House Villages. Health sciences students will
-                work on interprofessional teams to respond to community
-                identified health needs while further developing their teamwork
-                and clinical skills.
+                In Seattle, UW Health Sciences students are partnering with Harborview Medical Center (HMC) 
+                Downtown programs to provide urgent care services to residents of Low Income Housing Institute’s 
+                Tiny House Villages. Health sciences students will work on interprofessional teams to respond to 
+                community identified health needs while further developing their teamwork and clinical skills.
               </Typography>
               <div className={classes.mobileLearnMoreBtn}>
                 <Link href="https://collaborate.uw.edu/student-portal/mobile-health-outreach/">
