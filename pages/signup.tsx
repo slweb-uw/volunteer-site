@@ -148,14 +148,18 @@ const Signup = () => {
         });
         setAuthorizedUsers(userData);
     });
-
+  
+    return unsubscribe;
+  }, []);
+  
+  useEffect(() => {
     setIsAuthorized(true);
+
     if (!user || (!user.email.endsWith("@uw.edu") && !checkEmail(user.email, authorizedUsers))) {
       setIsAuthorized(false);
     }
 
     setAuthComplete(true);
-    return unsubscribe;
   }, [user, authorizedUsers]);
 
   if (!authComplete) {

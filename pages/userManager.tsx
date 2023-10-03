@@ -205,7 +205,6 @@ const AdminPage = () => {
   };
 
   const [confirmationOpen, setConfirmationOpen] = useState(false);
-  const [open, setOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState({});
 
   const openConfirmation = (user) => {
