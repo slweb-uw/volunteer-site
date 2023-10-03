@@ -15,6 +15,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 
 import AddEventPopup from 'components/AddEventPopup';
 import EditEventPopup from 'components/EditEventPopup';
+import VolunteerPopup from 'components/VolunteerSignupPopup';
 import { exportToCSV } from 'helpers/csvExport';
 
 const useStyles = makeStyles((theme) => ({
@@ -77,17 +78,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+interface Volunteer {
+  email: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  studentDiscipline: string;
+}
+
 interface Event {
   id: string;
   date: Date;
   volunteerTypes: string[];
   volunteerQty: string[];
-  volunteers: { [key: string]: string } | null;
+  volunteers: { [key: string]: Volunteer[] } | null;
 }
 
 const Signup = () => {
   const classes = useStyles();
   const { user } = useAuth();
+  const [admins, setAdmins] = useState([]);
   const [authorizedUsers, setAuthorizedUsers] = useState([]);
   const [currentDate, setCurrentDate] = useState("");
   const [isAuthorized, setIsAuthorized] = useState(true);
@@ -96,7 +106,9 @@ const Signup = () => {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [openEditEventPopup, setOpenEditEventPopup] = useState(false);
-const [editedEvent, setEditedEvent] = useState(null);
+  const [editedEvent, setEditedEvent] = useState(null);
+  const [selectedRole, setSelectedRole] = useState(null);
+  const [openVolunteerPopup, setOpenVolunteerPopup] = useState(false);
 
   const [startIndex, setStartIndex] = useState(0);
   const endIndex = startIndex + 5;
@@ -109,6 +121,21 @@ const [editedEvent, setEditedEvent] = useState(null);
     }
     return false;
   }
+
+  useEffect(() => {
+    const unsubscribe = firebase.
+      firestore()
+      .collection("Admins")
+      .onSnapshot((snapshot) => {
+        const adminsData = [];
+        snapshot.forEach((doc) => {
+          adminsData.push({id: doc.id, ...doc.data() });
+        });
+        adminsData.sort((a, b) => (a.email > b.email ? 1 : -1));
+        setAdmins(adminsData);
+      });
+      return unsubscribe;
+  }, []);
 
   useEffect(() => {
     const unsubscribe = firebase
@@ -162,12 +189,14 @@ const [editedEvent, setEditedEvent] = useState(null);
   
       return existingEventDate.getTime() === newEventDate.getTime();
     });
-
+  
     if (existingEvent) {
       alert('An event already exists for this date. Please choose a different date.');
       return;
     }
-
+  
+    newEvent.volunteers = {};
+  
     setEvents(prevEvents => [...prevEvents, newEvent]);
     setSelectedEvent(newEvent); 
     setCurrentDate(newEvent.date);
@@ -212,6 +241,43 @@ const [editedEvent, setEditedEvent] = useState(null);
     setCurrentDate(null);
   }
 
+  const handleOpenVolunteerPopup = (type, index) => {
+    setSelectedRole({ type, index });
+    setOpenVolunteerPopup(true);
+  };
+
+  const handleCloseVolunteerPopup = () => {
+    setOpenVolunteerPopup(false);
+  };
+
+  const handleAddVolunteer = (volunteerData) => {
+    if (selectedRole) {
+    const { type, index } = selectedRole;
+    const updatedEvent = { ...selectedEvent };
+
+    if (!updatedEvent.volunteers) {
+      updatedEvent.volunteers = {};
+    }
+
+    if (!updatedEvent.volunteers[type]) {
+      updatedEvent.volunteers[type] = [];
+    }
+
+    updatedEvent.volunteers[type][index] = volunteerData;
+
+    const updatedEvents = events.map(event =>
+      event.id === selectedEvent.id ? updatedEvent : event
+    );
+
+    setEvents(updatedEvents);
+    setSelectedEvent(updatedEvent);
+  }
+
+  handleCloseVolunteerPopup();
+  };
+
+  const isAdmin = admins.find((admin) => admin.email === user?.email);
+
   return (
     <div className={classes.root}>
       <h1 className={classes.title}>[Event title]</h1>
@@ -248,30 +314,32 @@ const [editedEvent, setEditedEvent] = useState(null);
         </div>
       </div>
 
-      <div style={{ marginLeft: '15%', display: 'flex', gap: '15px', marginBottom: "1.5rem" }}>
-        <Button
-          variant='contained'
-          color='secondary'
-          onClick={() => setOpenAddEventPopup(true)} 
-        >
-          ADD
-        </Button>
-        <Button
-          variant='contained'
-          color='secondary'
-          onClick={() => handleOpenEditEventPopup(selectedEvent)}
-        >
-          <SettingsIcon />
-        </Button>
-        <Button
-          variant='contained'
-          color='secondary'
-          onClick={() => exportToCSV([selectedEvent])}
-        >
-          <DownloadIcon />
-        </Button>
-      </div>
-
+      {isAdmin && (
+        <div style={{ marginLeft: '15%', display: 'flex', gap: '15px', marginBottom: "1.5rem" }}>
+          <Button
+            variant='contained'
+            color='secondary'
+            onClick={() => setOpenAddEventPopup(true)} 
+          >
+            ADD
+          </Button>
+          <Button
+            variant='contained'
+            color='secondary'
+            onClick={() => handleOpenEditEventPopup(selectedEvent)}
+          >
+            <SettingsIcon />
+          </Button>
+          <Button
+            variant='contained'
+            color='secondary'
+            onClick={() => exportToCSV(selectedEvent)}
+          >
+            <DownloadIcon />
+          </Button>
+        </div>
+      )}
+      
       <Grid container className={classes.gridContainer}>
         {selectedEvent && selectedEvent.volunteerTypes.map((type, index) => (
           <Grid item key={index}>
@@ -283,21 +351,36 @@ const [editedEvent, setEditedEvent] = useState(null);
             >
               {type}
             </Button>
-            {[...Array(Number(selectedEvent.volunteerQty[index]))].map((_, rowIndex) => (
-              <div key={rowIndex} color="#d5d5d5">
+
+            {selectedEvent.volunteers && selectedEvent.volunteers[type] && (
+              selectedEvent.volunteers[type].map((volunteer, rowIndex) => (
+                <Button
+                  key={rowIndex}
+                  className={classes.roleButton}
+                  variant={"outlined"}
+                  style={{ marginBottom: "0.5rem", marginTop: "0.5rem" }}
+                  disabled
+                >
+                  {volunteer.firstName} {volunteer.lastName.charAt(0)}.
+                </Button>
+              ))
+            )}
+
+            {(!selectedEvent.volunteers[type] || selectedEvent.volunteers[type].length < Number(selectedEvent.volunteerQty[index])) && (
+              <div key={index} color="#d5d5d5">
                 <Button
                   className={classes.roleButton}
                   variant={"outlined"}
                   style={{ marginBottom: "0.5rem", marginTop: "0.5rem" }}
+                  onClick={() => handleOpenVolunteerPopup(type, selectedEvent.volunteers[type]?.length || 0)}
                 >
                   <AddRounded />
                 </Button>
               </div>
-            ))}
+            )}
           </Grid>
         ))}
       </Grid>
-
       <AddEventPopup
         open={openAddEventPopup}
         handleClose={() => setOpenAddEventPopup(false)}
@@ -309,6 +392,13 @@ const [editedEvent, setEditedEvent] = useState(null);
         editedEvent={editedEvent}
         handleEditEvent={handleEditEvent}
         handleDeleteEvent={deleteEvent}
+      />
+      <VolunteerPopup
+        open={openVolunteerPopup}
+        handleClose={handleCloseVolunteerPopup}
+        email={user?.email}
+        addVolunteer={handleAddVolunteer}
+        selectedRole={selectedRole}
       />
     </div>
   );

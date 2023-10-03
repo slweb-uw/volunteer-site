@@ -13,14 +13,14 @@ import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Grid';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import Tooltip from '@material-ui/core/Tooltip';
-import EventModal from "./eventModal";
-import BootstrapInput from "./bootstrapInput";
+import EventModal from "../components/eventModal";
+import BootstrapInput from "../components/bootstrapInput";
 import Link from "next/link";
-import AddModifyEventModal from "./addModifyEventModal";
-import EventCard from "./eventCard";
+import AddModifyEventModal from "../components/addModifyEventModal";
+import EventCard from "../components/eventCard";
 import { useAuth } from "../auth";
 import { Location } from "../helpers/locations"
-import { volunteerTypes } from "./addModifyEventModal";
+import { volunteerTypes } from "../components/addModifyEventModal";
 import { CollectionReference, Query } from "@firebase/firestore-types";
 import {useRouter} from "next/router";
 
