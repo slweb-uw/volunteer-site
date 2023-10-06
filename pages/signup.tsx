@@ -13,8 +13,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import SettingsIcon from '@mui/icons-material/Settings';
 import DownloadIcon from '@mui/icons-material/Download';
 
-import AddEventPopup from 'components/AddEventPopup';
-import EditEventPopup from 'components/EditEventPopup';
+import SignupEventPopup from 'components/SignupEventPopup';
 import VolunteerPopup from 'components/VolunteerSignupPopup';
 import { exportToCSV } from 'helpers/csvExport';
 
@@ -102,13 +101,12 @@ const Signup = () => {
   const [currentDate, setCurrentDate] = useState("");
   const [isAuthorized, setIsAuthorized] = useState(true);
   const [authComplete, setAuthComplete] = useState(false);
-  const [openAddEventPopup, setOpenAddEventPopup] = useState(false);
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [openEditEventPopup, setOpenEditEventPopup] = useState(false);
   const [editedEvent, setEditedEvent] = useState(null);
   const [selectedRole, setSelectedRole] = useState(null);
   const [openVolunteerPopup, setOpenVolunteerPopup] = useState(false);
+  const [openEventFormPopup, setOpenEventFormPopup] = useState(false); 
 
   const [startIndex, setStartIndex] = useState(0);
   const endIndex = startIndex + 5;
@@ -206,23 +204,6 @@ const Signup = () => {
     setCurrentDate(newEvent.date);
   };
 
-  const handleOpenEditEventPopup = (event) => {
-    if (event) {
-      setEditedEvent(event);
-  
-      if (!selectedEvent) {
-        setSelectedEvent(event);
-        setCurrentDate(event.date);
-      }
-  
-      setOpenEditEventPopup(true);
-    }
-  };
-  
-  const handleCloseEditEventPopup = () => {
-    setOpenEditEventPopup(false);
-  };
-
   const handleEditEvent = (editedEventData) => {
     const updatedEvents = events.map(event => {
       if (event.id === editedEventData.id) {
@@ -232,10 +213,9 @@ const Signup = () => {
     });
   
     setEvents(updatedEvents);
-    setSelectedEvent(editedEventData); 
+    setEditedEvent(editedEventData)
+    setSelectedEvent(updatedEvents.find(event => event.id === editedEventData.id));
     setCurrentDate(editedEventData.date);
-  
-    handleCloseEditEventPopup();
   };
 
   const deleteEvent = () => {
@@ -278,6 +258,23 @@ const Signup = () => {
   }
 
   handleCloseVolunteerPopup();
+  };
+
+
+  const handleOpenEventFormPopup = (mode, event) => {
+    setEditedEvent(event);
+    setOpenEventFormPopup(true);
+  };
+
+  const handleCloseEventFormPopup = () => setOpenEventFormPopup(false);
+  const handleEventAction = (action, eventData) => {
+    if (action === 'add') {
+      addEvent(eventData);
+    } else if (action === 'edit') {
+      handleEditEvent(eventData);
+    } else if (action === 'delete') {
+      deleteEvent();
+    }
   };
 
   const isAdmin = admins.find((admin) => admin.email === user?.email);
@@ -323,24 +320,28 @@ const Signup = () => {
           <Button
             variant='contained'
             color='secondary'
-            onClick={() => setOpenAddEventPopup(true)} 
+            onClick={() => handleOpenEventFormPopup('add', null)}
           >
             ADD
           </Button>
-          <Button
-            variant='contained'
-            color='secondary'
-            onClick={() => handleOpenEditEventPopup(selectedEvent)}
-          >
-            <SettingsIcon />
-          </Button>
-          <Button
-            variant='contained'
-            color='secondary'
-            onClick={() => exportToCSV(selectedEvent)}
-          >
-            <DownloadIcon />
-          </Button>
+          {selectedEvent && (
+            <>
+            <Button
+              variant='contained'
+              color='secondary'
+              onClick={() => handleOpenEventFormPopup('edit', selectedEvent)}
+            >
+              <SettingsIcon />
+            </Button>
+            <Button
+              variant='contained'
+              color='secondary'
+              onClick={() => exportToCSV(selectedEvent)}
+            >
+              <DownloadIcon />
+            </Button>
+            </>
+          )}
         </div>
       )}
       
@@ -369,8 +370,8 @@ const Signup = () => {
                 </Button>
               ))
             )}
-
-            {(!selectedEvent.volunteers[type] || selectedEvent.volunteers[type].length < Number(selectedEvent.volunteerQty[index])) && (
+            {console.log(selectedEvent)}
+            {selectedEvent.volunteers && (!selectedEvent.volunteers[type] || selectedEvent.volunteers[type].length < Number(selectedEvent.volunteerQty[index])) && (
               <div key={index} color="#d5d5d5">
                 <Button
                   className={classes.roleButton}
@@ -385,17 +386,12 @@ const Signup = () => {
           </Grid>
         ))}
       </Grid>
-      <AddEventPopup
-        open={openAddEventPopup}
-        handleClose={() => setOpenAddEventPopup(false)}
-        addEvent={addEvent}
-      />
-      <EditEventPopup
-        open={openEditEventPopup}
-        handleClose={handleCloseEditEventPopup}
-        editedEvent={editedEvent}
-        handleEditEvent={handleEditEvent}
-        handleDeleteEvent={deleteEvent}
+      <SignupEventPopup
+        open={openEventFormPopup}
+        handleClose={handleCloseEventFormPopup}
+        mode={editedEvent ? 'edit' : 'add'}
+        event={editedEvent}
+        handleEventAction={handleEventAction}
       />
       <VolunteerPopup
         open={openVolunteerPopup}
