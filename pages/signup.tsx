@@ -13,6 +13,10 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import SettingsIcon from '@mui/icons-material/Settings';
 import DownloadIcon from '@mui/icons-material/Download';
 import CalendarIcon from '@mui/icons-material/CalendarTodayOutlined';
+import InfoIcon from '@mui/icons-material/InfoOutlined';
+import ShareIcon from '@mui/icons-material/Share';
+import Tooltip from '@material-ui/core/Tooltip';
+import HelpIcon from '@mui/icons-material/HelpOutline';
 
 import SignupEventPopup from 'components/SignupEventPopup';
 import VolunteerPopup from 'components/VolunteerSignupPopup';
@@ -87,6 +91,7 @@ interface Volunteer {
   lastName: string;
   phoneNumber: string;
   studentDiscipline: string;
+  comments: string;
 }
 
 interface Event {
@@ -111,6 +116,7 @@ const Signup = () => {
   const [selectedRole, setSelectedRole] = useState(null);
   const [openVolunteerPopup, setOpenVolunteerPopup] = useState(false);
   const [openEventFormPopup, setOpenEventFormPopup] = useState(false); 
+  const [editedVolunteer, setEditedVolunteer] = useState(null);
 
   const [startIndex, setStartIndex] = useState(0);
   const endIndex = startIndex + 5;
@@ -209,6 +215,24 @@ const Signup = () => {
   };
 
   const handleEditEvent = (editedEventData) => {
+    const dateAlreadyExists = events.some(event => {
+      if (event.id !== editedEventData.id) {
+        const existingEventDate = new Date(event.date);
+        existingEventDate.setHours(0, 0, 0, 0);
+  
+        const editedEventDate = new Date(editedEventData.date);
+        editedEventDate.setHours(0, 0, 0, 0);
+  
+        return existingEventDate.getTime() === editedEventDate.getTime();
+      }
+      return false;
+    });
+  
+    if (dateAlreadyExists) {
+      alert('An event already exists for this date. Please choose a different date.');
+      return;
+    }
+  
     const updatedEvents = events.map(event => {
       if (event.id === editedEventData.id) {
         return editedEventData;
@@ -235,36 +259,61 @@ const Signup = () => {
   };
 
   const handleCloseVolunteerPopup = () => {
+    setSelectedRole(null);
     setOpenVolunteerPopup(false);
+    setEditedVolunteer(null);
   };
 
   const handleAddVolunteer = (volunteerData) => {
     if (selectedRole) {
-    const { type, index } = selectedRole;
-    const updatedEvent = { ...selectedEvent };
+      const { type, index } = selectedRole;
+      const updatedEvent = { ...selectedEvent };
 
-    if (!updatedEvent.volunteers) {
-      updatedEvent.volunteers = {};
+      if (!updatedEvent.volunteers) {
+        updatedEvent.volunteers = {};
+      }
+
+      if (!updatedEvent.volunteers[type]) {
+        updatedEvent.volunteers[type] = [];
+      }
+
+      updatedEvent.volunteers[type][index] = volunteerData;
+
+      const updatedEvents = events.map(event =>
+        event.id === selectedEvent.id ? updatedEvent : event
+      );
+
+      setEvents(updatedEvents);
+      setSelectedEvent(updatedEvent);
     }
-
-    if (!updatedEvent.volunteers[type]) {
-      updatedEvent.volunteers[type] = [];
-    }
-
-    updatedEvent.volunteers[type][index] = volunteerData;
-
-    const updatedEvents = events.map(event =>
-      event.id === selectedEvent.id ? updatedEvent : event
-    );
-
-    setEvents(updatedEvents);
-    setSelectedEvent(updatedEvent);
-  }
-
-  handleCloseVolunteerPopup();
+    handleCloseVolunteerPopup();
   };
 
+  const handleDeleteVolunteer = (volunteer) => {
+    if (selectedRole) {
+      const { type, index } = selectedRole;
+      const updatedEvent = { ...selectedEvent };
+  
+      if (updatedEvent.volunteers && updatedEvent.volunteers[type]) {
+        const updatedVolunteers = updatedEvent.volunteers[type].filter((_, i) => i !== index);
+        updatedEvent.volunteers[type] = updatedVolunteers;
+      }
+  
+      const updatedEvents = events.map(event =>
+        event.id === selectedEvent.id ? updatedEvent : event
+      );
+  
+      setEvents(updatedEvents);
+      setSelectedEvent(updatedEvent);
+    }
+  };
 
+  const handleEditVolunteer = (volunteer, type, index) => {
+    setEditedVolunteer(volunteer);
+    setSelectedRole({ type, index });
+    setOpenVolunteerPopup(true);
+  };
+  
   const handleOpenEventFormPopup = (mode, event) => {
     setEditedEvent(event);
     setOpenEventFormPopup(true);
@@ -319,36 +368,72 @@ const Signup = () => {
         </div>
       </div>
 
-      {isAdmin && (
-        <div style={{ marginLeft: '15%', display: 'flex', gap: '15px', marginBottom: "1.5rem"}}>
-          <Button
-            variant='contained'
-            color='secondary'
-            onClick={() => handleOpenEventFormPopup('add', null)}
-          >
-            ADD
-          </Button>
-          {selectedEvent && (
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '0 15%', marginBottom: "2.5rem"}}>
+        <div style={{ display: 'flex', gap: '15px' }}>
+          {isAdmin && (
             <>
-            <Button
-              variant='contained'
-              color='secondary'
-              onClick={() => handleOpenEventFormPopup('edit', selectedEvent)}
-            >
-              <SettingsIcon />
-            </Button>
-            <Button
-              variant='contained'
-              color='secondary'
-              onClick={() => exportToCSV(selectedEvent)}
-            >
-              <DownloadIcon />
-            </Button>
+                <Tooltip title="Add Event" arrow>
+                  <Button
+                    variant='contained'
+                    color='secondary'
+                    onClick={() => handleOpenEventFormPopup('add', null)}
+                  >
+                    <AddRounded />
+                  </Button>
+                </Tooltip>
+                {selectedEvent && (
+                  <>
+                    <Tooltip title="Modify Event" arrow>
+                      <Button
+                        variant='contained'
+                        color='secondary'
+                        onClick={() => handleOpenEventFormPopup('edit', selectedEvent)}
+                      >
+                        <SettingsIcon />
+                      </Button>
+                    </Tooltip>
+                    <Tooltip title="Download Event Information" arrow>
+                      <Button
+                        variant='contained'
+                        color='secondary'
+                        onClick={() => exportToCSV(selectedEvent)}
+                      >
+                        <DownloadIcon />
+                      </Button>
+                    </Tooltip>
+                  </>
+                )}
             </>
           )}
         </div>
-      )}
-      
+        <div style={{display: 'flex', gap: '15px' }}>
+          <Tooltip title="share" arrow>
+            <Button
+              variant='outlined'
+              color='secondary'
+            >
+              <ShareIcon />
+            </Button>
+          </Tooltip>
+          <Tooltip title="Details & Notes" arrow>
+            <Button
+              variant='outlined'
+              color='secondary'
+            >
+              <InfoIcon />
+            </Button>
+          </Tooltip>
+          <Tooltip title="Help" arrow>
+            <Button
+              variant='outlined'
+              color='secondary'
+            >
+              <HelpIcon />
+            </Button>
+          </Tooltip>
+        </div>
+      </div>
+
       {events.length == 0 ? (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '40vh', fontFamily: 'Encode Sans Compressed'}}>
           <CalendarIcon /> <b style={{marginLeft: '5px'}}>No events to load.</b>
@@ -368,18 +453,30 @@ const Signup = () => {
 
               {selectedEvent.volunteers && selectedEvent.volunteers[type] && (
                 selectedEvent.volunteers[type].map((volunteer, rowIndex) => (
-                  <Button
-                    key={rowIndex}
-                    className={classes.roleButton}
-                    variant={"outlined"}
-                    style={{ marginBottom: "0.5rem", marginTop: "0.5rem" }}
-                    disabled
-                  >
-                    {volunteer.firstName} {volunteer.lastName.charAt(0)}.
-                  </Button>
+                  <div key={rowIndex}>
+                    {user && user.email === volunteer.email ? (
+                      <Button
+                        className={classes.roleButton}
+                        variant={"outlined"}
+                        color = "primary"
+                        style={{ marginBottom: "0.5rem", marginTop: "0.5rem"}}
+                        onClick={() => handleEditVolunteer(volunteer, type, rowIndex)}
+                      >
+                        {volunteer.firstName} {volunteer.lastName.charAt(0)}.
+                      </Button>
+                    ) : (
+                      <Button
+                        className={classes.roleButton}
+                        variant={"outlined"}
+                        style={{ marginBottom: "0.5rem", marginTop: "0.5rem" }}
+                        disabled
+                      >
+                        {volunteer.firstName} {volunteer.lastName.charAt(0)}.
+                      </Button>
+                    )}
+                  </div>
                 ))
               )}
-              {console.log(selectedEvent)}
               {selectedEvent.volunteers && (!selectedEvent.volunteers[type] || selectedEvent.volunteers[type].length < Number(selectedEvent.volunteerQty[index])) && (
                 <div key={index} color="#d5d5d5">
                   <Button
@@ -408,7 +505,8 @@ const Signup = () => {
         handleClose={handleCloseVolunteerPopup}
         email={user?.email}
         addVolunteer={handleAddVolunteer}
-        selectedRole={selectedRole}
+        volunteer={editedVolunteer} 
+        onDeleteVolunteer={handleDeleteVolunteer}
       />
     </div>
   );

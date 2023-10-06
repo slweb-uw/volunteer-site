@@ -40,14 +40,17 @@ const useStyles = makeStyles({
     selectContainer: {
       display: 'flex',
       alignItems: 'center',
+      marginTop: "0.5rem",
+      marginBottom: "0"
     },
 });
 
-const VolunteerPopup = ({ open, handleClose, email, addVolunteer }) => {
+const VolunteerPopup = ({ open, handleClose, email, addVolunteer, onDeleteVolunteer, volunteer }) => {
     const classes = useStyles();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
+    const [comments, setComments] = useState('');
     const [studentDiscipline, setStudentDiscipline] = useState('');
     const [certified, setCertified] = useState(false);
     const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
@@ -84,7 +87,8 @@ const VolunteerPopup = ({ open, handleClose, email, addVolunteer }) => {
             firstName,
             lastName,
             phoneNumber,
-            studentDiscipline
+            studentDiscipline,
+            comments
         };
 
         addVolunteer(volunteerData);
@@ -92,6 +96,11 @@ const VolunteerPopup = ({ open, handleClose, email, addVolunteer }) => {
       } else {
           alert('Invalid phone number!');
       }
+    };
+
+    const handleDeleteVolunteer = () => {
+      onDeleteVolunteer(volunteer);
+      handleClose();
     };
 
   return (
@@ -106,22 +115,42 @@ const VolunteerPopup = ({ open, handleClose, email, addVolunteer }) => {
         margin="normal"
         disabled
         />
+        <div className={classes.selectContainer}>
+          <Typography style={{ marginRight: '15px' }}>
+            Student Discipline <span style={{color: "red"}}>*</span>
+          </Typography>
+          <Select
+            value={studentDiscipline}
+            onChange={(e) => setStudentDiscipline(e.target.value)}
+          >
+            {volunteerTypes.map((studentType, index) => (
+              <MenuItem key={index} value={studentType}>{studentType}</MenuItem>
+            ))}
+          </Select>
+        </div>
         <TextField
-          label="First Name"
+          label="First Name *"
           value={firstName}
+          style={{ margin: "0 auto 0.75rem"}}
           onChange={(e) => setFirstName(e.target.value)}
           fullWidth
           margin="normal"
         />
         <TextField
-          label="Last Name"
+          label="Last Name *"
           value={lastName}
+          style={{ margin: "0 auto 0.75rem"}}
           onChange={(e) => setLastName(e.target.value)}
           fullWidth
           margin="normal"
         />
         <TextField
-          label="Phone Number"
+          label={(
+            <span>
+            Phone Number * (Only viewable by project lead)
+            </span>
+          )}
+          style={{ margin: "0 auto 0.75rem"}}
           value={formattedPhoneNumber}
           onChange={handlePhoneNumberChange}
           fullWidth
@@ -136,32 +165,40 @@ const VolunteerPopup = ({ open, handleClose, email, addVolunteer }) => {
             }
           }}
         />
-        <div className={classes.selectContainer}>
-          <Typography style={{ marginRight: '8px' }}>
-            Student Discipline
-          </Typography>
-          <Select
-            value={studentDiscipline}
-            onChange={(e) => setStudentDiscipline(e.target.value)}
-          >
-            {volunteerTypes.map((studentType, index) => (
-              <MenuItem key={index} value={studentType}>{studentType}</MenuItem>
-            ))}
-          </Select>
-        </div>
+        <TextField
+          label="Comments "
+          value={comments}
+          style={{ margin: "0 auto 0.75rem"}}
+          onChange={(e) => setComments(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
         <FormControlLabel
-          style={{marginTop: "0.5rem"}}
-          control={<Checkbox color="primary" checked={certified} onChange={(e) => setCertified(e.target.checked)} style={{transform: 'scale(0.8)'}}/>}
+          style={{marginTop: "0.75rem", marginBottom: "1.5rem", display: 'flex', alignItems: 'flex-start'}}
+          control={<Checkbox color="primary" checked={certified} onChange={(e) => setCertified(e.target.checked)} style={{transform: 'scale(0.8)', marginTop: "0rem", paddingTop: "0", verticalAlign: "top"}}/>}
           label={
-            <span style={{ fontSize: 'small', transform: 'scale(0.8)' }}>
-                I certify that I will complete the <a href="https://canvas.uw.edu/courses/1693188/pages/training-modules?module_item_id=18595279" target='blank'>Training</a> and <a href="https://canvas.uw.edu/courses/1693188/pages/protocols?module_item_id=18595280" target='blank'>Protocols</a>
+            <span style={{ fontSize: 'small', transform: 'scale(0.8)'}}>
+                I certify that I will complete the required <a href="https://canvas.uw.edu/courses/1693188/pages/training-modules?module_item_id=18595279" target='blank'>Trainings</a> and
+                the review appropriate <a href="https://canvas.uw.edu/courses/1693188/pages/protocols?module_item_id=18595280" target='blank'>Protocols</a> (see project details page for specifics).
+                <span style={{color: "red"}}>*</span>
             </span>
           }
         />
         <div className={classes.buttonContainer}>
-            <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isSubmitDisabled}>
+            {volunteer ? ( 
+            <>
+              <Button variant="outlined" onClick={handleDeleteVolunteer} style={{marginRight: "1rem", color: "gray"}}>
+                Withdraw
+              </Button>
+              <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isSubmitDisabled}>
               Submit
-            </Button>
+              </Button>
+            </>
+            ):(
+              <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isSubmitDisabled}>
+                Submit
+              </Button>
+            )} 
         </div>
         
       </DialogContent>

@@ -17,7 +17,8 @@ export const exportToCSV = (event) => {
             Name: `${volunteer.firstName} ${volunteer.lastName}`,
             Email: volunteer.email,
             Phone: formattedPhoneNumber,
-            Discipline: volunteer.studentDiscipline
+            Discipline: volunteer.studentDiscipline,
+            Comments: volunteer.comments
           };
 
           csvData.push(volunteerRow);

@@ -7,6 +7,7 @@ import {
   Button,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
 const useStyles = makeStyles((theme) => ({
     title: {
@@ -25,20 +26,21 @@ const useStyles = makeStyles((theme) => ({
 const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction }) => {
     const classes = useStyles();
     const [date, setDate] = useState('');
-    const [volunteerTypes, setVolunteerTypes] = useState('');
-    const [volunteerQty, setVolunteerQty] = useState('');
+    const [volunteerData, setVolunteerData] = useState([]);
+    const [deletedRoles, setDeletedRoles] = useState([]);
+    const handleDateChange = (event) => setDate(event.target.value);
 
     useEffect(() => {
         if (mode === 'edit' && event) {
-        setDate(event.date.toISOString().slice(0, 10));
-        setVolunteerTypes(event.volunteerTypes.join(', '));
-        setVolunteerQty(event.volunteerQty.join(', '));
+            setDate(event.date.toISOString().slice(0, 10));
+            setVolunteerData(event.volunteerTypes.map((type, index) => ({
+                type,
+                qty: event.volunteerQty[index]
+            })));
+        } else {
+            setVolunteerData([{ type: '', qty: '' }]);
         }
     }, [mode, event]);
-
-    const handleDateChange = (event) => setDate(event.target.value);
-    const handleVolunteerTypesChange = (event) => setVolunteerTypes(event.target.value);
-    const handleVolunteerQtyChange = (event) => setVolunteerQty(event.target.value);
 
     const generateUniqueId = () => {
         const timestamp = new Date().getTime();
@@ -49,38 +51,92 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
     const handleDelete = () => {
         const confirmed = window.confirm("Are you sure you want to delete this event?");
         if (confirmed) {
-        handleEventAction('delete');
+            handleEventAction('delete');
         }
         handleClose();
     };
 
+    const handleVolunteerTypeChange = (index, value) => {
+        setVolunteerData(prevData => {
+            const newData = [...prevData];
+            newData[index].type = value;
+            return newData;
+        });
+    };
+
+    const handleVolunteerQtyChange = (index, value) => {
+        setVolunteerData(prevData => {
+            const newData = [...prevData];
+            newData[index].qty = value;
+            return newData;
+        });
+    };
+
+    const handleAddVolunteerField = () => {
+        setVolunteerData(prevData => [...prevData, { type: '', qty: '' }]);
+    };
+
+    const handleDeleteVolunteerField = (index) => {
+        if (volunteerData.length > 1) {
+            setVolunteerData(prevData => prevData.filter((_, i) => i !== index));
+        
+            const deletedRole = volunteerData[index].type;
+            setDeletedRoles(prevRoles => [...prevRoles, deletedRole]);
+          }
+    };
+
     const handleSubmit = () => {
+        if (!date) {
+            alert('Please select a date.');
+            return;
+        }
+        const hasEmptyFields = volunteerData.some(item => item.type === '' || item.qty === '');
+
+        if (hasEmptyFields) {
+            alert('Please fill in all Volunteer Role and Quantity fields.');
+            return;
+        }
+
+        const hasDuplicateRoles = volunteerData.some((role, index) => 
+            volunteerData.findIndex(item => item.type === role.type) !== index
+        );
+
+        if (hasDuplicateRoles) {
+            alert('Volunteer roles must have unique names.');
+            return;
+        }
+
         const localDate = new Date(`${date}T00:00`);
         const utcDate = new Date(localDate.getTime() + localDate.getTimezoneOffset() * 60000);
-
         const eventData = {
-        date: utcDate,
-        volunteerTypes: volunteerTypes.split(',').map(item => item.trim()),
-        volunteerQty: volunteerQty.split(',').map(item => item.trim()),
-        volunteers: null
+            date: utcDate,
+            volunteerTypes: volunteerData.map(item => item.type),
+            volunteerQty: volunteerData.map(item => item.qty),
+            volunteers: null
         };
 
         if (mode === 'edit') {
-        eventData.id = event.id;
-        eventData.volunteers = event.volunteers;
-        handleEventAction('edit', eventData);
+            eventData.id = event.id;
+            eventData.volunteers = event.volunteers;
+
+            deletedRoles.forEach(deletedRole => {
+                if (eventData.volunteers && deletedRole in eventData.volunteers) {
+                  delete eventData.volunteers[deletedRole];
+                }
+            });
+
+            handleEventAction('edit', eventData);
         } else if (mode === 'add') {
             eventData.id = generateUniqueId();
-        handleEventAction('add', eventData);
+            handleEventAction('add', eventData);
         }
-
         handleClose();
     };
 
     return (
         <Dialog open={open} onClose={handleClose}>
         <DialogTitle className={classes.title}>
-            {mode === 'add' ? 'Add New Event' : 'Edit Event'}
+            {mode === 'add' ? 'Create Event' : 'Edit Event'}
         </DialogTitle>
         <DialogContent>
             <TextField
@@ -92,20 +148,40 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
             fullWidth
             margin="normal"
             />
-            <TextField
-            label="Volunteer Types (comma separated)"
-            value={volunteerTypes}
-            onChange={handleVolunteerTypesChange}
-            fullWidth
-            margin="normal"
-            />
-            <TextField
-            label="Volunteer Quantities (comma separated)"
-            value={volunteerQty}
-            onChange={handleVolunteerQtyChange}
-            fullWidth
-            margin="normal"
-            />
+            {volunteerData.map((volunteer, index) => (
+                <div key={index} style={{ display: 'flex', marginBottom: "0.5rem", marginTop: "0.5rem"}}>
+                    <TextField
+                        label={`Volunteer Role`}
+                        value={volunteer.type}
+                        onChange={(e) => handleVolunteerTypeChange(index, e.target.value)}
+                        fullWidth
+                        margin="normal"
+                        style={{ marginRight: "0.5rem" }}
+                    />
+                    <TextField
+                        label={`Quantity`}
+                        value={volunteer.qty}
+                        onInput={(e) => {
+                            e.target.value = Math.max(0, parseInt(e.target.value) || 0).toString().slice(0, 2);
+                            handleVolunteerQtyChange(index, e.target.value);
+                        }}
+                        fullWidth
+                        margin="normal"
+                        style={{ marginRight: "0.5rem" }} 
+                        inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                    />
+                    <Button 
+                        variant="outlined" 
+                        onClick={() => handleDeleteVolunteerField(index)}
+                        style={{ alignSelf: 'flex-end'}}
+                    >
+                        <DeleteIcon />
+                    </Button>
+                </div>
+            ))}
+            <Button variant="contained" color="secondary" onClick={handleAddVolunteerField}>
+                Add Volunteer Role
+            </Button>
             <div className={classes.buttonContainer}>
             {mode === 'edit' && (
                 <Button variant="outlined" style={{color: 'grey'}} onClick={handleDelete} className={classes.button}>
