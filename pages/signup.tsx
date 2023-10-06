@@ -12,6 +12,7 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import SettingsIcon from '@mui/icons-material/Settings';
 import DownloadIcon from '@mui/icons-material/Download';
+import CalendarIcon from '@mui/icons-material/CalendarTodayOutlined';
 
 import SignupEventPopup from 'components/SignupEventPopup';
 import VolunteerPopup from 'components/VolunteerSignupPopup';
@@ -20,7 +21,7 @@ import { exportToCSV } from 'helpers/csvExport';
 const useStyles = makeStyles((theme) => ({
   root: {
     fontFamily: "Encode Sans Compressed",
-    minHeight: "65vh"
+    minHeight: "70vh"
   },
   title: {
     fontWeight: 700,
@@ -28,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   },
   header: {
     justifyContent: "center",
-    maxWidth: "90%",
+    maxWidth: "80%",
     margin: "0 auto",
     marginTop : "2rem",
     marginBottom: theme.spacing(6),
@@ -61,7 +62,10 @@ const useStyles = makeStyles((theme) => ({
     width: "90%",
     margin: "0 auto",
     marginBottom: "2rem",
+    display: "flex",
+    flexWrap: "wrap",
     justifyContent: "center",
+    gap: "10px",
   },
   message: {
     display: 'flex',
@@ -316,7 +320,7 @@ const Signup = () => {
       </div>
 
       {isAdmin && (
-        <div style={{ marginLeft: '15%', display: 'flex', gap: '15px', marginBottom: "1.5rem" }}>
+        <div style={{ marginLeft: '15%', display: 'flex', gap: '15px', marginBottom: "1.5rem"}}>
           <Button
             variant='contained'
             color='secondary'
@@ -345,47 +349,53 @@ const Signup = () => {
         </div>
       )}
       
-      <Grid container className={classes.gridContainer}>
-        {selectedEvent && selectedEvent.volunteerTypes.map((type, index) => (
-          <Grid item key={index}>
-            <Button
-              className={classes.roleButton}
-              variant={"contained"}
-              color="primary"
-              disabled
-            >
-              {type}
-            </Button>
+      {events.length == 0 ? (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '40vh', fontFamily: 'Encode Sans Compressed'}}>
+          <CalendarIcon /> <b style={{marginLeft: '5px'}}>No events to load.</b>
+          </div>
+      ) : (
+        <Grid container className={classes.gridContainer}>
+          {selectedEvent && selectedEvent.volunteerTypes.map((type, index) => (
+            <Grid item key={index}>
+              <Button
+                className={classes.roleButton}
+                variant={"contained"}
+                color="primary"
+                disabled
+              >
+                {type}
+              </Button>
 
-            {selectedEvent.volunteers && selectedEvent.volunteers[type] && (
-              selectedEvent.volunteers[type].map((volunteer, rowIndex) => (
-                <Button
-                  key={rowIndex}
-                  className={classes.roleButton}
-                  variant={"outlined"}
-                  style={{ marginBottom: "0.5rem", marginTop: "0.5rem" }}
-                  disabled
-                >
-                  {volunteer.firstName} {volunteer.lastName.charAt(0)}.
-                </Button>
-              ))
-            )}
-            {console.log(selectedEvent)}
-            {selectedEvent.volunteers && (!selectedEvent.volunteers[type] || selectedEvent.volunteers[type].length < Number(selectedEvent.volunteerQty[index])) && (
-              <div key={index} color="#d5d5d5">
-                <Button
-                  className={classes.roleButton}
-                  variant={"outlined"}
-                  style={{ marginBottom: "0.5rem", marginTop: "0.5rem" }}
-                  onClick={() => handleOpenVolunteerPopup(type, selectedEvent.volunteers[type]?.length || 0)}
-                >
-                  <AddRounded />
-                </Button>
-              </div>
-            )}
-          </Grid>
-        ))}
-      </Grid>
+              {selectedEvent.volunteers && selectedEvent.volunteers[type] && (
+                selectedEvent.volunteers[type].map((volunteer, rowIndex) => (
+                  <Button
+                    key={rowIndex}
+                    className={classes.roleButton}
+                    variant={"outlined"}
+                    style={{ marginBottom: "0.5rem", marginTop: "0.5rem" }}
+                    disabled
+                  >
+                    {volunteer.firstName} {volunteer.lastName.charAt(0)}.
+                  </Button>
+                ))
+              )}
+              {console.log(selectedEvent)}
+              {selectedEvent.volunteers && (!selectedEvent.volunteers[type] || selectedEvent.volunteers[type].length < Number(selectedEvent.volunteerQty[index])) && (
+                <div key={index} color="#d5d5d5">
+                  <Button
+                    className={classes.roleButton}
+                    variant={"outlined"}
+                    style={{ marginBottom: "0.5rem", marginTop: "0.5rem" }}
+                    onClick={() => handleOpenVolunteerPopup(type, selectedEvent.volunteers[type]?.length || 0)}
+                  >
+                    <AddRounded />
+                  </Button>
+                </div>
+              )}
+            </Grid>
+          ))}
+        </Grid>
+      )}
       <SignupEventPopup
         open={openEventFormPopup}
         handleClose={handleCloseEventFormPopup}
