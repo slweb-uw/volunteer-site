@@ -759,9 +759,9 @@ const App: React.FC<{}> = () => {
           }}
         >
           <Grid item>
-            <Grid container direction="column" spacing={3}>
+            <Grid container direction="column" spacing={1}>
               <Grid item>
-                <Grid container direction="row" spacing={2}>
+                <Grid container direction="row" spacing={1}>
                   <Grid item>
                     <img src="./profile-icon.png" alt="profile icon" />
                   </Grid>
@@ -772,7 +772,7 @@ const App: React.FC<{}> = () => {
                         fontFamily: "Uni Sans Book",
                       }}
                     >
-                      Leonora Clarke, Service Learning Manager
+                      Service Learning Team
                     </Typography>
                     <Typography
                       style={{
@@ -793,7 +793,7 @@ const App: React.FC<{}> = () => {
                 >
                   <Grid item>
                     <Typography className={classes.contact}>
-                      <a href="mailto://clarkel@uw.edu">clarkel@uw.edu</a>
+                      <a href="mailto://somserve@uw.edu">somserve@uw.edu</a>
                     </Typography>
                   </Grid>
                   <Grid item>
@@ -811,7 +811,7 @@ const App: React.FC<{}> = () => {
             </Grid>
           </Grid>
           <Grid item>
-            <Grid container direction="column" spacing={3}>
+            <Grid container direction="column" spacing={2}>
               <Grid item>
                 <Grid container direction="row" spacing={2}>
                   <Grid item>
