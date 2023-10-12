@@ -3,7 +3,6 @@ import nookies from "nookies";
 import { firebaseAdmin } from "../firebaseAdmin";
 import { firebaseClient } from "../firebaseClient";
 import Iframe from 'react-iframe';
-
 import {
   InferGetServerSidePropsType,
   GetServerSidePropsContext,
@@ -65,8 +64,8 @@ const AddModifyOrdersPage: NextPage<Props> = ({
         </Button>
       </Link>
       <div className={classes.calendar}>
-        <Iframe url="https://calendar.google.com/calendar/embed?height=600&amp;wkst=1&amp;bgcolor=%23ffffff&amp;ctz=America%2FLos_Angeles&amp;src=c2x3ZWJAdXcuZWR1&amp;src=ZW4udXNhI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&amp;color=%23039BE5&amp;color=%230B8043" 
-        styles={{ display: "block" }} width="1800vh" height="800vh" scrolling="yes">
+        <Iframe url="https://calendar.google.com/calendar/embed?height=600&wkst=1&bgcolor=%23ffffff&ctz=America%2FLos_Angeles&showTitle=0&showPrint=0&showTabs=1&showCalendars=0&showNav=1&src=dXdzbHdlYkBnbWFpbC5jb20&src=ZW4udXNhI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&color=%23039BE5&color=%230B8043" 
+        style={{ display: "block" }} width="1800vh" height="800vh" scrolling="yes">
         </Iframe>
       </div>
       <Typography style={{marginLeft: "2.5vw", marginBottom: "1rem", fontFamily: "Encode Sans", color:"gray"}}>* To import the calendar, click the blue plus button at the bottom right of the calendar.</Typography>
