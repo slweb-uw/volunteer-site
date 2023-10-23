@@ -27,7 +27,7 @@ const initialGridKeys = [
   "Tips and Reminders",
   "Clinic Flow",
   "Required Trainings",
-  "Parking and Directions",
+  "Address/Parking/Directions",
   "Provider Information",
 ];
 
@@ -44,7 +44,7 @@ const reservedKeys = [
   "Contact Information",
   "Website Link",
   "Sign-up Link",
-  "Parking and Directions",
+  "Address/Parking/Directions",
   "Clinic Flow",
   "Tips and Reminders",
   "Provider Information",
