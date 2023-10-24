@@ -44,7 +44,7 @@ const reservedKeys = [
   "Contact Information",
   "Website Link",
   "Sign-up Link",
-  "Address/Parking/Directions",
+  "Address;Parking;Directions",
   "Clinic Flow",
   "Tips and Reminders",
   "Provider Information",
