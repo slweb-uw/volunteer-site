@@ -108,7 +108,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AdminPage = () => {
-  const authorizedUsers = ["clarkel@uw.edu", "dnakas4@uw.edu", "bruno.futino@gmail.com"]; // Hardcoded to limit who can manage admins
+  const authorizedUsers = ["clarkel@uw.edu", "dnakas4@uw.edu", "bruno.futino@gmail.com", "uwslweb@gmail.com"]; // Hardcoded to limit who can manage admins
 
   const classes = useStyles();
   const { user } = useAuth();
