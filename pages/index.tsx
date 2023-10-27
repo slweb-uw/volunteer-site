@@ -691,7 +691,7 @@ const App: React.FC<{}> = () => {
                 Our Service Learning and Community Engagement programs strive to
                 enrich health sciences education by providing our students with
                 opportunities to hone their skills while addressing the health
-                needs of our underserved communities. We seek to foster the joy
+                needs of our under-resourced communities. We seek to foster the joy
                 of service in our students who are preparing for lives of civic
                 and social responsibility in an increasingly diverse and complex
                 global society.These goals could not be achieved without strong
