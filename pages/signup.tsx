@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   headerButton: {
     margin: theme.spacing(0, 3),
     textTransform: "none",
-    height: 35,
+    height: 50,
   },
   roleButton : {
     margin: theme.spacing(0, 3),
@@ -160,6 +160,7 @@ const Signup = () => {
     return unsubscribe;
   }, []);
   
+  // Authentication
   useEffect(() => {
     setIsAuthorized(true);
 
@@ -194,10 +195,8 @@ const Signup = () => {
   const addEvent = (newEvent) => {
     const existingEvent = events.find(event => {
       const existingEventDate = new Date(event.date);
-      existingEventDate.setHours(0, 0, 0, 0);
   
       const newEventDate = new Date(newEvent.date);
-      newEventDate.setHours(0, 0, 0, 0);
   
       return existingEventDate.getTime() === newEventDate.getTime();
     });
@@ -218,10 +217,8 @@ const Signup = () => {
     const dateAlreadyExists = events.some(event => {
       if (event.id !== editedEventData.id) {
         const existingEventDate = new Date(event.date);
-        existingEventDate.setHours(0, 0, 0, 0);
   
         const editedEventDate = new Date(editedEventData.date);
-        editedEventDate.setHours(0, 0, 0, 0);
   
         return existingEventDate.getTime() === editedEventDate.getTime();
       }
@@ -353,7 +350,7 @@ const Signup = () => {
               color="primary"
               onClick={() => handleDateChange(event.date)}
             >
-              {new Date(event.date).toLocaleDateString('en-US')}
+              {event.date.toLocaleDateString('en-US')} <br/>  {event.date.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'})}
             </Button>
           ))}
           {endIndex < events.length && (

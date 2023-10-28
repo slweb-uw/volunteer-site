@@ -32,7 +32,7 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
 
     useEffect(() => {
         if (mode === 'edit' && event) {
-            setDate(event.date.toISOString().slice(0, 10));
+            setDate(event.date.toISOString().slice(0, 16));
             setVolunteerData(event.volunteerTypes.map((type, index) => ({
                 type,
                 qty: event.volunteerQty[index]
@@ -106,8 +106,8 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
             return;
         }
 
-        const localDate = new Date(`${date}T00:00`);
-        const utcDate = new Date(localDate.getTime() + localDate.getTimezoneOffset() * 60000);
+        const localDate = new Date(date);
+        const utcDate = new Date(localDate.getTime());
         const eventData = {
             date: utcDate,
             volunteerTypes: volunteerData.map(item => item.type),
@@ -141,7 +141,7 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
         <DialogContent>
             <TextField
             label="Date"
-            type="date"
+            type="datetime-local"
             value={date}
             InputLabelProps={{ shrink: true }} 
             onChange={handleDateChange}
