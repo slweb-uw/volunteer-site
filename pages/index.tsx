@@ -306,7 +306,7 @@ const App: React.FC<{}> = () => {
                 <CardContent>
                   <div className={classes.cardlinks}>
                     <Typography className={classes.cardtitle}>
-                      Required Training
+                      Onboarding
                     </Typography>
                     <Typography>
                       <ArrowForwardIos

@@ -33,7 +33,7 @@ const ServiceLearningPage: NextPage<Props> = ({ classes }) => {
       </Typography>
       <img
         src={"../goldbar.png"}
-        style={{ width: "550px", height: "10px", marginBottom: "30px" }}
+        style={{ width: "405px", height: "10px", marginBottom: "30px" }}
       />
       <Grid container spacing={1}>
         <Grid item xs={12} md={6} lg={8}>

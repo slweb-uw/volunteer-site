@@ -30,11 +30,11 @@ const StandardsOfCarePage: NextPage<Props> = ({ classes }) => {
           color: "#000000",
         }}
       >
-        Standards of Care: Expectations and Goals
+        Expectations and Goals
       </Typography>
       <img
         src={"../goldbar.png"}
-        style={{ width: "550px", height: "10px", marginBottom: "30px" }}
+        style={{ width: "355px", height: "10px", marginBottom: "30px" }}
       />
       <Grid container spacing={1}>
         <Grid item xs={12} md={6} lg={8}>
