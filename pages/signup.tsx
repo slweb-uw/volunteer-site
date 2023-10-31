@@ -18,6 +18,7 @@ import ShareIcon from '@mui/icons-material/Share';
 import Tooltip from '@material-ui/core/Tooltip';
 import HelpIcon from '@mui/icons-material/HelpOutline';
 
+import VolunteerInfoPopup from 'components/VolunteerInfoPopup';
 import SignupEventPopup from 'components/SignupEventPopup';
 import VolunteerPopup from 'components/VolunteerSignupPopup';
 import { exportToCSV } from 'helpers/csvExport';
@@ -81,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
   arrowButton: {
     display: "flex",
     alignItems: "center",
-    height: 35,
+    height: 50,
   },
 }));
 
@@ -120,6 +121,8 @@ const Signup = () => {
 
   const [startIndex, setStartIndex] = useState(0);
   const endIndex = startIndex + 5;
+  const [volunteerInfo, setVolunteerInfo] = useState(null);
+  const [openVolunteerInfoPopup, setOpenVolunteerInfoPopup] = useState(false);
 
   function checkEmail(email, authorizedUsers) {
     for (let i = 0; i < authorizedUsers.length; i++) {
@@ -316,7 +319,6 @@ const Signup = () => {
     setOpenEventFormPopup(true);
   };
 
-  const handleCloseEventFormPopup = () => setOpenEventFormPopup(false);
   const handleEventAction = (action, eventData) => {
     if (action === 'add') {
       addEvent(eventData);
@@ -325,6 +327,11 @@ const Signup = () => {
     } else if (action === 'delete') {
       deleteEvent();
     }
+  };
+
+  const handleOpenVolunteerInfoPopup = (user) => {
+    setVolunteerInfo(user);
+    setOpenVolunteerInfoPopup(true);
   };
 
   const isAdmin = admins.find((admin) => admin.email === user?.email);
@@ -462,14 +469,25 @@ const Signup = () => {
                         {volunteer.firstName} {volunteer.lastName.charAt(0)}.
                       </Button>
                     ) : (
-                      <Button
+                      isAdmin ? (
+                        <Button
+                        className={classes.roleButton}
+                        variant={"outlined"}
+                        style={{ marginBottom: "0.5rem", marginTop: "0.5rem" }}
+                        onClick={() => handleOpenVolunteerInfoPopup(volunteer)}
+                        >
+                          {volunteer.firstName} {volunteer.lastName.charAt(0)}.
+                        </Button>
+                      ) : (
+                        <Button
                         className={classes.roleButton}
                         variant={"outlined"}
                         style={{ marginBottom: "0.5rem", marginTop: "0.5rem" }}
                         disabled
-                      >
-                        {volunteer.firstName} {volunteer.lastName.charAt(0)}.
-                      </Button>
+                        >
+                          {volunteer.firstName} {volunteer.lastName.charAt(0)}.
+                        </Button>
+                      )
                     )}
                   </div>
                 ))
@@ -492,7 +510,7 @@ const Signup = () => {
       )}
       <SignupEventPopup
         open={openEventFormPopup}
-        handleClose={handleCloseEventFormPopup}
+        handleClose={() => setOpenEventFormPopup(false)}
         mode={editedEvent ? 'edit' : 'add'}
         event={editedEvent}
         handleEventAction={handleEventAction}
@@ -505,7 +523,16 @@ const Signup = () => {
         volunteer={editedVolunteer} 
         onDeleteVolunteer={handleDeleteVolunteer}
       />
+      <VolunteerInfoPopup
+        open={openVolunteerInfoPopup}
+        handleClose={() => {
+          setVolunteerInfo(null);
+          setOpenVolunteerInfoPopup(false);
+        }}
+        volunteer={volunteerInfo}
+      />
     </div>
+    
   );
 };
 

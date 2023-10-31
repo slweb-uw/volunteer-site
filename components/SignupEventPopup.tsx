@@ -32,7 +32,9 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
 
     useEffect(() => {
         if (mode === 'edit' && event) {
-            setDate(event.date.toISOString().slice(0, 16));
+            const utcDate = new Date(event.date);
+            const localDate = new Date(utcDate.getTime() - (utcDate.getTimezoneOffset() * 60000));
+            setDate(localDate.toISOString().slice(0, 16));
             setVolunteerData(event.volunteerTypes.map((type, index) => ({
                 type,
                 qty: event.volunteerQty[index]
@@ -65,6 +67,7 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
     };
 
     const handleVolunteerQtyChange = (index, value) => {
+        value = Math.max(1, parseInt(value) || 1).toString();
         setVolunteerData(prevData => {
             const newData = [...prevData];
             newData[index].qty = value;
@@ -105,11 +108,9 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
             alert('Volunteer roles must have unique names.');
             return;
         }
-
         const localDate = new Date(date);
-        const utcDate = new Date(localDate.getTime());
         const eventData = {
-            date: utcDate,
+            date: localDate,
             volunteerTypes: volunteerData.map(item => item.type),
             volunteerQty: volunteerData.map(item => item.qty),
             volunteers: null
