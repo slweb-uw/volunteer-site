@@ -28,6 +28,8 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
     const [date, setDate] = useState('');
     const [volunteerData, setVolunteerData] = useState([]);
     const [deletedRoles, setDeletedRoles] = useState([]);
+    const [leadEmail, setLeadEmail] = useState('');
+    const [eventInformation, setEventInformation] = useState('');
     const handleDateChange = (event) => setDate(event.target.value);
 
     useEffect(() => {
@@ -88,6 +90,19 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
           }
     };
 
+    const validateEmail = () => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!leadEmail) {
+          alert('Please enter an email address.');
+          return false;
+        }
+        if (!emailRegex.test(leadEmail)) {
+          alert('Please enter a valid email address.');
+          return false;
+        }
+        return true;
+      };
+
     const handleSubmit = () => {
         if (!date) {
             alert('Please select a date.');
@@ -97,6 +112,10 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
 
         if (hasEmptyFields) {
             alert('Please fill in all Volunteer Role and Quantity fields.');
+            return;
+        }
+
+        if (!validateEmail()) {
             return;
         }
 
@@ -113,7 +132,9 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
             date: localDate,
             volunteerTypes: volunteerData.map(item => item.type),
             volunteerQty: volunteerData.map(item => item.qty),
-            volunteers: null
+            volunteers: null,
+            leadEmail,
+            eventInformation
         };
 
         if (mode === 'edit') {
@@ -183,6 +204,24 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
             <Button variant="contained" color="secondary" onClick={handleAddVolunteerField}>
                 Add Volunteer Role
             </Button>
+            <TextField
+                label="Event Lead Email* (Receive Event Notifications)"
+                value={leadEmail}
+                onChange={(e) => setLeadEmail(e.target.value)}
+                onBlur={validateEmail}
+                fullWidth
+                margin="normal"
+            />
+
+            <TextField
+                label="Event Information"
+                value={eventInformation}
+                onChange={(e) => setEventInformation(e.target.value)}
+                fullWidth
+                multiline
+                rows={4}
+                margin="normal"
+            />
             <div className={classes.buttonContainer}>
             {mode === 'edit' && (
                 <Button variant="outlined" style={{color: 'grey'}} onClick={handleDelete} className={classes.button}>

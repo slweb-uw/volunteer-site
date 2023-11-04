@@ -6,6 +6,11 @@ import { useAuth } from "auth";
 import { 
         Button, 
         Grid,
+        Tooltip,
+        Dialog,
+        DialogTitle,
+        DialogContent,
+        Typography
 } from "@material-ui/core";
 import AddRounded from "@mui/icons-material/AddRounded";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -15,7 +20,6 @@ import DownloadIcon from '@mui/icons-material/Download';
 import CalendarIcon from '@mui/icons-material/CalendarTodayOutlined';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
 import ShareIcon from '@mui/icons-material/Share';
-import Tooltip from '@material-ui/core/Tooltip';
 import HelpIcon from '@mui/icons-material/HelpOutline';
 
 import VolunteerInfoPopup from 'components/VolunteerInfoPopup';
@@ -117,6 +121,7 @@ const Signup = () => {
   const [selectedRole, setSelectedRole] = useState(null);
   const [openVolunteerPopup, setOpenVolunteerPopup] = useState(false);
   const [openEventFormPopup, setOpenEventFormPopup] = useState(false); 
+  const [informationPopupOpen, setInformationPopupOpen] = useState(false);
   const [editedVolunteer, setEditedVolunteer] = useState(null);
 
   const [startIndex, setStartIndex] = useState(0);
@@ -419,10 +424,11 @@ const Signup = () => {
               <ShareIcon />
             </Button>
           </Tooltip>
-          <Tooltip title="Details & Notes" arrow>
+          <Tooltip title="Event Information" arrow>
             <Button
               variant='outlined'
               color='secondary'
+              onClick={() => setInformationPopupOpen(true)}
             >
               <InfoIcon />
             </Button>
@@ -531,8 +537,23 @@ const Signup = () => {
         }}
         volunteer={volunteerInfo}
       />
+      {selectedEvent && (
+        <Dialog open={informationPopupOpen} onClose={() => setInformationPopupOpen(false)}>
+          <DialogTitle>Event Information</DialogTitle>
+          <DialogContent>
+            <div style={{marginBottom: '1rem', maxWidth: '600px', minWidth: '400px', wordWrap: 'break-word'}}>
+              <Typography>
+                {selectedEvent.eventInformation}
+              </Typography>
+              <br/>
+              <Typography>
+                <b>Contact:</b> {selectedEvent.leadEmail}
+              </Typography>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
-    
   );
 };
 
