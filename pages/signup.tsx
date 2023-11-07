@@ -105,6 +105,8 @@ interface Event {
   volunteerTypes: string[];
   volunteerQty: string[];
   volunteers: { [key: string]: Volunteer[] } | null;
+  leadEmail: string;
+  eventInformation: string;
 }
 
 const Signup = () => {
@@ -167,6 +169,11 @@ const Signup = () => {
   
     return unsubscribe;
   }, []);
+
+  useEffect(() => {
+    const sortedEvents = [...events].sort((a: Event, b: Event) => a.date - b.date);
+    setEvents(sortedEvents);
+  }, [events]);
   
   // Authentication
   useEffect(() => {
