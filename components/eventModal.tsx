@@ -184,23 +184,15 @@ export default function EventModal(props: {
                   Learn more
                 </Button>
               </Link>
-              {/*
-              {event?.["Sign-up Link"] &&
-                typeof event?.["Sign-up Link"] === "string" && (
-                  <a
-                    href={event?.["Sign-up Link"]}
-                    style={{ textDecoration: "none" }}
+              <Link href={event ? `/${location}/${event.id}/signup` : "/"}>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    style={{ marginRight: "1em" }}
                   >
-                    <Button
-                      onClick={handleClose}
-                      color="secondary"
-                      variant="contained"
-                    >
-                      Sign-up Link
-                    </Button>
-                  </a>
-                )}
-              */}
+                    Sign up
+                  </Button>
+              </Link>
               {isAdmin && (
                   <div style={{ paddingBottom: "2em", paddingTop: "2em" }}>
                     <div style={{ display: "inline-block" }}>

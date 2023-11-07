@@ -18,7 +18,7 @@ import EventDescription from "../../components/eventDescription";
 import RichTextField from "../../components/richTextField";
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-
+import Link from "next/link";
 interface Props {
   classes?: any;
 }
@@ -200,21 +200,15 @@ const Event: NextPage<Props> = ({ classes }) => {
             value={eventData["Types of Volunteers Needed"] ? naturalJoin(eventData["Types of Volunteers Needed"]) : undefined}
             removeTopMargin={true}
           />
-
-          {/* ------------------ Sign up link ------------------
-          <Grid item>
-            <Button
-              autoFocus
-              color="secondary"
-              variant="contained"
-              style={{ marginRight: "1em", marginBottom: "2em" }}
-              href={eventData["Sign-up Link"]}
-              disabled={!eventData["Sign-up Link"]}
-            >
-              {buttonText}
-            </Button>
-          </Grid>
-          */}
+          <Link href={`/${location}/${eventData.id}/signup`}>
+              <Button
+                color="primary"
+                variant="contained"
+                style={{ marginRight: "1em" }}
+              >
+                Sign up
+              </Button>
+          </Link>
         </Grid>
       </Grid>
 
