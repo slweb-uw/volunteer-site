@@ -372,8 +372,8 @@ const App: React.FC<{}> = () => {
                 marginTop: "2em",
               }}
             >
-            <div style={{ marginRight: "1em" }}>
-              <HeadlineBar color="gold" width={280} height={10}></HeadlineBar>
+            <div style={{ marginRight: "3em", textAlign: "right"  }}>
+              <HeadlineBar color="gold" width={320} height={10}></HeadlineBar>
             </div>
           </div>
 
@@ -482,9 +482,9 @@ const App: React.FC<{}> = () => {
                 marginTop: "2em",
               }}
             >
-              <div style={{ marginRight: "1em" }}>
-              <HeadlineBar color="gold" width={275} height={10}></HeadlineBar>
-            </div>
+          <div style={{ marginRight: "2.5em", textAlign: "right" }}>
+              <HeadlineBar color="gold" width={310} height={10}></HeadlineBar>
+          </div>
           </div>
 
             <Card
