@@ -91,25 +91,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface Volunteer {
-  email: string;
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
-  studentDiscipline: string;
-  comments: string;
-}
-
-interface Event {
-  id: string;
-  date: Date;
-  volunteerTypes: string[];
-  volunteerQty: string[];
-  volunteers: { [key: string]: Volunteer[] } | null;
-  leadEmail: string;
-  eventInformation: string;
-}
-
 const Signup = () => {
   const router = useRouter();
   const { location, event } = router.query;
@@ -308,7 +289,7 @@ const Signup = () => {
       });
       setSelectedEvent(eventData);
     } else if (action === 'edit') {
-      // Add date validation
+// Add date validation
       firebase.firestore().collection("" + location)
       .doc("" + event)
       .collection("signup")
@@ -473,6 +454,7 @@ const Signup = () => {
                         <Button
                         className={classes.roleButton}
                         variant={"outlined"}
+                        color = "secondary"
                         style={{ marginBottom: "0.5rem", marginTop: "0.5rem" }}
                         onClick={() => handleOpenVolunteerInfoPopup(volunteer)}
                         >
