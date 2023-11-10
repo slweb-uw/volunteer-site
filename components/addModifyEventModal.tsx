@@ -142,7 +142,7 @@ const locations = [
 const initialFields = [
   "Contact Information",
   "Website Link",
-  "Parking and Directions",
+  "Address;Parking;Directions",
   "Clinic Flow",
   "Clinic Schedule",
   "Project Specific Training",

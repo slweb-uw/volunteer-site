@@ -321,7 +321,6 @@ const Events: React.FC<EventsProps> = ({
       </Typography>
 
       {/* Button-Modal Module for adding new events */}
-      {/* TODO: custom claims for admin access, currently hardcoded here and on backend check */}
       {isAdmin && (
           <div style={{ paddingBottom: "2em" }}>
             <AddModifyEventModal

@@ -306,7 +306,7 @@ const App: React.FC<{}> = () => {
                 <CardContent>
                   <div className={classes.cardlinks}>
                     <Typography className={classes.cardtitle}>
-                      Required Training
+                      Onboarding
                     </Typography>
                     <Typography>
                       <ArrowForwardIos
@@ -372,8 +372,8 @@ const App: React.FC<{}> = () => {
                 marginTop: "2em",
               }}
             >
-            <div style={{ marginRight: "1em" }}>
-              <HeadlineBar color="gold" width={280} height={10}></HeadlineBar>
+            <div style={{ marginRight: "3em", textAlign: "right"  }}>
+              <HeadlineBar color="gold" width={320} height={10}></HeadlineBar>
             </div>
           </div>
 
@@ -482,9 +482,9 @@ const App: React.FC<{}> = () => {
                 marginTop: "2em",
               }}
             >
-              <div style={{ marginRight: "1em" }}>
-              <HeadlineBar color="gold" width={275} height={10}></HeadlineBar>
-            </div>
+          <div style={{ marginRight: "2.5em", textAlign: "right" }}>
+              <HeadlineBar color="gold" width={310} height={10}></HeadlineBar>
+          </div>
           </div>
 
             <Card
@@ -691,7 +691,7 @@ const App: React.FC<{}> = () => {
                 Our Service Learning and Community Engagement programs strive to
                 enrich health sciences education by providing our students with
                 opportunities to hone their skills while addressing the health
-                needs of our underserved communities. We seek to foster the joy
+                needs of our under-resourced communities. We seek to foster the joy
                 of service in our students who are preparing for lives of civic
                 and social responsibility in an increasingly diverse and complex
                 global society.These goals could not be achieved without strong
@@ -759,9 +759,9 @@ const App: React.FC<{}> = () => {
           }}
         >
           <Grid item>
-            <Grid container direction="column" spacing={3}>
+            <Grid container direction="column" spacing={1}>
               <Grid item>
-                <Grid container direction="row" spacing={2}>
+                <Grid container direction="row" spacing={1}>
                   <Grid item>
                     <img src="./profile-icon.png" alt="profile icon" />
                   </Grid>
@@ -772,7 +772,7 @@ const App: React.FC<{}> = () => {
                         fontFamily: "Uni Sans Book",
                       }}
                     >
-                      Leonora Clarke, Service Learning Manager
+                      Service Learning Team
                     </Typography>
                     <Typography
                       style={{
@@ -793,7 +793,7 @@ const App: React.FC<{}> = () => {
                 >
                   <Grid item>
                     <Typography className={classes.contact}>
-                      <a href="mailto://clarkel@uw.edu">clarkel@uw.edu</a>
+                      <a href="mailto://somserve@uw.edu">somserve@uw.edu</a>
                     </Typography>
                   </Grid>
                   <Grid item>
@@ -811,7 +811,7 @@ const App: React.FC<{}> = () => {
             </Grid>
           </Grid>
           <Grid item>
-            <Grid container direction="column" spacing={3}>
+            <Grid container direction="column" spacing={2}>
               <Grid item>
                 <Grid container direction="row" spacing={2}>
                   <Grid item>

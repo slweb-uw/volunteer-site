@@ -30,11 +30,11 @@ const RequiredTraining: NextPage<Props> = ({ classes }) => {
           color: "#000000",
         }}
       >
-        REQUIRED TRAINING
+        ONBOARDING
       </Typography>
       <img
         src={"../goldbar.png"}
-        style={{ width: "350px", height: "10px", marginBottom: "30px" }}
+        style={{ width: "205px", height: "10px", marginBottom: "30px" }}
       />
       <Grid container spacing={2}>
         <Grid item xs={12} md={6} lg={8}>
@@ -68,7 +68,7 @@ const RequiredTraining: NextPage<Props> = ({ classes }) => {
                     className={classes.link}
                     color="inherit"
                   >
-                    Standard of Care: Expectations and Goals (required to review)
+                    Expectations and Goals (required to review)
                   </Link>
                 </Typography>
               </li>
@@ -87,7 +87,7 @@ const RequiredTraining: NextPage<Props> = ({ classes }) => {
                     className={classes.link}
                     color="inherit"
                   >
-                    Foundations of Service Learning: Preparation and Reflection (required to review)
+                    Preparation and Reflection (required to review)
                   </Link>
                 </Typography>
                 
@@ -108,7 +108,7 @@ const RequiredTraining: NextPage<Props> = ({ classes }) => {
                     rel="noopener noreferrer"
                     className={classes.link}
                   >
-                    Skills training modules (see individual projects for site specific requirements)
+                    Skills Training Modules (see individual projects for site specific requirements)
                   </Link>
                 </Typography>
               </li>

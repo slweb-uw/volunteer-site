@@ -20,7 +20,7 @@ import {
   DialogContentText,
   DialogActions,
   } from "@material-ui/core";
-
+  import HelpIcon from '@mui/icons-material/HelpOutline';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -99,10 +99,16 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(0, 1),
     textTransform: "none",
   },
+  centeredButtons: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+  }
 }));
 
 const AdminPage = () => {
-  const authorizedUsers = ["clarkel@uw.edu", "dnakas4@uw.edu", "bruno.futino@gmail.com"]; // Hardcoded to limit who can manage admins
+  const authorizedUsers = ["clarkel@uw.edu", "dnakas4@uw.edu", "bruno.futino@gmail.com", "uwslweb@gmail.com"]; // Hardcoded to limit who can manage admins
 
   const classes = useStyles();
   const { user } = useAuth();
@@ -110,40 +116,50 @@ const AdminPage = () => {
   const [newUserEmail, setNewUserEmail] = useState("");
   const [validEmail, setValidEmail] = useState(true);
   const [existentEmail, setExistentEmail] = useState(false);
-
+  const [helpDialogOpen, setHelpDialogOpen] = useState(false);
   const [volunteers, setVolunteers] = useState([]);
   const [activeSection, setActiveSection] = useState("admins");
 
   // Loads Admins
-  useEffect(() => {
-    const unsubscribe = firebase.
-      firestore()
+  const loadAdmins = () => {
+    const unsubscribe = firebase
+      .firestore()
       .collection("Admins")
       .onSnapshot((snapshot) => {
         const adminsData = [];
         snapshot.forEach((doc) => {
-          adminsData.push({id: doc.id, ...doc.data() });
+          adminsData.push({ id: doc.id, ...doc.data() });
         });
         adminsData.sort((a, b) => (a.email > b.email ? 1 : -1));
         setAdmins(adminsData);
       });
-      return unsubscribe;
-  }, []);
+    return unsubscribe;
+  };
 
-   // Loads Volunteers
-   useEffect(() => {
-    const unsubscribe = firebase.
-      firestore()
+  // Loads Volunteers
+  const loadVolunteers = () => {
+    const unsubscribe = firebase
+      .firestore()
       .collection("Volunteers")
       .onSnapshot((snapshot) => {
         const volunteerData = [];
         snapshot.forEach((doc) => {
-          volunteerData.push({id: doc.id, ...doc.data() });
+          volunteerData.push({ id: doc.id, ...doc.data() });
         });
         volunteerData.sort((a, b) => (a.email > b.email ? 1 : -1));
         setVolunteers(volunteerData);
       });
-      return unsubscribe;
+    return unsubscribe;
+  };
+
+  useEffect(() => {
+    const unsubscribe = loadAdmins();
+    return unsubscribe;
+  }, []);
+  
+  useEffect(() => {
+    const unsubscribe = loadVolunteers();
+    return unsubscribe;
   }, []);
 
   const addUser = (e) => {
@@ -260,9 +276,9 @@ const AdminPage = () => {
     );
   }
   
-  const handleSectionChange = (section) => {
-    setActiveSection(section);
-  };
+  const handleSectionChange = (section) => setActiveSection(section);
+  const openHelpDialog = () => setHelpDialogOpen(true);
+  const closeHelpDialog = () => setHelpDialogOpen(false);
 
   return (
     <div className={classes.root}>
@@ -270,21 +286,26 @@ const AdminPage = () => {
         User Manager
       </Typography>
       <div className={classes.header}>
-        <Button
-          className={classes.headerButton}
-          variant={activeSection === "admins" ? "contained" : "outlined"}
-          color="primary"
-          onClick={() => handleSectionChange("admins")}
-        >
-          Admins
-        </Button>
-        <Button
-          className={classes.headerButton}
-          variant={activeSection === "volunteers" ? "contained" : "outlined"}
-          color="primary"
-          onClick={() => handleSectionChange("volunteers")}
-        >
-          Volunteers
+        <div className={classes.centeredButtons}>
+          <Button
+            className={classes.headerButton}
+            variant={activeSection === "admins" ? "contained" : "outlined"}
+            color="primary"
+            onClick={() => handleSectionChange("admins")}
+          >
+            Admins
+          </Button>
+          <Button
+            className={classes.headerButton}
+            variant={activeSection === "volunteers" ? "contained" : "outlined"}
+            color="primary"
+            onClick={() => handleSectionChange("volunteers")}
+          >
+            Volunteers
+          </Button>
+        </div>
+        <Button style={{marginLeft: "auto"}} onClick={openHelpDialog}>
+          <HelpIcon color="secondary" />
         </Button>
       </div>
 
@@ -372,7 +393,30 @@ const AdminPage = () => {
         </Button>
       </DialogActions>
     </Dialog>
+    <Dialog open={helpDialogOpen} onClose={closeHelpDialog}>
+      <DialogTitle>User Manager Guide</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          The User Manager Interface provides a platform for listing and managing the two types of users: <b>Admins</b> and <b>Volunteers</b>.
+        </DialogContentText>
+        <DialogContentText>
+          <b>Admins</b> have special privileges, allowing them to create, edit, and remove events.
+        </DialogContentText>
+        <DialogContentText>
+          <b>Volunteers</b> are users with non-UW email addresses who have access to volunteer for events.
+        </DialogContentText>
+        <DialogContentText style={{ fontSize: 'small' }}>
+          * UW emails can still signup for opportunities and <b>do not</b> need to be listed as Volunteers.
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={closeHelpDialog} color="primary">
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
   </div>
+  
   );
 };
 

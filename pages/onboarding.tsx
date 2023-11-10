@@ -50,8 +50,8 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
       <Alert severity="warning" style={{ backgroundColor: "#fef4e5", marginBottom: "2em", marginTop: "2em" }}>
         <AlertTitle>
           <strong>All providers must fill out a brief survey here:{" "}</strong>
-          <a target="_blank" href="https://forms.office.com/r/yyLvBx8HiT">
-          https://forms.office.com/r/yyLvBx8HiT
+          <a target="_blank" href="http://bit.ly/45t3Lmn">
+          Service Learning Provider Onboarding Form
           </a>
         </AlertTitle>
       </Alert>

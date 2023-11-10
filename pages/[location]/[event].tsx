@@ -23,13 +23,11 @@ interface Props {
   classes?: any;
 }
 
-const NotSpecified = <i style={{ color: "gray" }}>Not specified</i>;
-
 const initialGridKeys = [
   "Tips and Reminders",
   "Clinic Flow",
   "Required Trainings",
-  "Parking and Directions",
+  "Address/Parking/Directions",
   "Provider Information",
 ];
 
@@ -46,7 +44,7 @@ const reservedKeys = [
   "Contact Information",
   "Website Link",
   "Sign-up Link",
-  "Parking and Directions",
+  "Address;Parking;Directions",
   "Clinic Flow",
   "Tips and Reminders",
   "Provider Information",
@@ -83,12 +81,13 @@ const EventField: React.FC<EventFieldProps> = ({
   } else {
     data = value;
   }
+  if(!data) return null;
   return (
-    <Box style={{ pageBreakInside: "avoid", breakInside: "avoid-column", marginBottom: "5%"}}>
+      <Box style={{ pageBreakInside: "avoid", breakInside: "avoid-column", marginBottom: "5%"}}>
       <Typography variant="h6" style={{ fontWeight: 600 }}>
         {name}
       </Typography>
-      <Typography>{data ?? NotSpecified}</Typography>
+      <Typography>{data}</Typography>
     </Box>
   );
 }
@@ -105,13 +104,14 @@ const RichEventField: React.FC<RichEventFieldProps> = ({
     data = value;
   }
   const remove: boolean | undefined = removeTopMargin ? data?.includes("<p>") : false;
+  if(!data) return null;
   return (
     <>
       <Box style={{ pageBreakInside: "avoid", breakInside: "avoid-column", marginBottom: "5%" }} >
         <Typography variant="h6" style={{ fontWeight: 600 }}>
           {name}
         </Typography>
-        {data ? <RichTextField value={data} removeTopMargin={remove ?? false} /> : NotSpecified}
+          <RichTextField value={data} removeTopMargin={remove ?? false} />  
       </Box>
     </>
   );

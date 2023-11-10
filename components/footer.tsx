@@ -37,7 +37,7 @@ const Footer: React.FC<{}> = () => {
   const { user } = useAuth();
   const [isAdmin, setIsAdmin] = React.useState(false);
   const [isLoadingUser, setIsLoadingUser] = React.useState(true);
-  const authorizedUsers = ["clarkel@uw.edu","dnakas4@uw.edu", "bruno.futino@gmail.com"]; // Hardcoded to limit who can manage admins
+  const authorizedUsers = ["clarkel@uw.edu","dnakas4@uw.edu", "bruno.futino@gmail.com", "uwslweb@gmail.com"]; // Hardcoded to limit who can manage admins
 
   const checkUser = async () => {
     const user = firebaseClient.auth().currentUser;
@@ -65,7 +65,7 @@ const Footer: React.FC<{}> = () => {
       <img src="/uw-text-logo.png" alt="University of Washington logo" className={useStyles().logo} />
       <Typography className={useStyles().text} gutterBottom>
         Contact us: (206) 685-2009 or{" "}
-        <a href="mailto://clarkel@uw.edu" className={useStyles().text}>clarkel@uw.edu</a>
+        <a href="mailto://clarkel@uw.edu" className={useStyles().text}>somserve@uw.edu</a>
       </Typography>
       <Typography className={useStyles().text} gutterBottom>
         <i>
