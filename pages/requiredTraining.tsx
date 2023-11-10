@@ -108,7 +108,7 @@ const RequiredTraining: NextPage<Props> = ({ classes }) => {
                     rel="noopener noreferrer"
                     className={classes.link}
                   >
-                    Skills training modules (see individual projects for site specific requirements)
+                    Skills Training Modules (see individual projects for site specific requirements)
                   </Link>
                 </Typography>
               </li>
