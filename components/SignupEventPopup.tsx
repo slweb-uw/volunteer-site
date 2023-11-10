@@ -60,6 +60,7 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
             volunteerTypes: volunteerData.map(item => item.type),
             volunteerQty: volunteerData.map(item => item.qty),
             leadEmail,
+            volunteers: {},
             eventInformation
           };
           setEventData(newEventData);

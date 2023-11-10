@@ -240,7 +240,7 @@ const Signup = () => {
   };
 
   const handleCloseVolunteerPopup = () => {
-    setSelectedRole(null);
+    setSelectedRole('');
     setOpenVolunteerPopup(false);
     setEditedVolunteer(null);
   };
@@ -280,9 +280,10 @@ const Signup = () => {
           fetchData();
         });
     }
+    handleCloseVolunteerPopup();
   };
 
-  const handleEditVolunteer = (volunteer, type, index) => {
+  const handleEditVolunteer = (volunteer, type) => {
     setEditedVolunteer(volunteer);
     setSelectedRole(type);
     setOpenVolunteerPopup(true);
@@ -307,7 +308,7 @@ const Signup = () => {
       });
       setSelectedEvent(eventData);
     } else if (action === 'edit') {
-      // Add date authentication
+      // Add date validation
       firebase.firestore().collection("" + location)
       .doc("" + event)
       .collection("signup")
@@ -454,17 +455,16 @@ const Signup = () => {
               >
                 {type}
               </Button>
-
-              {/* {selectedEvent.volunteers && selectedEvent.volunteers[type] && (
-                selectedEvent.volunteers[type].map((volunteer, rowIndex) => (
-                  <div key={rowIndex}>
+              {selectedEvent.volunteers && selectedEvent.volunteers[type] && (
+                 [...Object.entries(selectedEvent.volunteers[type])].map(([key, volunteer]) => (
+                  <div>
                     {user && user.email === volunteer.email ? (
                       <Button
                         className={classes.roleButton}
                         variant={"outlined"}
                         color = "primary"
                         style={{ marginBottom: "0.5rem", marginTop: "0.5rem"}}
-                        onClick={() => handleEditVolunteer(volunteer, type, rowIndex)}
+                        onClick={() => handleEditVolunteer(volunteer, type)}
                       >
                         {volunteer.firstName} {volunteer.lastName.charAt(0)}.
                       </Button>
@@ -491,8 +491,8 @@ const Signup = () => {
                     )}
                   </div>
                 ))
-              )} */}
-              {selectedEvent.volunteers && (!selectedEvent.volunteers[type] || selectedEvent.volunteers[type].length < Number(selectedEvent.volunteerQty[index])) && (
+              )}
+              {selectedEvent.volunteers && (!selectedEvent.volunteers[type] || Object.keys(selectedEvent.volunteers[type]).length < Number(selectedEvent.volunteerQty[index])) && (
                 <div key={index} color="#d5d5d5">
                   <Button
                     className={classes.roleButton}

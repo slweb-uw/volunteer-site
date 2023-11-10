@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
     Dialog,
@@ -55,6 +55,18 @@ const VolunteerPopup = ({ open, handleClose, email, uid, addVolunteer, onDeleteV
     const [certified, setCertified] = useState(false);
     const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
 
+    useEffect(() => {
+      if (volunteer) {
+        setFirstName(volunteer.firstName || '');
+        setLastName(volunteer.lastName || '');
+        setPhoneNumber(volunteer.phoneNumber || '');
+        setComments(volunteer.comments || '');
+        setStudentDiscipline(volunteer.studentDiscipline || '');
+        setCertified(volunteer.certified || false);
+        setFormattedPhoneNumber(formatPhoneNumber(volunteer.phoneNumber || ''));
+      }
+    }, [volunteer]);
+
     const validatePhoneNumber = (phoneNumber) => {
       const cleaned = phoneNumber.replace(/\D/g, '');
       return /^[0-9]{10}$/.test(cleaned);
@@ -97,11 +109,6 @@ const VolunteerPopup = ({ open, handleClose, email, uid, addVolunteer, onDeleteV
       } else {
           alert('Invalid phone number!');
       }
-    };
-
-    const handleDeleteVolunteer = () => {
-      onDeleteVolunteer(volunteer);
-      handleClose();
     };
 
   return (
@@ -188,7 +195,7 @@ const VolunteerPopup = ({ open, handleClose, email, uid, addVolunteer, onDeleteV
         <div className={classes.buttonContainer}>
             {volunteer ? ( 
             <>
-              <Button variant="outlined" onClick={handleDeleteVolunteer} style={{marginRight: "1rem", color: "gray"}}>
+              <Button variant="outlined" onClick={() => onDeleteVolunteer(volunteer)} style={{marginRight: "1rem", color: "gray"}}>
                 Withdraw
               </Button>
               <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isSubmitDisabled}>
