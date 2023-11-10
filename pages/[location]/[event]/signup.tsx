@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import firebase from "firebase/app";
 import "firebase/firestore";
 import { useAuth } from "auth";
+import { useRouter } from "next/router";
 import { 
         Button, 
         Grid,
@@ -110,76 +111,108 @@ interface Event {
 }
 
 const Signup = () => {
+  const router = useRouter();
+  const { location, event } = router.query;
   const classes = useStyles();
   const { user } = useAuth();
   const [admins, setAdmins] = useState([]);
   const [authorizedUsers, setAuthorizedUsers] = useState([]);
-  const [currentDate, setCurrentDate] = useState("");
   const [isAuthorized, setIsAuthorized] = useState(true);
   const [authComplete, setAuthComplete] = useState(false);
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [editedEvent, setEditedEvent] = useState(null);
-  const [selectedRole, setSelectedRole] = useState(null);
+  const [selectedRole, setSelectedRole] = useState('');
   const [openVolunteerPopup, setOpenVolunteerPopup] = useState(false);
   const [openEventFormPopup, setOpenEventFormPopup] = useState(false); 
   const [informationPopupOpen, setInformationPopupOpen] = useState(false);
   const [editedVolunteer, setEditedVolunteer] = useState(null);
+  const [title, setTitle] = useState('');
 
   const [startIndex, setStartIndex] = useState(0);
   const endIndex = startIndex + 5;
   const [volunteerInfo, setVolunteerInfo] = useState(null);
   const [openVolunteerInfoPopup, setOpenVolunteerInfoPopup] = useState(false);
 
-  function checkEmail(email, authorizedUsers) {
-    for (let i = 0; i < authorizedUsers.length; i++) {
-      if (authorizedUsers[i].email === email) {
-        return true;
+   // Loads Title
+   useEffect(() => {
+    const fetchData = async () => {
+      const documentSnapshot = await firebase
+        .firestore()
+        .collection("" + location)
+        .doc("" + event)
+        .get();
+
+      if (documentSnapshot && documentSnapshot.data()) {
+        setTitle(documentSnapshot.data().Title);
       }
-    }
-    return false;
-  }
+    };
 
-  useEffect(() => {
-    const unsubscribe = firebase.
-      firestore()
-      .collection("Admins")
-      .onSnapshot((snapshot) => {
-        const adminsData = [];
-        snapshot.forEach((doc) => {
-          adminsData.push({id: doc.id, ...doc.data() });
-        });
-        adminsData.sort((a, b) => (a.email > b.email ? 1 : -1));
-        setAdmins(adminsData);
+    fetchData();
+  }, [location, event]);
+
+  // Retrieves the events
+ const fetchData = () => {
+  const unsubscribe = firebase
+    .firestore()
+    .collection("" + location)
+    .doc("" + event)
+    .collection("signup")
+    .onSnapshot((snapshot) => {
+      const data = [];
+
+      snapshot.forEach((doc) => {
+        const eventData = { id: doc.id, ...doc.data()};
+        data.push(eventData);
       });
-      return unsubscribe;
-  }, []);
 
-  useEffect(() => {
-    const unsubscribe = firebase
-      .firestore()
-      .collection("Volunteers")
-      .onSnapshot((snapshot) => {
-        const userData = [];
-        snapshot.forEach((doc) => {
-          userData.push({ id: doc.id, ...doc.data() });
-        });
-        setAuthorizedUsers(userData);
+      data.sort((a, b) => a.date - b.date);
+      setEvents(data);
+      setSelectedEvent(data.length > 0 ? data[0] : null);
     });
+
+  return () => unsubscribe();
+};
   
-    return unsubscribe;
+  useEffect(() => {
+    fetchData();
+  }, [location, event]);
+
+  // Authentication
+  const isAdmin = admins.find((admin) => admin.email === user?.email);
+  useEffect(() => {
+    const adminsUnsubscribe  = firebase.
+    firestore()
+    .collection("Admins")
+    .onSnapshot((snapshot) => {
+      const adminsData = [];
+      snapshot.forEach((doc) => {
+        adminsData.push({id: doc.id, ...doc.data() });
+      });
+      adminsData.sort((a, b) => (a.email > b.email ? 1 : -1));
+      setAdmins(adminsData);
+    });
+
+    const volunteersUnsubscribe = firebase
+    .firestore()
+    .collection("Volunteers")
+    .onSnapshot((snapshot) => {
+      const userData = [];
+      snapshot.forEach((doc) => {
+        userData.push({ id: doc.id, ...doc.data() });
+      });
+      setAuthorizedUsers(userData);
+    });
+
+    return () => {
+      adminsUnsubscribe();
+      volunteersUnsubscribe();
+    };
   }, []);
 
-  useEffect(() => {
-    const sortedEvents = [...events].sort((a: Event, b: Event) => a.date - b.date);
-    setEvents(sortedEvents);
-  }, [events]);
-  
-  // Authentication
   useEffect(() => {
     setIsAuthorized(true);
-
-    if (!user || (!user.email.endsWith("@uw.edu") && !checkEmail(user.email, authorizedUsers))) {
+    if (!user || (!user.email.endsWith("@uw.edu") && !authorizedUsers.some(u => u.email === user.email) && !isAdmin)) {
       setIsAuthorized(false);
     }
 
@@ -187,7 +220,7 @@ const Signup = () => {
   }, [user, authorizedUsers]);
 
   if (!authComplete) {
-    return null;
+    return <div>Loading...</div>;
   }
 
   if (!isAuthorized) {
@@ -200,73 +233,9 @@ const Signup = () => {
       </div>
     );
   }
-
-  const handleDateChange = (date) => {
-    setCurrentDate(date);
-    const selectedEvent = events.find(event => event.date === date);
-    setSelectedEvent(selectedEvent);
-  };
-
-  const addEvent = (newEvent) => {
-    const existingEvent = events.find(event => {
-      const existingEventDate = new Date(event.date);
   
-      const newEventDate = new Date(newEvent.date);
-  
-      return existingEventDate.getTime() === newEventDate.getTime();
-    });
-  
-    if (existingEvent) {
-      alert('An event already exists for this date. Please choose a different date.');
-      return;
-    }
-  
-    newEvent.volunteers = {};
-  
-    setEvents(prevEvents => [...prevEvents, newEvent]);
-    setSelectedEvent(newEvent); 
-    setCurrentDate(newEvent.date);
-  };
-
-  const handleEditEvent = (editedEventData) => {
-    const dateAlreadyExists = events.some(event => {
-      if (event.id !== editedEventData.id) {
-        const existingEventDate = new Date(event.date);
-  
-        const editedEventDate = new Date(editedEventData.date);
-  
-        return existingEventDate.getTime() === editedEventDate.getTime();
-      }
-      return false;
-    });
-  
-    if (dateAlreadyExists) {
-      alert('An event already exists for this date. Please choose a different date.');
-      return;
-    }
-  
-    const updatedEvents = events.map(event => {
-      if (event.id === editedEventData.id) {
-        return editedEventData;
-      }
-      return event;
-    });
-  
-    setEvents(updatedEvents);
-    setEditedEvent(editedEventData)
-    setSelectedEvent(updatedEvents.find(event => event.id === editedEventData.id));
-    setCurrentDate(editedEventData.date);
-  };
-
-  const deleteEvent = () => {
-    const updatedEvents = events.filter(event => event.id !== editedEvent.id);
-    setEvents(updatedEvents);
-    setSelectedEvent(null); 
-    setCurrentDate(null);
-  }
-
-  const handleOpenVolunteerPopup = (type, index) => {
-    setSelectedRole({ type, index });
+  const handleOpenVolunteerPopup = (type) => {
+    setSelectedRole(type);
     setOpenVolunteerPopup(true);
   };
 
@@ -278,51 +247,44 @@ const Signup = () => {
 
   const handleAddVolunteer = (volunteerData) => {
     if (selectedRole) {
-      const { type, index } = selectedRole;
-      const updatedEvent = { ...selectedEvent };
+      const volunteerRef = firebase.firestore()
+      .collection("" + location)
+      .doc("" + event)
+      .collection("signup")
+      .doc("" + selectedEvent?.id)
+      .update({
+        [`volunteers.${selectedRole}.${volunteerData.uid}`]: volunteerData
+      })
+      .then(() => {
+        fetchData();
+      });
 
-      if (!updatedEvent.volunteers) {
-        updatedEvent.volunteers = {};
-      }
-
-      if (!updatedEvent.volunteers[type]) {
-        updatedEvent.volunteers[type] = [];
-      }
-
-      updatedEvent.volunteers[type][index] = volunteerData;
-
-      const updatedEvents = events.map(event =>
-        event.id === selectedEvent.id ? updatedEvent : event
-      );
-
-      setEvents(updatedEvents);
-      setSelectedEvent(updatedEvent);
+      handleCloseVolunteerPopup();
     }
-    handleCloseVolunteerPopup();
   };
 
   const handleDeleteVolunteer = (volunteer) => {
     if (selectedRole) {
-      const { type, index } = selectedRole;
-      const updatedEvent = { ...selectedEvent };
-  
-      if (updatedEvent.volunteers && updatedEvent.volunteers[type]) {
-        const updatedVolunteers = updatedEvent.volunteers[type].filter((_, i) => i !== index);
-        updatedEvent.volunteers[type] = updatedVolunteers;
-      }
-  
-      const updatedEvents = events.map(event =>
-        event.id === selectedEvent.id ? updatedEvent : event
-      );
-  
-      setEvents(updatedEvents);
-      setSelectedEvent(updatedEvent);
+      const eventId = selectedEvent?.id;
+      const uid = volunteer.uid;
+
+      const volunteerRef = firebase.firestore()
+        .collection(location)
+        .doc(event)
+        .collection('signup')
+        .doc(eventId)
+        .update({
+          [`volunteers.${selectedRole}.${uid}`]: firebase.firestore.FieldValue.delete()
+        })
+        .then(() => {
+          fetchData();
+        });
     }
   };
 
   const handleEditVolunteer = (volunteer, type, index) => {
     setEditedVolunteer(volunteer);
-    setSelectedRole({ type, index });
+    setSelectedRole(type);
     setOpenVolunteerPopup(true);
   };
   
@@ -333,11 +295,36 @@ const Signup = () => {
 
   const handleEventAction = (action, eventData) => {
     if (action === 'add') {
-      addEvent(eventData);
+      const firebaseTimestamp = firebase.firestore.Timestamp.fromDate(eventData.date);
+
+      const eventDataWithTimestamp = { ...eventData, date: firebaseTimestamp };
+      firebase.firestore().collection("" + location)
+      .doc("" + event)
+      .collection("signup")
+      .doc(eventData.id)
+      .set(eventData).then(() => {
+        fetchData();
+      });
+      setSelectedEvent(eventData);
     } else if (action === 'edit') {
-      handleEditEvent(eventData);
+      // Add date authentication
+      firebase.firestore().collection("" + location)
+      .doc("" + event)
+      .collection("signup")
+      .doc(eventData.id)
+      .set(eventData).then(() => {
+        fetchData();
+      });
+      setSelectedEvent(events.find((e) => e.id === eventData.id));
     } else if (action === 'delete') {
-      deleteEvent();
+      firebase.firestore().collection("" + location)
+      .doc("" + event)
+      .collection("signup")
+      .doc(eventData.id)
+      .delete().then(() => {
+        fetchData();
+      });
+      setSelectedEvent(null); 
     }
   };
 
@@ -346,11 +333,9 @@ const Signup = () => {
     setOpenVolunteerInfoPopup(true);
   };
 
-  const isAdmin = admins.find((admin) => admin.email === user?.email);
-
   return (
     <div className={classes.root}>
-      <h1 className={classes.title}>[Event title]</h1>
+      <h1 className={classes.title}>{title ? title : "Loading title..."}</h1>
       <div className={classes.header}>
         <div className={classes.buttonScroll}>
           {startIndex > 0 && (
@@ -365,11 +350,13 @@ const Signup = () => {
             <Button
               key={event.date}
               className={classes.headerButton}
-              variant={currentDate === event.date ? "contained" : "outlined"}
+              variant={selectedEvent && selectedEvent.id === event.id ? "contained" : "outlined"}
               color="primary"
-              onClick={() => handleDateChange(event.date)}
+              onClick={() => setSelectedEvent(event)}
             >
-              {event.date.toLocaleDateString('en-US')} <br/>  {event.date.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'})}
+              {new Date(event.date.seconds * 1000).toLocaleDateString('en-US')}
+              <br/>  
+              {new Date(event.date.seconds * 1000).toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'})}
             </Button>
           ))}
           {endIndex < events.length && (
@@ -468,7 +455,7 @@ const Signup = () => {
                 {type}
               </Button>
 
-              {selectedEvent.volunteers && selectedEvent.volunteers[type] && (
+              {/* {selectedEvent.volunteers && selectedEvent.volunteers[type] && (
                 selectedEvent.volunteers[type].map((volunteer, rowIndex) => (
                   <div key={rowIndex}>
                     {user && user.email === volunteer.email ? (
@@ -504,14 +491,14 @@ const Signup = () => {
                     )}
                   </div>
                 ))
-              )}
+              )} */}
               {selectedEvent.volunteers && (!selectedEvent.volunteers[type] || selectedEvent.volunteers[type].length < Number(selectedEvent.volunteerQty[index])) && (
                 <div key={index} color="#d5d5d5">
                   <Button
                     className={classes.roleButton}
                     variant={"outlined"}
                     style={{ marginBottom: "0.5rem", marginTop: "0.5rem" }}
-                    onClick={() => handleOpenVolunteerPopup(type, selectedEvent.volunteers[type]?.length || 0)}
+                    onClick={() => handleOpenVolunteerPopup(type)}
                   >
                     <AddRounded />
                   </Button>
@@ -532,6 +519,7 @@ const Signup = () => {
         open={openVolunteerPopup}
         handleClose={handleCloseVolunteerPopup}
         email={user?.email}
+        uid={user?.uid}
         addVolunteer={handleAddVolunteer}
         volunteer={editedVolunteer} 
         onDeleteVolunteer={handleDeleteVolunteer}

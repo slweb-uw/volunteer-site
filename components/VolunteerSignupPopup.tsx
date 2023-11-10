@@ -45,7 +45,7 @@ const useStyles = makeStyles({
     },
 });
 
-const VolunteerPopup = ({ open, handleClose, email, addVolunteer, onDeleteVolunteer, volunteer }) => {
+const VolunteerPopup = ({ open, handleClose, email, uid, addVolunteer, onDeleteVolunteer, volunteer }) => {
     const classes = useStyles();
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -83,6 +83,7 @@ const VolunteerPopup = ({ open, handleClose, email, addVolunteer, onDeleteVolunt
     const handleSubmit = () => {
       if (isPhoneNumberValid) {
         const volunteerData = {
+            uid,
             email,
             firstName,
             lastName,

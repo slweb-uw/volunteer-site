@@ -174,6 +174,15 @@ export default function EventModal(props: {
               </div>
             )}
             <div style={{ marginTop: "2em" }}>
+            <Link href={event ? `/${location}/${event.id}/signup` : "/"}>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    style={{ marginRight: "1em" }}
+                  >
+                    Sign up
+                  </Button>
+              </Link>
               <Link href={eventLink} style={{ textDecoration: "none" }} target="_blank">
                 <Button
                   onClick={handleClose}
@@ -183,15 +192,6 @@ export default function EventModal(props: {
                 >
                   Learn more
                 </Button>
-              </Link>
-              <Link href={event ? `/${location}/${event.id}/signup` : "/"}>
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    style={{ marginRight: "1em" }}
-                  >
-                    Sign up
-                  </Button>
               </Link>
               {isAdmin && (
                   <div style={{ paddingBottom: "2em", paddingTop: "2em" }}>

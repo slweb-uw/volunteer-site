@@ -30,21 +30,41 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
     const [deletedRoles, setDeletedRoles] = useState([]);
     const [leadEmail, setLeadEmail] = useState('');
     const [eventInformation, setEventInformation] = useState('');
+    const [eventData, setEventData] = useState(null);
     const handleDateChange = (event) => setDate(event.target.value);
 
     useEffect(() => {
         if (mode === 'edit' && event) {
-            const utcDate = new Date(event.date);
+            const utcDate = new Date(event.date.seconds * 1000);
             const localDate = new Date(utcDate.getTime() - (utcDate.getTimezoneOffset() * 60000));
             setDate(localDate.toISOString().slice(0, 16));
+            setLeadEmail(event.leadEmail);
+            setEventInformation(event.eventInformation);
             setVolunteerData(event.volunteerTypes.map((type, index) => ({
                 type,
                 qty: event.volunteerQty[index]
             })));
         } else {
+            setDate('');
+            setLeadEmail('');
+            setEventInformation('');
             setVolunteerData([{ type: '', qty: '' }]);
         }
     }, [mode, event]);
+
+    useEffect(() => {
+        if (volunteerData.length > 0) {
+          const localDate = new Date(date);
+          const newEventData = {
+            date: localDate,
+            volunteerTypes: volunteerData.map(item => item.type),
+            volunteerQty: volunteerData.map(item => item.qty),
+            leadEmail,
+            eventInformation
+          };
+          setEventData(newEventData);
+        }
+      }, [date, volunteerData, leadEmail, eventInformation, event]);
 
     const generateUniqueId = () => {
         const timestamp = new Date().getTime();
@@ -55,7 +75,9 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
     const handleDelete = () => {
         const confirmed = window.confirm("Are you sure you want to delete this event?");
         if (confirmed) {
-            handleEventAction('delete');
+            const idToDelete = event.id;
+            const eventDataToDelete = { id: idToDelete };
+            handleEventAction('delete', eventDataToDelete);
         }
         handleClose();
     };
@@ -127,15 +149,6 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
             alert('Volunteer roles must have unique names.');
             return;
         }
-        const localDate = new Date(date);
-        const eventData = {
-            date: localDate,
-            volunteerTypes: volunteerData.map(item => item.type),
-            volunteerQty: volunteerData.map(item => item.qty),
-            volunteers: null,
-            leadEmail,
-            eventInformation
-        };
 
         if (mode === 'edit') {
             eventData.id = event.id;
@@ -212,14 +225,13 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
                 fullWidth
                 margin="normal"
             />
-
             <TextField
                 label="Event Information"
                 value={eventInformation}
                 onChange={(e) => setEventInformation(e.target.value)}
                 fullWidth
                 multiline
-                rows={4}
+                minRows={4}
                 margin="normal"
             />
             <div className={classes.buttonContainer}>
