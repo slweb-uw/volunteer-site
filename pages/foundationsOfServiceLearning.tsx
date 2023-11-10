@@ -93,7 +93,7 @@ const ServiceLearningPage: NextPage<Props> = ({ classes }) => {
                 <Typography
                   variant="h6"
                   style={{
-                  fontSize: 19,
+                  fontSize: 16,
                   fontFamily: "Encode Sans",
                   }}
                >
