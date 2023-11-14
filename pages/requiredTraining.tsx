@@ -18,7 +18,7 @@ const RequiredTraining: NextPage<Props> = ({ classes }) => {
     <div className={classes.page}>
       <CssBaseline />
       <IconBreadcrumbs
-        crumbs={["Required Training"]}
+        crumbs={["Onboarding"]}
         parentURL={undefined}
       />
       <Typography

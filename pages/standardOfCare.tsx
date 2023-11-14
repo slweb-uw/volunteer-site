@@ -18,7 +18,7 @@ const StandardsOfCarePage: NextPage<Props> = ({ classes }) => {
     <div className={classes.page}>
       <CssBaseline />
       <IconBreadcrumbs
-        crumbs={["Required Training", "Standards of Care: Expectations and Goals"]}
+        crumbs={["Onboarding", "Standards of Care: Expectations and Goals"]}
         parentURL={undefined}
       />
       <Typography
