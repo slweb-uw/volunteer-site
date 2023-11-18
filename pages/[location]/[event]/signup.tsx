@@ -246,20 +246,24 @@ const Signup = () => {
 
   const handleDeleteVolunteer = (volunteer) => {
     if (selectedRole) {
-      const eventId = selectedEvent?.id;
-      const uid = volunteer.uid;
+      const isConfirmed = window.confirm("Are you sure you want to withdraw from this role?");
 
-      const volunteerRef = firebase.firestore()
-        .collection(location)
-        .doc(event)
-        .collection('signup')
-        .doc(eventId)
-        .update({
-          [`volunteers.${selectedRole}.${uid}`]: firebase.firestore.FieldValue.delete()
-        })
-        .then(() => {
-          fetchData();
-        });
+      if (isConfirmed) {
+        const eventId = selectedEvent?.id;
+        const uid = volunteer.uid;
+
+        const volunteerRef = firebase.firestore()
+          .collection(location)
+          .doc(event)
+          .collection('signup')
+          .doc(eventId)
+          .update({
+            [`volunteers.${selectedRole}.${uid}`]: firebase.firestore.FieldValue.delete()
+          })
+          .then(() => {
+            fetchData();
+          });
+      }
     }
     handleCloseVolunteerPopup();
   };
@@ -392,23 +396,27 @@ const Signup = () => {
           )}
         </div>
         <div style={{display: 'flex', gap: '15px' }}>
-          <Tooltip title="share" arrow>
-            <Button
-              variant='outlined'
-              color='secondary'
-            >
-              <ShareIcon />
-            </Button>
-          </Tooltip>
-          <Tooltip title="Event Information" arrow>
-            <Button
-              variant='outlined'
-              color='secondary'
-              onClick={() => setInformationPopupOpen(true)}
-            >
-              <InfoIcon />
-            </Button>
-          </Tooltip>
+          {selectedEvent && (
+            <div>
+              <Tooltip title="share" arrow>
+                <Button
+                  variant='outlined'
+                  color='secondary'
+                >
+                  <ShareIcon />
+                </Button>
+              </Tooltip>
+              <Tooltip title="Event Information" arrow>
+                <Button
+                  variant='outlined'
+                  color='secondary'
+                  onClick={() => setInformationPopupOpen(true)}
+                >
+                  <InfoIcon />
+                </Button>
+              </Tooltip>
+            </div>
+          )}
           <Tooltip title="Help" arrow>
             <Button
               variant='outlined'
@@ -479,7 +487,7 @@ const Signup = () => {
                   <Button
                     className={classes.roleButton}
                     variant={"outlined"}
-                    style={{ marginBottom: "0.5rem", marginTop: "0.5rem" }}
+                    style={{ marginBottom: "0.5rem", marginTop: "0.5rem"}}
                     onClick={() => handleOpenVolunteerPopup(type)}
                   >
                     <AddRounded />
