@@ -11,21 +11,21 @@ import {
         Dialog,
         DialogTitle,
         DialogContent,
-        Typography
+        Typography,
+        Link
 } from "@material-ui/core";
 import AddRounded from "@mui/icons-material/AddRounded";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import SettingsIcon from '@mui/icons-material/Settings';
 import DownloadIcon from '@mui/icons-material/Download';
 import CalendarIcon from '@mui/icons-material/CalendarTodayOutlined';
 import InfoIcon from '@mui/icons-material/InfoOutlined';
-import ShareIcon from '@mui/icons-material/Share';
 import HelpIcon from '@mui/icons-material/HelpOutline';
 
 import VolunteerInfoPopup from 'components/VolunteerInfoPopup';
 import SignupEventPopup from 'components/SignupEventPopup';
 import VolunteerPopup from 'components/VolunteerSignupPopup';
+import SharePopup from 'components/SharePopup';
 import { exportToCSV } from 'helpers/csvExport';
 
 const useStyles = makeStyles((theme) => ({
@@ -93,7 +93,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Signup = () => {
   const router = useRouter();
-  const { location, event } = router.query;
+  const { location, event, selectedEventId } = router.query;
   const classes = useStyles();
   const { user } = useAuth();
   const [admins, setAdmins] = useState([]);
@@ -111,9 +111,35 @@ const Signup = () => {
   const [title, setTitle] = useState('');
 
   const [startIndex, setStartIndex] = useState(0);
-  const endIndex = startIndex + 5;
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const endIndex = Math.min(startIndex + itemsPerPage, events.length);
   const [volunteerInfo, setVolunteerInfo] = useState(null);
   const [openVolunteerInfoPopup, setOpenVolunteerInfoPopup] = useState(false);
+  const [sharePopupOpen, setSharePopupOpen] = useState(false);
+  const [shareLink, setShareLink] = useState('');
+
+  useEffect(() => {
+    const updateScreenSize = () => {
+      let newItemsPerPage;
+      if (window.innerWidth < 960) {
+        newItemsPerPage = 3;
+      } else if (window.innerWidth < 1170) {
+        newItemsPerPage = 4;
+      } else {
+        newItemsPerPage = 5;
+      }
+
+      if (newItemsPerPage !== itemsPerPage) {
+        setItemsPerPage(newItemsPerPage);
+      }
+    };
+    updateScreenSize();
+    window.addEventListener('resize', updateScreenSize);
+
+    return () => {
+      window.removeEventListener('resize', updateScreenSize);
+    };
+  }, []);
 
    // Loads Title
    useEffect(() => {
@@ -128,7 +154,6 @@ const Signup = () => {
         setTitle(documentSnapshot.data().Title);
       }
     };
-
     fetchData();
   }, [location, event]);
 
@@ -149,7 +174,13 @@ const Signup = () => {
 
       data.sort((a, b) => a.date - b.date);
       setEvents(data);
-      setSelectedEvent(data.length > 0 ? data[0] : null);
+
+      const selectedEventFromData = data.find((e) => e.id === selectedEventId);
+      if (selectedEventFromData) {
+        setSelectedEvent(selectedEventFromData);
+      } else {
+        setSelectedEvent(data.length > 0 ? data[0] : null);
+      }
     });
 
   return () => unsubscribe();
@@ -281,9 +312,6 @@ const Signup = () => {
 
   const handleEventAction = (action, eventData) => {
     if (action === 'add') {
-      const firebaseTimestamp = firebase.firestore.Timestamp.fromDate(eventData.date);
-
-      const eventDataWithTimestamp = { ...eventData, date: firebaseTimestamp };
       firebase.firestore().collection("" + location)
       .doc("" + event)
       .collection("signup")
@@ -293,7 +321,6 @@ const Signup = () => {
       });
       setSelectedEvent(eventData);
     } else if (action === 'edit') {
-// Add date validation
       firebase.firestore().collection("" + location)
       .doc("" + event)
       .collection("signup")
@@ -319,6 +346,12 @@ const Signup = () => {
     setOpenVolunteerInfoPopup(true);
   };
 
+  const generateShareLink = () => {
+    const link = `${window.location.origin}/${location}/${event}/signup?selectedEventId=${selectedEvent?.id}`;
+    setShareLink(link);
+    setSharePopupOpen(true);
+  };
+
   return (
     <div className={classes.root}>
       <h1 className={classes.title}>{title ? title : "Loading title..."}</h1>
@@ -328,13 +361,13 @@ const Signup = () => {
               <Button  
                 className={classes.arrowButton} 
                 variant={"outlined"}
-                onClick={() => setStartIndex(Math.max(startIndex - 1, 0))}>
+                onClick={() => setStartIndex(Math.max(startIndex - itemsPerPage, 0))}>
                 <ArrowBackIosNewIcon style={{color: '#333333', height: "20px"}}/>
               </Button>
           )}
           {events.slice(startIndex, endIndex).map(event => (
             <Button
-              key={event.date}
+              key={event.id}
               className={classes.headerButton}
               variant={selectedEvent && selectedEvent.id === event.id ? "contained" : "outlined"}
               color="primary"
@@ -342,14 +375,14 @@ const Signup = () => {
             >
               {new Date(event.date.seconds * 1000).toLocaleDateString('en-US')}
               <br/>  
-              {new Date(event.date.seconds * 1000).toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'})}
+              {new Intl.DateTimeFormat('en-US', {hour: '2-digit', minute: '2-digit', timeZoneName: 'short'}).format(new Date(event.date.seconds * 1000))}
             </Button>
           ))}
           {endIndex < events.length && (
               <Button 
                 className={classes.arrowButton} 
                 variant={"outlined"} 
-                onClick={() => setStartIndex(Math.min(startIndex + 1, events.length - 5))}
+                onClick={() => setStartIndex(startIndex + itemsPerPage)}
               >
                 <ArrowForwardIosIcon style={{color: '#333333', height: "20px"}}/>
               </Button>
@@ -367,7 +400,7 @@ const Signup = () => {
                     color='secondary'
                     onClick={() => handleOpenEventFormPopup('add', null)}
                   >
-                    <AddRounded />
+                    ADD
                   </Button>
                 </Tooltip>
                 {selectedEvent && (
@@ -378,7 +411,7 @@ const Signup = () => {
                         color='secondary'
                         onClick={() => handleOpenEventFormPopup('edit', selectedEvent)}
                       >
-                        <SettingsIcon />
+                        EDIT
                       </Button>
                     </Tooltip>
                     <Tooltip title="Download Event Information" arrow>
@@ -397,13 +430,14 @@ const Signup = () => {
         </div>
         <div style={{display: 'flex', gap: '15px' }}>
           {selectedEvent && (
-            <div>
-              <Tooltip title="share" arrow>
+            <>
+              <Tooltip title="Share link" arrow>
                 <Button
                   variant='outlined'
                   color='secondary'
+                  onClick={generateShareLink}
                 >
-                  <ShareIcon />
+                  Share
                 </Button>
               </Tooltip>
               <Tooltip title="Event Information" arrow>
@@ -415,7 +449,7 @@ const Signup = () => {
                   <InfoIcon />
                 </Button>
               </Tooltip>
-            </div>
+            </>
           )}
           <Tooltip title="Help" arrow>
             <Button
@@ -482,7 +516,7 @@ const Signup = () => {
                   </div>
                 ))
               )}
-              {selectedEvent.volunteers && (!selectedEvent.volunteers[type] || Object.keys(selectedEvent.volunteers[type]).length < Number(selectedEvent.volunteerQty[index])) && (
+              {selectedEvent.volunteers && (!selectedEvent.volunteers[type] || Object.keys(selectedEvent.volunteers[type]).length < Number(selectedEvent.volunteerQty[index])) ? (
                 <div key={index} color="#d5d5d5">
                   <Button
                     className={classes.roleButton}
@@ -491,6 +525,17 @@ const Signup = () => {
                     onClick={() => handleOpenVolunteerPopup(type)}
                   >
                     <AddRounded />
+                  </Button>
+                </div>
+              ):(
+                <div key={index} color="#d5d5d5">
+                  <Button
+                    className={classes.roleButton}
+                    variant={"outlined"}
+                    style={{ marginBottom: "0.5rem", marginTop: "0.5rem"}}
+                    disabled
+                  >
+                    FULL
                   </Button>
                 </div>
               )}
@@ -524,19 +569,32 @@ const Signup = () => {
       />
       {selectedEvent && (
         <Dialog open={informationPopupOpen} onClose={() => setInformationPopupOpen(false)}>
-          <DialogTitle>Event Information</DialogTitle>
+          <DialogTitle style={{ textAlign: 'center' }}>Event Information</DialogTitle>
           <DialogContent>
-            <div style={{marginBottom: '1rem', maxWidth: '600px', minWidth: '400px', wordWrap: 'break-word'}}>
+            <div style={{ marginBottom: '1rem', maxWidth: '600px', minWidth: '400px', wordWrap: 'break-word' }}>
               <Typography>
                 {selectedEvent.eventInformation}
               </Typography>
-              <br/>
+              <br />
               <Typography>
                 <b>Contact:</b> {selectedEvent.leadEmail}
               </Typography>
+              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1.5em' }}>
+                <Link href={event ? "/" + location + "/" + event : "/"} style={{ textDecoration: "none" }} target="_blank">
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                  >
+                    More Information
+                  </Button>
+                </Link>
+              </div>
             </div>
           </DialogContent>
         </Dialog>
+      )}
+      {sharePopupOpen && (
+        <SharePopup onClose={() => setSharePopupOpen(false)} link={shareLink} />
       )}
     </div>
   );
