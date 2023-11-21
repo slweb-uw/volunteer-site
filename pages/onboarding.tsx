@@ -86,8 +86,8 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
               </b>
             </Typography>
             <Typography paragraph>
-              Please contact Leonora Clarke,{" "}
-              <a href="mailto://clarkel@uw.edu">clarkel@uw.edu</a>.
+              Please contact the UWSOM Service Learning Team,{" "}
+              <a href="mailto://somserve@uw.edu">somserve@uw.edu</a>.
             </Typography>
             <Typography>
               <b>Non-UW Physicians (this includes VA and FQHC employees)</b>
