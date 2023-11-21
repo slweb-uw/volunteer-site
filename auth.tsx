@@ -2,31 +2,68 @@ import React, { useState, useEffect, useContext, createContext } from 'react';
 import nookies from 'nookies';
 import { firebaseClient } from './firebaseClient';
 
-const AuthContext = createContext<{ user: firebaseClient.User | null }>({
+const AuthContext = createContext<{
+  user: firebaseClient.User | null;
+  isAdmin: boolean;
+  isAuthorized: boolean;
+}>({
   user: null,
+  isAdmin: false,
+  isAuthorized: false,
 });
 
 export function AuthProvider({ children }: any) {
   const [user, setUser] = useState<firebaseClient.User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [admins, setAdmins] = useState([]);
+  const [authorizedUsers, setAuthorizedUsers] = useState([]); 
 
   useEffect(() => {
-    return firebaseClient.auth().onIdTokenChanged(async (user) => {
-      console.log(`auth changed`);
-      console.log(user ? user.uid : 'NO USER');
+    const fetchData = async () => {
+      const adminsSnapshot = await firebaseClient.firestore().collection('Admins').get();
+      const adminsData: any = adminsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      adminsData.sort((a: any, b: any) => (a.email > b.email ? 1 : -1));
+      setAdmins(adminsData);
+
+      const volunteersSnapshot = await firebaseClient.firestore().collection('Volunteers').get();
+      const authorizedUsersData: any = volunteersSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setAuthorizedUsers(authorizedUsersData);
+
+      const user = firebaseClient.auth().currentUser;
       if (!user) {
         setUser(null);
+        setIsAdmin(false);
+        setIsAuthorized(false);
         nookies.set(undefined, 'token', '', {});
         return;
       }
 
+      const adminCheck = adminsData.find((admin: any) => admin.email === user.email);
+      setIsAdmin(!!adminCheck);
+
+      const authorizedCheck = authorizedUsersData.some((authUser: any) => authUser.email === user.email) || (user.email && !user.email.endsWith("@uw.edu"));
+      console.log(isAdmin);
+      setIsAuthorized(authorizedCheck || isAdmin);
+
       const token = await user.getIdToken();
       setUser(user);
       nookies.set(undefined, 'token', token, {});
+    };
+
+    const unsubscribe = firebaseClient.auth().onIdTokenChanged(() => {
+      fetchData();
     });
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ user, isAdmin, isAuthorized }}>
+      {children}
+    </AuthContext.Provider>
   );
 }
 

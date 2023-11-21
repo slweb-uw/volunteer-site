@@ -95,11 +95,7 @@ const Signup = () => {
   const router = useRouter();
   const { location, event, selectedEventId } = router.query;
   const classes = useStyles();
-  const { user } = useAuth();
-  const [admins, setAdmins] = useState([]);
-  const [authorizedUsers, setAuthorizedUsers] = useState([]);
-  const [isAuthorized, setIsAuthorized] = useState(true);
-  const [authComplete, setAuthComplete] = useState(false);
+  const { user, isAdmin, isAuthorized } = useAuth();
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [editedEvent, setEditedEvent] = useState(null);
@@ -190,52 +186,7 @@ const Signup = () => {
     fetchData();
   }, [location, event]);
 
-  // Authentication
-  const isAdmin = admins.find((admin) => admin.email === user?.email);
-  useEffect(() => {
-    const adminsUnsubscribe  = firebase.
-    firestore()
-    .collection("Admins")
-    .onSnapshot((snapshot) => {
-      const adminsData = [];
-      snapshot.forEach((doc) => {
-        adminsData.push({id: doc.id, ...doc.data() });
-      });
-      adminsData.sort((a, b) => (a.email > b.email ? 1 : -1));
-      setAdmins(adminsData);
-    });
-
-    const volunteersUnsubscribe = firebase
-    .firestore()
-    .collection("Volunteers")
-    .onSnapshot((snapshot) => {
-      const userData = [];
-      snapshot.forEach((doc) => {
-        userData.push({ id: doc.id, ...doc.data() });
-      });
-      setAuthorizedUsers(userData);
-    });
-
-    return () => {
-      adminsUnsubscribe();
-      volunteersUnsubscribe();
-    };
-  }, []);
-
-  useEffect(() => {
-    setIsAuthorized(true);
-    if (!user || (!user.email.endsWith("@uw.edu") && !authorizedUsers.some(u => u.email === user.email) && !isAdmin)) {
-      setIsAuthorized(false);
-    }
-
-    setAuthComplete(true);
-  }, [user, authorizedUsers]);
-
-  if (!authComplete) {
-    return <div>Loading...</div>;
-  }
-
-  if (!isAuthorized) {
+  if (!isAdmin && !isAuthorized) {
     return (
       <div className={classes.root}>
         <div className={classes.message}>

@@ -34,7 +34,7 @@ type EventsProps = {
 const Events: React.FC<EventsProps> = ({
   location, classes
 }) => {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const router = useRouter();
 
   const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
@@ -174,25 +174,6 @@ const Events: React.FC<EventsProps> = ({
         console.error("Error loading events: " + err);
       });*/
   }, [organizationFilter, studentTypeFilter])
-
-
-  // Admin Authentication
-  const [admins, setAdmins] = useState([]);
-  useEffect(() => {
-    const fetchAdmins = async () => {
-      try {
-        const snapshot = await firebase.firestore().collection("Admins").get();
-        const adminsData = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setAdmins(adminsData);
-      } catch (error) {
-        console.error("Error fetching admins", error);
-      }
-    };
-  
-    fetchAdmins();
-  }, []);
-
-  const isAdmin = admins.find((admin) => admin.email === user?.email);
 
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'));
 

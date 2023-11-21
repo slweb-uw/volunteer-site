@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { useAuth } from "auth";
 import { firebaseClient } from "../../firebaseClient";
 import React, { useState, useEffect } from "react";
 import { NextPage } from "next";
@@ -119,10 +120,8 @@ const RichEventField: React.FC<RichEventFieldProps> = ({
 
 const Event: NextPage<Props> = ({ classes }) => {
   const router = useRouter();
+  const { isAdmin } = useAuth();
   const { event, location } = router.query; // current event id and location
-
-  // const [data, setData] = useState({});
-
   const [eventData, setEventData] = useState<EventData>();
 
   useEffect(() => {
@@ -141,8 +140,6 @@ const Event: NextPage<Props> = ({ classes }) => {
     // setData(next.data() as any);
     setEventData(next.data() as EventData);
   };
-
-
 
   const options = { year: "numeric", month: "long", day: "numeric" };
 
@@ -200,7 +197,8 @@ const Event: NextPage<Props> = ({ classes }) => {
             value={eventData["Types of Volunteers Needed"] ? naturalJoin(eventData["Types of Volunteers Needed"]) : undefined}
             removeTopMargin={true}
           />
-          <Link href={`/${location}/${eventData.id}/signup`}>
+          { isAdmin && (
+            <Link href={`/${location}/${eventData.id}/signup`}>
               <Button
                 color="primary"
                 variant="contained"
@@ -208,7 +206,9 @@ const Event: NextPage<Props> = ({ classes }) => {
               >
                 Sign up
               </Button>
-          </Link>
+            </Link>
+          )}
+         
         </Grid>
       </Grid>
 

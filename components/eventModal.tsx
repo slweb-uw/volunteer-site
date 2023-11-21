@@ -108,25 +108,7 @@ export default function EventModal(props: {
 
   let eventLink = event ?  "/" + location + "/" + event.id : "/";
 
-  const { user } = useAuth();
-
-  // Admin Authentication
-  const [admins, setAdmins] = useState([]);
-  useEffect(() => {
-    const fetchAdmins = async () => {
-      try {
-        const snapshot = await firebase.firestore().collection("Admins").get();
-        const adminsData = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setAdmins(adminsData);
-      } catch (error) {
-        console.error("Error fetching admins", error);
-      }
-    };
-  
-    fetchAdmins();
-  }, []);
-
-  const isAdmin = admins.find((admin) => admin.email === user?.email);
+  const { isAdmin } = useAuth();
 
   return (
     <Dialog
@@ -174,7 +156,8 @@ export default function EventModal(props: {
               </div>
             )}
             <div style={{ marginTop: "2em" }}>
-            <Link href={event ? `/${location}/${event.id}/signup` : "/"}>
+            { isAdmin && (
+              <Link href={event ? `/${location}/${event.id}/signup` : "/"}>
                   <Button
                     color="primary"
                     variant="contained"
@@ -183,6 +166,7 @@ export default function EventModal(props: {
                     Sign up
                   </Button>
               </Link>
+            )}
               <Link href={eventLink} style={{ textDecoration: "none" }} target="_blank">
                 <Button
                   onClick={handleClose}

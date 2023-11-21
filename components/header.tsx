@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Hidden from "@material-ui/core/Hidden";
 import { firebaseClient } from "firebaseClient";
 import { useAuth } from "auth";
 import BasicMenu from "./basicMenu";
 import { makeStyles } from "@material-ui/core/styles";
-import firebase from "firebase/app";
 import "firebase/firestore";
 
 const useStyles = makeStyles((theme) => ({
@@ -85,26 +84,8 @@ const useStyles = makeStyles((theme) => ({
 
 const Divider = () => <span className={useStyles().divider}>/</span>;
 
-
-
 const Header: React.FC<{}> = (props) => {
-  const { user } = useAuth();
-  const [admins, setAdmins] = useState([]);
-
-  useEffect(() => {
-    const fetchAdmins = async () => {
-      try {
-        const snapshot = await firebase.firestore().collection("Admins").get();
-        const adminsData = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setAdmins(adminsData);
-      } catch (error) {
-        console.error("Error fetching admins", error);
-      }
-    };
-  
-    fetchAdmins();
-  }, []);
-  const isAdmin = admins.find((admin) => admin.email === user?.email);
+  const { user, isAdmin } = useAuth();
 
   const links: React.ReactNode[] = [
       <a  href="/" className={useStyles().navtitle} tabIndex={0}>Home</a>,
@@ -161,7 +142,6 @@ const Header: React.FC<{}> = (props) => {
         </a>
     ),
   ];
-
 
   return (
     <div className={useStyles().root}>
