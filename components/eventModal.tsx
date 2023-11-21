@@ -108,25 +108,7 @@ export default function EventModal(props: {
 
   let eventLink = event ?  "/" + location + "/" + event.id : "/";
 
-  const { user } = useAuth();
-
-  // Admin Authentication
-  const [admins, setAdmins] = useState([]);
-  useEffect(() => {
-    const fetchAdmins = async () => {
-      try {
-        const snapshot = await firebase.firestore().collection("Admins").get();
-        const adminsData = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setAdmins(adminsData);
-      } catch (error) {
-        console.error("Error fetching admins", error);
-      }
-    };
-  
-    fetchAdmins();
-  }, []);
-
-  const isAdmin = admins.find((admin) => admin.email === user?.email);
+  const { isAdmin } = useAuth();
 
   return (
     <Dialog
@@ -174,6 +156,17 @@ export default function EventModal(props: {
               </div>
             )}
             <div style={{ marginTop: "2em" }}>
+            { isAdmin && (
+              <Link href={event ? `/${location}/${event.id}/signup` : "/"}>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    style={{ marginRight: "1em" }}
+                  >
+                    Sign up
+                  </Button>
+              </Link>
+            )}
               <Link href={eventLink} style={{ textDecoration: "none" }} target="_blank">
                 <Button
                   onClick={handleClose}
@@ -184,23 +177,6 @@ export default function EventModal(props: {
                   Learn more
                 </Button>
               </Link>
-              {/*
-              {event?.["Sign-up Link"] &&
-                typeof event?.["Sign-up Link"] === "string" && (
-                  <a
-                    href={event?.["Sign-up Link"]}
-                    style={{ textDecoration: "none" }}
-                  >
-                    <Button
-                      onClick={handleClose}
-                      color="secondary"
-                      variant="contained"
-                    >
-                      Sign-up Link
-                    </Button>
-                  </a>
-                )}
-              */}
               {isAdmin && (
                   <div style={{ paddingBottom: "2em", paddingTop: "2em" }}>
                     <div style={{ display: "inline-block" }}>

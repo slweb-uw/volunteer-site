@@ -11,7 +11,7 @@ import { withSnackbar } from "notistack";
 import IconBreadcrumbs from "components/breadcrumbs";
 import LocationSelector from "../../components/locationSelector";
 import { useRouter } from "next/router";
-import Events from "../../components/events";
+import Events from "../events";
 import { DEFAULT_LOCATION, LAST_LOCATION_KEY, Location, setLocation } from "../../helpers/locations";
 
 interface Props {

@@ -13,14 +13,14 @@ import Stack from '@mui/material/Stack';
 import Grid from '@mui/material/Grid';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import Tooltip from '@material-ui/core/Tooltip';
-import EventModal from "./eventModal";
-import BootstrapInput from "./bootstrapInput";
+import EventModal from "../components/eventModal";
+import BootstrapInput from "../components/bootstrapInput";
 import Link from "next/link";
-import AddModifyEventModal from "./addModifyEventModal";
-import EventCard from "./eventCard";
+import AddModifyEventModal from "../components/addModifyEventModal";
+import EventCard from "../components/eventCard";
 import { useAuth } from "../auth";
 import { Location } from "../helpers/locations"
-import { volunteerTypes } from "./addModifyEventModal";
+import { volunteerTypes } from "../components/addModifyEventModal";
 import { CollectionReference, Query } from "@firebase/firestore-types";
 import {useRouter} from "next/router";
 import { useMediaQuery } from '@material-ui/core';
@@ -34,7 +34,7 @@ type EventsProps = {
 const Events: React.FC<EventsProps> = ({
   location, classes
 }) => {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const router = useRouter();
 
   const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
@@ -174,25 +174,6 @@ const Events: React.FC<EventsProps> = ({
         console.error("Error loading events: " + err);
       });*/
   }, [organizationFilter, studentTypeFilter])
-
-
-  // Admin Authentication
-  const [admins, setAdmins] = useState([]);
-  useEffect(() => {
-    const fetchAdmins = async () => {
-      try {
-        const snapshot = await firebase.firestore().collection("Admins").get();
-        const adminsData = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setAdmins(adminsData);
-      } catch (error) {
-        console.error("Error fetching admins", error);
-      }
-    };
-  
-    fetchAdmins();
-  }, []);
-
-  const isAdmin = admins.find((admin) => admin.email === user?.email);
 
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'));
 

@@ -74,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
     margin: "20px 0",
   },
   message: {
-    display: 'block', 
+    display: 'flex', 
     justifyContent: 'center', 
     alignItems: 'center', 
     fontWeight: 600,
@@ -260,7 +260,6 @@ const AdminPage = () => {
             </Button>
             : ""
           }
-          
           <a href="/">
             <Button
               className={classes.headerButton}
@@ -270,7 +269,6 @@ const AdminPage = () => {
               Return
             </Button>
           </a>
-          
         </div>
       </div>
     );
@@ -301,7 +299,7 @@ const AdminPage = () => {
             color="primary"
             onClick={() => handleSectionChange("volunteers")}
           >
-            Volunteers
+            Non-UW Preceptors
           </Button>
         </div>
         <Button style={{marginLeft: "auto"}} onClick={openHelpDialog}>
@@ -397,16 +395,13 @@ const AdminPage = () => {
       <DialogTitle>User Manager Guide</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          The User Manager Interface provides a platform for listing and managing the two types of users: <b>Admins</b> and <b>Volunteers</b>.
+          The User Manager Interface provides a platform for listing and managing the two types of users: <b>Admins</b> and <b>Non-UW Preceptors</b>.
         </DialogContentText>
         <DialogContentText>
           <b>Admins</b> have special privileges, allowing them to create, edit, and remove events.
         </DialogContentText>
         <DialogContentText>
-          <b>Volunteers</b> are users with non-UW email addresses who have access to volunteer for events.
-        </DialogContentText>
-        <DialogContentText style={{ fontSize: 'small' }}>
-          * UW emails can still signup for opportunities and <b>do not</b> need to be listed as Volunteers.
+          <b>Non-UW Preceptors</b> are users with non-UW email addresses who have access to volunteer for events.
         </DialogContentText>
       </DialogContent>
       <DialogActions>

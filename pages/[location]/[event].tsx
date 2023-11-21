@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { useAuth } from "auth";
 import { firebaseClient } from "../../firebaseClient";
 import React, { useState, useEffect } from "react";
 import { NextPage } from "next";
@@ -18,7 +19,7 @@ import EventDescription from "../../components/eventDescription";
 import RichTextField from "../../components/richTextField";
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-
+import Link from "next/link";
 interface Props {
   classes?: any;
 }
@@ -119,10 +120,8 @@ const RichEventField: React.FC<RichEventFieldProps> = ({
 
 const Event: NextPage<Props> = ({ classes }) => {
   const router = useRouter();
+  const { isAdmin } = useAuth();
   const { event, location } = router.query; // current event id and location
-
-  // const [data, setData] = useState({});
-
   const [eventData, setEventData] = useState<EventData>();
 
   useEffect(() => {
@@ -141,8 +140,6 @@ const Event: NextPage<Props> = ({ classes }) => {
     // setData(next.data() as any);
     setEventData(next.data() as EventData);
   };
-
-
 
   const options = { year: "numeric", month: "long", day: "numeric" };
 
@@ -200,21 +197,18 @@ const Event: NextPage<Props> = ({ classes }) => {
             value={eventData["Types of Volunteers Needed"] ? naturalJoin(eventData["Types of Volunteers Needed"]) : undefined}
             removeTopMargin={true}
           />
-
-          {/* ------------------ Sign up link ------------------
-          <Grid item>
-            <Button
-              autoFocus
-              color="secondary"
-              variant="contained"
-              style={{ marginRight: "1em", marginBottom: "2em" }}
-              href={eventData["Sign-up Link"]}
-              disabled={!eventData["Sign-up Link"]}
-            >
-              {buttonText}
-            </Button>
-          </Grid>
-          */}
+          { isAdmin && (
+            <Link href={`/${location}/${eventData.id}/signup`}>
+              <Button
+                color="primary"
+                variant="contained"
+                style={{ marginRight: "1em" }}
+              >
+                Sign up
+              </Button>
+            </Link>
+          )}
+         
         </Grid>
       </Grid>
 
