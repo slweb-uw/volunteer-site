@@ -79,8 +79,8 @@ const Communitypartners: NextPage<Props> = ({ classes }) => {
               <Typography style={{ fontSize: 16, marginTop: "20px",  fontFamily: "Open sans"  }}>
                 To learn more about what students are working on now,{" "}
                 <a href="/opportunities">click here</a>. If you have an idea for a
-                future program, please contact Leonora Clarke,{" "}
-                <a href="mailto://clarkel@uw.edu">clarkel@uw.edu</a>.
+                future program, please contact the UWSOM Service Learning Team,{" "}
+                <a href="mailto://somserve@uw.edu">somserve@uw.edu</a>.
               </Typography>
             </Typography>
           </div>
