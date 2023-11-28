@@ -116,8 +116,12 @@ const Signup = () => {
 
   useEffect(() => {
     const updateScreenSize = () => {
-      let newItemsPerPage;
-      if (window.innerWidth < 960) {
+      let newItemsPerPage: any;
+      if (window.innerWidth < 500) {
+        newItemsPerPage = 1;
+      } else if (window.innerWidth < 655) {
+        newItemsPerPage = 2;
+      } else if (window.innerWidth < 960) {
         newItemsPerPage = 3;
       } else if (window.innerWidth < 1170) {
         newItemsPerPage = 4;
@@ -125,13 +129,16 @@ const Signup = () => {
         newItemsPerPage = 5;
       }
 
-      if (newItemsPerPage !== itemsPerPage) {
-        setItemsPerPage(newItemsPerPage);
-      }
+      setItemsPerPage((prevItemsPerPage) => {
+        if (newItemsPerPage !== prevItemsPerPage) {
+          return newItemsPerPage;
+        }
+        return prevItemsPerPage;
+      });
     };
+  
     updateScreenSize();
     window.addEventListener('resize', updateScreenSize);
-
     return () => {
       window.removeEventListener('resize', updateScreenSize);
     };

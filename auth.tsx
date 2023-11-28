@@ -43,7 +43,6 @@ export function AuthProvider({ children }: any) {
       setIsAdmin(!!adminCheck);
 
       const authorizedCheck = authorizedUsersData.some((authUser: any) => authUser.email === user.email) || (user.email && !user.email.endsWith("@uw.edu"));
-      console.log(isAdmin);
       setIsAuthorized(authorizedCheck || isAdmin);
 
       const token = await user.getIdToken();
