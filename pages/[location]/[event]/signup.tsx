@@ -43,6 +43,9 @@ const useStyles = makeStyles((theme) => ({
     margin: "0 auto",
     marginTop : "2rem",
     marginBottom: theme.spacing(6),
+    '@media (max-width: 800px)': {
+      maxWidth: "90%",
+    },
   },
   headerButton: {
     margin: theme.spacing(0, 3),
@@ -116,22 +119,30 @@ const Signup = () => {
 
   useEffect(() => {
     const updateScreenSize = () => {
-      let newItemsPerPage;
-      if (window.innerWidth < 960) {
+      let newItemsPerPage: any;
+      if (window.innerWidth < 500) {
+        newItemsPerPage = 1;
+      } else if (window.innerWidth < 655) {
+        newItemsPerPage = 2;
+      } else if (window.innerWidth < 960) {
         newItemsPerPage = 3;
       } else if (window.innerWidth < 1170) {
         newItemsPerPage = 4;
       } else {
         newItemsPerPage = 5;
       }
-
-      if (newItemsPerPage !== itemsPerPage) {
-        setItemsPerPage(newItemsPerPage);
-      }
+  
+      setItemsPerPage((prevItemsPerPage) => {
+        if (newItemsPerPage !== prevItemsPerPage) {
+          return newItemsPerPage;
+        }
+        return prevItemsPerPage;
+      });
     };
+  
     updateScreenSize();
     window.addEventListener('resize', updateScreenSize);
-
+  
     return () => {
       window.removeEventListener('resize', updateScreenSize);
     };
