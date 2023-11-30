@@ -54,7 +54,7 @@ const VolunteerPopup = ({ open, handleClose, email, uid, addVolunteer, onDeleteV
     const [studentDiscipline, setStudentDiscipline] = useState('');
     const [certified, setCertified] = useState(false);
     const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
-
+    
     useEffect(() => {
       if (volunteer) {
         setFirstName(volunteer.firstName || '');
@@ -115,7 +115,7 @@ const VolunteerPopup = ({ open, handleClose, email, uid, addVolunteer, onDeleteV
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle className={classes.title}>Signup</DialogTitle>
       <DialogContent>
-        <Typography style={{ marginRight: '15px', fontStyle: 'italic' }}>
+        <Typography style={{ marginRight: '15px', fontStyle: 'italic', fontSize: "0.8rem" }}>
           (*) Required fields
         </Typography>
         <TextField
