@@ -115,6 +115,9 @@ const VolunteerPopup = ({ open, handleClose, email, uid, addVolunteer, onDeleteV
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle className={classes.title}>Signup</DialogTitle>
       <DialogContent>
+        <Typography style={{ marginRight: '15px', fontStyle: 'italic' }}>
+          (*) Required fields
+        </Typography>
         <TextField
         label="Email"
         value={email}
