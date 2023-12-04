@@ -51,10 +51,11 @@ const useStyles = makeStyles((theme) => ({
   },
   roleButton : {
     margin: theme.spacing(0, 3),
-    minWidth: 150, 
+    width: 150, 
     flexGrow: 1,
-    height: 50,
+    minHeight: 50,
     borderRadius: "15",
+    whiteSpace: 'normal',
     "&.Mui-disabled": {
       color: "#333333",
       display: "flex",

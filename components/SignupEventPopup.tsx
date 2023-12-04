@@ -24,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction }) => {
+    const MAX_ROLE_NAME_LENGTH = 30;
     const classes = useStyles();
     const [date, setDate] = useState('');
     const [volunteerData, setVolunteerData] = useState([]);
@@ -84,15 +85,19 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
     };
 
     const handleVolunteerTypeChange = (index, value) => {
-        setVolunteerData(prevData => {
-            const newData = [...prevData];
-            newData[index].type = value;
-            return newData;
-        });
+        if (value.length <= MAX_ROLE_NAME_LENGTH) {
+            setVolunteerData(prevData => {
+                const newData = [...prevData];
+                newData[index].type = value;
+                return newData;
+            });
+        } else {
+            alert(`Role name must be ${MAX_ROLE_NAME_LENGTH} characters or fewer.`);
+        }
     };
 
     const handleVolunteerQtyChange = (index, value) => {
-        value = Math.max(1, parseInt(value) || 1).toString();
+        value = value === '' ? '' : Math.max(0, parseInt(value) || 0).toString();
         setVolunteerData(prevData => {
             const newData = [...prevData];
             newData[index].qty = value;
@@ -132,6 +137,14 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
             return;
         }
         const hasEmptyFields = volunteerData.some(item => item.type === '' || item.qty === '');
+
+        const selectedDate = new Date(date);
+        const currentDate = new Date();
+
+        if (selectedDate <= currentDate) {
+            alert('Please select a future date for the event.');
+            return;
+        }
 
         if (hasEmptyFields) {
             alert('Please fill in all Volunteer Role and Quantity fields.');
