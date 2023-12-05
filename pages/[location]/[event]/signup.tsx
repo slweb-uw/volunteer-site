@@ -116,6 +116,22 @@ const Signup = () => {
   const [shareLink, setShareLink] = useState('');
 
   useEffect(() => {
+    if (selectedEventId && events.length > 0) {
+      const selectedEventFromData = events.find((e) => e.id === selectedEventId);
+      if (selectedEventFromData) {
+        setSelectedEvent(selectedEventFromData);
+      }
+    }
+  }, [selectedEventId, events]);
+
+  useEffect(() => {
+    if (selectedEvent) {
+      const link = `${window.location.origin}/${location}/${event}/signup?selectedEventId=${selectedEvent?.id}`;
+      window.history.pushState({}, '', link);
+    }
+  }, [selectedEvent, location, event]);
+
+  useEffect(() => {
     const updateScreenSize = () => {
       let newItemsPerPage: any;
       if (window.innerWidth < 500) {
@@ -147,7 +163,7 @@ const Signup = () => {
 
    // Loads Title
    useEffect(() => {
-    const fetchData = async () => {
+    const fetchTitle= async () => {
       const documentSnapshot = await firebase
         .firestore()
         .collection("" + location)
@@ -158,7 +174,7 @@ const Signup = () => {
         setTitle(documentSnapshot.data().Title);
       }
     };
-    fetchData();
+    fetchTitle();
   }, [location, event]);
 
   // Retrieves the events
@@ -225,9 +241,6 @@ const Signup = () => {
       .doc("" + selectedEvent?.id)
       .update({
         [`volunteers.${selectedRole}.${volunteerData.uid}`]: volunteerData
-      })
-      .then(() => {
-        fetchData();
       });
 
       handleCloseVolunteerPopup();
@@ -249,9 +262,6 @@ const Signup = () => {
           .doc(eventId)
           .update({
             [`volunteers.${selectedRole}.${uid}`]: firebase.firestore.FieldValue.delete()
-          })
-          .then(() => {
-            fetchData();
           });
       }
     }
@@ -266,6 +276,12 @@ const Signup = () => {
   
   const handleOpenEventFormPopup = (mode, event) => {
     setEditedEvent(event);
+    if(mode === 'edit'){
+      router.push({
+        pathname: router.pathname,
+        query: { ...router.query, selectedEventId: event.id },
+      });
+    }
     setOpenEventFormPopup(true);
   };
 
@@ -275,27 +291,21 @@ const Signup = () => {
       .doc("" + event)
       .collection("signup")
       .doc(eventData.id)
-      .set(eventData).then(() => {
-        fetchData();
-      });
+      .set(eventData);
       setSelectedEvent(eventData);
     } else if (action === 'edit') {
       firebase.firestore().collection("" + location)
       .doc("" + event)
       .collection("signup")
       .doc(eventData.id)
-      .set(eventData).then(() => {
-        fetchData();
-      });
-      setSelectedEvent(events.find((e) => e.id === eventData.id));
+      .set(eventData);
+      setSelectedEvent(eventData);
     } else if (action === 'delete') {
       firebase.firestore().collection("" + location)
       .doc("" + event)
       .collection("signup")
       .doc(eventData.id)
-      .delete().then(() => {
-        fetchData();
-      });
+      .delete();
       setSelectedEvent(null); 
     }
   };
