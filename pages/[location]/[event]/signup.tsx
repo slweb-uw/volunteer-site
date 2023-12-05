@@ -120,6 +120,11 @@ const Signup = () => {
       const selectedEventFromData = events.find((e) => e.id === selectedEventId);
       if (selectedEventFromData) {
         setSelectedEvent(selectedEventFromData);
+        const selectedIndex = events.findIndex((e) => e.id === selectedEvent.id);
+        if (selectedIndex !== -1) {
+          const page = Math.floor(selectedIndex / itemsPerPage);
+          setStartIndex(page * itemsPerPage);
+        }
       }
     }
   }, [selectedEventId, events]);
@@ -287,12 +292,14 @@ const Signup = () => {
 
   const handleEventAction = (action, eventData) => {
     if (action === 'add') {
+      eventData.date = firebase.firestore.Timestamp.fromDate(eventData.date);
       firebase.firestore().collection("" + location)
       .doc("" + event)
       .collection("signup")
       .doc(eventData.id)
-      .set(eventData);
-      setSelectedEvent(eventData);
+      .set(eventData).then(() => {
+        setSelectedEvent(eventData); 
+      });
     } else if (action === 'edit') {
       firebase.firestore().collection("" + location)
       .doc("" + event)
