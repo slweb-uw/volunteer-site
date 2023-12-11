@@ -86,8 +86,8 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
               </b>
             </Typography>
             <Typography paragraph>
-              Please contact Leonora Clarke,{" "}
-              <a href="mailto://clarkel@uw.edu">clarkel@uw.edu</a>.
+              Please contact the UWSOM Service Learning Team,{" "}
+              <a href="mailto://somserve@uw.edu">somserve@uw.edu</a>.
             </Typography>
             <Typography>
               <b>Non-UW Physicians (this includes VA and FQHC employees)</b>
@@ -168,8 +168,8 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
             <Typography>
               Please contact your insurance company/employer to find out if you
               are covered for service learning activities. If your coverage does
-              not extend to this activity, contact Leonora Clarke,{" "}
-              <a href="mailto://clarkel@uw.edu">clarkel@uw.edu</a>.
+              not extend to this activity, contact the UWSOM Service Learning Team,{" "}
+              <a href="mailto://somserve@uw.edu">somserve@uw.edu</a>.
             </Typography>
           </div>
         </AccordionDetails>

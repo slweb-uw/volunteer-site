@@ -17,7 +17,7 @@ const ServiceLearningPage: NextPage<Props> = ({ classes }) => {
     <div className={classes.page}>
       <CssBaseline />
       <IconBreadcrumbs
-        crumbs={["Required Training", "Foundations of Service Learning"]}
+        crumbs={["Onboarding", "Foundations of Service Learning"]}
         parentURL={undefined}
       />
       <Typography
