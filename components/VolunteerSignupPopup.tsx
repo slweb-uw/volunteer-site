@@ -113,7 +113,7 @@ const VolunteerPopup = ({ open, handleClose, email, uid, addVolunteer, onDeleteV
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle className={classes.title}>Signup</DialogTitle>
+      <DialogTitle className={classes.title}>Volunteer Information</DialogTitle>
       <DialogContent>
         <Typography style={{ marginRight: '15px', fontStyle: 'italic', fontSize: "0.8rem" }}>
           (*) Required fields
@@ -189,7 +189,7 @@ const VolunteerPopup = ({ open, handleClose, email, uid, addVolunteer, onDeleteV
           control={<Checkbox color="primary" checked={certified} onChange={(e) => setCertified(e.target.checked)} style={{transform: 'scale(0.8)', marginTop: "0rem", paddingTop: "0", verticalAlign: "top"}}/>}
           label={
             <span style={{ fontSize: 'small', transform: 'scale(0.8)'}}>
-                I certify that I will complete the required <a href="https://canvas.uw.edu/courses/1693188/pages/training-modules?module_item_id=18595279" target='blank'>Trainings</a> and
+                I certify that I will complete the required <a href="https://canvas.uw.edu/courses/1693188/pages/training-modules?module_item_id=18595279" target='blank'>Training</a> and
                 the review appropriate <a href="https://canvas.uw.edu/courses/1693188/pages/protocols?module_item_id=18595280" target='blank'>Protocols</a> (see project details page for specifics).
                 <span style={{color: "red"}}>*</span>
             </span>
@@ -202,12 +202,12 @@ const VolunteerPopup = ({ open, handleClose, email, uid, addVolunteer, onDeleteV
                 Withdraw
               </Button>
               <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isSubmitDisabled}>
-              Submit
+              Save
               </Button>
             </>
             ):(
               <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isSubmitDisabled}>
-                Submit
+                Signup
               </Button>
             )} 
         </div>

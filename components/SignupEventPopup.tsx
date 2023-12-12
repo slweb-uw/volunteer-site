@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import 'react-quill/dist/quill.snow.css';
 
 const useStyles = makeStyles((theme) => ({
     title: {
@@ -33,6 +34,10 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
     const [eventInformation, setEventInformation] = useState('');
     const [eventData, setEventData] = useState(null);
     const handleDateChange = (event) => setDate(event.target.value);
+
+    useEffect(() => {
+        const ReactQuill = require('react-quill');
+      }, []);
 
     useEffect(() => {
         if (mode === 'edit' && event) {
@@ -82,6 +87,10 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
             handleEventAction('delete', eventDataToDelete);
         }
         handleClose();
+    };
+
+    const handleEventInformationChange = (value) => {
+        setEventInformation(value);
     };
 
     const handleVolunteerTypeChange = (index, value) => {
@@ -239,14 +248,12 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
                 fullWidth
                 margin="normal"
             />
-            <TextField
-                label="Event Information"
-                value={eventInformation}
-                onChange={(e) => setEventInformation(e.target.value)}
-                fullWidth
-                multiline
-                minRows={4}
-                margin="normal"
+           <ReactQuill
+                 theme="snow"
+                 value={eventInformation}
+                 onChange={handleEventInformationChange}
+                 placeholder="Enter event information..."
+                 style={{ marginBottom: '1rem' }}
             />
             <div className={classes.buttonContainer}>
             {mode === 'edit' && (

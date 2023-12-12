@@ -204,7 +204,16 @@ const Signup = () => {
       if (selectedEventFromData) {
         setSelectedEvent(selectedEventFromData);
       } else {
-        setSelectedEvent(data.length > 0 ? data[0] : null);
+        const now = new Date();
+          const oneWeekAgo = new Date(now);
+          oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+          const firstEventWithinWeek = data.find((event) => {
+            const eventDate = new Date(event.date.seconds * 1000);
+            return eventDate >= oneWeekAgo;
+          });
+
+          setSelectedEvent(firstEventWithinWeek);
       }
     });
 
@@ -235,6 +244,10 @@ const Signup = () => {
     setSelectedRole('');
     setOpenVolunteerPopup(false);
     setEditedVolunteer(null);
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, selectedEventId: selectedEvent?.id },
+    });
   };
 
   const handleAddVolunteer = (volunteerData) => {
@@ -246,15 +259,21 @@ const Signup = () => {
       .doc("" + selectedEvent?.id)
       .update({
         [`volunteers.${selectedRole}.${volunteerData.uid}`]: volunteerData
+      }).then(() => {
+        handleCloseVolunteerPopup();
       });
-
-      handleCloseVolunteerPopup();
     }
   };
 
-  const handleDeleteVolunteer = (volunteer) => {
+  const handleDeleteVolunteer = (volunteer, mode: String) => {
     if (selectedRole) {
-      const isConfirmed = window.confirm("Are you sure you want to withdraw from this role?");
+      let message = "Are you sure you want to withdraw from this role?";
+
+      if(mode === "remove"){
+        message = "Are you sure you want to remove this volunteer?";
+      }
+
+      const isConfirmed = window.confirm(message);
 
       if (isConfirmed) {
         const eventId = selectedEvent?.id;
@@ -267,10 +286,12 @@ const Signup = () => {
           .doc(eventId)
           .update({
             [`volunteers.${selectedRole}.${uid}`]: firebase.firestore.FieldValue.delete()
+          }).then(() => {
+            handleCloseVolunteerPopup();
+            handleCloseVolunteerInfoPopup();
           });
       }
     }
-    handleCloseVolunteerPopup();
   };
 
   const handleEditVolunteer = (volunteer, type) => {
@@ -317,9 +338,15 @@ const Signup = () => {
     }
   };
 
-  const handleOpenVolunteerInfoPopup = (user) => {
+  const handleOpenVolunteerInfoPopup = (user, type) => {
     setVolunteerInfo(user);
+    setSelectedRole(type);
     setOpenVolunteerInfoPopup(true);
+  };
+
+  const handleCloseVolunteerInfoPopup = () => {
+    setVolunteerInfo(null);
+    setOpenVolunteerInfoPopup(false);
   };
 
   const generateShareLink = () => {
@@ -341,19 +368,30 @@ const Signup = () => {
                 <ArrowBackIosNewIcon style={{color: '#333333', height: "20px"}}/>
               </Button>
           )}
-          {events.slice(startIndex, endIndex).map(event => (
-            <Button
-              key={event.id}
-              className={classes.headerButton}
-              variant={selectedEvent && selectedEvent.id === event.id ? "contained" : "outlined"}
-              color="primary"
-              onClick={() => setSelectedEvent(event)}
-            >
-              {new Date(event.date.seconds * 1000).toLocaleDateString('en-US')}
-              <br/>  
-              {new Intl.DateTimeFormat('en-US', {hour: '2-digit', minute: '2-digit', timeZoneName: 'short'}).format(new Date(event.date.seconds * 1000))}
-            </Button>
-          ))}
+          
+          {events
+            .filter(event => {
+              const now = new Date();
+              const eventDate = new Date(event.date.seconds * 1000);
+              const oneWeekAgo = new Date(now);
+              oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+              return eventDate >= oneWeekAgo;
+            })
+            .slice(startIndex, endIndex)
+            .map(event => (
+              <Button
+                key={event.id}
+                className={classes.headerButton}
+                variant={selectedEvent && selectedEvent.id === event.id ? "contained" : "outlined"}
+                color="primary"
+                onClick={() => setSelectedEvent(event)}
+              >
+                {new Date(event.date.seconds * 1000).toLocaleDateString('en-US')}
+                <br/>  
+                {new Intl.DateTimeFormat('en-US', {hour: '2-digit', minute: '2-digit', timeZoneName: 'short'}).format(new Date(event.date.seconds * 1000))}
+              </Button>
+            ))}
           {endIndex < events.length && (
               <Button 
                 className={classes.arrowButton} 
@@ -474,7 +512,7 @@ const Signup = () => {
                         variant={"outlined"}
                         color = "secondary"
                         style={{ marginBottom: "0.5rem", marginTop: "0.5rem" }}
-                        onClick={() => handleOpenVolunteerInfoPopup(volunteer)}
+                        onClick={() => handleOpenVolunteerInfoPopup(volunteer, type)}
                         >
                           {volunteer.firstName} {volunteer.lastName.charAt(0)}.
                         </Button>
@@ -497,10 +535,10 @@ const Signup = () => {
                   <Button
                     className={classes.roleButton}
                     variant={"outlined"}
-                    style={{ marginBottom: "0.5rem", marginTop: "0.5rem"}}
+                    style={{ marginBottom: "0.5rem", marginTop: "0.5rem", color: "gray"}}
                     onClick={() => handleOpenVolunteerPopup(type)}
                   >
-                    <AddRounded />
+                    <AddRounded /> Signup
                   </Button>
                 </div>
               ):(
@@ -508,7 +546,7 @@ const Signup = () => {
                   <Button
                     className={classes.roleButton}
                     variant={"outlined"}
-                    style={{ marginBottom: "0.5rem", marginTop: "0.5rem"}}
+                    style={{ marginBottom: "0.5rem", marginTop: "0.5rem", color: "gray"}}
                     disabled
                   >
                     FULL
@@ -537,37 +575,39 @@ const Signup = () => {
       />
       <VolunteerInfoPopup
         open={openVolunteerInfoPopup}
-        handleClose={() => {
-          setVolunteerInfo(null);
-          setOpenVolunteerInfoPopup(false);
-        }}
+        handleClose={handleCloseVolunteerInfoPopup}
         volunteer={volunteerInfo}
+        handleDelete={handleDeleteVolunteer}
       />
       {selectedEvent && (
         <Dialog open={informationPopupOpen} onClose={() => setInformationPopupOpen(false)}>
-          <DialogTitle style={{ textAlign: 'center' }}>Event Information</DialogTitle>
-          <DialogContent>
-            <div style={{ marginBottom: '1rem', maxWidth: '600px', minWidth: '400px', wordWrap: 'break-word' }}>
-              <Typography>
-                {selectedEvent.eventInformation}
-              </Typography>
-              <br />
-              <Typography>
-                <b>Contact:</b> {selectedEvent.leadEmail}
-              </Typography>
-              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1.5em' }}>
-                <Link href={event ? "/" + location + "/" + event : "/"} style={{ textDecoration: "none" }} target="_blank">
-                  <Button
-                    color="secondary"
-                    variant="contained"
-                  >
-                    More Information
-                  </Button>
-                </Link>
-              </div>
+        <DialogTitle style={{ textAlign: 'center' }}>Event Information</DialogTitle>
+        <DialogContent>
+          <div style={{ marginBottom: '1rem', maxWidth: '600px', minWidth: '400px', wordWrap: 'break-word' }}>
+            <Typography component="div"  style={{ fontSize: '1rem' }}>
+              <div dangerouslySetInnerHTML={{ __html: selectedEvent.eventInformation }} />
+            </Typography>
+            <br />
+            <Typography style={{ fontSize: '0.9rem' }}>
+              <b>Event Lead Contact:</b> <Link href={`mailto:${selectedEvent.leadEmail}`}>{selectedEvent.leadEmail}</Link>
+            </Typography>
+            <Typography style={{ fontSize: '0.9rem', color: 'gray', fontStyle: 'italic' }}>
+              For technical issues please contact <Link href="mailto:somserve@gmail.com">somserve@gmail.com</Link>
+            </Typography>
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1.5em' }}>
+              <Link href={event ? "/" + location + "/" + event : "/"} style={{ textDecoration: "none" }} target="_blank">
+                <Button
+                  color="secondary"
+                  variant="contained"
+                >
+                  More Information
+                </Button>
+              </Link>
             </div>
-          </DialogContent>
-        </Dialog>
+          </div>
+        </DialogContent>
+      </Dialog>
+      
       )}
       {sharePopupOpen && (
         <SharePopup onClose={() => setSharePopupOpen(false)} link={shareLink} />
