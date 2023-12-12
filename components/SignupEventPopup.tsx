@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import {
   Dialog,
   DialogTitle,
@@ -9,6 +10,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import 'react-quill/dist/quill.snow.css';
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 const useStyles = makeStyles((theme) => ({
     title: {
@@ -34,10 +36,6 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
     const [eventInformation, setEventInformation] = useState('');
     const [eventData, setEventData] = useState(null);
     const handleDateChange = (event) => setDate(event.target.value);
-
-    useEffect(() => {
-        const ReactQuill = require('react-quill');
-      }, []);
 
     useEffect(() => {
         if (mode === 'edit' && event) {
