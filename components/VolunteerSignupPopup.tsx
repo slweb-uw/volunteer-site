@@ -202,12 +202,12 @@ const VolunteerPopup = ({ open, handleClose, email, uid, addVolunteer, onDeleteV
                 Withdraw
               </Button>
               <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isSubmitDisabled}>
-              Signup
+              Save
               </Button>
             </>
             ):(
               <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isSubmitDisabled}>
-                Submit
+                Signup
               </Button>
             )} 
         </div>
