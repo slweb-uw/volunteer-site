@@ -235,6 +235,10 @@ const Signup = () => {
     setSelectedRole('');
     setOpenVolunteerPopup(false);
     setEditedVolunteer(null);
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, selectedEventId: selectedEvent?.id },
+    });
   };
 
   const handleAddVolunteer = (volunteerData) => {
@@ -246,15 +250,21 @@ const Signup = () => {
       .doc("" + selectedEvent?.id)
       .update({
         [`volunteers.${selectedRole}.${volunteerData.uid}`]: volunteerData
+      }).then(() => {
+        handleCloseVolunteerPopup();
       });
-
-      handleCloseVolunteerPopup();
     }
   };
 
-  const handleDeleteVolunteer = (volunteer) => {
+  const handleDeleteVolunteer = (volunteer, mode: String) => {
     if (selectedRole) {
-      const isConfirmed = window.confirm("Are you sure you want to withdraw from this role?");
+      let message = "Are you sure you want to withdraw from this role?";
+
+      if(mode === "remove"){
+        message = "Are you sure you want to remove this volunteer?";
+      }
+
+      const isConfirmed = window.confirm(message);
 
       if (isConfirmed) {
         const eventId = selectedEvent?.id;
@@ -267,10 +277,12 @@ const Signup = () => {
           .doc(eventId)
           .update({
             [`volunteers.${selectedRole}.${uid}`]: firebase.firestore.FieldValue.delete()
+          }).then(() => {
+            handleCloseVolunteerPopup();
+            handleCloseVolunteerInfoPopup();
           });
       }
     }
-    handleCloseVolunteerPopup();
   };
 
   const handleEditVolunteer = (volunteer, type) => {
@@ -317,9 +329,15 @@ const Signup = () => {
     }
   };
 
-  const handleOpenVolunteerInfoPopup = (user) => {
+  const handleOpenVolunteerInfoPopup = (user, type) => {
     setVolunteerInfo(user);
+    setSelectedRole(type);
     setOpenVolunteerInfoPopup(true);
+  };
+
+  const handleCloseVolunteerInfoPopup = () => {
+    setVolunteerInfo(null);
+    setOpenVolunteerInfoPopup(false);
   };
 
   const generateShareLink = () => {
@@ -474,7 +492,7 @@ const Signup = () => {
                         variant={"outlined"}
                         color = "secondary"
                         style={{ marginBottom: "0.5rem", marginTop: "0.5rem" }}
-                        onClick={() => handleOpenVolunteerInfoPopup(volunteer)}
+                        onClick={() => handleOpenVolunteerInfoPopup(volunteer, type)}
                         >
                           {volunteer.firstName} {volunteer.lastName.charAt(0)}.
                         </Button>
@@ -497,10 +515,10 @@ const Signup = () => {
                   <Button
                     className={classes.roleButton}
                     variant={"outlined"}
-                    style={{ marginBottom: "0.5rem", marginTop: "0.5rem"}}
+                    style={{ marginBottom: "0.5rem", marginTop: "0.5rem", color: "gray"}}
                     onClick={() => handleOpenVolunteerPopup(type)}
                   >
-                    <AddRounded />
+                    <AddRounded /> Signup
                   </Button>
                 </div>
               ):(
@@ -508,7 +526,7 @@ const Signup = () => {
                   <Button
                     className={classes.roleButton}
                     variant={"outlined"}
-                    style={{ marginBottom: "0.5rem", marginTop: "0.5rem"}}
+                    style={{ marginBottom: "0.5rem", marginTop: "0.5rem", color: "gray"}}
                     disabled
                   >
                     FULL
@@ -537,11 +555,9 @@ const Signup = () => {
       />
       <VolunteerInfoPopup
         open={openVolunteerInfoPopup}
-        handleClose={() => {
-          setVolunteerInfo(null);
-          setOpenVolunteerInfoPopup(false);
-        }}
+        handleClose={handleCloseVolunteerInfoPopup}
         volunteer={volunteerInfo}
+        handleDelete={handleDeleteVolunteer}
       />
       {selectedEvent && (
         <Dialog open={informationPopupOpen} onClose={() => setInformationPopupOpen(false)}>
