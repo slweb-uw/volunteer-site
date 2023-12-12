@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import Hidden from "@material-ui/core/Hidden";
 import { firebaseClient } from "firebaseClient";
 import { useAuth } from "auth";
 import BasicMenu from "./basicMenu";
+import SignInPopup from "./SignInPopup";
 import { makeStyles } from "@material-ui/core/styles";
 import "firebase/firestore";
 
@@ -86,6 +87,7 @@ const Divider = () => <span className={useStyles().divider}>/</span>;
 
 const Header: React.FC<{}> = (props) => {
   const { user, isAdmin } = useAuth();
+  const [isSignInPopupOpen, setSignInPopupOpen] = useState(false);
 
   const links: React.ReactNode[] = [
       <a  href="/" className={useStyles().navtitle} tabIndex={0}>Home</a>,
@@ -120,27 +122,23 @@ const Header: React.FC<{}> = (props) => {
         
       </>
     ) : (
+      <>
         <a
           key="sign in"
-          onClick={() => {
-            var provider = new firebaseClient.auth.OAuthProvider("google.com");
-            provider.setCustomParameters({
-              // Target uw login
-              tenant: "uw.edu",
-              prompt: 'select_account',
-            });
-
-            firebaseClient.auth().signOut().then(() => {
-              firebaseClient.auth().signInWithPopup(provider);
-            });
-
-          }}
+          onClick={() => setSignInPopupOpen(true)}
           className={useStyles().navtitle}
           tabIndex={0}
         >
           Sign In 
         </a>
+        <SignInPopup 
+         open={isSignInPopupOpen} 
+         close={() => setSignInPopupOpen(false)}
+        />
+      </>
+        
     ),
+    
   ];
 
   return (
@@ -161,6 +159,7 @@ const Header: React.FC<{}> = (props) => {
           {links.map((element: React.ReactNode) => {
             return element;
           })}
+          
         </div>
       </Hidden>
     </div>
