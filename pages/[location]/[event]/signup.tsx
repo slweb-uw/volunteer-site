@@ -584,8 +584,8 @@ const Signup = () => {
         <DialogTitle style={{ textAlign: 'center' }}>Event Information</DialogTitle>
         <DialogContent>
           <div style={{ marginBottom: '1rem', maxWidth: '600px', minWidth: '400px', wordWrap: 'break-word' }}>
-            <Typography>
-              {selectedEvent.eventInformation}
+            <Typography component="div"  style={{ fontSize: '1rem' }}>
+              <div dangerouslySetInnerHTML={{ __html: selectedEvent.eventInformation }} />
             </Typography>
             <br />
             <Typography style={{ fontSize: '0.9rem' }}>
