@@ -8,7 +8,6 @@ import {
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
 const useStyles = makeStyles((theme) => ({
@@ -35,6 +34,10 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
     const [eventInformation, setEventInformation] = useState('');
     const [eventData, setEventData] = useState(null);
     const handleDateChange = (event) => setDate(event.target.value);
+
+    useEffect(() => {
+        const ReactQuill = require('react-quill');
+      }, []);
 
     useEffect(() => {
         if (mode === 'edit' && event) {
