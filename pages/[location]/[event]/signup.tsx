@@ -589,7 +589,7 @@ const Signup = () => {
             </Typography>
             <br />
             <Typography style={{ fontSize: '0.9rem' }}>
-              <b>Contact:</b> <Link href={`mailto:${selectedEvent.leadEmail}`}>{selectedEvent.leadEmail}</Link>
+              <b>Event Lead Contact:</b> <Link href={`mailto:${selectedEvent.leadEmail}`}>{selectedEvent.leadEmail}</Link>
             </Typography>
             <Typography style={{ fontSize: '0.9rem', color: 'gray', fontStyle: 'italic' }}>
               For technical issues please contact <Link href="mailto:somserve@gmail.com">somserve@gmail.com</Link>
