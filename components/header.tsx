@@ -110,6 +110,7 @@ const Header: React.FC<{}> = (props) => {
           key="sign out"
           onClick={() => {
             firebaseClient.auth().signOut();
+            setSignInPopupOpen(false)
           }}
           className={useStyles().navtitle}
           tabIndex={0}

@@ -1,10 +1,30 @@
 import React from "react";
 import { firebaseClient } from "firebaseClient";
-import { Dialog, DialogTitle, DialogContent, Button, Grid, Typography, makeStyles } from '@material-ui/core';
+import { 
+    Dialog, 
+    DialogTitle, 
+    DialogContent, 
+    Button, 
+    Typography, 
+    makeStyles,
+    Avatar 
+} from '@material-ui/core';
 
-const GoogleLogo = "G";
-const MicrosoftLogo = "M"; 
-
+const MicrosoftLogo = (
+    <Avatar
+      alt="Microsoft Logo"
+      src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg"
+      style={{ borderRadius: 0 }}
+    />
+  );
+  
+const GoogleLogo = (
+    <Avatar
+        alt="Google Logo"
+        src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA"
+    />
+);
+  
 const useStyles = makeStyles((theme) => ({
   dialog: {
     minWidth: 300,
@@ -17,6 +37,9 @@ const useStyles = makeStyles((theme) => ({
   button: {
     margin: theme.spacing(1),
     width: "200px",
+    color: "black",
+    border: "2px solid black",
+    backgroundColor: "white",
   },
 }));
 
@@ -28,6 +51,7 @@ const SignInPopup = ({ open, close }) => {
       const result = await firebaseClient.auth().signInWithPopup(provider);
   
       if (result.additionalUserInfo && result.additionalUserInfo.isNewUser) {
+
       } else {
         const currentUser = firebaseClient.auth().currentUser;
         if (!currentUser.providerData.some((pd) => pd.providerId === provider.providerId)) {
@@ -50,9 +74,8 @@ const SignInPopup = ({ open, close }) => {
         <div className={classes.buttonRow}>
           <Button
             variant="contained"
-            color="primary"
             onClick={() => handleSignInWithProvider(new firebaseClient.auth.GoogleAuthProvider())}
-            startIcon={<span role="img" aria-label="Google Logo">{GoogleLogo}</span>}
+            startIcon={GoogleLogo}
             className={classes.button}
           >
             Sign In with Google
@@ -61,9 +84,8 @@ const SignInPopup = ({ open, close }) => {
         <div className={classes.buttonRow}>
           <Button
             variant="contained"
-            color="primary"
             onClick={() => handleSignInWithProvider(new firebaseClient.auth.OAuthProvider("microsoft.com"))}
-            startIcon={<span role="img" aria-label="Microsoft Logo">{MicrosoftLogo}</span>}
+            startIcon={MicrosoftLogo}
             className={classes.button}
           >
             Sign In with Microsoft
