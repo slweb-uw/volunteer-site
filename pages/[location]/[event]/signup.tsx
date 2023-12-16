@@ -48,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(0, 3),
     textTransform: "none",
     height: 50,
+    lineHeight: 1.1
   },
   roleButton : {
     margin: theme.spacing(0, 3),
@@ -294,13 +295,13 @@ const Signup = () => {
     }
   };
 
-  const handleEditVolunteer = (volunteer, type) => {
+  const handleEditVolunteer = (volunteer: any, type: any) => {
     setEditedVolunteer(volunteer);
     setSelectedRole(type);
     setOpenVolunteerPopup(true);
   };
   
-  const handleOpenEventFormPopup = (mode, event) => {
+  const handleOpenEventFormPopup = (mode: string, event: any) => {
     setEditedEvent(event);
     if(mode === 'edit'){
       router.push({
@@ -311,7 +312,7 @@ const Signup = () => {
     setOpenEventFormPopup(true);
   };
 
-  const handleEventAction = (action, eventData) => {
+  const handleEventAction = (action: string, eventData: any) => {
     if (action === 'add') {
       eventData.date = firebase.firestore.Timestamp.fromDate(eventData.date);
       firebase.firestore().collection("" + location)
@@ -338,7 +339,7 @@ const Signup = () => {
     }
   };
 
-  const handleOpenVolunteerInfoPopup = (user, type) => {
+  const handleOpenVolunteerInfoPopup = (user: any, type: any) => {
     setVolunteerInfo(user);
     setSelectedRole(type);
     setOpenVolunteerInfoPopup(true);
@@ -387,6 +388,8 @@ const Signup = () => {
                 color="primary"
                 onClick={() => setSelectedEvent(event)}
               >
+                {new Intl.DateTimeFormat('en-US', {weekday: 'long'}).format(new Date(event.date.seconds * 1000))}
+                <br/>  
                 {new Date(event.date.seconds * 1000).toLocaleDateString('en-US')}
                 <br/>  
                 {new Intl.DateTimeFormat('en-US', {hour: '2-digit', minute: '2-digit', timeZoneName: 'short'}).format(new Date(event.date.seconds * 1000))}
@@ -458,9 +461,10 @@ const Signup = () => {
                 <Button
                   variant='outlined'
                   color='secondary'
+                  startIcon={<InfoIcon />}
                   onClick={() => setInformationPopupOpen(true)}
                 >
-                  <InfoIcon />
+                  Info
                 </Button>
               </Tooltip>
             </>
@@ -469,8 +473,9 @@ const Signup = () => {
             <Button
               variant='outlined'
               color='secondary'
+              startIcon={<HelpIcon />}
             >
-              <HelpIcon />
+              Help
             </Button>
           </Tooltip>
         </div>
@@ -531,14 +536,15 @@ const Signup = () => {
                 ))
               )}
               {selectedEvent.volunteers && (!selectedEvent.volunteers[type] || Object.keys(selectedEvent.volunteers[type]).length < Number(selectedEvent.volunteerQty[index])) ? (
-                <div key={index} color="#d5d5d5">
+                <div key={index} >
                   <Button
                     className={classes.roleButton}
                     variant={"outlined"}
                     style={{ marginBottom: "0.5rem", marginTop: "0.5rem", color: "gray"}}
                     onClick={() => handleOpenVolunteerPopup(type)}
+                    startIcon={<AddRounded />}
                   >
-                    <AddRounded /> Signup
+                    Signup
                   </Button>
                 </div>
               ):(
@@ -559,7 +565,7 @@ const Signup = () => {
       )}
       <SignupEventPopup
         open={openEventFormPopup}
-        handleClose={() => setOpenEventFormPopup(false)}
+        close={() => setOpenEventFormPopup(false)}
         mode={editedEvent ? 'edit' : 'add'}
         event={editedEvent}
         handleEventAction={handleEventAction}
