@@ -27,6 +27,7 @@ import SignupEventPopup from 'components/SignupEventPopup';
 import VolunteerPopup from 'components/VolunteerSignupPopup';
 import SharePopup from 'components/SharePopup';
 import { exportToCSV } from 'helpers/csvExport';
+import AuthorizationMessage from 'pages/AuthorizationMessage';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -227,12 +228,7 @@ const Signup = () => {
 
   if (!isAdmin && !isAuthorized) {
     return (
-      <div className={classes.root}>
-        <div className={classes.message}>
-          You are not authorized to access this page. &nbsp;
-          {!user && <span style={{ color: "red" }}>Please login.</span>}
-        </div>
-      </div>
+      <AuthorizationMessage user={user} />
     );
   }
   

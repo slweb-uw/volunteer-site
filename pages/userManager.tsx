@@ -21,6 +21,7 @@ import {
   DialogActions,
   } from "@material-ui/core";
   import HelpIcon from '@mui/icons-material/HelpOutline';
+  import AuthorizationMessage from "./AuthorizationMessage";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -72,12 +73,6 @@ const useStyles = makeStyles((theme) => ({
   },
   divider: {
     margin: "20px 0",
-  },
-  message: {
-    display: 'flex', 
-    justifyContent: 'center', 
-    alignItems: 'center', 
-    fontWeight: 600,
   },
   popup: {
     position: "relative",
@@ -230,50 +225,9 @@ const AdminPage = () => {
 
   if (!user || !authorizedUsers.includes(user.email)) {
     return (
-      <div 
-        className={`${classes.root} ${classes.message}`} 
-        >
-        <div style={{marginTop: "25vh", marginBottom: "1rem"}}>You are not authorized to access this page!</div>
-        <div>
-          {
-            !user ? 
-              <Button
-              className={classes.headerButton}
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                var provider = new firebase.auth.OAuthProvider("google.com");
-                provider.setCustomParameters({
-                  // Target uw login
-                  tenant: "uw.edu",
-                  prompt: 'select_account',
-                });
-
-                firebase.auth().signOut().then(() => {
-                  firebase.auth().signInWithPopup(provider);
-                });
-
-              }}
-              tabIndex={0}
-            >
-              Sign in
-            </Button>
-            : ""
-          }
-          <a href="/">
-            <Button
-              className={classes.headerButton}
-              variant="outlined"
-              color="grey"
-            >
-              Return
-            </Button>
-          </a>
-        </div>
-      </div>
+      <AuthorizationMessage user={user} />
     );
   }
-  
   const handleSectionChange = (section) => setActiveSection(section);
   const openHelpDialog = () => setHelpDialogOpen(true);
   const closeHelpDialog = () => setHelpDialogOpen(false);
