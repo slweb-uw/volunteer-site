@@ -156,7 +156,7 @@ export default function EventModal(props: {
               </div>
             )}
             <div style={{ marginTop: "2em" }}>
-            { isAdmin && (
+            { (isAdmin || event?.SignupActive) && (
               <Link href={event ? `/${location}/${event.id}/signup` : "/"}>
                   <Button
                     color="primary"

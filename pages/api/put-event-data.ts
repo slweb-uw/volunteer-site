@@ -102,10 +102,6 @@ async function addOrUpdateEvent(
       await document.update({ ...body });
       return body;
     } else {
-      // const res = await calendar.events.insert({
-      //   calendarId: 'slweb@uw.edu',
-      //   requestBody: body,
-      // });
       document = firebaseAdmin
         .firestore()
         .collection(event.Location)
