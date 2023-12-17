@@ -138,6 +138,11 @@ const VolunteerPopup = ({ open, handleClose, email, uid, addVolunteer, onDeleteV
               <MenuItem key={index} value={studentType}>{studentType}</MenuItem>
             ))}
           </Select>
+          {!studentDiscipline && (
+            <Typography variant="caption" color="error" style={{ marginLeft: '10px' }}>
+                Please select a student discipline
+            </Typography>
+          )}
         </div>
         <TextField
           label="First Name *"

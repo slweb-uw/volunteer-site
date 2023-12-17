@@ -22,13 +22,8 @@ import {
   Select,
   TextField,
   Input,
-  Tab,
-  Tabs,
-  FormControlLabel,
-  Checkbox,
-  FormGroup,
-  FormLabel,
-  Button
+  Button,
+  Switch
 } from "@material-ui/core";
 import { firebaseClient } from "firebaseClient";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
@@ -343,7 +338,6 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
   const [organizationList, setOrganizationList] = useState<string[]>([]);
   const [title, setTitle] = useState<string | undefined>();
   const [description, setDescription] = useState<string | undefined>();
-  const [signUpLink, setSignUpLink] = useState<string | undefined>();
   const [details, setDetails] = useState<string | null>(null);
   const [organization, setOrganization] = useState<string | undefined>();
   const [location, setLocation] = useState<string | undefined>();
@@ -354,6 +348,7 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
   const [cardImageURL, setCardImageURL] = useState<string | undefined>();
   const [modalState, setModalState] = useState(ModalState.Main);
   const [cropImage, setCropImage] = useState<string | undefined>();
+  const [signupActive, setSignupActive] = useState(false);
   const [otherFields, dispatchOtherFields] = React.useReducer((state: any, action: any) => {
     const { type, field, value } = action;
     if (type === "set_all") {
@@ -442,8 +437,6 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
     };
 
     uploadEvent.Details = details ? details : ""
-    uploadEvent["Sign-up Link"] = signUpLink ? signUpLink : ""
-
     if (startDateTime && endDateTime) {
       uploadEvent.StartDate = startDateTime.toISOString();
       uploadEvent.EndDate = endDateTime.toISOString();
@@ -546,17 +539,19 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
     if (volunteersNeeded) {
       uploadEvent["Types of Volunteers Needed"] = volunteersNeeded;
     }
-
+    uploadEvent.SignupActive = signupActive ? true : false;
     return uploadEvent;
   }
 
   // Puts event to Firestore and Google Calendar
   const putEvent = () => {
     const uploadEvent = compileEvent();
+    if (!uploadEvent.SignupActive && !event.SignupActive) {
+      uploadEvent.SignupActive = false;
+    }
     if (!uploadEvent) {
       alert("Error: missing required field.");
     }
-
     const calendarPromise = async (calEvent: any, userToken: any) => {
       if (calEvent.StartDate) {
         fetch("/api/put-calendar-event", {
@@ -615,12 +610,10 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
       if (props.event.Details) {
         setDetails(props.event.Details);
       }
+      setSignupActive(props.event.SignupActive);
       setImageURL(props.event.imageURL);
       setCardImageURL(props.event.cardImageURL);
       setTitle(props.event.Title);
-      if (props.event["Sign-up Link"]) {
-        setSignUpLink(props.event["Sign-up Link"])
-      }
       setDescription(props.event["Project Description"]);
       setOrganization(props.event.Organization);
       setVolunteersNeeded(props.event["Types of Volunteers Needed"] ?? []);
@@ -728,6 +721,20 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
         <b>{event ? "Modify Event" : "Add Event"}</b>
       </ModalDialogTitle>
       <ModalDialogContent classes={{root: classes.modalContent}}>
+        <div style={{marginBottom: "1rem"}}>
+          <Button variant="outlined" onClick={() => setSignupActive(!signupActive)}>
+            <Switch
+              checked={signupActive}
+              onClick={() => setSignupActive(!signupActive)}
+              color="primary"
+              inputProps={{ 'aria-label': 'controlled' }}
+            />
+            Allow Signup
+          </Button>
+          <span style={{ fontStyle: 'italic', color: 'gray', marginLeft: "0.5rem" }}>
+            Note: This will make the signup button available to volunteers
+          </span>
+        </div>
         <Grid container spacing={5}>
           <Grid item xs={12} sm={6}>
             <TextField
@@ -840,16 +847,6 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
                 ))}
               </Select>
             </FormControl>
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Sign-up Link"
-              value={signUpLink}
-              placeholder="Enter a link starting with http:// or https://"
-              onChange={(e) => setSignUpLink(e.target.value as string)}
-            />
           </Grid>
 
           {Object.keys(otherFields).map((fieldName) => {

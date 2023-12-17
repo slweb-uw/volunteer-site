@@ -43,10 +43,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SignInPopup = ({ open, close }) => {
+type SignInPopupProps = {
+  open: boolean;
+  close: () => void;
+};
+
+const SignInPopup: React.FC<SignInPopupProps> = ({ open, close }) => {
   const classes = useStyles();
 
-  const handleSignInWithProvider = async (provider) => {
+  const handleSignInWithProvider = async (provider: any) => {
     try {
       const result = await firebaseClient.auth().signInWithPopup(provider);
   

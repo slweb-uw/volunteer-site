@@ -44,7 +44,6 @@ export function AuthProvider({ children }: any) {
 
       const authorizedCheck = authorizedUsersData.some((authUser: any) => authUser.email === user.email) || (user.email && user.email.endsWith("@uw.edu"));
       setIsAuthorized(authorizedCheck || isAdmin);
-
       const token = await user.getIdToken();
       setUser(user);
       nookies.set(undefined, 'token', token, {});

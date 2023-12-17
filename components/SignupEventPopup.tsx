@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction }) => {
+const SignupEventPopup = ({ open, close, mode, event, handleEventAction }) => {
     const MAX_ROLE_NAME_LENGTH = 30;
     const classes = useStyles();
     const [date, setDate] = useState('');
@@ -36,6 +36,15 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
     const [eventInformation, setEventInformation] = useState('');
     const [eventData, setEventData] = useState(null);
     const handleDateChange = (event) => setDate(event.target.value);
+
+    const handleClose = () => {
+        setDate('');
+        setLeadEmail('');
+        setEventInformation('');
+        setVolunteerData([{ type: '', qty: '' }]);
+        setEventData(null);
+        close();
+    };
 
     useEffect(() => {
         if (mode === 'edit' && event) {
@@ -201,6 +210,7 @@ const SignupEventPopup = ({ open, handleClose, mode, event, handleEventAction })
             value={date}
             InputLabelProps={{ shrink: true }} 
             onChange={handleDateChange}
+            inputProps={{ min: new Date().toISOString().slice(0, 16) }}
             fullWidth
             margin="normal"
             />
