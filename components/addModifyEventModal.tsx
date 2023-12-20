@@ -154,7 +154,6 @@ const reservedFields = new Set([
   "Title",
   "Project Description",
   "Details",
-  "Sign-up Link",
   "Types of Volunteers Needed",
   "Organization",
   "Order",
@@ -546,7 +545,7 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
   // Puts event to Firestore and Google Calendar
   const putEvent = () => {
     const uploadEvent = compileEvent();
-    if (!uploadEvent.SignupActive && !event.SignupActive) {
+    if (!uploadEvent.SignupActive && !event?.SignupActive) {
       uploadEvent.SignupActive = false;
     }
     if (!uploadEvent) {
