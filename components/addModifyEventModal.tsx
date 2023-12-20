@@ -545,7 +545,8 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
   // Puts event to Firestore and Google Calendar
   const putEvent = () => {
     const uploadEvent = compileEvent();
-    if (!uploadEvent.SignupActive && !event?.SignupActive) {
+    
+    if (!uploadEvent.SignupActive && !event.SignupActive) {
       uploadEvent.SignupActive = false;
     }
     if (!uploadEvent) {
