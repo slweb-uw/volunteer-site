@@ -90,7 +90,7 @@ const deleteEvent = async (eventData: EventData | undefined) => {
         //   }),
         // }),
       ]);
-      window.location.reload();
+      location.reload();
     } catch (e) {
       alert(e);
     }
