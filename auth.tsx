@@ -6,10 +6,12 @@ const AuthContext = createContext<{
   user: firebaseClient.User | null;
   isAdmin: boolean;
   isAuthorized: boolean;
+  superAdmins: string[];
 }>({
   user: null,
   isAdmin: false,
   isAuthorized: false,
+  superAdmins: ["clarkel@uw.edu", "dnakas4@uw.edu", "bruno.futino@gmail.com", "uwslweb@gmail.com"]
 });
 
 export function AuthProvider({ children }: any) {
@@ -59,7 +61,7 @@ export function AuthProvider({ children }: any) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isAdmin, isAuthorized }}>
+    <AuthContext.Provider value={{ user, isAdmin, isAuthorized, superAdmins: ["clarkel@uw.edu", "dnakas4@uw.edu", "bruno.futino@gmail.com", "uwslweb@gmail.com"] }}>
       {children}
     </AuthContext.Provider>
   );

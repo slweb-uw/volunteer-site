@@ -34,15 +34,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Footer: React.FC<{}> = () => {
-  const { user } = useAuth();
+  const { user, superAdmins } = useAuth();
   const [isAdmin, setIsAdmin] = React.useState(false);
   const [isLoadingUser, setIsLoadingUser] = React.useState(true);
-  const authorizedUsers = ["clarkel@uw.edu","dnakas4@uw.edu", "bruno.futino@gmail.com", "uwslweb@gmail.com"]; // Hardcoded to limit who can manage admins
-
+  
   const checkUser = async () => {
     const user = firebaseClient.auth().currentUser;
-    
-    if(user && (authorizedUsers.includes(user.email))){
+    if(user && (superAdmins?.includes(user.email))){
       setIsAdmin(true);
     }else{
       setIsAdmin(false);
