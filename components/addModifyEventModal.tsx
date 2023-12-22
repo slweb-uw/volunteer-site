@@ -546,7 +546,7 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
   const putEvent = () => {
     const uploadEvent = compileEvent();
     
-    if (!uploadEvent.SignupActive && !event.SignupActive) {
+    if (!uploadEvent?.SignupActive && !event?.SignupActive) {
       uploadEvent.SignupActive = false;
     }
     if (!uploadEvent) {

@@ -82,15 +82,15 @@ const deleteEvent = async (eventData: EventData | undefined) => {
             userToken,
           }),
         }),
-        fetch("/api/delete-calendar-event", {
-          method: "POST",
-          body: JSON.stringify({
-            eventData,
-            userToken,
-          }),
-        }),
+        // fetch("/api/delete-calendar-event", {
+        //   method: "POST",
+        //   body: JSON.stringify({
+        //     eventData,
+        //     userToken,
+        //   }),
+        // }),
       ]);
-      location.reload();
+      window.location.reload();
     } catch (e) {
       alert(e);
     }
