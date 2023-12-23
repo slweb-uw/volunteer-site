@@ -46,6 +46,9 @@ const useStyles = makeStyles((theme) => ({
     margin: "0 auto",
     marginTop : "2rem",
     marginBottom: theme.spacing(6),
+    "@media only screen and (max-width: 900px)": {
+      width: "100%",  
+    },
   },
   headerButton: {
     margin: theme.spacing(0, 3),
@@ -54,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: 1.1
   },
   roleButton : {
-    margin: theme.spacing(0, 3),
+    margin: theme.spacing(0, 2),
     width: 150, 
     flexGrow: 1,
     minHeight: 50,
@@ -75,15 +78,18 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
   },
   gridContainer: {
-    width: "90%",
-    margin: "0 auto",
+    width: "80%",
+    margin: "0 auto", 
+    padding: "0 0 0 0",
     marginBottom: "2rem",
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "center",
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", 
     gap: "10px",
+    justifyContent: "center",
     "@media only screen and (max-width: 900px)": {
       width: "100%",  
+      display: "flex",
+      flexWrap: "wrap",
     },
   },
   message: {
@@ -152,9 +158,9 @@ const Signup = () => {
       let newItemsPerPage: any;
       if (window.innerWidth < 520) {
         newItemsPerPage = 1;
-      } else if (window.innerWidth < 735) {
+      } else if (window.innerWidth < 818) {
         newItemsPerPage = 2;
-      } else if (window.innerWidth < 960) {
+      } else if (window.innerWidth < 1030) {
         newItemsPerPage = 3;
       } else if (window.innerWidth < 1172) {
         newItemsPerPage = 4;
