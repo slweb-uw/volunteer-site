@@ -28,6 +28,8 @@ import VolunteerPopup from 'components/VolunteerSignupPopup';
 import SharePopup from 'components/SharePopup';
 import { exportToCSV } from 'helpers/csvExport';
 import AuthorizationMessage from 'pages/AuthorizationMessage';
+import { useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,6 +46,9 @@ const useStyles = makeStyles((theme) => ({
     margin: "0 auto",
     marginTop : "2rem",
     marginBottom: theme.spacing(6),
+    "@media only screen and (max-width: 900px)": {
+      width: "100%",  
+    },
   },
   headerButton: {
     margin: theme.spacing(0, 3),
@@ -52,12 +57,13 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: 1.1
   },
   roleButton : {
-    margin: theme.spacing(0, 3),
+    margin: theme.spacing(0, 2),
     width: 150, 
     flexGrow: 1,
     minHeight: 50,
     borderRadius: "15",
     whiteSpace: 'normal',
+    fontSize: "12px",
     "&.Mui-disabled": {
       color: "#333333",
       display: "flex",
@@ -72,13 +78,19 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
   },
   gridContainer: {
-    width: "90%",
-    margin: "0 auto",
+    width: "80%",
+    margin: "0 auto", 
+    padding: "0 0 0 0",
     marginBottom: "2rem",
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "center",
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", 
     gap: "10px",
+    justifyContent: "center",
+    "@media only screen and (max-width: 900px)": {
+      width: "100%",  
+      display: "flex",
+      flexWrap: "wrap",
+    },
   },
   message: {
     display: 'flex',
@@ -117,6 +129,9 @@ const Signup = () => {
   const [sharePopupOpen, setSharePopupOpen] = useState(false);
   const [shareLink, setShareLink] = useState('');
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   useEffect(() => {
     if (selectedEventId && events.length > 0) {
       const selectedEventFromData = events.find((e) => e.id === selectedEventId);
@@ -141,13 +156,13 @@ const Signup = () => {
   useEffect(() => {
     const updateScreenSize = () => {
       let newItemsPerPage: any;
-      if (window.innerWidth < 500) {
+      if (window.innerWidth < 520) {
         newItemsPerPage = 1;
-      } else if (window.innerWidth < 655) {
+      } else if (window.innerWidth < 818) {
         newItemsPerPage = 2;
-      } else if (window.innerWidth < 960) {
+      } else if (window.innerWidth < 1030) {
         newItemsPerPage = 3;
-      } else if (window.innerWidth < 1170) {
+      } else if (window.innerWidth < 1172) {
         newItemsPerPage = 4;
       } else {
         newItemsPerPage = 5;
@@ -249,16 +264,31 @@ const Signup = () => {
 
   const handleAddVolunteer = (volunteerData) => {
     if (selectedRole) {
-      const volunteerRef = firebase.firestore()
-      .collection("" + location)
-      .doc("" + event)
-      .collection("signup")
-      .doc("" + selectedEvent?.id)
-      .update({
-        [`volunteers.${selectedRole}.${volunteerData.uid}`]: volunteerData
-      }).then(() => {
-        handleCloseVolunteerPopup();
-      });
+      const existingRolesOnEvent = selectedEvent.volunteers || {};
+      const hasSignedUpForEvent = Object.keys(existingRolesOnEvent).some(
+        (role) =>
+          role !== selectedRole &&
+          Object.keys(existingRolesOnEvent[role]).some(
+            (uid) => existingRolesOnEvent[role][uid].date === volunteerData.date
+          )
+      );
+  
+      if (hasSignedUpForEvent) {
+        alert("You have already signed up for another role on this event.");
+      } else {
+        const volunteerRef = firebase
+          .firestore()
+          .collection("" + location)
+          .doc("" + event)
+          .collection("signup")
+          .doc("" + selectedEvent?.id)
+          .update({
+            [`volunteers.${selectedRole}.${volunteerData.uid}`]: volunteerData,
+          })
+          .then(() => {
+            handleCloseVolunteerPopup();
+          });
+      }
     }
   };
 
@@ -403,10 +433,11 @@ const Signup = () => {
         </div>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '0 15%', marginBottom: "2.5rem"}}>
-        <div style={{ display: 'flex', gap: '15px' }}>
-          {isAdmin && (
-            <>
+      {isMobile ? (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '15px', marginBottom: '1rem' }}>
+            {isAdmin && (
+              <>
                 <Tooltip title="Add Event" arrow>
                   <Button
                     variant='contained'
@@ -438,44 +469,119 @@ const Signup = () => {
                     </Tooltip>
                   </>
                 )}
-            </>
-          )}
+              </>
+            )}
+          </div>
+          <div style={{ display: 'flex', gap: '15px', marginBottom: "1rem" }}>
+            {selectedEvent && (
+              <>
+                <Tooltip title="Share link" arrow>
+                  <Button
+                    variant='outlined'
+                    color='secondary'
+                    onClick={generateShareLink}
+                  >
+                    Share
+                  </Button>
+                </Tooltip>
+                <Tooltip title="Event Information" arrow>
+                  <Button
+                    variant='outlined'
+                    color='secondary'
+                    startIcon={<InfoIcon />}
+                    onClick={() => setInformationPopupOpen(true)}
+                  >
+                    Info
+                  </Button>
+                </Tooltip>
+              </>
+            )}
+            <Tooltip title="Help" arrow>
+              <Button
+                variant='outlined'
+                color='secondary'
+                startIcon={<HelpIcon />}
+              >
+                Help
+              </Button>
+            </Tooltip>
+          </div>
         </div>
-        <div style={{display: 'flex', gap: '15px' }}>
-          {selectedEvent && (
-            <>
-              <Tooltip title="Share link" arrow>
-                <Button
-                  variant='outlined'
-                  color='secondary'
-                  onClick={generateShareLink}
-                >
-                  Share
-                </Button>
-              </Tooltip>
-              <Tooltip title="Event Information" arrow>
-                <Button
-                  variant='outlined'
-                  color='secondary'
-                  startIcon={<InfoIcon />}
-                  onClick={() => setInformationPopupOpen(true)}
-                >
-                  Info
-                </Button>
-              </Tooltip>
-            </>
-          )}
-          <Tooltip title="Help" arrow>
-            <Button
-              variant='outlined'
-              color='secondary'
-              startIcon={<HelpIcon />}
-            >
-              Help
-            </Button>
-          </Tooltip>
+      ) : (
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '0 15%', marginBottom: "2.5rem" }}>
+          <div style={{ display: 'flex', gap: '15px' }}>
+            {isAdmin && (
+              <>
+                <Tooltip title="Add Event" arrow>
+                  <Button
+                    variant='contained'
+                    color='secondary'
+                    onClick={() => handleOpenEventFormPopup('add', null)}
+                  >
+                    ADD
+                  </Button>
+                </Tooltip>
+                {selectedEvent && (
+                  <>
+                    <Tooltip title="Modify Event" arrow>
+                      <Button
+                        variant='contained'
+                        color='secondary'
+                        onClick={() => handleOpenEventFormPopup('edit', selectedEvent)}
+                      >
+                        EDIT
+                      </Button>
+                    </Tooltip>
+                    <Tooltip title="Download Event Information" arrow>
+                      <Button
+                        variant='contained'
+                        color='secondary'
+                        onClick={() => exportToCSV(selectedEvent)}
+                      >
+                        <DownloadIcon />
+                      </Button>
+                    </Tooltip>
+                  </>
+                )}
+              </>
+            )}
+          </div>
+          <div style={{ display: 'flex', gap: '15px' }}>
+            {selectedEvent && (
+              <>
+                <Tooltip title="Share link" arrow>
+                  <Button
+                    variant='outlined'
+                    color='secondary'
+                    onClick={generateShareLink}
+                  >
+                    Share
+                  </Button>
+                </Tooltip>
+                <Tooltip title="Event Information" arrow>
+                  <Button
+                    variant='outlined'
+                    color='secondary'
+                    startIcon={<InfoIcon />}
+                    onClick={() => setInformationPopupOpen(true)}
+                  >
+                    Info
+                  </Button>
+                </Tooltip>
+              </>
+            )}
+            <Tooltip title="Help" arrow>
+              <Button
+                variant='outlined'
+                color='secondary'
+                startIcon={<HelpIcon />}
+              >
+                Help
+              </Button>
+            </Tooltip>
+          </div>
         </div>
-      </div>
+      )}
 
       {events.length == 0 ? (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '40vh', fontFamily: 'Encode Sans Compressed'}}>
@@ -491,10 +597,10 @@ const Signup = () => {
                 color="primary"
                 disabled
               >
-                {type}
+                {type} [{Object.keys(selectedEvent.volunteers[type] || {}).length}/{selectedEvent.volunteerQty[index]}]
               </Button>
               {selectedEvent.volunteers && selectedEvent.volunteers[type] && (
-                 [...Object.entries(selectedEvent.volunteers[type])].map(([key, volunteer]) => (
+                [...Object.entries(selectedEvent.volunteers[type])].map(([key, volunteer]) => (
                   <div>
                     {user && user.email === volunteer.email ? (
                       <Button

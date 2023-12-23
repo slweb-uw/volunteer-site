@@ -41,6 +41,15 @@ const useStyles = makeStyles((theme) => ({
       width: 230,
     },
   },
+  tag: {
+    border: "2px solid #4b2e83", 
+    borderRadius: '15px',
+    display: 'inline-block', 
+    padding: '5px 10px', 
+    fontWeight: 'bold', 
+    color: "#4b2e83",
+    fontSize: "12px"
+  }
 }));
 
 interface Props {
@@ -74,6 +83,9 @@ const EventCard: React.FC<Props> = (props) => {
         />
       </CardMedia>
       <CardContent>
+        {props.event?.SignupActive &&  ( 
+          <div className={classes.tag}>Signup Available</div>
+        )}
         <Typography component='h6' variant='h6'>
           <b>{props.event.Title}</b>
         </Typography>
