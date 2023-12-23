@@ -58,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
     minHeight: 50,
     borderRadius: "15",
     whiteSpace: 'normal',
+    fontSize: "12px",
     "&.Mui-disabled": {
       color: "#333333",
       display: "flex",
@@ -249,16 +250,31 @@ const Signup = () => {
 
   const handleAddVolunteer = (volunteerData) => {
     if (selectedRole) {
-      const volunteerRef = firebase.firestore()
-      .collection("" + location)
-      .doc("" + event)
-      .collection("signup")
-      .doc("" + selectedEvent?.id)
-      .update({
-        [`volunteers.${selectedRole}.${volunteerData.uid}`]: volunteerData
-      }).then(() => {
-        handleCloseVolunteerPopup();
-      });
+      const existingRolesOnEvent = selectedEvent.volunteers || {};
+      const hasSignedUpForEvent = Object.keys(existingRolesOnEvent).some(
+        (role) =>
+          role !== selectedRole &&
+          Object.keys(existingRolesOnEvent[role]).some(
+            (uid) => existingRolesOnEvent[role][uid].date === volunteerData.date
+          )
+      );
+  
+      if (hasSignedUpForEvent) {
+        alert("You have already signed up for another role on this event.");
+      } else {
+        const volunteerRef = firebase
+          .firestore()
+          .collection("" + location)
+          .doc("" + event)
+          .collection("signup")
+          .doc("" + selectedEvent?.id)
+          .update({
+            [`volunteers.${selectedRole}.${volunteerData.uid}`]: volunteerData,
+          })
+          .then(() => {
+            handleCloseVolunteerPopup();
+          });
+      }
     }
   };
 
@@ -491,7 +507,7 @@ const Signup = () => {
                 color="primary"
                 disabled
               >
-                {type}
+                {type} [{Object.keys(selectedEvent.volunteers[type] || {}).length}/{selectedEvent.volunteerQty[index]}]
               </Button>
               {selectedEvent.volunteers && selectedEvent.volunteers[type] && (
                  [...Object.entries(selectedEvent.volunteers[type])].map(([key, volunteer]) => (
