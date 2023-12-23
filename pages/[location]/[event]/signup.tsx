@@ -28,6 +28,8 @@ import VolunteerPopup from 'components/VolunteerSignupPopup';
 import SharePopup from 'components/SharePopup';
 import { exportToCSV } from 'helpers/csvExport';
 import AuthorizationMessage from 'pages/AuthorizationMessage';
+import { useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -80,6 +82,9 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: "wrap",
     justifyContent: "center",
     gap: "10px",
+    "@media only screen and (max-width: 900px)": {
+      width: "100%",  
+    },
   },
   message: {
     display: 'flex',
@@ -118,6 +123,9 @@ const Signup = () => {
   const [sharePopupOpen, setSharePopupOpen] = useState(false);
   const [shareLink, setShareLink] = useState('');
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   useEffect(() => {
     if (selectedEventId && events.length > 0) {
       const selectedEventFromData = events.find((e) => e.id === selectedEventId);
@@ -142,13 +150,13 @@ const Signup = () => {
   useEffect(() => {
     const updateScreenSize = () => {
       let newItemsPerPage: any;
-      if (window.innerWidth < 500) {
+      if (window.innerWidth < 520) {
         newItemsPerPage = 1;
-      } else if (window.innerWidth < 655) {
+      } else if (window.innerWidth < 735) {
         newItemsPerPage = 2;
       } else if (window.innerWidth < 960) {
         newItemsPerPage = 3;
-      } else if (window.innerWidth < 1170) {
+      } else if (window.innerWidth < 1172) {
         newItemsPerPage = 4;
       } else {
         newItemsPerPage = 5;
@@ -419,10 +427,11 @@ const Signup = () => {
         </div>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '0 15%', marginBottom: "2.5rem"}}>
-        <div style={{ display: 'flex', gap: '15px' }}>
-          {isAdmin && (
-            <>
+      {isMobile ? (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '15px', marginBottom: '1rem' }}>
+            {isAdmin && (
+              <>
                 <Tooltip title="Add Event" arrow>
                   <Button
                     variant='contained'
@@ -454,44 +463,119 @@ const Signup = () => {
                     </Tooltip>
                   </>
                 )}
-            </>
-          )}
+              </>
+            )}
+          </div>
+          <div style={{ display: 'flex', gap: '15px', marginBottom: "1rem" }}>
+            {selectedEvent && (
+              <>
+                <Tooltip title="Share link" arrow>
+                  <Button
+                    variant='outlined'
+                    color='secondary'
+                    onClick={generateShareLink}
+                  >
+                    Share
+                  </Button>
+                </Tooltip>
+                <Tooltip title="Event Information" arrow>
+                  <Button
+                    variant='outlined'
+                    color='secondary'
+                    startIcon={<InfoIcon />}
+                    onClick={() => setInformationPopupOpen(true)}
+                  >
+                    Info
+                  </Button>
+                </Tooltip>
+              </>
+            )}
+            <Tooltip title="Help" arrow>
+              <Button
+                variant='outlined'
+                color='secondary'
+                startIcon={<HelpIcon />}
+              >
+                Help
+              </Button>
+            </Tooltip>
+          </div>
         </div>
-        <div style={{display: 'flex', gap: '15px' }}>
-          {selectedEvent && (
-            <>
-              <Tooltip title="Share link" arrow>
-                <Button
-                  variant='outlined'
-                  color='secondary'
-                  onClick={generateShareLink}
-                >
-                  Share
-                </Button>
-              </Tooltip>
-              <Tooltip title="Event Information" arrow>
-                <Button
-                  variant='outlined'
-                  color='secondary'
-                  startIcon={<InfoIcon />}
-                  onClick={() => setInformationPopupOpen(true)}
-                >
-                  Info
-                </Button>
-              </Tooltip>
-            </>
-          )}
-          <Tooltip title="Help" arrow>
-            <Button
-              variant='outlined'
-              color='secondary'
-              startIcon={<HelpIcon />}
-            >
-              Help
-            </Button>
-          </Tooltip>
+      ) : (
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '0 15%', marginBottom: "2.5rem" }}>
+          <div style={{ display: 'flex', gap: '15px' }}>
+            {isAdmin && (
+              <>
+                <Tooltip title="Add Event" arrow>
+                  <Button
+                    variant='contained'
+                    color='secondary'
+                    onClick={() => handleOpenEventFormPopup('add', null)}
+                  >
+                    ADD
+                  </Button>
+                </Tooltip>
+                {selectedEvent && (
+                  <>
+                    <Tooltip title="Modify Event" arrow>
+                      <Button
+                        variant='contained'
+                        color='secondary'
+                        onClick={() => handleOpenEventFormPopup('edit', selectedEvent)}
+                      >
+                        EDIT
+                      </Button>
+                    </Tooltip>
+                    <Tooltip title="Download Event Information" arrow>
+                      <Button
+                        variant='contained'
+                        color='secondary'
+                        onClick={() => exportToCSV(selectedEvent)}
+                      >
+                        <DownloadIcon />
+                      </Button>
+                    </Tooltip>
+                  </>
+                )}
+              </>
+            )}
+          </div>
+          <div style={{ display: 'flex', gap: '15px' }}>
+            {selectedEvent && (
+              <>
+                <Tooltip title="Share link" arrow>
+                  <Button
+                    variant='outlined'
+                    color='secondary'
+                    onClick={generateShareLink}
+                  >
+                    Share
+                  </Button>
+                </Tooltip>
+                <Tooltip title="Event Information" arrow>
+                  <Button
+                    variant='outlined'
+                    color='secondary'
+                    startIcon={<InfoIcon />}
+                    onClick={() => setInformationPopupOpen(true)}
+                  >
+                    Info
+                  </Button>
+                </Tooltip>
+              </>
+            )}
+            <Tooltip title="Help" arrow>
+              <Button
+                variant='outlined'
+                color='secondary'
+                startIcon={<HelpIcon />}
+              >
+                Help
+              </Button>
+            </Tooltip>
+          </div>
         </div>
-      </div>
+      )}
 
       {events.length == 0 ? (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '40vh', fontFamily: 'Encode Sans Compressed'}}>
@@ -510,7 +594,7 @@ const Signup = () => {
                 {type} [{Object.keys(selectedEvent.volunteers[type] || {}).length}/{selectedEvent.volunteerQty[index]}]
               </Button>
               {selectedEvent.volunteers && selectedEvent.volunteers[type] && (
-                 [...Object.entries(selectedEvent.volunteers[type])].map(([key, volunteer]) => (
+                [...Object.entries(selectedEvent.volunteers[type])].map(([key, volunteer]) => (
                   <div>
                     {user && user.email === volunteer.email ? (
                       <Button
