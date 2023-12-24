@@ -8,10 +8,6 @@ import {
   Typography, 
   TextField, 
   Button, 
-  List, 
-  ListItem, 
-  ListItemText, 
-  ListItemSecondaryAction, 
   IconButton, 
   Divider,
   Dialog,
@@ -19,6 +15,11 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody
   } from "@material-ui/core";
   import HelpIcon from '@mui/icons-material/HelpOutline';
   import AuthorizationMessage from "./AuthorizationMessage";
@@ -44,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   },
   textField: {
     marginRight: 10,
-    width: "90%",
+    width: "100%",
   },
   addButton: {
     backgroundColor: "#4b2e83",
@@ -56,6 +57,8 @@ const useStyles = makeStyles((theme) => ({
   },
   removeButton: {
     color: "#808080",
+    margin: "0 0 0 0",
+    padding: "0 0 0 0",
     "&:hover": {
       backgroundColor: "#DDDDDD",
     },
@@ -103,10 +106,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AdminPage = () => {
-  const authorizedUsers = ["clarkel@uw.edu", "dnakas4@uw.edu", "bruno.futino@gmail.com", "uwslweb@gmail.com"]; // Hardcoded to limit who can manage admins
-
   const classes = useStyles();
-  const { user } = useAuth();
+  const { user, superAdmins } = useAuth();
   const [admins, setAdmins] = useState([]);
   const [newUserEmail, setNewUserEmail] = useState("");
   const [validEmail, setValidEmail] = useState(true);
@@ -114,6 +115,8 @@ const AdminPage = () => {
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
   const [volunteers, setVolunteers] = useState([]);
   const [activeSection, setActiveSection] = useState("admins");
+  const [confirmationOpen, setConfirmationOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState({});
 
   // Loads Admins
   const loadAdmins = () => {
@@ -185,7 +188,11 @@ const AdminPage = () => {
     firebase
       .firestore()
       .collection(userType)
-      .add({ email: newUserEmail })
+      //.doc(userUid)
+      .add({ 
+        email: newUserEmail,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      })
       .then(() => {
         console.log("User added successfully!");
         setNewUserEmail("");
@@ -215,22 +222,11 @@ const AdminPage = () => {
       });
   };
 
-  const [confirmationOpen, setConfirmationOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState({});
-
-  const openConfirmation = (user) => {
-    setConfirmationOpen(true);
-    setSelectedUser(user.email);
-  };
-
-  if (!user || !authorizedUsers.includes(user.email)) {
+  if (!user || !superAdmins.includes(user.email)) {
     return (
       <AuthorizationMessage user={user} />
     );
   }
-  const handleSectionChange = (section) => setActiveSection(section);
-  const openHelpDialog = () => setHelpDialogOpen(true);
-  const closeHelpDialog = () => setHelpDialogOpen(false);
 
   return (
     <div className={classes.root}>
@@ -243,7 +239,7 @@ const AdminPage = () => {
             className={classes.headerButton}
             variant={activeSection === "admins" ? "contained" : "outlined"}
             color="primary"
-            onClick={() => handleSectionChange("admins")}
+            onClick={() => setActiveSection("admins")}
           >
             Admins
           </Button>
@@ -251,29 +247,27 @@ const AdminPage = () => {
             className={classes.headerButton}
             variant={activeSection === "volunteers" ? "contained" : "outlined"}
             color="primary"
-            onClick={() => handleSectionChange("volunteers")}
+            onClick={() => setActiveSection("volunteers")}
           >
             Non-UW Preceptors
           </Button>
         </div>
-        <Button style={{marginLeft: "auto"}} onClick={openHelpDialog}>
+        <Button style={{marginLeft: "auto"}} onClick={() => setHelpDialogOpen(true)}>
           <HelpIcon color="secondary" />
         </Button>
       </div>
-
-    <form className={classes.form} onSubmit={addUser}>
-      <TextField
-        label={`Add new ${activeSection === "admins" ? "admin" : "volunteer"}`}
-        variant="outlined"
-        className={classes.textField}
-        value={newUserEmail}
-        onChange={(e) => setNewUserEmail(e.target.value.toLowerCase())}
-        required
-      />
-      <Button type="submit" variant="contained" className={classes.addButton}>
-        Add
-      </Button>
-    </form>
+      <form className={classes.form} onSubmit={addUser}>
+        <TextField
+          label={`Add new ${activeSection === "admins" ? "admin" : "volunteer"}`}
+          variant="outlined"
+          className={classes.textField}
+          value={newUserEmail}
+          onChange={(e) => setNewUserEmail(e.target.value.toLowerCase())}
+        />
+        <Button type="submit" variant="contained" className={classes.addButton}>
+          Add
+        </Button>
+      </form>
     {!validEmail && (
       <div className={classes.popup}>*Invalid email format</div>
     )}
@@ -281,54 +275,60 @@ const AdminPage = () => {
       <div className={classes.popup} style={{color:'orange'}}>*Admin already exists</div>
     )}
     <Divider className={classes.divider} />
-    <List>
-      {activeSection === "admins" ? (admins.map((admin, index) => (
-        <React.Fragment key={admin.id}>
-          <ListItem
-            className={classes.listItem + " " + (index % 2 === 0 ? classes.evenListItem : "")}
-          >
-            <ListItemText
-              primary={admin.email}
-              classes={{ primary: classes.listItemText }}
-            />
-            <ListItemSecondaryAction>
-              <IconButton
-                edge="end"
-                aria-label="delete"
-                className={classes.removeButton}
-                onClick={() => openConfirmation(admin)}
-              >
-                <DeleteIcon />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
-          <Divider />
-        </React.Fragment>
-      ))) : (volunteers.map((volunteer, index) => (
-        <React.Fragment key={volunteer.id}>
-          <ListItem
-            className={classes.listItem + " " + (index % 2 === 0 ? classes.evenListItem : "")}
-          >
-            <ListItemText
-              primary={volunteer.email}
-              classes={{ primary: classes.listItemText }}
-            />
-            <ListItemSecondaryAction>
-              <IconButton
-                edge="end"
-                aria-label="delete"
-                className={classes.removeButton}
-                onClick={() => openConfirmation(volunteer)}
-              >
-                <DeleteIcon />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
-          <Divider />
-        </React.Fragment>
-        
-      )))}
-    </List>
+    <Table>
+      <TableHead>
+        <TableRow >
+          <TableCell>Email Address</TableCell>
+          <TableCell>Date Added</TableCell>
+          <TableCell align="right">Delete</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {activeSection === "admins" ? (
+          admins
+            .filter((admin) => admin.email.toLowerCase().includes(newUserEmail))
+            .map((admin, index) => (
+              <TableRow key={admin.id} className={index % 2 === 0 ? classes.evenListItem : ""}>
+                <TableCell className={classes.listItemText}>{admin.email}</TableCell>
+                <TableCell>{admin.timestamp && admin.timestamp.toDate().toLocaleString()}</TableCell>
+                <TableCell align="right">
+                  <IconButton
+                    aria-label="delete"
+                    className={classes.removeButton}
+                    onClick={() => {
+                      setConfirmationOpen(true);
+                      setSelectedUser(admin.email);
+                    }}
+                  >
+                    <DeleteIcon style={{height:"25px"}}/>
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))
+        ) : (
+          volunteers
+            .filter((volunteer) => volunteer.email.toLowerCase().includes(newUserEmail))
+            .map((volunteer, index) => (
+              <TableRow key={volunteer.id} className={index % 2 === 0 ? classes.evenListItem : ""}>
+                <TableCell className={classes.listItemText}>{volunteer.email}</TableCell>
+                <TableCell>{volunteer.timestamp && volunteer.timestamp.toDate().toLocaleString()}</TableCell>
+                <TableCell align="right">
+                  <IconButton
+                    aria-label="delete"
+                    className={classes.removeButton}
+                    onClick={() => {
+                      setConfirmationOpen(true);
+                      setSelectedUser(volunteer.email);
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))
+        )}
+      </TableBody>
+    </Table>
     <Dialog open={confirmationOpen} onClose={() => setConfirmationOpen(false)}>
       <DialogTitle>Delete {activeSection === "admins" ?  "admin" : "volunteer"}?</DialogTitle>
       <DialogContent>
@@ -345,7 +345,7 @@ const AdminPage = () => {
         </Button>
       </DialogActions>
     </Dialog>
-    <Dialog open={helpDialogOpen} onClose={closeHelpDialog}>
+    <Dialog open={helpDialogOpen} onClose={() => setHelpDialogOpen(false)}>
       <DialogTitle>User Manager Guide</DialogTitle>
       <DialogContent>
         <DialogContentText>
@@ -359,13 +359,12 @@ const AdminPage = () => {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={closeHelpDialog} color="primary">
+        <Button onClick={() => setHelpDialogOpen(false)} color="primary">
           Close
         </Button>
       </DialogActions>
     </Dialog>
   </div>
-  
   );
 };
 
