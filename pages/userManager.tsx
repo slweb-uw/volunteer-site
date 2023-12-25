@@ -118,6 +118,14 @@ const AdminPage = () => {
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState({});
 
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortedColumn, setSortedColumn] = useState("email");
+
+  const handleSort = (column) => {
+    setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
+    setSortedColumn(column);
+  };
+
   // Loads Admins
   const loadAdmins = () => {
     const unsubscribe = firebase
@@ -128,7 +136,6 @@ const AdminPage = () => {
         snapshot.forEach((doc) => {
           adminsData.push({ id: doc.id, ...doc.data() });
         });
-        adminsData.sort((a, b) => (a.email > b.email ? 1 : -1));
         setAdmins(adminsData);
       });
     return unsubscribe;
@@ -144,7 +151,6 @@ const AdminPage = () => {
         snapshot.forEach((doc) => {
           volunteerData.push({ id: doc.id, ...doc.data() });
         });
-        volunteerData.sort((a, b) => (a.email > b.email ? 1 : -1));
         setVolunteers(volunteerData);
       });
     return unsubscribe;
@@ -274,12 +280,15 @@ const AdminPage = () => {
     {existentEmail && (
       <div className={classes.popup} style={{color:'orange'}}>*Admin already exists</div>
     )}
-    <Divider className={classes.divider} />
     <Table>
       <TableHead>
         <TableRow >
-          <TableCell>Email Address</TableCell>
-          <TableCell>Date Added</TableCell>
+          <TableCell onClick={() => handleSort("email")}>
+            Email Address {sortedColumn === "email" && <span>{sortOrder === "asc" ? "▲" : "▼"}</span>}
+          </TableCell>
+          <TableCell onClick={() => handleSort("timestamp")}>
+              Date Added {sortedColumn === "timestamp" && <span>{sortOrder === "asc" ? "▲" : "▼"}</span>}
+            </TableCell>
           <TableCell align="right">Delete</TableCell>
         </TableRow>
       </TableHead>
@@ -287,6 +296,10 @@ const AdminPage = () => {
         {activeSection === "admins" ? (
           admins
             .filter((admin) => admin.email.toLowerCase().includes(newUserEmail))
+            .sort((a, b) => {
+              const order = sortOrder === "asc" ? 1 : -1;
+              return a[sortedColumn] > b[sortedColumn] ? order : -order;
+            })
             .map((admin, index) => (
               <TableRow key={admin.id} className={index % 2 === 0 ? classes.evenListItem : ""}>
                 <TableCell className={classes.listItemText}>{admin.email}</TableCell>
@@ -308,6 +321,10 @@ const AdminPage = () => {
         ) : (
           volunteers
             .filter((volunteer) => volunteer.email.toLowerCase().includes(newUserEmail))
+            .sort((a, b) => {
+              const order = sortOrder === "asc" ? 1 : -1;
+              return a[sortedColumn] > b[sortedColumn] ? order : -order;
+            })
             .map((volunteer, index) => (
               <TableRow key={volunteer.id} className={index % 2 === 0 ? classes.evenListItem : ""}>
                 <TableCell className={classes.listItemText}>{volunteer.email}</TableCell>
