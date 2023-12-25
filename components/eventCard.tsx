@@ -6,6 +6,7 @@ import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 import EventImage from "./eventImage";
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Bubble from "./interprofessionalTag"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -67,6 +68,9 @@ const EventCard: React.FC<Props> = (props) => {
     imageURL = props.event.imageURL;
   }
 
+const isInterprofessional = props.event.Title === "Listening Project" ||
+  props.event.Title === "UW/HMC Mobile Health Outreach (MHO)"
+
   return (
     <Card
       tabIndex={0}
@@ -82,20 +86,22 @@ const EventCard: React.FC<Props> = (props) => {
           eventTitle={props.event.Title}
         />
       </CardMedia>
-      <CardContent>
-        {props.event?.SignupActive &&  ( 
-          <div className={classes.tag}>Signup Available</div>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        {isInterprofessional && (
+          <Bubble text="Interprofessional" /> 
         )}
-        <Typography component='h6' variant='h6'>
-          <b>{props.event.Title}</b>
-        </Typography>
-        <Typography variant='subtitle1' color='textSecondary' gutterBottom>
-          {props.event.Organization}
-        </Typography>
-        <Typography className={classes.details}>
-          {props.event["Project Description"] ?? NotSpecified }
-        </Typography>
-      </CardContent>
+        <CardContent>
+          <Typography component='h6' variant='h6'>
+            <b>{props.event.Title}</b>
+          </Typography>
+          <Typography variant='subtitle1' color='textSecondary' gutterBottom>
+            {props.event.Organization}
+          </Typography>
+          <Typography className={classes.details}>
+            {props.event["Project Description"] ?? NotSpecified }
+          </Typography>
+        </CardContent>
+      </div>
     </Card>
   );
 };
