@@ -41,15 +41,6 @@ const useStyles = makeStyles((theme) => ({
       height: 300,
       width: 230,
     },
-  },
-  tag: {
-    border: "2px solid #4b2e83", 
-    borderRadius: '15px',
-    display: 'inline-block', 
-    padding: '5px 10px', 
-    fontWeight: 'bold', 
-    color: "#4b2e83",
-    fontSize: "12px"
   }
 }));
 
@@ -86,11 +77,13 @@ const isInterprofessional = props.event.Title === "Listening Project" ||
           eventTitle={props.event.Title}
         />
       </CardMedia>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        {isInterprofessional && (
-          <Bubble text="Interprofessional" /> 
-        )}
         <CardContent>
+          {props.event?.SignupActive && (
+            <Bubble text="Signup Available" /> 
+          )}
+          {isInterprofessional && (
+            <Bubble text="Interprofessional" /> 
+          )}
           <Typography component='h6' variant='h6'>
             <b>{props.event.Title}</b>
           </Typography>
@@ -101,7 +94,6 @@ const isInterprofessional = props.event.Title === "Listening Project" ||
             {props.event["Project Description"] ?? NotSpecified }
           </Typography>
         </CardContent>
-      </div>
     </Card>
   );
 };
