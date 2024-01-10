@@ -44,7 +44,6 @@ const reservedKeys = [
   "Contact Information and Cancellation Policy",
   "Contact Information",
   "Website Link",
-  "Sign-up Link",
   "Address;Parking;Directions",
   "Clinic Flow",
   "Tips and Reminders",
@@ -104,7 +103,7 @@ const RichEventField: React.FC<RichEventFieldProps> = ({
   } else {
     data = value;
   }
-  const remove: boolean | undefined = removeTopMargin ? data?.includes("<p>") : false;
+  const remove: boolean | undefined = removeTopMargin ? (typeof data === 'string' && data.includes("<p>")) : false;
   if(!data) return null;
   return (
     <>
@@ -137,7 +136,6 @@ const Event: NextPage<Props> = ({ classes }) => {
       .collection("" + location)
       .doc("" + event)
       .get(); // queries data
-    // setData(next.data() as any);
     setEventData(next.data() as EventData);
   };
 
@@ -222,6 +220,7 @@ const Event: NextPage<Props> = ({ classes }) => {
         {Object.keys(eventData)
           .filter((name) => !reservedKeys.includes(name))
           .filter((name) => eventData[name] != null && eventData[name] != "")
+          .filter((name) => name != "SignupActive")
           .map((name) => (
             <RichEventField key={name} name={name} value={eventData[name]} removeTopMargin={true} />
           ))}

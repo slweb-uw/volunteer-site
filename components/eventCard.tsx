@@ -59,9 +59,7 @@ const EventCard: React.FC<Props> = (props) => {
     imageURL = props.event.imageURL;
   }
 
-//interprofessional tag is applied conditionally by project title (name)
-const isInterprofessional = props.event.Title === "Listening Project" ||
-  props.event.Title === "UW/HMC Mobile Health Outreach (MHO)"
+const isInterprofessional = props.event["Types of Volunteers Needed"].length > 1;
 
   return (
     <Card

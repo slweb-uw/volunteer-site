@@ -132,12 +132,7 @@ const Header: React.FC<{}> = (props) => {
         >
           Sign In 
         </a>
-        <SignInPopup 
-         open={isSignInPopupOpen} 
-         close={() => setSignInPopupOpen(false)}
-        />
       </>
-        
     ),
     
   ];
@@ -163,6 +158,10 @@ const Header: React.FC<{}> = (props) => {
           
         </div>
       </Hidden>
+      <SignInPopup 
+         open={isSignInPopupOpen} 
+         close={() => setSignInPopupOpen(false)}
+      />
     </div>
   );
 };

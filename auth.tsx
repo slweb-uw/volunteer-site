@@ -7,11 +7,13 @@ const AuthContext = createContext<{
   isAdmin: boolean;
   isAuthorized: boolean;
   superAdmins: string[];
+  admins: any;
 }>({
   user: null,
   isAdmin: false,
   isAuthorized: false,
-  superAdmins: ["clarkel@uw.edu", "dnakas4@uw.edu", "bruno.futino@gmail.com", "uwslweb@gmail.com"]
+  superAdmins: ["clarkel@uw.edu", "dnakas4@uw.edu", "bruno.futino@gmail.com", "uwslweb@gmail.com"],
+  admins: null
 });
 
 export function AuthProvider({ children }: any) {
@@ -61,7 +63,7 @@ export function AuthProvider({ children }: any) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isAdmin, isAuthorized, superAdmins: ["clarkel@uw.edu", "dnakas4@uw.edu", "bruno.futino@gmail.com", "uwslweb@gmail.com"] }}>
+    <AuthContext.Provider value={{ user, isAdmin, isAuthorized, superAdmins: ["clarkel@uw.edu", "dnakas4@uw.edu", "bruno.futino@gmail.com", "uwslweb@gmail.com"], admins }}>
       {children}
     </AuthContext.Provider>
   );

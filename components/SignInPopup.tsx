@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { firebaseClient } from "firebaseClient";
 import { 
     Dialog, 
@@ -50,21 +50,16 @@ type SignInPopupProps = {
 
 const SignInPopup: React.FC<SignInPopupProps> = ({ open, close }) => {
   const classes = useStyles();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSignInWithProvider = async (provider: any) => {
     try {
       const result = await firebaseClient.auth().signInWithPopup(provider);
-  
-      if (result.additionalUserInfo && result.additionalUserInfo.isNewUser) {
-
-      } else {
-        const currentUser = firebaseClient.auth().currentUser;
-        if (!currentUser.providerData.some((pd) => pd.providerId === provider.providerId)) {
-          await currentUser.linkWithPopup(provider);
-        }
-      }
     } catch (error) {
-      console.error("Error signing in:", error);
+      if(error && error.code == "auth/account-exists-with-different-credential"){
+        const option = provider.id == "google.com" ? "Microsoft" : "Google";
+        setErrorMessage("An account already exists with the same email address but different sign-in credentials. Please try signing-in using: " + option)
+      }
     }
   };
 
@@ -76,10 +71,18 @@ const SignInPopup: React.FC<SignInPopupProps> = ({ open, close }) => {
         </Typography>
       </DialogTitle>
       <DialogContent>
+        <span style={{color: "red", maxWidth: "250px"}}>{errorMessage}</span>
         <div className={classes.buttonRow}>
           <Button
             variant="contained"
-            onClick={() => handleSignInWithProvider(new firebaseClient.auth.GoogleAuthProvider())}
+            onClick={() => {
+              const googleProvider = new firebaseClient.auth.GoogleAuthProvider();
+              googleProvider.setCustomParameters({
+                prompt: 'consent',
+              });
+              googleProvider.addScope("email");
+              handleSignInWithProvider(googleProvider);
+            }}
             startIcon={GoogleLogo}
             className={classes.button}
           >
@@ -89,7 +92,14 @@ const SignInPopup: React.FC<SignInPopupProps> = ({ open, close }) => {
         <div className={classes.buttonRow}>
           <Button
             variant="contained"
-            onClick={() => handleSignInWithProvider(new firebaseClient.auth.OAuthProvider("microsoft.com"))}
+            onClick={() => {
+              const microsoftProvider = new firebaseClient.auth.OAuthProvider("microsoft.com");
+              microsoftProvider.setCustomParameters({
+                prompt: 'consent',
+              });
+              microsoftProvider.addScope("email");
+              handleSignInWithProvider(microsoftProvider);
+            }}
             startIcon={MicrosoftLogo}
             className={classes.button}
           >
