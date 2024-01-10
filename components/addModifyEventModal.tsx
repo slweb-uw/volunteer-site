@@ -167,6 +167,8 @@ const reservedFields = new Set([
   "StartDate",
   "EndDate",
   "Location",
+  "SignupActive",
+  "Sign-up Link"
 ]);
 
 const weekdayOptions = [
