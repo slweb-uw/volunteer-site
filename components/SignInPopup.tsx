@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { firebaseClient } from "firebaseClient";
 import { 
     Dialog, 
@@ -27,12 +27,13 @@ const GoogleLogo = (
   
 const useStyles = makeStyles((theme) => ({
   dialog: {
-    minWidth: 300,
+    minWidth: 350,
   },
   buttonRow: {
     display: "flex",
     justifyContent: "center",
     marginTop: theme.spacing(2),
+    marginBottom: "1.5rem"
   },
   button: {
     margin: theme.spacing(1),
@@ -52,9 +53,14 @@ const SignInPopup: React.FC<SignInPopupProps> = ({ open, close }) => {
   const classes = useStyles();
   const [errorMessage, setErrorMessage] = useState("");
 
+  useEffect(() => {
+    setErrorMessage("");
+  }, [open]); 
+
   const handleSignInWithProvider = async (provider: any) => {
     try {
       const result = await firebaseClient.auth().signInWithPopup(provider);
+      close();
     } catch (error) {
       if(error && error.code == "auth/account-exists-with-different-credential"){
         const option = provider.id == "google.com" ? "Microsoft" : "Google";
@@ -71,7 +77,9 @@ const SignInPopup: React.FC<SignInPopupProps> = ({ open, close }) => {
         </Typography>
       </DialogTitle>
       <DialogContent>
-        <span style={{color: "red", maxWidth: "250px"}}>{errorMessage}</span>
+        <div style={{maxWidth: "350px"}}>
+          <span style={{color: "red"}}>{errorMessage}</span>
+        </div>
         <div className={classes.buttonRow}>
           <Button
             variant="contained"
