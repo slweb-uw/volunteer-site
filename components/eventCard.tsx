@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     },
     "@media (max-width: 500px)": {
       flexDirection: "column",
-      alignItems: "center",
+      alignItems: "left",
     },
   },
   details: {
@@ -59,7 +59,8 @@ const EventCard: React.FC<Props> = (props) => {
     imageURL = props.event.imageURL;
   }
 
-const isInterprofessional = props.event["Types of Volunteers Needed"].length > 1;
+const volunteerTypes = props.event["Types of Volunteers Needed"];
+const isInterprofessional = volunteerTypes.filter((type) => type != "Providers" && type != "Undergraduates" && type != "Other").length > 1;
 
   return (
     <Card
