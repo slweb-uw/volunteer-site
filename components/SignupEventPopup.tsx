@@ -167,6 +167,13 @@ const SignupEventPopup = ({ open, close, mode, event, handleEventAction }) => {
             return;
         }
 
+        const hasInvalidQty = volunteerData.some(item => parseInt(item.qty) < 1);
+
+        if (hasInvalidQty) {
+            alert('Volunteer Quantity must be at least 1.');
+            return;
+        }
+
         if (!validateEmail()) {
             return;
         }
