@@ -195,7 +195,7 @@ const Event: NextPage<Props> = ({ classes }) => {
             value={eventData["Types of Volunteers Needed"] ? naturalJoin(eventData["Types of Volunteers Needed"]) : undefined}
             removeTopMargin={true}
           />
-          { isAdmin && (
+          { (eventData?.SignupActive || isAdmin) && (
             <Link href={`/${location}/${eventData.id}/signup`}>
               <Button
                 color="primary"

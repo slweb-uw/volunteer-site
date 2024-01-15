@@ -110,7 +110,7 @@ const Signup = () => {
   const router = useRouter();
   const { location, event, selectedEventId } = router.query;
   const classes = useStyles();
-  const { user, isAdmin, isAuthorized } = useAuth();
+  const { user, isAdmin, isAuthorized, isLead } = useAuth();
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [editedEvent, setEditedEvent] = useState(null);
@@ -241,7 +241,7 @@ const Signup = () => {
     fetchData();
   }, [location, event]);
 
-  if (!isAdmin && !isAuthorized) {
+  if (!isAdmin && !isAuthorized && !isLead) {
     return (
       <AuthorizationMessage user={user} />
     );
@@ -436,7 +436,7 @@ const Signup = () => {
       {isMobile ? (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div style={{ display: 'flex', gap: '15px', marginBottom: '1rem' }}>
-            {isAdmin && (
+            {(isAdmin || isLead) && (
               <>
                 <Tooltip title="Add Event" arrow>
                   <Button
@@ -510,7 +510,7 @@ const Signup = () => {
       ) : (
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '0 15%', marginBottom: "2.5rem" }}>
           <div style={{ display: 'flex', gap: '15px' }}>
-            {isAdmin && (
+            {(isAdmin || isLead) && (
               <>
                 <Tooltip title="Add Event" arrow>
                   <Button
@@ -613,7 +613,7 @@ const Signup = () => {
                         {volunteer.firstName} {volunteer.lastName.charAt(0)}.
                       </Button>
                     ) : (
-                      isAdmin ? (
+                      (isAdmin || isLead)  ? (
                         <Button
                         className={classes.roleButton}
                         variant={"outlined"}

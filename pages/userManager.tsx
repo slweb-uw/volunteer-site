@@ -9,7 +9,6 @@ import {
   TextField, 
   Button, 
   IconButton, 
-  Divider,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -105,16 +104,23 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const label: any = {
+  "Admins": "admin",
+  "Leads": "project lead",
+  "Volunteers": "non-UW preceptor"
+};
+
 const AdminPage = () => {
   const classes = useStyles();
-  const { user, superAdmins } = useAuth();
+  const { user, isAdmin } = useAuth();
   const [admins, setAdmins] = useState([]);
+  const [volunteers, setVolunteers] = useState([]);
+  const [leads, setLeads] = useState([]);
   const [newUserEmail, setNewUserEmail] = useState("");
   const [validEmail, setValidEmail] = useState(true);
   const [existentEmail, setExistentEmail] = useState(false);
   const [helpDialogOpen, setHelpDialogOpen] = useState(false);
-  const [volunteers, setVolunteers] = useState([]);
-  const [activeSection, setActiveSection] = useState("admins");
+  const [activeSection, setActiveSection] = useState("Admins");
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState({});
 
@@ -156,8 +162,28 @@ const AdminPage = () => {
     return unsubscribe;
   };
 
+  // Loads Leads
+  const loadLeads = () => {
+    const unsubscribe = firebase
+      .firestore()
+      .collection("Leads")
+      .onSnapshot((snapshot) => {
+        const leadData = [];
+        snapshot.forEach((doc) => {
+          leadData.push({ id: doc.id, ...doc.data() });
+        });
+        setLeads(leadData);
+      });
+    return unsubscribe;
+  };
+
   useEffect(() => {
     const unsubscribe = loadAdmins();
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = loadLeads();
     return unsubscribe;
   }, []);
   
@@ -178,7 +204,7 @@ const AdminPage = () => {
     }
     
     var existentEmail;
-    if(activeSection === "admins"){
+    if(activeSection === "Admins"){
       existentEmail= admins.find((admin) => admin.email === newUserEmail);
     }else{
       existentEmail= volunteers.find((volunteer) => volunteer.email === newUserEmail);
@@ -189,12 +215,9 @@ const AdminPage = () => {
       return;
     }
     
-    var userType = "Volunteers";
-    if(activeSection === "admins") userType = "Admins";
     firebase
       .firestore()
-      .collection(userType)
-      //.doc(userUid)
+      .collection(activeSection)
       .add({ 
         email: newUserEmail,
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
@@ -209,12 +232,9 @@ const AdminPage = () => {
   };
 
   const removeUser = (userEmail) => {
-    var userType = "Volunteers";
-    if(activeSection === "admins") userType = "Admins";
-    
     firebase
       .firestore()
-      .collection(userType)
+      .collection(activeSection)
       .where("email", "==", userEmail)
       .get()
       .then((querySnapshot) => {
@@ -228,11 +248,38 @@ const AdminPage = () => {
       });
   };
 
-  if (!user || !superAdmins.includes(user.email)) {
+  if (!user || !isAdmin) {
     return (
       <AuthorizationMessage user={user} />
     );
   }
+
+  const renderList = (type) => {
+    return type
+    .filter((user) => user.email.toLowerCase().includes(newUserEmail))
+    .sort((a, b) => {
+      const order = sortOrder === "asc" ? 1 : -1;
+      return a[sortedColumn] > b[sortedColumn] ? order : -order;
+    })
+    .map((user, index) => (
+      <TableRow key={user.id} className={index % 2 === 0 ? classes.evenListItem : ""}>
+        <TableCell className={classes.listItemText}>{user.email}</TableCell>
+        <TableCell>{user.timestamp && user.timestamp.toDate().toLocaleString()}</TableCell>
+        <TableCell align="right">
+          <IconButton
+            aria-label="delete"
+            className={classes.removeButton}
+            onClick={() => {
+              setConfirmationOpen(true);
+              setSelectedUser(user.email);
+            }}
+          >
+            <DeleteIcon style={{ height: "25px" }} />
+          </IconButton>
+        </TableCell>
+      </TableRow>
+    ));
+  };
 
   return (
     <div className={classes.root}>
@@ -243,17 +290,25 @@ const AdminPage = () => {
         <div className={classes.centeredButtons}>
           <Button
             className={classes.headerButton}
-            variant={activeSection === "admins" ? "contained" : "outlined"}
+            variant={activeSection === "Admins" ? "contained" : "outlined"}
             color="primary"
-            onClick={() => setActiveSection("admins")}
+            onClick={() => setActiveSection("Admins")}
           >
             Admins
           </Button>
           <Button
             className={classes.headerButton}
-            variant={activeSection === "volunteers" ? "contained" : "outlined"}
+            variant={activeSection === "Leads" ? "contained" : "outlined"}
             color="primary"
-            onClick={() => setActiveSection("volunteers")}
+            onClick={() => setActiveSection("Leads")}
+          >
+            Project Leads
+          </Button>
+          <Button
+            className={classes.headerButton}
+            variant={activeSection === "Volunteers" ? "contained" : "outlined"}
+            color="primary"
+            onClick={() => setActiveSection("Volunteers")}
           >
             Non-UW Preceptors
           </Button>
@@ -264,7 +319,7 @@ const AdminPage = () => {
       </div>
       <form className={classes.form} onSubmit={addUser}>
         <TextField
-          label={`Add new ${activeSection === "admins" ? "admin" : "volunteer"}`}
+          label={`Search or add new ${label[activeSection]}`}
           variant="outlined"
           className={classes.textField}
           value={newUserEmail}
@@ -293,57 +348,9 @@ const AdminPage = () => {
         </TableRow>
       </TableHead>
       <TableBody>
-        {activeSection === "admins" ? (
-          admins
-            .filter((admin) => admin.email.toLowerCase().includes(newUserEmail))
-            .sort((a, b) => {
-              const order = sortOrder === "asc" ? 1 : -1;
-              return a[sortedColumn] > b[sortedColumn] ? order : -order;
-            })
-            .map((admin, index) => (
-              <TableRow key={admin.id} className={index % 2 === 0 ? classes.evenListItem : ""}>
-                <TableCell className={classes.listItemText}>{admin.email}</TableCell>
-                <TableCell>{admin.timestamp && admin.timestamp.toDate().toLocaleString()}</TableCell>
-                <TableCell align="right">
-                  <IconButton
-                    aria-label="delete"
-                    className={classes.removeButton}
-                    onClick={() => {
-                      setConfirmationOpen(true);
-                      setSelectedUser(admin.email);
-                    }}
-                  >
-                    <DeleteIcon style={{height:"25px"}}/>
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))
-        ) : (
-          volunteers
-            .filter((volunteer) => volunteer.email.toLowerCase().includes(newUserEmail))
-            .sort((a, b) => {
-              const order = sortOrder === "asc" ? 1 : -1;
-              return a[sortedColumn] > b[sortedColumn] ? order : -order;
-            })
-            .map((volunteer, index) => (
-              <TableRow key={volunteer.id} className={index % 2 === 0 ? classes.evenListItem : ""}>
-                <TableCell className={classes.listItemText}>{volunteer.email}</TableCell>
-                <TableCell>{volunteer.timestamp && volunteer.timestamp.toDate().toLocaleString()}</TableCell>
-                <TableCell align="right">
-                  <IconButton
-                    aria-label="delete"
-                    className={classes.removeButton}
-                    onClick={() => {
-                      setConfirmationOpen(true);
-                      setSelectedUser(volunteer.email);
-                    }}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))
-        )}
+      {activeSection === "Admins" ? renderList(admins) : null}
+      {activeSection === "Volunteers" ? renderList(volunteers) : null}
+      {activeSection === "Leads" ? renderList(leads) : null}
       </TableBody>
     </Table>
     <Dialog open={confirmationOpen} onClose={() => setConfirmationOpen(false)}>
@@ -366,10 +373,13 @@ const AdminPage = () => {
       <DialogTitle>User Manager Guide</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          The User Manager Interface provides a platform for listing and managing the two types of users: <b>Admins</b> and <b>Non-UW Preceptors</b>.
+          The User Manager Interface provides a platform for listing and managing the three types of users: <b>Admins</b>, <b>Project Leads</b> and <b>Non-UW Preceptors</b>.
         </DialogContentText>
         <DialogContentText>
-          <b>Admins</b> have special privileges, allowing them to create, edit, and remove events.
+          <b>Admins</b> have special privileges, allowing them to create, edit, and remove projects and events.
+        </DialogContentText>
+        <DialogContentText>
+          <b>Project Leads</b> are restricted to managing events but are not allowed to manage projects.
         </DialogContentText>
         <DialogContentText>
           <b>Non-UW Preceptors</b> are users with non-UW email addresses who have access to volunteer for events.
