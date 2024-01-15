@@ -34,28 +34,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Footer: React.FC<{}> = () => {
-  const { user, superAdmins } = useAuth();
-  const [isAdmin, setIsAdmin] = React.useState(false);
-  const [isLoadingUser, setIsLoadingUser] = React.useState(true);
+  const { isAdmin } = useAuth();
   
-  const checkUser = async () => {
-    const user = firebaseClient.auth().currentUser;
-    if(user && (superAdmins?.includes(user.email))){
-      setIsAdmin(true);
-    }else{
-      setIsAdmin(false);
-    }
-    setIsLoadingUser(false);
-  }
-    
-  React.useEffect(() => {
-    checkUser();
-  }, []);
-
-  React.useEffect(() => {
-    checkUser();
-  }, [user]);
-
   return (
     <footer
       className={useStyles().footer}
@@ -71,7 +51,7 @@ const Footer: React.FC<{}> = () => {
           experience on this website.
         </i>
       </Typography>
-      {user && isAdmin && (
+      { isAdmin && (
           <a href="/userManager" style={{color: "white", paddingTop: "100px", fontWeight: 600}}>User Manager</a>
       )}
     </footer>

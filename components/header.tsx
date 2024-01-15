@@ -86,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
 const Divider = () => <span className={useStyles().divider}>/</span>;
 
 const Header: React.FC<{}> = (props) => {
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, isLead } = useAuth();
   const [isSignInPopupOpen, setSignInPopupOpen] = useState(false);
 
   const links: React.ReactNode[] = [
@@ -116,9 +116,12 @@ const Header: React.FC<{}> = (props) => {
           tabIndex={0}
         >
           Sign Out
-          {isAdmin ? (
+          {isAdmin && (
           <p style={{color: "gold", margin: 0, fontSize: "12px"}}>ADMIN</p>
-        ) : null}
+          )}
+          {isLead && (
+          <p style={{color: "gold", margin: 0, fontSize: "12px"}}>LEAD</p>
+          )}
         </a>
         
       </>

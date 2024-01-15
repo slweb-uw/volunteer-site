@@ -6,21 +6,25 @@ const AuthContext = createContext<{
   user: firebaseClient.User | null;
   isAdmin: boolean;
   isAuthorized: boolean;
-  superAdmins: string[];
   admins: any;
+  leads: any;
+  isLead: boolean;
 }>({
   user: null,
   isAdmin: false,
   isAuthorized: false,
-  superAdmins: ["clarkel@uw.edu", "dnakas4@uw.edu", "bruno.futino@gmail.com", "uwslweb@gmail.com"],
-  admins: null
+  admins: null,
+  leads: null,
+  isLead: false
 });
 
 export function AuthProvider({ children }: any) {
   const [user, setUser] = useState<firebaseClient.User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isLead, setIsLead] = useState(false);
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [admins, setAdmins] = useState([]);
+  const [leads, setLeads] = useState([]);
   const [authorizedUsers, setAuthorizedUsers] = useState([]); 
 
   useEffect(() => {
@@ -34,6 +38,10 @@ export function AuthProvider({ children }: any) {
       const authorizedUsersData: any = volunteersSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setAuthorizedUsers(authorizedUsersData);
 
+      const leadSnapshot = await firebaseClient.firestore().collection('Leads').get();
+      const leadData: any = leadSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setLeads(leadData);
+
       const user = firebaseClient.auth().currentUser;
       if (!user) {
         setUser(null);
@@ -46,6 +54,9 @@ export function AuthProvider({ children }: any) {
       const adminCheck = adminsData.find((admin: any) => admin.email === user.email);
       setIsAdmin(!!adminCheck);
 
+      const leadCheck = leadData.find((lead: any) => lead.email === user.email);
+      setIsLead(!!leadCheck);
+      
       const authorizedCheck = authorizedUsersData.some((authUser: any) => authUser.email === user.email) || (user.email && user.email.endsWith("@uw.edu"));
       setIsAuthorized(authorizedCheck || isAdmin);
       const token = await user.getIdToken();
@@ -63,7 +74,7 @@ export function AuthProvider({ children }: any) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isAdmin, isAuthorized, superAdmins: ["clarkel@uw.edu", "dnakas4@uw.edu", "bruno.futino@gmail.com", "uwslweb@gmail.com"], admins }}>
+    <AuthContext.Provider value={{ user, isAdmin, isAuthorized, admins, leads, isLead }}>
       {children}
     </AuthContext.Provider>
   );
