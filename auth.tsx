@@ -51,13 +51,28 @@ export function AuthProvider({ children }: any) {
         return;
       }
 
+      const isRoleExpired = (timestamp: firebaseClient.firestore.Timestamp) => {
+        // Convert Firestore Timestamp to JavaScript Date
+        const creationDate = timestamp.toDate();
+    
+        // Calculate the expiry timestamp (one year from creation)
+        const expiryDate = new Date(creationDate);
+        expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+    
+        // Check if the current time is after the expiry timestamp
+        return Date.now() > expiryDate.getTime();
+      };
+
       const adminCheck = adminsData.find((admin: any) => admin.email === user.email);
       setIsAdmin(!!adminCheck);
 
-      const leadCheck = leadData.find((lead: any) => lead.email === user.email);
+      const leadCheck = leadData.find((lead: any) => 
+        lead.email === user.email && !isRoleExpired(lead.creationTimestamp));
       setIsLead(!!leadCheck);
       
-      const authorizedCheck = authorizedUsersData.some((authUser: any) => authUser.email === user.email) || (user.email && user.email.endsWith("@uw.edu"));
+      const authorizedCheck = authorizedUsersData.some((authUser: any) => 
+        authUser.email === user.email && !isRoleExpired(authUser.creationTimestamp)
+        ) || (user.email && user.email.endsWith("@uw.edu"));
       setIsAuthorized(authorizedCheck || isAdmin);
       const token = await user.getIdToken();
       setUser(user);
