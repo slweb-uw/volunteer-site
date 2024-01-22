@@ -16,6 +16,7 @@ import Link from "next/link";
 import { firebaseClient } from "firebaseClient";
 import { ArrowForwardIos } from "@material-ui/icons";
 import HeadlineBar from "components/headlineBar";
+import Help from "components/help" 
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -227,7 +228,7 @@ const App: React.FC<{}> = () => {
           </div>
         </div>
       </div>
-
+			<Help/>
       {/** Cards */}
       <div style={{ marginTop: "1em" }}>
         <div
