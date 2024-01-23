@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Dialog, Button, DialogContent, DialogTitle, Typography } from "@material-ui/core";
+import { Dialog, Button, Tooltip, DialogContent, DialogTitle, Typography } from "@material-ui/core";
+import HelpIcon from '@mui/icons-material/HelpOutline';
 
 const useStyles = makeStyles((theme) => ({
-	div: {
-		width: '100%',
-		justifyContent: 'flex-end',
-		display: 'flex'
+	button: {
+		margin: '10px'
 	}
 }));
 
@@ -21,14 +20,21 @@ const Help: React.FC<{}> = () => {
 	const handleClickOpen = () => {
 		setOpen(true);
 	}
-	
+
 	return (
 		<>
-			<div className={classes.div}>
-				<Button variant="outlined" color="primary" onClick={handleClickOpen}>
-					?
+			<Tooltip title="Help" arrow>
+				<Button
+					variant='outlined'
+					color='secondary'
+					startIcon={<HelpIcon />}
+					onClick={handleClickOpen}
+					className={classes.button}
+				>
+					Help
 				</Button>
-			</div>
+			</Tooltip>
+
 			<Dialog
 				open={open}
 				onClose={handleClose}
@@ -45,7 +51,10 @@ const Help: React.FC<{}> = () => {
 							textTransform: "uppercase"
 						}}
 					>
-						Volunteers	
+						<Typography style={{ fontSize: "1rem" }}>
+							hello this is something
+						</Typography>
+						Volunteers
 					</Typography>
 					<Typography
 						style={{
@@ -55,7 +64,7 @@ const Help: React.FC<{}> = () => {
 							textTransform: "uppercase"
 						}}
 					>
-						Providers	
+						Providers
 					</Typography>
 				</DialogContent>
 			</Dialog>
@@ -63,8 +72,8 @@ const Help: React.FC<{}> = () => {
 	);
 }
 
-interface helpPopupProps  {
-	onClose: boolean	
+interface helpPopupProps {
+	onClose: boolean
 }
 
 export default Help;
