@@ -126,6 +126,10 @@ const AdminPage = () => {
 
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortedColumn, setSortedColumn] = useState("email");
+  
+  const [totalAdmins, setTotalAdmins] = useState(0);
+  const [totalVolunteers, setTotalVolunteers] = useState(0);
+  const [totalLeads, setTotalLeads] = useState(0);
 
   const handleSort = (column) => {
     setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
@@ -143,6 +147,7 @@ const AdminPage = () => {
           adminsData.push({ id: doc.id, ...doc.data() });
         });
         setAdmins(adminsData);
+        setTotalAdmins(adminsData.length); // Set total number of admins
       });
     return unsubscribe;
   };
@@ -158,6 +163,7 @@ const AdminPage = () => {
           volunteerData.push({ id: doc.id, ...doc.data() });
         });
         setVolunteers(volunteerData);
+        setTotalVolunteers(volunteerData.length); // Set total number of volunteers
       });
     return unsubscribe;
   };
@@ -173,6 +179,7 @@ const AdminPage = () => {
           leadData.push({ id: doc.id, ...doc.data() });
         });
         setLeads(leadData);
+        setTotalLeads(leadData.length); // Set total number of leads
       });
     return unsubscribe;
   };
@@ -294,7 +301,7 @@ const AdminPage = () => {
             color="primary"
             onClick={() => setActiveSection("Admins")}
           >
-            Admins
+            Admins ({totalAdmins})
           </Button>
           <Button
             className={classes.headerButton}
@@ -302,7 +309,7 @@ const AdminPage = () => {
             color="primary"
             onClick={() => setActiveSection("Leads")}
           >
-            Project Leads
+            Project Leads ({totalLeads})
           </Button>
           <Button
             className={classes.headerButton}
@@ -310,7 +317,7 @@ const AdminPage = () => {
             color="primary"
             onClick={() => setActiveSection("Volunteers")}
           >
-            Non-UW Preceptors
+            Non-UW Preceptors ({totalVolunteers})
           </Button>
         </div>
         <Button style={{marginLeft: "auto"}} onClick={() => setHelpDialogOpen(true)}>
