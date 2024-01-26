@@ -55,9 +55,9 @@ export function AuthProvider({ children }: any) {
         // Convert Firestore Timestamp to JavaScript Date
         const creationDate = timestamp.toDate();
     
-        // Calculate the expiry timestamp (one year from creation)
+        // Calculate the expiry timestamp (two years from creation)
         const expiryDate = new Date(creationDate);
-        expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+        expiryDate.setFullYear(expiryDate.getFullYear() + 2);
     
         // Check if the current time is after the expiry timestamp
         return Date.now() > expiryDate.getTime();
