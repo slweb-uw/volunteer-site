@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+import { useRouter } from 'next/router';
 import {
   createStyles,
   CssBaseline,
@@ -11,7 +12,10 @@ import {
   Link,
   Divider,
 } from "@material-ui/core";
-import React, { useState } from "react";
+import React, {
+  useState,
+  useEffect,
+ } from "react";
 
 import MuiAccordion from "@material-ui/core/Accordion";
 import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
@@ -28,11 +32,19 @@ interface Props {
 }
 
 const HelpPage: NextPage<Props> = ({ classes }) => {
+  const router = useRouter();
   const [expanded, setExpanded] = useState("");
   const [schoolExpanded, setSchoolExpanded] = useState("")
 
+  useEffect(() => {
+    // Check if the state was set in the router indicating the "Help" button was clicked
+    if (router.query.fromLocationPage) {
+      setExpanded("dropdown3"); // Set the accordion to be open
+    }
+  }, [router.query.fromLocationPage]);
+
   const handleChange = (panel: any) => (event: any, newExpanded: any) => {
-    setExpanded(newExpanded ? panel : false);
+    setExpanded(newExpanded ? panel : "");
   };
 
   const handleSchoolChange = (panel: any) => (event: any, newExpanded: any) => {

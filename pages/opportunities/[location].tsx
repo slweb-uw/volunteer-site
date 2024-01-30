@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState } from "react";
 import { firebaseClient } from "../../firebaseClient";
 import { NextPage } from "next";
 import {
@@ -26,6 +26,18 @@ interface Props {
 const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   const router = useRouter();
   let location = (router.query.location && !Array.isArray(router.query.location)) ? router.query.location : DEFAULT_LOCATION;
+  const [expanded, setExpanded] = useState("");
+
+  useEffect(() => {
+    // Check if the state was set in the router indicating the "Help" button was clicked
+    if (router.query.fromLocationPage) {
+      setExpanded("dropdown3"); // Set the accordion to be open
+    }
+  }, [router.query.fromLocationPage]);
+
+  const handleChange = (panel: any) => (event: any, newExpanded: any) => {
+    setExpanded(newExpanded ? panel : "");
+  };
 
   useEffect(() => {
     firebaseClient.analytics().logEvent("location_page_visit");
@@ -54,7 +66,7 @@ const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
         </div>
         <div>
           <Tooltip title="Help" arrow>
-            <Link href="/help">
+            <Link href="/help?fromLocationPage=true&openAccordion=dropdown3">
               <Button
                 variant='outlined'
                 color='secondary'
