@@ -6,12 +6,16 @@ import {
   CssBaseline,
   Typography,
   withStyles,
+  Button,
+  Tooltip,
 } from "@material-ui/core";
 import { withSnackbar } from "notistack";
 import IconBreadcrumbs from "components/breadcrumbs";
 import LocationSelector from "../../components/locationSelector";
 import { useRouter } from "next/router";
+import Link from 'next/link';
 import Events from "../events";
+import HelpIcon from "@material-ui/icons/Help";
 import { DEFAULT_LOCATION, LAST_LOCATION_KEY, Location, setLocation } from "../../helpers/locations";
 
 interface Props {
@@ -41,10 +45,27 @@ const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   return (
     <div className={classes.page}>
       <CssBaseline />
-      <IconBreadcrumbs crumbs={["Opportunities"]} parentURL={undefined} />
-      <Typography variant="h3" gutterBottom className={classes.header}>
-        OPPORTUNITIES
-      </Typography>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+        <div>
+          <IconBreadcrumbs crumbs={["Opportunities"]} parentURL={undefined} />
+          <Typography variant="h3" gutterBottom className={classes.header}>
+            OPPORTUNITIES
+          </Typography>
+        </div>
+        <div>
+          <Tooltip title="Help" arrow>
+            <Link href="/help">
+              <Button
+                variant='outlined'
+                color='secondary'
+                startIcon={<HelpIcon />}
+              >
+                Help
+              </Button>
+            </Link>
+          </Tooltip>
+        </div>
+      </div>
       <img src={"../goldbar.png"} alt=""  className={classes.bar} style={{ }}/>
       <div style={{
         marginTop: "2em"
