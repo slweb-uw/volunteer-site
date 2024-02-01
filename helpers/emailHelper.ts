@@ -20,17 +20,17 @@ export const isRoleExpiringSoon = (timestamp: firebaseClient.firestore.Timestamp
 };
 */
 
+// Configure the Nodemailer transporter with SendGrid
+const transporter = nodemailer.createTransport(
+  sgTransport({
+    auth: {
+      api_key: 'your-sendgrid-api-key',
+    },
+  })
+);
+
 // Function to send an expiry notification email
 export const sendExpiryNotificationEmail = async (email: string) => {
-  // Configure the Nodemailer transporter
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'uwslweb@gmail.com',
-      pass: ,
-    },
-  });
-
   // Define the email options
   const mailOptions = {
     from: 'uwslweb@gmail.com',
