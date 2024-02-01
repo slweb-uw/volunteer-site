@@ -67,11 +67,11 @@ export function AuthProvider({ children }: any) {
       setIsAdmin(!!adminCheck);
 
       const leadCheck = leadData.find((lead: any) => 
-        lead.email === user.email && lead.creationTimestamp && !isRoleExpired(lead.creationTimestamp));
+        lead.email === user.email && lead.timestamp && !isRoleExpired(lead.timestamp));
       setIsLead(!!leadCheck);
       
       const authorizedCheck = authorizedUsersData.some((authUser: any) => 
-        authUser.email === user.email && authUser.creationTimestap && !isRoleExpired(authUser.creationTimestamp)
+        authUser.email === user.email && authUser.timestamp && !isRoleExpired(authUser.timestamp)
       ) || (user.email && user.email.endsWith("@uw.edu"));
       setIsAuthorized(authorizedCheck || isAdmin);
       const token = await user.getIdToken();

@@ -1,6 +1,8 @@
 import nodemailer from 'nodemailer';
+import sgTransport from 'nodemailer-sendgrid-transport';
 import { firebaseClient } from './firebaseClient';
 
+/* Did not end up using this function
 // Function to check if a role is expiring soon
 export const isRoleExpiringSoon = (timestamp: firebaseClient.firestore.Timestamp) => {
   const creationDate = timestamp.toDate();
@@ -16,6 +18,7 @@ export const isRoleExpiringSoon = (timestamp: firebaseClient.firestore.Timestamp
   // Check if the current time is after the notification date
   return Date.now() > notificationDate.getTime();
 };
+*/
 
 // Function to send an expiry notification email
 export const sendExpiryNotificationEmail = async (email: string) => {
@@ -24,7 +27,7 @@ export const sendExpiryNotificationEmail = async (email: string) => {
     service: 'gmail',
     auth: {
       user: 'uwslweb@gmail.com',
-      pass: 'VolunteerSite2019',
+      pass: ,
     },
   });
 
