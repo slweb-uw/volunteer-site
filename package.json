@@ -75,7 +75,8 @@
     "@types/memory-cache": "^0.2.1",
     "@types/sanitize-html": "^2.6.2",
     "@types/styled-components": "^5.1.3",
-    "babel-plugin-superjson-next": "^0.4.5"
+    "babel-plugin-superjson-next": "^0.4.5",
+    "nuxt": "^3.10.1"
   },
   "browser": {
     "child_process": false
