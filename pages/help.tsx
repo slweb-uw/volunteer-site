@@ -39,9 +39,11 @@ const HelpPage: NextPage<Props> = ({ classes }) => {
   useEffect(() => {
     // Check if the state was set in the router indicating the "Help" button was clicked
     if (router.query.fromLocationPage) {
-      setExpanded("dropdown3"); // Set the accordion to be open
+      setExpanded("dropdown3"); 
+    } else if (router.query.fromSignUpPage) {
+      setExpanded("dropdown4"); 
     }
-  }, [router.query.fromLocationPage]);
+  }, [router.query.fromLocationPage, router.query.fromSignUpPage]);
 
   const handleChange = (panel: any) => (event: any, newExpanded: any) => {
     setExpanded(newExpanded ? panel : "");
@@ -185,8 +187,8 @@ const HelpPage: NextPage<Props> = ({ classes }) => {
             </Typography>
         </MuiAccordionDetails>
         </MuiAccordion>
-
-      <MuiAccordion
+      
+        <MuiAccordion
         square
         expanded={expanded === "dropdown3"}
         onChange={handleChange("dropdown3")}
@@ -240,6 +242,25 @@ const HelpPage: NextPage<Props> = ({ classes }) => {
             <Typography style={{ textAlign: "center", marginTop: "2rem", marginBottom: "5rem" }}>
             Here, you can view all of the details listed about the specific volunteer opportunity. For further details, you can visit the specific opportunity’s website link. <br /> 
             If you are ready to join, you can find the project lead's contact information in the Project Lead Contact List. 
+            </Typography>
+        </MuiAccordionDetails>
+      </MuiAccordion>
+
+      <MuiAccordion
+        square
+        expanded={expanded === "dropdown4"}
+        onChange={handleChange("dropdown4")}
+      >
+        <MuiAccordionSummary
+          aria-controls="dropdown4d-content"
+          id="dropdown4d-header"
+          expandIcon={<ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} />}
+        >
+          <Typography className={classes.title}>Navigating the signup page</Typography>
+        </MuiAccordionSummary>
+        <MuiAccordionDetails style={{ flexDirection: "column", alignItems: "center", marginTop: "2rem" }}>
+            <Typography style={{ textAlign: "center", marginTop: "2rem", marginBottom: "5rem" }}>
+             placeholder text 
             </Typography>
         </MuiAccordionDetails>
       </MuiAccordion>

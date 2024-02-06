@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from "react";
+import React, {useEffect} from "react";
 import { firebaseClient } from "../../firebaseClient";
 import { NextPage } from "next";
 import {
@@ -17,6 +17,7 @@ import Link from 'next/link';
 import Events from "../events";
 import HelpIcon from "@material-ui/icons/Help";
 import { DEFAULT_LOCATION, LAST_LOCATION_KEY, Location, setLocation } from "../../helpers/locations";
+import { handleHelpButtonClick } from "../../helpers/navigation";
 
 interface Props {
   classes?: any;
@@ -26,19 +27,18 @@ interface Props {
 const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   const router = useRouter();
   let location = (router.query.location && !Array.isArray(router.query.location)) ? router.query.location : DEFAULT_LOCATION;
-  const [expanded, setExpanded] = useState("");
 
-  useEffect(() => {
-    // Check if the state was set in the router indicating the "Help" button was clicked
-    if (router.query.fromLocationPage) {
-      setExpanded("dropdown3"); // Set the accordion to be open
-    }
-  }, [router.query.fromLocationPage]);
+  /*const handleHelpButtonClick = () => {
+    router.push({
+      pathname: '/help',
+      query: { fromLocationPage: true },
+    });
+  };*/
 
-  const handleChange = (panel: any) => (event: any, newExpanded: any) => {
-    setExpanded(newExpanded ? panel : "");
+  //new logic using helper function
+  const handleHelpButtonClickLocation = () => {
+    handleHelpButtonClick(router, 'fromLocationPage');
   };
-
   useEffect(() => {
     firebaseClient.analytics().logEvent("location_page_visit");
   }, []);
@@ -64,17 +64,16 @@ const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
             OPPORTUNITIES
           </Typography>
         </div>
-        <div>
-          <Tooltip title="Help" arrow>
-            <Link href="/help?fromLocationPage=true&openAccordion=dropdown3">
-              <Button
-                variant='outlined'
-                color='secondary'
-                startIcon={<HelpIcon />}
-              >
-                Help
-              </Button>
-            </Link>
+      <div>
+        <Tooltip title="Help" arrow>
+            <Button
+              variant='outlined'
+              color='secondary'
+              startIcon={<HelpIcon />}
+              onClick={handleHelpButtonClickLocation}
+            >
+              Help
+            </Button>
           </Tooltip>
         </div>
       </div>
