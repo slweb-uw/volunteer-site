@@ -42,8 +42,12 @@ const HelpPage: NextPage<Props> = ({ classes }) => {
       setExpanded("dropdown3"); 
     } else if (router.query.fromSignUpPage) {
       setExpanded("dropdown4"); 
+    } else if (router.query.fromSignIn) {
+      setExpanded("dropdown1"); 
     }
-  }, [router.query.fromLocationPage, router.query.fromSignUpPage]);
+  }, [router.query.fromLocationPage,
+      router.query.fromSignUpPage,
+      router.query.fromSignIn]);
 
   const handleChange = (panel: any) => (event: any, newExpanded: any) => {
     setExpanded(newExpanded ? panel : "");
