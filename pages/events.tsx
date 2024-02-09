@@ -254,7 +254,28 @@ const Events: React.FC<EventsProps> = ({
               </Select>
             </>}
           </Grid>
-          <Grid item xs={0} md={1}/>
+          {/* Move the calendar button grid item up by one line */}
+          {location === "Seattle" && (
+            <Grid item xs={12} md={2}>
+              <Link href="/calendar">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  style={{
+                    minWidth: "130px",
+                    borderRadius: 10,
+                    fontFamily: "Encode Sans",
+                    fontWeight: 800,
+                    textAlign: "center",
+                    marginTop: "0.5rem"
+                    //marginLeft: "5rem"
+                  }}
+                >
+                  Calendar
+                </Button>
+              </Link>
+            </Grid>
+          )}
           <Grid container item xs={12} md={6} alignItems="center" spacing={2}>
             <Grid container item xs={12} md={6} spacing={1} alignItems="center">
               <Grid item>
@@ -317,57 +338,35 @@ const Events: React.FC<EventsProps> = ({
               </Grid>
             </Grid>
           </Grid>
-
-
-            {location === "Seattle" && (
-            <Grid item xs={12} md={2}>
-              <Link href="/calendar">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  style={{
-                    minWidth: "130px",
-                    borderRadius: 10,
-                    fontFamily: "Encode Sans",
-                    fontWeight: 800,
-                    textAlign: "center",
-                    marginTop: "0.5rem"
-                  }}
-                >
-                  Calendar
-                </Button>
-              </Link>
-             </Grid>
-            )}
         </Grid>
       </div>
       <Typography variant="h6" style={{ textAlign: "center", marginBottom: "3em", color: "#85754D" }}>
         <b>Note:</b> Please review  
         {topMessage}
       </Typography>
-
+  
       {/* Button-Modal Module for adding new events */}
       {isAdmin && (
-          <div style={{ paddingBottom: "2em" }}>
-            <AddModifyEventModal
-              open={adminModalOpen}
-              location={location}
-              handleClose={() => {
-                setAdminModalOpen(false);
-              }}
-            />
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => {
-                setAdminModalOpen(true);
-              }}
-            >
-              Add Project
-            </Button>
-          </div>
-        )}
-
+        <div style={{ paddingBottom: "2em" }}>
+          <AddModifyEventModal
+            open={adminModalOpen}
+            location={location}
+            handleClose={() => {
+              setAdminModalOpen(false);
+            }}
+          />
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => {
+              setAdminModalOpen(true);
+            }}
+          >
+            Add Project
+          </Button>
+        </div>
+      )}
+  
       {location ? (
         <div style={{ paddingBottom: "4em" }}>
           {events.length > 0 ? (
@@ -395,7 +394,7 @@ const Events: React.FC<EventsProps> = ({
             <div style={{ textAlign: "center" }}>
               <Button
                 variant="outlined"
-                onClick={() => { loadEvents(true);/*.catch((err) => { console.error("Error loading more events: " + err)*/ } }
+                onClick={() => { loadEvents(true);/*.catch((err) => {console.error("Error loading more events: " + err)*/ } }
                 style={{
                   marginTop: "2em",
                 }}
@@ -416,7 +415,7 @@ const Events: React.FC<EventsProps> = ({
       )}
     </div>
   );
-}
+}  
 
 const styles = createStyles({
   page: {
