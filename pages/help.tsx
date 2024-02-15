@@ -263,8 +263,26 @@ const HelpPage: NextPage<Props> = ({ classes }) => {
           <Typography className={classes.title}>Navigating the signup page</Typography>
         </MuiAccordionSummary>
         <MuiAccordionDetails style={{ flexDirection: "column", alignItems: "center", marginTop: "2rem" }}>
-            <Typography style={{ textAlign: "center", marginTop: "2rem", marginBottom: "5rem" }}>
-             placeholder text 
+              <img
+                  style={{
+                  width: "60em",
+                  maxWidth: "100%",
+                  height: "auto",
+                  borderRadius: "10px",
+                  }}
+                  src="sign-up-page.png"
+                  alt="Sign up page"
+            />
+            <Typography style={{ textAlign: "center", marginTop: ".01rem", marginBottom: "5rem" }}>
+             Note: Page may look different depending on user type.
+            </Typography>
+            <Typography style={{ textAlign: "left", marginTop: ".5rem", marginBottom: "5rem" }}>
+             Once you are on the signup page, you're screen should look similar to the above image. <br />
+             Here is the breakdown of each section: <br />
+             1. Opprutunity title <br />
+             2. Available events <br />
+             3. Roles available in selected event <br />
+             4. Buttons for additional features
             </Typography>
         </MuiAccordionDetails>
       </MuiAccordion>

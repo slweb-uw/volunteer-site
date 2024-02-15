@@ -30,6 +30,7 @@ import { exportToCSV } from 'helpers/csvExport';
 import AuthorizationMessage from 'pages/AuthorizationMessage';
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { handleHelpButtonClick } from "helpers/navigation";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -107,6 +108,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Signup = () => {
+  const handleHelpButtonClickLocation = () => {
+    handleHelpButtonClick(router, 'fromSignUpPage');
+    close();
+  };
   const router = useRouter();
   const { location, event, selectedEventId } = router.query;
   const classes = useStyles();
@@ -501,6 +506,7 @@ const Signup = () => {
                 variant='outlined'
                 color='secondary'
                 startIcon={<HelpIcon />}
+                onClick={handleHelpButtonClickLocation}
               >
                 Help
               </Button>
