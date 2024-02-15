@@ -158,27 +158,26 @@ const Signup = () => {
 
   // Filter events
   useEffect(() => {
+    let filteredEvents = [];
     if (showPastEvents) {
-      setEvents(unfilteredEvents);
+      // Show all events if showPastEvents is true
+      filteredEvents = unfilteredEvents;
     } else {
-      setEvents(unfilteredEvents.filter(event => {
-        const now = new Date();
+      // Filter out past events if showPastEvents is false
+      const now = new Date();
+      filteredEvents = unfilteredEvents.filter(event => {
         const eventDate = new Date(event.date.seconds * 1000);
-        const oneWeekAgo = new Date(now);
-        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-        return eventDate >= oneWeekAgo;
-      }));
+        return eventDate >= now;
+      });
     }
-
-    const selectedEventFromData = events.find((e) => e.id === selectedEventId);
-    if (selectedEventFromData && !showPastEvents) {
-      setSelectedEvent(selectedEventFromData);
-    } else {
-      setSelectedEvent(events[0]);
-      console.log(events[0]);
+    
+    setEvents(filteredEvents);
+    
+    // Reset selected event if it becomes filtered out
+    if (!filteredEvents.some(event => event.id === selectedEventId)) {
+      setSelectedEvent(filteredEvents[0] || null);
     }
-
-  }, [unfilteredEvents, showPastEvents]);
+  }, [unfilteredEvents, showPastEvents, selectedEventId]);
 
   useEffect(() => {
     const updateScreenSize = () => {
