@@ -191,62 +191,61 @@ const HelpPage: NextPage<Props> = ({ classes }) => {
             </Typography>
         </MuiAccordionDetails>
         </MuiAccordion>
-      
         <MuiAccordion
-        square
-        expanded={expanded === "dropdown3"}
-        onChange={handleChange("dropdown3")}
-      >
-        <MuiAccordionSummary
-          aria-controls="dropdown3d-content"
-          id="dropdown3d-header"
-          expandIcon={<ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} />}
+          square
+          expanded={expanded === "dropdown3"}
+          onChange={handleChange("dropdown3")}
         >
-          <Typography className={classes.title}>How to sign up/volunteer for a project/Opportunity event</Typography>
-        </MuiAccordionSummary>
-        <MuiAccordionDetails style={{ flexDirection: "column", alignItems: "center", marginTop: "2rem" }}>
-            <div>
-                <img
-                    style={{
-                    width: "60em",
-                    maxWidth: "100%",
-                    height: "auto",
-                    borderRadius: "10px",
-                    }}
-                    src="sign-up-for-project-step-1.png"
-                    alt="Sign up for project step 1"
-                />
-            </div>
-            <Typography style={{ textAlign: "center", marginTop: "2rem", marginBottom: "5rem" }}>
-             Once you find a project that interests you on the oppertunities page, click on it to open a pop-up.
-            </Typography>
-            <img
-                style={{
-                width: "60em",
-                maxWidth: "100%",
-                height: "auto",
-                borderRadius: "10px",
-                }}
-                src="sign-up-for-project-step-2.png"
-                alt="Sign up for project step 2"
-            />    
-            <Typography style={{ textAlign: "center", marginTop: "2rem", marginBottom: "5rem" }}>
-            For more information, click the “Learn More” button.
-            </Typography>
-            <img
-                style={{
-                width: "60em",
-                maxWidth: "100%",
-                height: "auto",
-                borderRadius: "10px",
-                }}
-                src="sign-up-for-project-step-3.png"
-                alt="Sign up for project step 3"
-            /> 
-            <Typography style={{ textAlign: "center", marginTop: "2rem", marginBottom: "5rem" }}>
-            Here, you can view all of the details listed about the specific volunteer opportunity. For further details, you can visit the specific opportunity’s website link. <br /> 
-            If you are ready to join, you can find the project lead's contact information in the Project Lead Contact List. 
-            </Typography>
+          <MuiAccordionSummary
+            aria-controls="dropdown3d-content"
+            id="dropdown3d-header"
+            expandIcon={<ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} />}
+          >
+            <Typography className={classes.title}>How to sign up/volunteer for a project/Opportunity event</Typography>
+          </MuiAccordionSummary>
+          <MuiAccordionDetails style={{ flexDirection: "column", alignItems: "center", marginTop: "2rem" }}>
+              <div>
+                  <img
+                      style={{
+                      width: "60em",
+                      maxWidth: "100%",
+                      height: "auto",
+                      borderRadius: "10px",
+                      }}
+                      src="sign-up-for-project-step-1.png"
+                      alt="Sign up for project step 1"
+                  />
+              </div>
+              <Typography style={{ textAlign: "center", marginTop: "2rem", marginBottom: "5rem" }}>
+              Once you find a project that interests you on the oppertunities page, click on it to open a pop-up.
+              </Typography>
+              <img
+                  style={{
+                  width: "60em",
+                  maxWidth: "100%",
+                  height: "auto",
+                  borderRadius: "10px",
+                  }}
+                  src="sign-up-for-project-step-2.png"
+                  alt="Sign up for project step 2"
+              />    
+              <Typography style={{ textAlign: "center", marginTop: "2rem", marginBottom: "5rem" }}>
+              For more information, click the “Learn More” button.
+              </Typography>
+              <img
+                  style={{
+                  width: "60em",
+                  maxWidth: "100%",
+                  height: "auto",
+                  borderRadius: "10px",
+                  }}
+                  src="sign-up-for-project-step-3.png"
+                  alt="Sign up for project step 3"
+              /> 
+              <Typography style={{ textAlign: "center", marginTop: "2rem", marginBottom: "5rem" }}>
+              Here, you can view all of the details listed about the specific volunteer opportunity. For further details, you can visit the specific opportunity’s website link. <br /> 
+              If you are ready to join, you can find the project lead's contact information in the Project Lead Contact List. 
+              </Typography>
         </MuiAccordionDetails>
       </MuiAccordion>
 
