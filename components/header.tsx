@@ -103,6 +103,8 @@ const Header: React.FC<{}> = (props) => {
     <Divider/>,
       <a href="/donations" className={useStyles().navtitle} tabIndex={0}>Donations</a>,
     <Divider/>,
+      <a href="/help" className={useStyles().navtitle} tabIndex={0}>Help</a>,
+    <Divider/>,
     // sign in and out
     user ? (
       <>
