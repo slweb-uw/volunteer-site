@@ -12,7 +12,8 @@ import {
         DialogTitle,
         DialogContent,
         Typography,
-        Link
+        Link,
+        Switch
 } from "@material-ui/core";
 import AddRounded from "@mui/icons-material/AddRounded";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -111,6 +112,7 @@ const Signup = () => {
   const { location, event, selectedEventId } = router.query;
   const classes = useStyles();
   const { user, isAdmin, isAuthorized, isLead } = useAuth();
+  const [unfilteredEvents, setUnfilteredEvents] = useState([]);
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [editedEvent, setEditedEvent] = useState(null);
@@ -120,6 +122,7 @@ const Signup = () => {
   const [informationPopupOpen, setInformationPopupOpen] = useState(false);
   const [editedVolunteer, setEditedVolunteer] = useState(null);
   const [title, setTitle] = useState('');
+  const [showPastEvents, setShowPastEvents] = useState(false);
 
   const [startIndex, setStartIndex] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(5);
@@ -137,7 +140,7 @@ const Signup = () => {
       const selectedEventFromData = events.find((e) => e.id === selectedEventId);
       if (selectedEventFromData) {
         setSelectedEvent(selectedEventFromData);
-        const selectedIndex = events.findIndex((e) => e.id === selectedEvent.id);
+        const selectedIndex = events.findIndex((e) => e.id === selectedEventId);
         if (selectedIndex !== -1) {
           const page = Math.floor(selectedIndex / itemsPerPage);
           setStartIndex(page * itemsPerPage);
@@ -152,6 +155,29 @@ const Signup = () => {
       window.history.pushState({}, '', link);
     }
   }, [selectedEvent, location, event]);
+
+  // Filter events
+  useEffect(() => {
+    let filteredEvents = [];
+    if (showPastEvents) {
+      // Show all events if showPastEvents is true
+      filteredEvents = unfilteredEvents;
+    } else {
+      // Filter out past events if showPastEvents is false
+      const now = new Date();
+      filteredEvents = unfilteredEvents.filter(event => {
+        const eventDate = new Date(event.date.seconds * 1000);
+        return eventDate >= now;
+      });
+    }
+    
+    setEvents(filteredEvents);
+    
+    // Reset selected event if it becomes filtered out
+    if (!filteredEvents.some(event => event.id === selectedEventId)) {
+      setSelectedEvent(filteredEvents[0] || null);
+    }
+  }, [unfilteredEvents, showPastEvents, selectedEventId]);
 
   useEffect(() => {
     const updateScreenSize = () => {
@@ -215,23 +241,7 @@ const Signup = () => {
       });
 
       data.sort((a, b) => a.date - b.date);
-      setEvents(data);
-
-      const selectedEventFromData = data.find((e) => e.id === selectedEventId);
-      if (selectedEventFromData) {
-        setSelectedEvent(selectedEventFromData);
-      } else {
-        const now = new Date();
-          const oneWeekAgo = new Date(now);
-          oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-
-          const firstEventWithinWeek = data.find((event) => {
-            const eventDate = new Date(event.date.seconds * 1000);
-            return eventDate >= oneWeekAgo;
-          });
-
-          setSelectedEvent(firstEventWithinWeek);
-      }
+      setUnfilteredEvents(data);
     });
 
   return () => unsubscribe();
@@ -395,16 +405,7 @@ const Signup = () => {
                 <ArrowBackIosNewIcon style={{color: '#333333', height: "20px"}}/>
               </Button>
           )}
-          
           {events
-            .filter(event => {
-              const now = new Date();
-              const eventDate = new Date(event.date.seconds * 1000);
-              const oneWeekAgo = new Date(now);
-              oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-
-              return eventDate >= oneWeekAgo;
-            })
             .slice(startIndex, endIndex)
             .map(event => (
               <Button
@@ -432,6 +433,19 @@ const Signup = () => {
           )}
         </div>
       </div>
+
+      {(isAdmin || isLead) && (
+            <div style={{ marginBottom: "1rem", marginLeft: "15%" }}>
+              <Button variant="outlined" >
+                <Switch
+                  onClick={() => setShowPastEvents(!showPastEvents)}
+                  checked={showPastEvents}
+                  color="secondary"
+                />
+                Show Past Events
+              </Button>
+            </div>
+      )}
 
       {isMobile ? (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
