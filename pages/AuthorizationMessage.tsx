@@ -36,7 +36,7 @@ const AuthorizationMessage = ({ user }) => {
   return (
     <div className={`${classes.root} ${classes.message}`}>
       <div style={{ marginBottom: '1rem' }}>
-        You are not authorized to access this page!
+        Sign-in with registered account to view page
       </div>
       <div className={classes.buttonContainer}>
         {!user ? (
