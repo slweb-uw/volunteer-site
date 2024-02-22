@@ -435,6 +435,29 @@ const Signup = () => {
                 <ArrowForwardIosIcon style={{color: '#333333', height: "20px"}}/>
               </Button>
           )}
+
+            <Button  
+              className={classes.arrowButton} 
+              variant={"outlined"}
+              onClick={() => {
+                setStartIndex(0);
+                setSelectedEvent(events[0]);
+              }}
+            >
+              First
+            </Button>
+
+            <Button  
+              className={classes.arrowButton} 
+              variant={"outlined"}
+              onClick={() => {
+                const lastIndex = Math.floor(events.length / itemsPerPage) * itemsPerPage;
+                setStartIndex(lastIndex);
+                setSelectedEvent(events[events.length - 1]);
+              }}
+            >
+              Last
+            </Button>
         </div>
       </div>
 
