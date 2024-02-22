@@ -229,6 +229,13 @@ const Event: NextPage<Props> = ({ classes }) => {
   );
 };
 
+function maxSize(){
+  if (typeof window !== "undefined") {
+    return Math.min(500, window.innerWidth);
+  }
+  return "500px";
+}
+
 const styles = createStyles({
   page: {
     marginLeft: "auto",
@@ -241,7 +248,7 @@ const styles = createStyles({
   },
   detailsImageContainer: {
     display: "flex",
-    maxWidth: "500px",
+    maxWidth: maxSize() + "px",
   },
   detailsImage: {
     minWidth: "100%",
