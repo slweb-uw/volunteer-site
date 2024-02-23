@@ -392,6 +392,17 @@ const Signup = () => {
       <h1 className={classes.title}>{title ? title : "Loading title..."}</h1>
       <div className={classes.header}>
         <div className={classes.buttonScroll}>
+          <Button  
+            className={classes.arrowButton} 
+            variant={"outlined"}
+            onClick={() => {
+              setStartIndex(0);
+              setSelectedEvent(events[0]);
+            }}
+            disabled={startIndex === 0}
+          >
+            First
+          </Button>
           {startIndex > 0 && (
               <Button  
                 className={classes.arrowButton} 
@@ -400,7 +411,7 @@ const Signup = () => {
                 <ArrowBackIosNewIcon style={{color: '#333333', height: "20px"}}/>
               </Button>
           )}
-          
+
           {events
             .filter(event => {
               const now = new Date();
@@ -440,21 +451,11 @@ const Signup = () => {
               className={classes.arrowButton} 
               variant={"outlined"}
               onClick={() => {
-                setStartIndex(0);
-                setSelectedEvent(events[0]);
-              }}
-            >
-              First
-            </Button>
-
-            <Button  
-              className={classes.arrowButton} 
-              variant={"outlined"}
-              onClick={() => {
                 const lastIndex = Math.floor(events.length / itemsPerPage) * itemsPerPage;
                 setStartIndex(lastIndex);
                 setSelectedEvent(events[events.length - 1]);
               }}
+              disabled={startIndex + itemsPerPage >= events.length}
             >
               Last
             </Button>
