@@ -31,6 +31,7 @@ import { exportToCSV } from 'helpers/csvExport';
 import AuthorizationMessage from 'pages/AuthorizationMessage';
 import { useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { handleHelpButtonClick } from "helpers/navigation";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -108,6 +109,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Signup = () => {
+  const handleHelpButtonClickLocation = () => {
+    handleHelpButtonClick(router, 'fromSignUpPage');
+    close();
+  };
   const router = useRouter();
   const { location, event, selectedEventId } = router.query;
   const classes = useStyles();
@@ -463,6 +468,7 @@ const Signup = () => {
                 variant='outlined'
                 color='secondary'
                 startIcon={<HelpIcon />}
+                onClick={handleHelpButtonClickLocation}
               >
                 Help
               </Button>
@@ -716,7 +722,7 @@ const Signup = () => {
                 <b>Event Lead Contact:</b> <Link href={`mailto:${selectedEvent.leadEmail}`}>{selectedEvent.leadEmail}</Link>
               </Typography>
               <Typography style={{ fontSize: '0.9rem', color: 'gray', fontStyle: 'italic' }}>
-                For technical issues please contact <Link href="mailto:somserve@gmail.com">somserve@gmail.com</Link>
+                For technical issues please contact <Link href="mailto:somserve@gmail.com">somserve@uw.edu</Link>
               </Typography>
               <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1.5em' }}>
                 <Link href={event ? "/" + location + "/" + event : "/"} style={{ textDecoration: "none" }} target="_blank">

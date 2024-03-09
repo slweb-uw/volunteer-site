@@ -82,6 +82,7 @@ const Events: React.FC<EventsProps> = ({
   const [selectedEvent, setSelectedEvent] = useState<EventData>();
   const [sortField, setSortField] = useState<string>("Title");
   const [topMessage, setTopMessage] = useState<any>();
+  const [signUpAvailableFilter, setSignUpAvailableFilter] = useState<boolean>(false);
 
   const isProviderView = studentTypeFilter === "Providers";
   const setProviderView = (enabled: boolean) => {
@@ -92,8 +93,14 @@ const Events: React.FC<EventsProps> = ({
     }
   }
 
+  const hndlSignUpAvailableFilter = (enabled: boolean) => {
+    console.log("Sign Up Available Switch Toggled", enabled);
+    setSignUpAvailableFilter(enabled);
+  }
+
   useEffect(() => {
     // Load events
+    console.log("Component mounted or location changed. Loading events...")
     loadEvents(false);
     // pull organizations for this location from the metadata cache
     firebaseClient
@@ -106,24 +113,22 @@ const Events: React.FC<EventsProps> = ({
 
     // Adjusts state depending on whether provider view is on
     useEffect(() => {
-      if (isProviderView) {
-        setTopMessage(
-          <span>
-           &nbsp;our&nbsp; 
-           <i>
+      const message = isProviderView ? (
+        <span>
+          &nbsp;our&nbsp; 
+          <i>
             <a style={{ color: "#85754D" }} href="/onboarding/">
               Onboarding Instructions
             </a>
           </i>
           &nbsp;before signing up for an opportunity.
-          </span>
-        )
-      } else {
-        setTopMessage(
-            <span> project specific training requirements before signing up for an opportunity.</span>
-        )
-      }
-    }, [isProviderView])
+        </span>
+      ) : (
+        <span> project specific training requirements before signing up for an opportunity.</span>
+      );
+    
+      setTopMessage(message);
+    }, [isProviderView]);
 
   const getOrder = (curSort: string) => {
     return curSort === "timestamp" ? "desc" : "asc";
@@ -131,6 +136,7 @@ const Events: React.FC<EventsProps> = ({
 
   // Append more events from Firestore onto this page from position of cursor
   const loadEvents = async (keepPrev: boolean) => {
+    console.log("Loading events...", signUpAvailableFilter)
     const order = getOrder(sortField);
     let query : CollectionReference | Query = firebaseClient.firestore().collection("/" + location);
     if (organizationFilter) {
@@ -139,8 +145,12 @@ const Events: React.FC<EventsProps> = ({
     if (studentTypeFilter) {
       query = query.where("Types of Volunteers Needed", "array-contains", studentTypeFilter);
     }
+    if (signUpAvailableFilter) {
+      query = query.where("SignupActive", "==", true);
+    }
 
     query = query.orderBy(sortField, order);
+    console.log("Firestore Query:", query)
     if (keepPrev && cursor) {
       query = query.startAfter(cursor)
     }
@@ -173,7 +183,7 @@ const Events: React.FC<EventsProps> = ({
       /*.catch((err) => {
         console.error("Error loading events: " + err);
       });*/
-  }, [organizationFilter, studentTypeFilter])
+  }, [organizationFilter, studentTypeFilter, signUpAvailableFilter])
 
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'));
 
@@ -244,37 +254,8 @@ const Events: React.FC<EventsProps> = ({
               </Select>
             </>}
           </Grid>
-          <Grid item xs={0} md={1}/>
-          <Grid item xs={12} md={3}>
-            <Stack direction="row" spacing={1}>
-              <Typography style= {{display: 'flex', alignItems: 'center'}}>
-                  <b style={{marginRight: '0.25rem',fontSize:'1rem'}}>Provider View</b>
-                  <Tooltip 
-                    title={
-                      <Typography>
-                        Providers are clinicians who supervise our students in providing medical care to underserved patients.
-                      </Typography>
-                    }
-                  >
-                    <InfoOutlinedIcon style={{fontSize:'1.5 rem', color: "#808080"}}/>
-                  </Tooltip>
-                </Typography>
-
-                <Switch
-                  color="primary"
-                  classes={{
-                    root: classes.root,
-                    switchBase: classes.switchBase,
-                    thumb: classes.thumb,
-                    track: classes.track,
-                    checked: classes.checked
-                  }}
-                  checked={isProviderView}
-                  onChange={(e) => setProviderView(e.target.checked)}
-                />
-              </Stack>
-            </Grid>
-            {location === "Seattle" && (
+          {/* Move the calendar button grid item up by one line */}
+          {location === "Seattle" && (
             <Grid item xs={12} md={2}>
               <Link href="/calendar">
                 <Button
@@ -287,42 +268,105 @@ const Events: React.FC<EventsProps> = ({
                     fontWeight: 800,
                     textAlign: "center",
                     marginTop: "0.5rem"
+                    //marginLeft: "5rem"
                   }}
                 >
                   Calendar
                 </Button>
               </Link>
-             </Grid>
-            )}
+            </Grid>
+          )}
+          <Grid container item xs={12} md={6} alignItems="center" spacing={2}>
+            <Grid container item xs={12} md={6} spacing={1} alignItems="center">
+              <Grid item>
+                <Typography variant="body1" style={{ fontWeight: 'bold' }}>Provider View</Typography>
+              </Grid>
+              <Grid item>
+                <Tooltip 
+                  title={
+                    <Typography>
+                      Providers are clinicians who supervise our students in providing medical care to underserved patients.
+                    </Typography>
+                  }
+                >
+                  <InfoOutlinedIcon style={{ fontSize: '1.5rem', color: "#808080" }} />
+                </Tooltip>
+              </Grid>
+              <Grid item>
+                <Switch
+                  color="primary"
+                  classes={{
+                    root: classes.root,
+                    switchBase: classes.switchBase,
+                    thumb: classes.thumb,
+                    track: classes.track,
+                    checked: classes.checked
+                  }}
+                  checked={isProviderView}
+                  onChange={(e) => setProviderView(e.target.checked)}
+                />
+              </Grid>
+            </Grid>
+            <Grid container item xs={12} md={6} spacing={1} alignItems="center">
+              <Grid item>
+                <Typography variant="body1" style={{ fontWeight: 'bold' }}>Sign-up available</Typography>
+              </Grid>
+              <Grid item>
+                <Tooltip 
+                  title={
+                    <Typography>
+                      Allows filtering events where sign-up is available.
+                    </Typography>
+                  }
+                >
+                  <InfoOutlinedIcon style={{ fontSize: '1.5rem', color: "#808080" }} />
+                </Tooltip>
+              </Grid>
+              <Grid item>
+                <Switch
+                  color="primary"
+                  classes={{
+                    root: classes.root,
+                    switchBase: classes.switchBase,
+                    thumb: classes.thumb,
+                    track: classes.track,
+                    checked: classes.checked
+                  }}
+                  checked={signUpAvailableFilter}
+                  onChange={(e) => hndlSignUpAvailableFilter(e.target.checked)}
+                />
+              </Grid>
+            </Grid>
+          </Grid>
         </Grid>
       </div>
       <Typography variant="h6" style={{ textAlign: "center", marginBottom: "3em", color: "#85754D" }}>
         <b>Note:</b> Please review  
         {topMessage}
       </Typography>
-
+  
       {/* Button-Modal Module for adding new events */}
       {isAdmin && (
-          <div style={{ paddingBottom: "2em" }}>
-            <AddModifyEventModal
-              open={adminModalOpen}
-              location={location}
-              handleClose={() => {
-                setAdminModalOpen(false);
-              }}
-            />
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => {
-                setAdminModalOpen(true);
-              }}
-            >
-              Add Project
-            </Button>
-          </div>
-        )}
-
+        <div style={{ paddingBottom: "2em" }}>
+          <AddModifyEventModal
+            open={adminModalOpen}
+            location={location}
+            handleClose={() => {
+              setAdminModalOpen(false);
+            }}
+          />
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => {
+              setAdminModalOpen(true);
+            }}
+          >
+            Add Project
+          </Button>
+        </div>
+      )}
+  
       {location ? (
         <div style={{ paddingBottom: "4em" }}>
           {events.length > 0 ? (
@@ -350,7 +394,7 @@ const Events: React.FC<EventsProps> = ({
             <div style={{ textAlign: "center" }}>
               <Button
                 variant="outlined"
-                onClick={() => { loadEvents(true);/*.catch((err) => { console.error("Error loading more events: " + err)*/ } }
+                onClick={() => { loadEvents(true);/*.catch((err) => {console.error("Error loading more events: " + err)*/ } }
                 style={{
                   marginTop: "2em",
                 }}
@@ -371,7 +415,7 @@ const Events: React.FC<EventsProps> = ({
       )}
     </div>
   );
-}
+}  
 
 const styles = createStyles({
   page: {
