@@ -4,16 +4,16 @@ import firebase from "firebase/app";
 import "firebase/firestore";
 import { useAuth } from "auth";
 import { useRouter } from "next/router";
-import { 
-        Button, 
-        Grid,
-        Tooltip,
-        Dialog,
-        DialogTitle,
-        DialogContent,
-        Typography,
-        Link,
-        Switch
+import {
+  Button,
+  Grid,
+  Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Typography,
+  Link,
+  Switch
 } from "@material-ui/core";
 import AddRounded from "@mui/icons-material/AddRounded";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -45,10 +45,10 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     maxWidth: "80%",
     margin: "0 auto",
-    marginTop : "2rem",
+    marginTop: "2rem",
     marginBottom: theme.spacing(6),
     "@media only screen and (max-width: 900px)": {
-      width: "100%",  
+      width: "100%",
     },
   },
   headerButton: {
@@ -57,9 +57,9 @@ const useStyles = makeStyles((theme) => ({
     height: 50,
     lineHeight: 1.1
   },
-  roleButton : {
+  roleButton: {
     margin: theme.spacing(0, 2),
-    width: 150, 
+    width: 150,
     flexGrow: 1,
     minHeight: 50,
     borderRadius: "15",
@@ -72,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
       justifyContent: "center",
     },
   },
-  buttonScroll : {
+  buttonScroll: {
     width: "100%",
     alignItems: "center",
     display: "flex",
@@ -80,15 +80,15 @@ const useStyles = makeStyles((theme) => ({
   },
   gridContainer: {
     width: "80%",
-    margin: "0 auto", 
+    margin: "0 auto",
     padding: "0 0 0 0",
     marginBottom: "2rem",
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", 
+    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
     gap: "10px",
     justifyContent: "center",
     "@media only screen and (max-width: 900px)": {
-      width: "100%",  
+      width: "100%",
       display: "flex",
       flexWrap: "wrap",
     },
@@ -118,7 +118,7 @@ const Signup = () => {
   const [editedEvent, setEditedEvent] = useState(null);
   const [selectedRole, setSelectedRole] = useState('');
   const [openVolunteerPopup, setOpenVolunteerPopup] = useState(false);
-  const [openEventFormPopup, setOpenEventFormPopup] = useState(false); 
+  const [openEventFormPopup, setOpenEventFormPopup] = useState(false);
   const [informationPopupOpen, setInformationPopupOpen] = useState(false);
   const [editedVolunteer, setEditedVolunteer] = useState(null);
   const [title, setTitle] = useState('');
@@ -170,9 +170,9 @@ const Signup = () => {
         return eventDate >= now;
       });
     }
-    
+
     setEvents(filteredEvents);
-    
+
     // Reset selected event if it becomes filtered out
     if (!filteredEvents.some(event => event.id === selectedEventId)) {
       setSelectedEvent(filteredEvents[0] || null);
@@ -201,7 +201,7 @@ const Signup = () => {
         return prevItemsPerPage;
       });
     };
-  
+
     updateScreenSize();
     window.addEventListener('resize', updateScreenSize);
     return () => {
@@ -209,9 +209,9 @@ const Signup = () => {
     };
   }, []);
 
-   // Loads Title
-   useEffect(() => {
-    const fetchTitle= async () => {
+  // Loads Title
+  useEffect(() => {
+    const fetchTitle = async () => {
       const documentSnapshot = await firebase
         .firestore()
         .collection("" + location)
@@ -226,27 +226,27 @@ const Signup = () => {
   }, [location, event]);
 
   // Retrieves the events
- const fetchData = () => {
-  const unsubscribe = firebase
-    .firestore()
-    .collection("" + location)
-    .doc("" + event)
-    .collection("signup")
-    .onSnapshot((snapshot) => {
-      const data = [];
+  const fetchData = () => {
+    const unsubscribe = firebase
+      .firestore()
+      .collection("" + location)
+      .doc("" + event)
+      .collection("signup")
+      .onSnapshot((snapshot) => {
+        const data = [];
 
-      snapshot.forEach((doc) => {
-        const eventData = { id: doc.id, ...doc.data()};
-        data.push(eventData);
+        snapshot.forEach((doc) => {
+          const eventData = { id: doc.id, ...doc.data() };
+          data.push(eventData);
+        });
+
+        data.sort((a, b) => a.date - b.date);
+        setUnfilteredEvents(data);
       });
 
-      data.sort((a, b) => a.date - b.date);
-      setUnfilteredEvents(data);
-    });
+    return () => unsubscribe();
+  };
 
-  return () => unsubscribe();
-};
-  
   useEffect(() => {
     fetchData();
   }, [location, event]);
@@ -256,7 +256,7 @@ const Signup = () => {
       <AuthorizationMessage user={user} />
     );
   }
-  
+
   const handleOpenVolunteerPopup = (type) => {
     setSelectedRole(type);
     setOpenVolunteerPopup(true);
@@ -282,7 +282,7 @@ const Signup = () => {
             (uid) => existingRolesOnEvent[role][uid].date === volunteerData.date
           )
       );
-  
+
       if (hasSignedUpForEvent) {
         alert("You have already signed up for another role on this event.");
       } else {
@@ -306,7 +306,7 @@ const Signup = () => {
     if (selectedRole) {
       let message = "Are you sure you want to withdraw from this role?";
 
-      if(mode === "remove"){
+      if (mode === "remove") {
         message = "Are you sure you want to remove this volunteer?";
       }
 
@@ -336,10 +336,10 @@ const Signup = () => {
     setSelectedRole(type);
     setOpenVolunteerPopup(true);
   };
-  
+
   const handleOpenEventFormPopup = (mode: string, event: any) => {
     setEditedEvent(event);
-    if(mode === 'edit'){
+    if (mode === 'edit') {
       router.push({
         pathname: router.pathname,
         query: { ...router.query, selectedEventId: event.id },
@@ -352,26 +352,26 @@ const Signup = () => {
     if (action === 'add') {
       eventData.date = firebase.firestore.Timestamp.fromDate(eventData.date);
       firebase.firestore().collection("" + location)
-      .doc("" + event)
-      .collection("signup")
-      .doc(eventData.id)
-      .set(eventData).then(() => {
-        setSelectedEvent(eventData); 
-      });
+        .doc("" + event)
+        .collection("signup")
+        .doc(eventData.id)
+        .set(eventData).then(() => {
+          setSelectedEvent(eventData);
+        });
     } else if (action === 'edit') {
       firebase.firestore().collection("" + location)
-      .doc("" + event)
-      .collection("signup")
-      .doc(eventData.id)
-      .set(eventData);
+        .doc("" + event)
+        .collection("signup")
+        .doc(eventData.id)
+        .set(eventData);
       setSelectedEvent(eventData);
     } else if (action === 'delete') {
       firebase.firestore().collection("" + location)
-      .doc("" + event)
-      .collection("signup")
-      .doc(eventData.id)
-      .delete();
-      setSelectedEvent(null); 
+        .doc("" + event)
+        .collection("signup")
+        .doc(eventData.id)
+        .delete();
+      setSelectedEvent(null);
     }
   };
 
@@ -395,58 +395,6 @@ const Signup = () => {
   return (
     <div className={classes.root}>
       <h1 className={classes.title}>{title ? title : "Loading title..."}</h1>
-      <div className={classes.header}>
-        <div className={classes.buttonScroll}>
-          {startIndex > 0 && (
-              <Button  
-                className={classes.arrowButton} 
-                variant={"outlined"}
-                onClick={() => setStartIndex(Math.max(startIndex - itemsPerPage, 0))}>
-                <ArrowBackIosNewIcon style={{color: '#333333', height: "20px"}}/>
-              </Button>
-          )}
-          {events
-            .slice(startIndex, endIndex)
-            .map(event => (
-              <Button
-                key={event.id}
-                className={classes.headerButton}
-                variant={selectedEvent && selectedEvent.id === event.id ? "contained" : "outlined"}
-                color="primary"
-                onClick={() => setSelectedEvent(event)}
-              >
-                {new Intl.DateTimeFormat('en-US', {weekday: 'long'}).format(new Date(event.date.seconds * 1000))}
-                <br/>  
-                {new Date(event.date.seconds * 1000).toLocaleDateString('en-US')}
-                <br/>  
-                {new Intl.DateTimeFormat('en-US', {hour: '2-digit', minute: '2-digit', timeZoneName: 'short'}).format(new Date(event.date.seconds * 1000))}
-              </Button>
-            ))}
-          {endIndex < events.length && (
-              <Button 
-                className={classes.arrowButton} 
-                variant={"outlined"} 
-                onClick={() => setStartIndex(startIndex + itemsPerPage)}
-              >
-                <ArrowForwardIosIcon style={{color: '#333333', height: "20px"}}/>
-              </Button>
-          )}
-        </div>
-      </div>
-
-      {(isAdmin || isLead) && (
-            <div style={{ marginBottom: "1rem", marginLeft: "15%" }}>
-              <Button variant="outlined" >
-                <Switch
-                  onClick={() => setShowPastEvents(!showPastEvents)}
-                  checked={showPastEvents}
-                  color="secondary"
-                />
-                Show Past Events
-              </Button>
-            </div>
-      )}
-
       {isMobile ? (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div style={{ display: 'flex', gap: '15px', marginBottom: '1rem' }}>
@@ -522,7 +470,7 @@ const Signup = () => {
           </div>
         </div>
       ) : (
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '0 15%', marginBottom: "2.5rem" }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '0 15%', marginBottom: "0.5rem" }}>
           <div style={{ display: 'flex', gap: '15px' }}>
             {(isAdmin || isLead) && (
               <>
@@ -597,10 +545,64 @@ const Signup = () => {
         </div>
       )}
 
+
+      {(isAdmin || isLead) && (
+        <div style={{ marginBottom: "1rem", marginLeft: "14.85%" }}>
+          <Button variant="outlined" >
+            <Switch
+              onClick={() => setShowPastEvents(!showPastEvents)}
+              checked={showPastEvents}
+              color="secondary"
+            />
+            Show Past Events
+          </Button>
+        </div>
+      )}
+
+
+      <div className={classes.header}>
+        <div className={classes.buttonScroll}>
+          {startIndex > 0 && (
+            <Button
+              className={classes.arrowButton}
+              variant={"outlined"}
+              onClick={() => setStartIndex(Math.max(startIndex - itemsPerPage, 0))}>
+              <ArrowBackIosNewIcon style={{ color: '#333333', height: "20px" }} />
+            </Button>
+          )}
+          {events
+            .slice(startIndex, endIndex)
+            .map(event => (
+              <Button
+                key={event.id}
+                className={classes.headerButton}
+                variant={selectedEvent && selectedEvent.id === event.id ? "contained" : "outlined"}
+                color="primary"
+                onClick={() => setSelectedEvent(event)}
+              >
+                {new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(new Date(event.date.seconds * 1000))}
+                <br />
+                {new Date(event.date.seconds * 1000).toLocaleDateString('en-US')}
+                <br />
+                {new Intl.DateTimeFormat('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' }).format(new Date(event.date.seconds * 1000))}
+              </Button>
+            ))}
+          {endIndex < events.length && (
+            <Button
+              className={classes.arrowButton}
+              variant={"outlined"}
+              onClick={() => setStartIndex(startIndex + itemsPerPage)}
+            >
+              <ArrowForwardIosIcon style={{ color: '#333333', height: "20px" }} />
+            </Button>
+          )}
+        </div>
+      </div>
+
       {events.length == 0 ? (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '40vh', fontFamily: 'Encode Sans Compressed'}}>
-          <CalendarIcon /> <b style={{marginLeft: '5px'}}>No events to load.</b>
-          </div>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '40vh', fontFamily: 'Encode Sans Compressed' }}>
+          <CalendarIcon /> <b style={{ marginLeft: '5px' }}>No events to load.</b>
+        </div>
       ) : (
         <Grid container className={classes.gridContainer}>
           {selectedEvent && selectedEvent.volunteerTypes.map((type, index) => (
@@ -620,29 +622,29 @@ const Signup = () => {
                       <Button
                         className={classes.roleButton}
                         variant={"outlined"}
-                        color = "primary"
-                        style={{ marginBottom: "0.5rem", marginTop: "0.5rem"}}
+                        color="primary"
+                        style={{ marginBottom: "0.5rem", marginTop: "0.5rem" }}
                         onClick={() => handleEditVolunteer(volunteer, type)}
                       >
                         {volunteer.firstName} {volunteer.lastName.charAt(0)}.
                       </Button>
                     ) : (
-                      (isAdmin || isLead)  ? (
+                      (isAdmin || isLead) ? (
                         <Button
-                        className={classes.roleButton}
-                        variant={"outlined"}
-                        color = "secondary"
-                        style={{ marginBottom: "0.5rem", marginTop: "0.5rem" }}
-                        onClick={() => handleOpenVolunteerInfoPopup(volunteer, type)}
+                          className={classes.roleButton}
+                          variant={"outlined"}
+                          color="secondary"
+                          style={{ marginBottom: "0.5rem", marginTop: "0.5rem" }}
+                          onClick={() => handleOpenVolunteerInfoPopup(volunteer, type)}
                         >
                           {volunteer.firstName} {volunteer.lastName.charAt(0)}.
                         </Button>
                       ) : (
                         <Button
-                        className={classes.roleButton}
-                        variant={"outlined"}
-                        style={{ marginBottom: "0.5rem", marginTop: "0.5rem" }}
-                        disabled
+                          className={classes.roleButton}
+                          variant={"outlined"}
+                          style={{ marginBottom: "0.5rem", marginTop: "0.5rem" }}
+                          disabled
                         >
                           {volunteer.firstName} {volunteer.lastName.charAt(0)}.
                         </Button>
@@ -656,19 +658,19 @@ const Signup = () => {
                   <Button
                     className={classes.roleButton}
                     variant={"outlined"}
-                    style={{ marginBottom: "0.5rem", marginTop: "0.5rem", color: "gray"}}
+                    style={{ marginBottom: "0.5rem", marginTop: "0.5rem", color: "gray" }}
                     onClick={() => handleOpenVolunteerPopup(type)}
                     startIcon={<AddRounded />}
                   >
                     Signup
                   </Button>
                 </div>
-              ):(
+              ) : (
                 <div key={index} color="#d5d5d5">
                   <Button
                     className={classes.roleButton}
                     variant={"outlined"}
-                    style={{ marginBottom: "0.5rem", marginTop: "0.5rem", color: "gray"}}
+                    style={{ marginBottom: "0.5rem", marginTop: "0.5rem", color: "gray" }}
                     disabled
                   >
                     FULL
@@ -692,7 +694,7 @@ const Signup = () => {
         email={user?.email}
         uid={user?.uid}
         addVolunteer={handleAddVolunteer}
-        volunteer={editedVolunteer} 
+        volunteer={editedVolunteer}
         onDeleteVolunteer={handleDeleteVolunteer}
       />
       <VolunteerInfoPopup
@@ -703,33 +705,33 @@ const Signup = () => {
       />
       {selectedEvent && (
         <Dialog open={informationPopupOpen} onClose={() => setInformationPopupOpen(false)}>
-        <DialogTitle style={{ textAlign: 'center' }}>Event Information</DialogTitle>
-        <DialogContent>
-          <div style={{ marginBottom: '1rem', maxWidth: '600px', minWidth: '400px', wordWrap: 'break-word' }}>
-            <Typography component="div"  style={{ fontSize: '1rem' }}>
-              <div dangerouslySetInnerHTML={{ __html: selectedEvent.eventInformation }} />
-            </Typography>
-            <br />
-            <Typography style={{ fontSize: '0.9rem' }}>
-              <b>Event Lead Contact:</b> <Link href={`mailto:${selectedEvent.leadEmail}`}>{selectedEvent.leadEmail}</Link>
-            </Typography>
-            <Typography style={{ fontSize: '0.9rem', color: 'gray', fontStyle: 'italic' }}>
-              For technical issues please contact <Link href="mailto:somserve@gmail.com">somserve@gmail.com</Link>
-            </Typography>
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1.5em' }}>
-              <Link href={event ? "/" + location + "/" + event : "/"} style={{ textDecoration: "none" }} target="_blank">
-                <Button
-                  color="secondary"
-                  variant="contained"
-                >
-                  More Information
-                </Button>
-              </Link>
+          <DialogTitle style={{ textAlign: 'center' }}>Event Information</DialogTitle>
+          <DialogContent>
+            <div style={{ marginBottom: '1rem', maxWidth: '600px', minWidth: '400px', wordWrap: 'break-word' }}>
+              <Typography component="div" style={{ fontSize: '1rem' }}>
+                <div dangerouslySetInnerHTML={{ __html: selectedEvent.eventInformation }} />
+              </Typography>
+              <br />
+              <Typography style={{ fontSize: '0.9rem' }}>
+                <b>Event Lead Contact:</b> <Link href={`mailto:${selectedEvent.leadEmail}`}>{selectedEvent.leadEmail}</Link>
+              </Typography>
+              <Typography style={{ fontSize: '0.9rem', color: 'gray', fontStyle: 'italic' }}>
+                For technical issues please contact <Link href="mailto:somserve@gmail.com">somserve@gmail.com</Link>
+              </Typography>
+              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1.5em' }}>
+                <Link href={event ? "/" + location + "/" + event : "/"} style={{ textDecoration: "none" }} target="_blank">
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                  >
+                    More Information
+                  </Button>
+                </Link>
+              </div>
             </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-      
+          </DialogContent>
+        </Dialog>
+
       )}
       {sharePopupOpen && (
         <SharePopup onClose={() => setSharePopupOpen(false)} link={shareLink} />
