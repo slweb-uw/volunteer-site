@@ -31,7 +31,6 @@
     "@tiptap/react": "^2.0.0-beta.108",
     "@tiptap/starter-kit": "^2.0.0-beta.183",
     "@types/micro-cors": "^0.1.1",
-    "@types/react": "18.0.27",
     "babel-plugin-macros": "^3.0.1",
     "date-fns": "^2.28.0",
     "deep-equal": "^2.0.5",
@@ -67,15 +66,16 @@
     "sanitize-html": "^2.7.0",
     "styled-components": "^5.2.3",
     "superjson": "^1.7.3",
-    "typescript": "^4.9.4",
     "webfontloader": "^1.6.28"
   },
   "devDependencies": {
     "@types/deep-equal": "^1.0.1",
     "@types/memory-cache": "^0.2.1",
+    "@types/react": "^18.2.67",
     "@types/sanitize-html": "^2.6.2",
     "@types/styled-components": "^5.1.3",
-    "babel-plugin-superjson-next": "^0.4.5"
+    "babel-plugin-superjson-next": "^0.4.5",
+    "typescript": "^4.9.4"
   },
   "browser": {
     "child_process": false
