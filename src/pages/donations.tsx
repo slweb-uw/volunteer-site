@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import { NextPage } from "next"
 import {
   createStyles,
   CssBaseline,
@@ -8,18 +8,17 @@ import {
   withStyles,
   Grid,
   Button,
-} from "@material-ui/core";
-import DonateCard from "../components/donateCard";
-import IconBreadcrumbs from "../components/breadcrumbs";
+} from "@material-ui/core"
+import DonateCard from "src/components/donateCard"
+import IconBreadcrumbs from "src/components/breadcrumbs"
 interface Props {
-  classes?: any;
+  classes?: any
 }
 
 const Donations: NextPage<Props> = ({ classes }) => {
   return (
     <div className={classes.page}>
-      <IconBreadcrumbs
-        crumbs = {["Donations"]} />
+      <IconBreadcrumbs crumbs={["Donations"]} />
       <Grid container spacing={4}>
         <Grid item xs={12} md={6} lg={8}>
           <div
@@ -29,13 +28,22 @@ const Donations: NextPage<Props> = ({ classes }) => {
             }}
           >
             <Typography
-              style={{ paddingBottom: "0.5rem", fontStyle: "italic", fontFamily: "Open Sans" }}
+              style={{
+                paddingBottom: "0.5rem",
+                fontStyle: "italic",
+                fontFamily: "Open Sans",
+              }}
             >
               Consider a Gift to the
             </Typography>
             <Typography
               variant="h5"
-              style={{ paddingBottom: "0.5rem", fontWeight: 700, fontFamily: "Encode Sans", textTransform: "uppercase" }}
+              style={{
+                paddingBottom: "0.5rem",
+                fontWeight: 700,
+                fontFamily: "Encode Sans",
+                textTransform: "uppercase",
+              }}
             >
               UW School of Medicine Service Learning Fund
             </Typography>
@@ -44,7 +52,7 @@ const Donations: NextPage<Props> = ({ classes }) => {
                 paddingBottom: "0.5rem",
                 fontWeight: 700,
                 fontStyle: "italic",
-                fontFamily: "Open Sans"
+                fontFamily: "Open Sans",
               }}
             >
               Your donation will help sustain our efforts!
@@ -68,10 +76,10 @@ const Donations: NextPage<Props> = ({ classes }) => {
                 fontSize: 16,
                 width: "216px",
                 height: "60px",
-                fontFamily: "Encode Sans"
+                fontFamily: "Encode Sans",
               }}
             >
-              Make a Gift Today! {" "}
+              Make a Gift Today!{" "}
             </Button>
           </div>
         </Grid>
@@ -88,7 +96,7 @@ const Donations: NextPage<Props> = ({ classes }) => {
                 height: "auto",
                 width: "auto",
                 borderRadius: "5px",
-                maxWidth: "90%"
+                maxWidth: "90%",
               }}
               src="/Foot Care 2.jpg"
               alt="person holding home care kit"
@@ -98,12 +106,18 @@ const Donations: NextPage<Props> = ({ classes }) => {
       </Grid>
       <Typography
         variant="h5"
-        style={{ fontWeight: 800, paddingBottom: "1rem", paddingTop: "1.5rem", fontFamily: "Open Sans ", textTransform: "uppercase"}}
+        style={{
+          fontWeight: 800,
+          paddingBottom: "1rem",
+          paddingTop: "1.5rem",
+          fontFamily: "Open Sans ",
+          textTransform: "uppercase",
+        }}
       >
         Donate to a Specific Project
       </Typography>
 
-      <Grid container direction="row" spacing={6} style={{padding: "5px"}}>
+      <Grid container direction="row" spacing={6} style={{ padding: "5px" }}>
         <Grid item xs={12} lg={6}>
           <DonateCard
             title="Health Sciences Mobile Health Van"
@@ -138,8 +152,8 @@ const Donations: NextPage<Props> = ({ classes }) => {
         </Grid>
       </Grid>
     </div>
-  );
-};
+  )
+}
 
 const styles = createStyles({
   page: {
@@ -150,6 +164,6 @@ const styles = createStyles({
     paddingTop: "2em",
     paddingBottom: "5em",
   },
-});
+})
 
-export default withStyles(styles)(Donations);
+export default withStyles(styles)(Donations)

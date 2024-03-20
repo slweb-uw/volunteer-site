@@ -1,15 +1,15 @@
-import { NextPage } from "next";
+import { NextPage } from "next"
 import {
   createStyles,
   CssBaseline,
   Typography,
   withStyles,
   Grid,
-} from "@material-ui/core";
-import IconBreadcrumbs from "components/breadcrumbs";
+} from "@material-ui/core"
+import IconBreadcrumbs from "src/components/breadcrumbs"
 
 interface Props {
-  classes?: any;
+  classes?: any
 }
 
 const ServiceLearningPage: NextPage<Props> = ({ classes }) => {
@@ -47,8 +47,8 @@ const ServiceLearningPage: NextPage<Props> = ({ classes }) => {
             }}
           >
             <Typography style={{ fontSize: 16, fontFamily: "Open Sans" }}>
-              At each service learning event, it is important to strengthen your learning
-              by taking the time to prepare and reflect.
+              At each service learning event, it is important to strengthen your
+              learning by taking the time to prepare and reflect.
             </Typography>
             <div style={{ paddingTop: "20px" }}>
               <Typography
@@ -64,18 +64,22 @@ const ServiceLearningPage: NextPage<Props> = ({ classes }) => {
               </Typography>
               <ul style={{ listStyleType: "disc" }}>
                 <li>
-                Actively consider the community that you will be entering in preparation 
-                for each event. This may include historical healthcare interactions, 
-                knowledge of current interventions, familiarity with cultural considerations 
-                for the community, etc. 
+                  Actively consider the community that you will be entering in
+                  preparation for each event. This may include historical
+                  healthcare interactions, knowledge of current interventions,
+                  familiarity with cultural considerations for the community,
+                  etc.
                 </li>
                 <li>
-                Understand your roles and responsibilities as well as the scope of care that will 
-                be provided at the event. Ensure that you have completed the proper training (modules/skills sessions). 
+                  Understand your roles and responsibilities as well as the
+                  scope of care that will be provided at the event. Ensure that
+                  you have completed the proper training (modules/skills
+                  sessions).
                 </li>
                 <li>
-                Discuss safety/de-escalation plan with your team that addresses potential harm
-                 to both volunteers and community members. 
+                  Discuss safety/de-escalation plan with your team that
+                  addresses potential harm to both volunteers and community
+                  members.
                 </li>
               </ul>
               <Typography
@@ -93,10 +97,10 @@ const ServiceLearningPage: NextPage<Props> = ({ classes }) => {
                 <Typography
                   variant="h6"
                   style={{
-                  fontSize: 16,
-                  fontFamily: "Encode Sans",
+                    fontSize: 16,
+                    fontFamily: "Encode Sans",
                   }}
-               >
+                >
                   Consider the following with your team:
                 </Typography>
               </div>
@@ -105,23 +109,29 @@ const ServiceLearningPage: NextPage<Props> = ({ classes }) => {
                 <li>Quality improvement</li>
                 <li>Safety for volunteers and community members</li>
                 <li>Personal impact and professional identity development</li>
-                <li>Reflections on the impacts of social determinants of health</li>
-                <li>Identification of opportunities for advocacy that recognize gaps in care, duplication of effort, and ???</li>
+                <li>
+                  Reflections on the impacts of social determinants of health
+                </li>
+                <li>
+                  Identification of opportunities for advocacy that recognize
+                  gaps in care, duplication of effort, and ???
+                </li>
               </ul>
               <Typography style={{ fontSize: 16, fontFamily: "Open Sans" }}>
-              Successful participation in Service Learning while in medical school 
-              will require a balancing act as you learn to navigate personal, clinical, 
-              and academic responsibilities.  However, learning to integrate service 
-              into your life as a medical student will teach you the skills that you 
-              will need to incorporate this meaningful work into your future practice. 
+                Successful participation in Service Learning while in medical
+                school will require a balancing act as you learn to navigate
+                personal, clinical, and academic responsibilities. However,
+                learning to integrate service into your life as a medical
+                student will teach you the skills that you will need to
+                incorporate this meaningful work into your future practice.
               </Typography>
             </div>
           </div>
         </Grid>
       </Grid>
     </div>
-  );
-};
+  )
+}
 
 const styles = createStyles({
   page: {
@@ -133,6 +143,6 @@ const styles = createStyles({
     paddingBottom: "5em",
     fontFamily: "Open Sans",
   },
-});
+})
 
-export default withStyles(styles)(ServiceLearningPage);
+export default withStyles(styles)(ServiceLearningPage)

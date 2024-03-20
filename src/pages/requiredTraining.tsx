@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import { NextPage } from "next"
 import {
   createStyles,
   CssBaseline,
@@ -6,21 +6,18 @@ import {
   withStyles,
   Grid,
   Link,
-} from "@material-ui/core";
-import IconBreadcrumbs from "components/breadcrumbs";
+} from "@material-ui/core"
+import IconBreadcrumbs from "src/components/breadcrumbs"
 
 interface Props {
-  classes?: any;
+  classes?: any
 }
 
 const RequiredTraining: NextPage<Props> = ({ classes }) => {
   return (
     <div className={classes.page}>
       <CssBaseline />
-      <IconBreadcrumbs
-        crumbs={["Onboarding"]}
-        parentURL={undefined}
-      />
+      <IconBreadcrumbs crumbs={["Onboarding"]} parentURL={undefined} />
       <Typography
         variant="h4"
         style={{
@@ -48,13 +45,13 @@ const RequiredTraining: NextPage<Props> = ({ classes }) => {
             }}
           >
             <Typography style={{ fontSize: 16, fontFamily: "Open Sans" }}>
-            Ensuring that our student volunteers are appropriately trained is 
-            central to the mission of our program.  Prior to participation in 
-            service learning events, please review the materials below.
+              Ensuring that our student volunteers are appropriately trained is
+              central to the mission of our program. Prior to participation in
+              service learning events, please review the materials below.
             </Typography>
             <div style={{ listStyleType: "none", paddingTop: "20px" }}>
               <li>
-              <Typography
+                <Typography
                   variant="h6"
                   style={{
                     fontSize: 20,
@@ -73,7 +70,7 @@ const RequiredTraining: NextPage<Props> = ({ classes }) => {
                 </Typography>
               </li>
               <li>
-              <Typography
+                <Typography
                   variant="h6"
                   style={{
                     fontSize: 20,
@@ -90,7 +87,6 @@ const RequiredTraining: NextPage<Props> = ({ classes }) => {
                     Preparation and Reflection (required to review)
                   </Link>
                 </Typography>
-                
               </li>
               <li>
                 <Typography
@@ -108,7 +104,8 @@ const RequiredTraining: NextPage<Props> = ({ classes }) => {
                     rel="noopener noreferrer"
                     className={classes.link}
                   >
-                    Skills Training Modules (see individual projects for site specific requirements)
+                    Skills Training Modules (see individual projects for site
+                    specific requirements)
                   </Link>
                 </Typography>
               </li>
@@ -117,8 +114,8 @@ const RequiredTraining: NextPage<Props> = ({ classes }) => {
         </Grid>
       </Grid>
     </div>
-  );
-};
+  )
+}
 
 const styles = createStyles({
   page: {
@@ -130,6 +127,6 @@ const styles = createStyles({
     paddingBottom: "5em",
     fontFamily: "Open Sans",
   },
-});
+})
 
-export default withStyles(styles)(RequiredTraining);
+export default withStyles(styles)(RequiredTraining)

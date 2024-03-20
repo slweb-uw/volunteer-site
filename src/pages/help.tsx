@@ -19,9 +19,9 @@ import MuiAccordionSummary from "@material-ui/core/AccordionSummary"
 import MuiAccordionDetails from "@material-ui/core/AccordionDetails"
 import ArrowDropDownCircleOutlinedIcon from "@mui/icons-material/ArrowDropDownCircleOutlined"
 
-import ResourceLink from "../components/resourceLink"
-import IconBreadcrumbs from "../components/breadcrumbs"
-import HeadlineBar from "components/headlineBar"
+import ResourceLink from "src/components/resourceLink"
+import IconBreadcrumbs from "src/components/breadcrumbs"
+import HeadlineBar from "src/components/headlineBar"
 import { ExpandMore } from "@material-ui/icons"
 
 interface Props {

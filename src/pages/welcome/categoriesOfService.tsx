@@ -1,15 +1,15 @@
-import { NextPage } from "next";
+import { NextPage } from "next"
 import {
   createStyles,
   CssBaseline,
   Typography,
   withStyles,
   Grid,
-} from "@material-ui/core";
-import IconBreadcrumbs from "components/breadcrumbs";
+} from "@material-ui/core"
+import IconBreadcrumbs from "src/components/breadcrumbs"
 
 interface Props {
-  classes?: any;
+  classes?: any
 }
 
 const CategoriesOfService: NextPage<Props> = ({ classes }) => {
@@ -25,10 +25,10 @@ const CategoriesOfService: NextPage<Props> = ({ classes }) => {
       />
       <Typography
         variant="h4"
-        style={{ 
-          fontFamily: "Encode Sans", 
-          fontWeight: 800, 
-          fontSize: "2rem", 
+        style={{
+          fontFamily: "Encode Sans",
+          fontWeight: 800,
+          fontSize: "2rem",
         }}
       >
         CATEGORIES OF SERVICE
@@ -119,8 +119,8 @@ const CategoriesOfService: NextPage<Props> = ({ classes }) => {
         </Grid>
       </Grid>
     </div>
-  );
-};
+  )
+}
 
 const styles = createStyles({
   page: {
@@ -137,6 +137,6 @@ const styles = createStyles({
     fontWeight: 600,
     paddingTop: "1em",
   },
-});
+})
 
-export default withStyles(styles)(CategoriesOfService);
+export default withStyles(styles)(CategoriesOfService)

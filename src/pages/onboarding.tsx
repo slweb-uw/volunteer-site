@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import { NextPage } from "next"
 import {
   createStyles,
   CssBaseline,
@@ -10,34 +10,33 @@ import {
   Button,
   Link,
   Divider,
-} from "@material-ui/core";
-import { useState } from "react";
+} from "@material-ui/core"
+import { useState } from "react"
 
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
-import MuiAccordion from "@material-ui/core/Accordion";
-import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
-import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import IconBreadcrumbs from "../components/breadcrumbs"
-import ArrowDropDownCircleOutlinedIcon from '@mui/icons-material/ArrowDropDownCircleOutlined';
-import { yellow } from "@material-ui/core/colors";
-import { WarningOutlined } from "@material-ui/icons";
-import HeadlineBar from "components/headlineBar";
+import Alert from "@mui/material/Alert"
+import AlertTitle from "@mui/material/AlertTitle"
+import MuiAccordion from "@material-ui/core/Accordion"
+import MuiAccordionSummary from "@material-ui/core/AccordionSummary"
+import MuiAccordionDetails from "@material-ui/core/AccordionDetails"
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline"
+import IconBreadcrumbs from "../src/components/breadcrumbs"
+import ArrowDropDownCircleOutlinedIcon from "@mui/icons-material/ArrowDropDownCircleOutlined"
+import { yellow } from "@material-ui/core/colors"
+import { WarningOutlined } from "@material-ui/icons"
+import HeadlineBar from "src/components/headlineBar"
 interface Props {
-  classes?: any;
+  classes?: any
 }
 const Onboarding: NextPage<Props> = ({ classes }) => {
-  const [expanded, setExpanded] = useState("");
+  const [expanded, setExpanded] = useState("")
 
   const handleChange = (panel: any) => (event: any, newExpanded: any) => {
-    setExpanded(newExpanded ? panel : false);
-  };
+    setExpanded(newExpanded ? panel : false)
+  }
 
   return (
     <div className={classes.page}>
-      <IconBreadcrumbs
-        crumbs = {["Onboarding Instructions"]} />
+      <IconBreadcrumbs crumbs={["Onboarding Instructions"]} />
       <Typography
         variant="h4"
         style={{ fontFamily: "Encode Sans", fontWeight: 800 }}
@@ -45,13 +44,20 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
         VOLUNTEER PROVIDER ONBOARDING INSTRUCTIONS
       </Typography>
 
-      <HeadlineBar color="gold" width={900} height={10}/>
+      <HeadlineBar color="gold" width={900} height={10} />
 
-      <Alert severity="warning" style={{ backgroundColor: "#fef4e5", marginBottom: "2em", marginTop: "2em" }}>
+      <Alert
+        severity="warning"
+        style={{
+          backgroundColor: "#fef4e5",
+          marginBottom: "2em",
+          marginTop: "2em",
+        }}
+      >
         <AlertTitle>
-          <strong>All providers must fill out a brief survey here:{" "}</strong>
+          <strong>All providers must fill out a brief survey here: </strong>
           <a target="_blank" href="http://bit.ly/45t3Lmn">
-          Service Learning Provider Onboarding Form
+            Service Learning Provider Onboarding Form
           </a>
         </AlertTitle>
       </Alert>
@@ -61,7 +67,15 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
         expanded={expanded === "panel1"}
         onChange={handleChange("panel1")}
       >
-        <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
+        <AccordionSummary
+          aria-controls="panel1d-content"
+          id="panel1d-header"
+          expandIcon={
+            <ArrowDropDownCircleOutlinedIcon
+              style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
+            />
+          }
+        >
           <Typography className={classes.title}>Seattle</Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -99,9 +113,14 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
               requires volunteers to apply for the free professional liability
               coverage through the Volunteer and Retired Provider (VRP) program.
               The VRP program offers coverage for non-invasive primary and
-              specialty care of low-income patients in qualified settings.
-              The <a target="_blank" href="https://www.wahealthcareaccessalliance.org/volunteers/apply-for-vrp">form</a> is
-              quite simple and approval takes 1-2 weeks.
+              specialty care of low-income patients in qualified settings. The{" "}
+              <a
+                target="_blank"
+                href="https://www.wahealthcareaccessalliance.org/volunteers/apply-for-vrp"
+              >
+                form
+              </a>{" "}
+              is quite simple and approval takes 1-2 weeks.
             </Typography>
             <Typography>
               <b>Non-MD Providers</b>
@@ -113,9 +132,14 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
               requires volunteers to apply for the free professional liability
               coverage through the Volunteer and Retired Provider (VRP) program.
               The VRP program offers coverage for non-invasive primary and
-              specialty care of low-income patients in qualified settings.
-              The <a target="_blank" href="https://www.wahealthcareaccessalliance.org/volunteers/apply-for-vrp">form</a> is
-              quite simple and approval takes 1-2 weeks.
+              specialty care of low-income patients in qualified settings. The{" "}
+              <a
+                target="_blank"
+                href="https://www.wahealthcareaccessalliance.org/volunteers/apply-for-vrp"
+              >
+                form
+              </a>{" "}
+              is quite simple and approval takes 1-2 weeks.
             </Typography>
           </div>
         </AccordionDetails>
@@ -125,7 +149,15 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
         expanded={expanded === "panel2"}
         onChange={handleChange("panel2")}
       >
-        <AccordionSummary aria-controls="panel2d-content" id="panel2d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
+        <AccordionSummary
+          aria-controls="panel2d-content"
+          id="panel2d-header"
+          expandIcon={
+            <ArrowDropDownCircleOutlinedIcon
+              style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
+            />
+          }
+        >
           <Typography className={classes.title}>Spokane</Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -144,9 +176,14 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
               requires volunteers to apply for the free professional liability
               coverage through the Volunteer and Retired Provider (VRP) program.
               The VRP program offers coverage for non-invasive primary and
-              specialty care of low-income patients in qualified settings.
-              The <a target="_blank" href="https://www.wahealthcareaccessalliance.org/volunteers/apply-for-vrp">form</a> is
-              quite simple and approval takes 1-2 weeks.
+              specialty care of low-income patients in qualified settings. The{" "}
+              <a
+                target="_blank"
+                href="https://www.wahealthcareaccessalliance.org/volunteers/apply-for-vrp"
+              >
+                form
+              </a>{" "}
+              is quite simple and approval takes 1-2 weeks.
             </Typography>
           </div>
         </AccordionDetails>
@@ -156,7 +193,15 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
         expanded={expanded === "panel3"}
         onChange={handleChange("panel3")}
       >
-        <AccordionSummary aria-controls="panel3d-content" id="panel3d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
+        <AccordionSummary
+          aria-controls="panel3d-content"
+          id="panel3d-header"
+          expandIcon={
+            <ArrowDropDownCircleOutlinedIcon
+              style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
+            />
+          }
+        >
           <Typography className={classes.title}>All Other Sites</Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -168,15 +213,15 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
             <Typography>
               Please contact your insurance company/employer to find out if you
               are covered for service learning activities. If your coverage does
-              not extend to this activity, contact the UWSOM Service Learning Team,{" "}
-              <a href="mailto://somserve@uw.edu">somserve@uw.edu</a>.
+              not extend to this activity, contact the UWSOM Service Learning
+              Team, <a href="mailto://somserve@uw.edu">somserve@uw.edu</a>.
             </Typography>
           </div>
         </AccordionDetails>
       </Accordion>
     </div>
-  );
-};
+  )
+}
 
 const styles = createStyles({
   page: {
@@ -213,8 +258,7 @@ const styles = createStyles({
     display: "inline-block",
     backgroundColor: "#FFFF00",
   },
-
-});
+})
 
 const Accordion = withStyles({
   root: {
@@ -230,7 +274,7 @@ const Accordion = withStyles({
     },
   },
   expanded: {},
-})(MuiAccordion);
+})(MuiAccordion)
 
 const AccordionSummary = withStyles({
   root: {
@@ -250,12 +294,12 @@ const AccordionSummary = withStyles({
     justifyContent: "space-between",
   },
   expanded: {},
-})(MuiAccordionSummary);
+})(MuiAccordionSummary)
 
 const AccordionDetails = withStyles((theme) => ({
   root: {
     padding: theme.spacing(2),
   },
-}))(MuiAccordionDetails);
+}))(MuiAccordionDetails)
 
-export default withStyles(styles)(Onboarding);
+export default withStyles(styles)(Onboarding)

@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react"
 import {
   createStyles,
   Theme,
   withStyles,
   WithStyles,
-} from "@material-ui/core/styles";
-import Dialog from "@material-ui/core/Dialog";
-import MuiDialogTitle from "@material-ui/core/DialogTitle";
-import MuiDialogContent from "@material-ui/core/DialogContent";
-import IconButton from "@material-ui/core/IconButton";
-import CloseIcon from "@material-ui/icons/Close";
-import Typography from "@material-ui/core/Typography";
-import { Button, Grid } from "@material-ui/core";
-import Link from "next/link";
-import { useAuth } from "auth";
-import { firebaseClient } from "firebaseClient";
-import AddModifyEventModal from "./addModifyEventModal";
-import EventImage from "./eventImage";
-import naturalJoin from "../helpers/naturalJoin";
-import EventDescription from "./eventDescription";
-import { Location } from "../helpers/locations";
+} from "@material-ui/core/styles"
+import Dialog from "@material-ui/core/Dialog"
+import MuiDialogTitle from "@material-ui/core/DialogTitle"
+import MuiDialogContent from "@material-ui/core/DialogContent"
+import IconButton from "@material-ui/core/IconButton"
+import CloseIcon from "@material-ui/icons/Close"
+import Typography from "@material-ui/core/Typography"
+import { Button, Grid } from "@material-ui/core"
+import Link from "next/link"
+import { useAuth } from "auth"
+import { firebaseClient } from "firebaseClient"
+import AddModifyEventModal from "./addModifyEventModal"
+import EventImage from "./eventImage"
+import naturalJoin from "../helpers/naturalJoin"
+import EventDescription from "./eventDescription"
+import { Location } from "../helpers/locations"
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -33,17 +33,16 @@ const styles = (theme: Theme) =>
       top: theme.spacing(1),
       color: theme.palette.grey[500],
     },
-
-  });
+  })
 
 export interface DialogTitleProps extends WithStyles<typeof styles> {
-  id: string;
-  children: React.ReactNode;
-  onClose: () => void;
+  id: string
+  children: React.ReactNode
+  onClose: () => void
 }
 
 const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
-  const { children, classes, onClose, ...other } = props;
+  const { children, classes, onClose, ...other } = props
   return (
     <MuiDialogTitle disableTypography className={classes.root} {...other}>
       <Typography variant="h6">{children}</Typography>
@@ -57,21 +56,21 @@ const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
         </IconButton>
       ) : null}
     </MuiDialogTitle>
-  );
-});
+  )
+})
 
 const DialogContent = withStyles((theme: Theme) => ({
   root: {
     padding: theme.spacing(3),
   },
-}))(MuiDialogContent);
+}))(MuiDialogContent)
 
 const deleteEvent = async (eventData: EventData | undefined) => {
   if (
     eventData &&
     confirm("Please acknowledge you wish to delete this event.")
   ) {
-    const userToken = await firebaseClient.auth().currentUser?.getIdToken();
+    const userToken = await firebaseClient.auth().currentUser?.getIdToken()
 
     try {
       await Promise.all([
@@ -89,26 +88,26 @@ const deleteEvent = async (eventData: EventData | undefined) => {
         //     userToken,
         //   }),
         // }),
-      ]);
-      location.reload();
+      ])
+      location.reload()
     } catch (e) {
-      alert(e);
+      alert(e)
     }
   }
-};
+}
 
 export default function EventModal(props: {
-  open: boolean;
-  event: EventData | undefined;
-  location: Location;
-  handleClose: any;
+  open: boolean
+  event: EventData | undefined
+  location: Location
+  handleClose: any
 }) {
-  const { open, event, location, handleClose } = props;
-  const [adminModalOpen, setAdminModalOpen] = useState<boolean>(false);
+  const { open, event, location, handleClose } = props
+  const [adminModalOpen, setAdminModalOpen] = useState<boolean>(false)
 
-  let eventLink = event ?  "/" + location + "/" + event.id : "/";
+  let eventLink = event ? "/" + location + "/" + event.id : "/"
 
-  const { isAdmin } = useAuth();
+  const { isAdmin } = useAuth()
 
   return (
     <Dialog
@@ -127,16 +126,22 @@ export default function EventModal(props: {
           {event?.["imageURL"] && (
             <Grid item xs={12} lg={4}>
               <EventImage
-                style={{ maxWidth: "100%", maxHeight: "500px", borderRadius: 10 }}
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "500px",
+                  borderRadius: 10,
+                }}
                 imageURL={event.imageURL}
                 eventTitle={event.Title}
               />
             </Grid>
           )}
           <Grid item xs={12} lg={event?.["imageURL"] ? 8 : 12}>
-            {event && <Typography gutterBottom>
-              <EventDescription event={event} />
-            </Typography>}
+            {event && (
+              <Typography gutterBottom>
+                <EventDescription event={event} />
+              </Typography>
+            )}
             {event?.["Location"] && (
               <div>
                 <Typography>
@@ -156,8 +161,8 @@ export default function EventModal(props: {
               </div>
             )}
             <div style={{ marginTop: "2em" }}>
-            { (isAdmin || event?.SignupActive) && (
-              <Link href={event ? `/${location}/${event.id}/signup` : "/"}>
+              {(isAdmin || event?.SignupActive) && (
+                <Link href={event ? `/${location}/${event.id}/signup` : "/"}>
                   <Button
                     color="primary"
                     variant="contained"
@@ -165,9 +170,13 @@ export default function EventModal(props: {
                   >
                     Sign up
                   </Button>
-              </Link>
-            )}
-              <Link href={eventLink} style={{ textDecoration: "none" }} target="_blank">
+                </Link>
+              )}
+              <Link
+                href={eventLink}
+                style={{ textDecoration: "none" }}
+                target="_blank"
+              >
                 <Button
                   onClick={handleClose}
                   color="secondary"
@@ -178,41 +187,41 @@ export default function EventModal(props: {
                 </Button>
               </Link>
               {isAdmin && (
-                  <div style={{ paddingBottom: "2em", paddingTop: "2em" }}>
-                    <div style={{ display: "inline-block" }}>
-                      <AddModifyEventModal
-                        open={adminModalOpen}
-                        location={location}
-                        event={event}
-                        handleClose={() => {
-                          setAdminModalOpen(false);
-                        }}
-                      />
-                      <Button
-                        style={{ display: "inline-block" }}
-                        color="secondary"
-                        onClick={(e) => {
-                          setAdminModalOpen(true);
-                        }}
-                      >
-                        Modify Project
-                      </Button>
-                    </div>
+                <div style={{ paddingBottom: "2em", paddingTop: "2em" }}>
+                  <div style={{ display: "inline-block" }}>
+                    <AddModifyEventModal
+                      open={adminModalOpen}
+                      location={location}
+                      event={event}
+                      handleClose={() => {
+                        setAdminModalOpen(false)
+                      }}
+                    />
                     <Button
-                      style={{ display: "inline-block", marginLeft: "1em" }}
+                      style={{ display: "inline-block" }}
                       color="secondary"
-                      onClick={async (e) => {
-                        deleteEvent(event);
+                      onClick={(e) => {
+                        setAdminModalOpen(true)
                       }}
                     >
-                      Delete Project
+                      Modify Project
                     </Button>
                   </div>
-                )}
+                  <Button
+                    style={{ display: "inline-block", marginLeft: "1em" }}
+                    color="secondary"
+                    onClick={async (e) => {
+                      deleteEvent(event)
+                    }}
+                  >
+                    Delete Project
+                  </Button>
+                </div>
+              )}
             </div>
           </Grid>
         </Grid>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

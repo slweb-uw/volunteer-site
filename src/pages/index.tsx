@@ -13,7 +13,7 @@ import Link from "next/link"
 
 import { firebaseClient } from "firebaseClient"
 import { ArrowForwardIos } from "@material-ui/icons"
-import HeadlineBar from "components/headlineBar"
+import HeadlineBar from "src/components/headlineBar"
 
 const useStyles = makeStyles(() => ({
   container: {

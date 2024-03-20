@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import { NextPage } from "next"
 import {
   createStyles,
   CssBaseline,
@@ -10,11 +10,11 @@ import {
   Button,
   Link,
   Divider,
-} from "@material-ui/core";
-import IconBreadcrumbs from "components/breadcrumbs";
+} from "@material-ui/core"
+import IconBreadcrumbs from "src/components/breadcrumbs"
 
 interface Props {
-  classes?: any;
+  classes?: any
 }
 
 const Communitypartners: NextPage<Props> = ({ classes }) => {
@@ -27,10 +27,10 @@ const Communitypartners: NextPage<Props> = ({ classes }) => {
       />
       <Typography
         variant="h4"
-        style={{ 
-          fontFamily: "Encode Sans", 
-          fontWeight: 800, 
-          fontSize: "2rem", 
+        style={{
+          fontFamily: "Encode Sans",
+          fontWeight: 800,
+          fontSize: "2rem",
         }}
       >
         WELCOME COMMUNITY PARTNERS
@@ -76,19 +76,25 @@ const Communitypartners: NextPage<Props> = ({ classes }) => {
               serve our local communities. You might see our students involved
               in a variety of activities such as health screenings, vaccination
               clinics, health education programs or street outreach.
-              <Typography style={{ fontSize: 16, marginTop: "20px",  fontFamily: "Open sans"  }}>
+              <Typography
+                style={{
+                  fontSize: 16,
+                  marginTop: "20px",
+                  fontFamily: "Open sans",
+                }}
+              >
                 To learn more about what students are working on now,{" "}
-                <a href="/opportunities">click here</a>. If you have an idea for a
-                future program, please contact the UWSOM Service Learning Team,{" "}
-                <a href="mailto://somserve@uw.edu">somserve@uw.edu</a>.
+                <a href="/opportunities">click here</a>. If you have an idea for
+                a future program, please contact the UWSOM Service Learning
+                Team, <a href="mailto://somserve@uw.edu">somserve@uw.edu</a>.
               </Typography>
             </Typography>
           </div>
         </Grid>
       </Grid>
     </div>
-  );
-};
+  )
+}
 
 const styles = createStyles({
   page: {
@@ -105,6 +111,6 @@ const styles = createStyles({
     fontWeight: 600,
     paddingTop: "1em",
   },
-});
+})
 
-export default withStyles(styles)(Communitypartners);
+export default withStyles(styles)(Communitypartners)

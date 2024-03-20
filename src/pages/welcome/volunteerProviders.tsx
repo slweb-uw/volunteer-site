@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import { NextPage } from "next"
 import {
   createStyles,
   CssBaseline,
@@ -6,12 +6,12 @@ import {
   withStyles,
   Grid,
   Link,
-} from "@material-ui/core";
-import IconBreadcrumbs from "components/breadcrumbs";
-import { BorderAllRounded } from "@material-ui/icons";
+} from "@material-ui/core"
+import IconBreadcrumbs from "src/components/breadcrumbs"
+import { BorderAllRounded } from "@material-ui/icons"
 
 interface Props {
-  classes?: any;
+  classes?: any
 }
 
 const VolunteerProviders: NextPage<Props> = ({ classes }) => {
@@ -205,8 +205,8 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
         </Typography>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const styles = createStyles({
   page: {
@@ -229,6 +229,6 @@ const styles = createStyles({
   link: {
     color: "black",
   },
-});
+})
 
-export default withStyles(styles)(VolunteerProviders);
+export default withStyles(styles)(VolunteerProviders)

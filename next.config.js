@@ -9,16 +9,16 @@ module.exports = {
   webpack: (config, { isServer }) => {
     // Fixes npm packages that depend on `fs` module
     if (!isServer) {
-      config.resolve.fallback.fs = false;
+      config.resolve.fallback.fs = false
     }
 
     config.module.rules.push({
       test: /\.svg$/,
       include: /\.(js|ts)x?$/,
       use: [{ loader: "@svgr/webpack" }, { loader: "url-loader" }],
-    });
+    })
 
-    return config;
+    return config
   },
   async rewrites() {
     return [
@@ -26,6 +26,6 @@ module.exports = {
         source: "/opportunities",
         destination: "/opportunities/default",
       },
-    ];
+    ]
   },
-};
+}

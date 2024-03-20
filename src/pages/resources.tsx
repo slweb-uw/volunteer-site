@@ -1,5 +1,5 @@
 //*NOTE: Resources is renamed as Links on the Website /*
-import { NextPage } from "next";
+import { NextPage } from "next"
 import {
   createStyles,
   CssBaseline,
@@ -11,49 +11,48 @@ import {
   Button,
   Link,
   Divider,
-} from "@material-ui/core";
-import React, { useState } from "react";
+} from "@material-ui/core"
+import React, { useState } from "react"
 
-import MuiAccordion from "@material-ui/core/Accordion";
-import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
-import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import ArrowDropDownCircleOutlinedIcon from '@mui/icons-material/ArrowDropDownCircleOutlined';
+import MuiAccordion from "@material-ui/core/Accordion"
+import MuiAccordionSummary from "@material-ui/core/AccordionSummary"
+import MuiAccordionDetails from "@material-ui/core/AccordionDetails"
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline"
+import ArrowDropDownCircleOutlinedIcon from "@mui/icons-material/ArrowDropDownCircleOutlined"
 
-import ResourceLink from "../components/resourceLink";
-import IconBreadcrumbs from "../components/breadcrumbs";
-import HeadlineBar from "components/headlineBar";
-import { ExpandMore } from "@material-ui/icons";
+import ResourceLink from "src/components/resourceLink"
+import IconBreadcrumbs from "src/components/breadcrumbs"
+import HeadlineBar from "src/components/headlineBar"
+import { ExpandMore } from "@material-ui/icons"
 
 interface Props {
-  classes?: any;
+  classes?: any
 }
 
 const Resources: NextPage<Props> = ({ classes }) => {
-  const [expanded, setExpanded] = useState("");
+  const [expanded, setExpanded] = useState("")
   const [schoolExpanded, setSchoolExpanded] = useState("")
 
   const handleChange = (panel: any) => (event: any, newExpanded: any) => {
-    setExpanded(newExpanded ? panel : false);
-  };
+    setExpanded(newExpanded ? panel : false)
+  }
 
   const handleSchoolChange = (panel: any) => (event: any, newExpanded: any) => {
-    setSchoolExpanded(newExpanded ? panel : false);
-  };
+    setSchoolExpanded(newExpanded ? panel : false)
+  }
 
   return (
     <div className={classes.page}>
-      <IconBreadcrumbs
-        crumbs = {["Links"]} />
-      
-       {/* UW Health Sciences Service Learning Websites Section */}
+      <IconBreadcrumbs crumbs={["Links"]} />
+
+      {/* UW Health Sciences Service Learning Websites Section */}
       <Typography
         variant="h4"
-        style={{ 
-          fontSize: "1.75rem", 
-          fontWeight: 800, 
-          fontFamily: "Encode Sans", 
-          textTransform: "uppercase" 
+        style={{
+          fontSize: "1.75rem",
+          fontWeight: 800,
+          fontFamily: "Encode Sans",
+          textTransform: "uppercase",
         }}
       >
         UW Health Sciences Service Learning Websites
@@ -66,7 +65,15 @@ const Resources: NextPage<Props> = ({ classes }) => {
         expanded={schoolExpanded === "schoolpanel1"}
         onChange={handleSchoolChange("schoolpanel1")}
       >
-        <AccordionSummary aria-controls="schoolpanel1d-content" id="panel1d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
+        <AccordionSummary
+          aria-controls="schoolpanel1d-content"
+          id="panel1d-header"
+          expandIcon={
+            <ArrowDropDownCircleOutlinedIcon
+              style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
+            />
+          }
+        >
           <Typography className={classes.title}>School of Medicine</Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -114,7 +121,15 @@ const Resources: NextPage<Props> = ({ classes }) => {
         expanded={schoolExpanded === "schoolpanel2"}
         onChange={handleSchoolChange("schoolpanel2")}
       >
-        <AccordionSummary aria-controls="schoolpanel2d-content" id="schoolpanel2d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
+        <AccordionSummary
+          aria-controls="schoolpanel2d-content"
+          id="schoolpanel2d-header"
+          expandIcon={
+            <ArrowDropDownCircleOutlinedIcon
+              style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
+            />
+          }
+        >
           <Typography className={classes.title}>School of Dentistry</Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -136,7 +151,15 @@ const Resources: NextPage<Props> = ({ classes }) => {
         expanded={schoolExpanded === "schoolpanel3"}
         onChange={handleSchoolChange("schoolpanel3")}
       >
-        <AccordionSummary aria-controls="schoolpanel3d-content" id="schoolpanel3d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
+        <AccordionSummary
+          aria-controls="schoolpanel3d-content"
+          id="schoolpanel3d-header"
+          expandIcon={
+            <ArrowDropDownCircleOutlinedIcon
+              style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
+            />
+          }
+        >
           <Typography className={classes.title}>School of Pharmacy</Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -158,8 +181,18 @@ const Resources: NextPage<Props> = ({ classes }) => {
         expanded={schoolExpanded === "schoolpanel4"}
         onChange={handleSchoolChange("schoolpanel4")}
       >
-        <AccordionSummary aria-controls="schoolpanel4d-content" id="schoolpanel4d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
-          <Typography className={classes.title}>School of Social Work</Typography>
+        <AccordionSummary
+          aria-controls="schoolpanel4d-content"
+          id="schoolpanel4d-header"
+          expandIcon={
+            <ArrowDropDownCircleOutlinedIcon
+              style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
+            />
+          }
+        >
+          <Typography className={classes.title}>
+            School of Social Work
+          </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <div>
@@ -180,7 +213,15 @@ const Resources: NextPage<Props> = ({ classes }) => {
         expanded={schoolExpanded === "schoolpanel5"}
         onChange={handleSchoolChange("schoolpanel5")}
       >
-        <AccordionSummary aria-controls="schoolpanel5d-content" id="schoolpanel5d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
+        <AccordionSummary
+          aria-controls="schoolpanel5d-content"
+          id="schoolpanel5d-header"
+          expandIcon={
+            <ArrowDropDownCircleOutlinedIcon
+              style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
+            />
+          }
+        >
           <Typography className={classes.title}>School of Nursing</Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -202,7 +243,15 @@ const Resources: NextPage<Props> = ({ classes }) => {
         expanded={schoolExpanded === "schoolpanel6"}
         onChange={handleSchoolChange("schoolpanel6")}
       >
-        <AccordionSummary aria-controls="schoolpanel6d-content" id="schoolpanel6d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
+        <AccordionSummary
+          aria-controls="schoolpanel6d-content"
+          id="schoolpanel6d-header"
+          expandIcon={
+            <ArrowDropDownCircleOutlinedIcon
+              style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
+            />
+          }
+        >
           <Typography className={classes.title}>Interprofessional</Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -219,16 +268,16 @@ const Resources: NextPage<Props> = ({ classes }) => {
         </AccordionDetails>
       </Accordion>
 
-        {/* SOM Community Partners Section */}
+      {/* SOM Community Partners Section */}
       <Typography
         variant="h4"
-        style={{ 
-          fontWeight: 800, 
-          paddingBottom: "0", 
-          paddingTop: "2em", 
-          fontFamily: "Encode Sans", 
-          textTransform: "uppercase", 
-          fontSize: "1.75rem" 
+        style={{
+          fontWeight: 800,
+          paddingBottom: "0",
+          paddingTop: "2em",
+          fontFamily: "Encode Sans",
+          textTransform: "uppercase",
+          fontSize: "1.75rem",
         }}
       >
         SOM Community Partners
@@ -241,12 +290,20 @@ const Resources: NextPage<Props> = ({ classes }) => {
         expanded={expanded === "panel1"}
         onChange={handleChange("panel1")}
       >
-        <AccordionSummary aria-controls="panel1d-content" id="panel1d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
+        <AccordionSummary
+          aria-controls="panel1d-content"
+          id="panel1d-header"
+          expandIcon={
+            <ArrowDropDownCircleOutlinedIcon
+              style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
+            />
+          }
+        >
           <Typography className={classes.title}>Alaska</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <div>
-          <Typography>
+            <Typography>
               <ResourceLink
                 href="https://anmc.org/"
                 className={classes.resource}
@@ -286,7 +343,15 @@ const Resources: NextPage<Props> = ({ classes }) => {
         expanded={expanded === "panel2"}
         onChange={handleChange("panel2")}
       >
-        <AccordionSummary aria-controls="panel2d-content" id="panel2d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
+        <AccordionSummary
+          aria-controls="panel2d-content"
+          id="panel2d-header"
+          expandIcon={
+            <ArrowDropDownCircleOutlinedIcon
+              style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
+            />
+          }
+        >
           <Typography className={classes.title}>Idaho</Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -331,7 +396,15 @@ const Resources: NextPage<Props> = ({ classes }) => {
         expanded={expanded === "panel3"}
         onChange={handleChange("panel3")}
       >
-        <AccordionSummary aria-controls="panel3d-content" id="panel3d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
+        <AccordionSummary
+          aria-controls="panel3d-content"
+          id="panel3d-header"
+          expandIcon={
+            <ArrowDropDownCircleOutlinedIcon
+              style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
+            />
+          }
+        >
           <Typography className={classes.title}>Montana</Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -376,13 +449,20 @@ const Resources: NextPage<Props> = ({ classes }) => {
         expanded={expanded === "panel4"}
         onChange={handleChange("panel4")}
       >
-        <AccordionSummary aria-controls="panel4d-content" id="panel4d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
+        <AccordionSummary
+          aria-controls="panel4d-content"
+          id="panel4d-header"
+          expandIcon={
+            <ArrowDropDownCircleOutlinedIcon
+              style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
+            />
+          }
+        >
           <Typography className={classes.title}>Seattle</Typography>
-
         </AccordionSummary>
         <AccordionDetails>
           <div>
-          <Typography>
+            <Typography>
               <ResourceLink
                 href="https://www.blessed-sacrament.org/"
                 className={classes.resource}
@@ -542,7 +622,15 @@ const Resources: NextPage<Props> = ({ classes }) => {
         expanded={expanded === "panel5"}
         onChange={handleChange("panel5")}
       >
-        <AccordionSummary aria-controls="panel3d-content" id="panel3d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
+        <AccordionSummary
+          aria-controls="panel3d-content"
+          id="panel3d-header"
+          expandIcon={
+            <ArrowDropDownCircleOutlinedIcon
+              style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
+            />
+          }
+        >
           <Typography className={classes.title}>Spokane</Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -635,7 +723,15 @@ const Resources: NextPage<Props> = ({ classes }) => {
         expanded={expanded === "panel6"}
         onChange={handleChange("panel6")}
       >
-        <AccordionSummary aria-controls="panel6d-content" id="panel6d-header" expandIcon={ <ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} /> }>
+        <AccordionSummary
+          aria-controls="panel6d-content"
+          id="panel6d-header"
+          expandIcon={
+            <ArrowDropDownCircleOutlinedIcon
+              style={{ color: "#4B2E83", height: "1.5em", width: "auto" }}
+            />
+          }
+        >
           <Typography className={classes.title}>Wyoming</Typography>
         </AccordionSummary>
         <AccordionDetails>
@@ -652,8 +748,8 @@ const Resources: NextPage<Props> = ({ classes }) => {
         </AccordionDetails>
       </Accordion>
     </div>
-  );
-};
+  )
+}
 
 const styles = createStyles({
   page: {
@@ -667,7 +763,7 @@ const styles = createStyles({
 
   header: {
     paddingBottom: "0.5em",
-    fontFamily: "Open Sans"
+    fontFamily: "Open Sans",
   },
 
   links: {
@@ -681,8 +777,7 @@ const styles = createStyles({
     fontWeight: 800,
     fontFamily: "Encode Sans",
   },
-
-});
+})
 
 const Accordion = withStyles({
   root: {
@@ -696,7 +791,7 @@ const Accordion = withStyles({
     },
   },
   expanded: {},
-})(MuiAccordion);
+})(MuiAccordion)
 
 const AccordionSummary = withStyles({
   root: {
@@ -716,12 +811,12 @@ const AccordionSummary = withStyles({
     justifyContent: "space-between",
   },
   expanded: {},
-})(MuiAccordionSummary);
+})(MuiAccordionSummary)
 
 const AccordionDetails = withStyles((theme) => ({
   root: {
     padding: theme.spacing(2),
   },
-}))(MuiAccordionDetails);
+}))(MuiAccordionDetails)
 
-export default withStyles(styles)(Resources);
+export default withStyles(styles)(Resources)

@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import { NextPage } from "next"
 import {
   createStyles,
   CssBaseline,
@@ -10,12 +10,12 @@ import {
   Button,
   Link,
   Divider,
-} from "@material-ui/core";
-import IconBreadcrumbs from "components/breadcrumbs";
-import HeadlineBar from "components/headlineBar";
+} from "@material-ui/core"
+import IconBreadcrumbs from "src/components/breadcrumbs"
+import HeadlineBar from "src/components/headlineBar"
 
 interface Props {
-  classes?: any;
+  classes?: any
 }
 
 const StudentVolunteers: NextPage<Props> = ({ classes }) => {
@@ -139,8 +139,8 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
         </div>
       </Grid>
     </div>
-  );
-};
+  )
+}
 
 const styles = createStyles({
   page: {
@@ -156,6 +156,6 @@ const styles = createStyles({
     fontWeight: 600,
     paddingTop: "1em",
   },
-});
+})
 
-export default withStyles(styles)(StudentVolunteers);
+export default withStyles(styles)(StudentVolunteers)
