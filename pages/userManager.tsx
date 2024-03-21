@@ -126,8 +126,8 @@ const AdminPage = () => {
 
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortedColumn, setSortedColumn] = useState("email");
-  
-  const [totalAdmins, setTotalAdmins] = useState(0);
+
+const [totalAdmins, setTotalAdmins] = useState(0);
   const [totalVolunteers, setTotalVolunteers] = useState(0);
   const [totalLeads, setTotalLeads] = useState(0);
 
@@ -147,7 +147,6 @@ const AdminPage = () => {
           adminsData.push({ id: doc.id, ...doc.data() });
         });
         setAdmins(adminsData);
-        setTotalAdmins(adminsData.length); // Set total number of admins
       });
     return unsubscribe;
   };
@@ -163,7 +162,6 @@ const AdminPage = () => {
           volunteerData.push({ id: doc.id, ...doc.data() });
         });
         setVolunteers(volunteerData);
-        setTotalVolunteers(volunteerData.length); // Set total number of volunteers
       });
     return unsubscribe;
   };
@@ -179,7 +177,6 @@ const AdminPage = () => {
           leadData.push({ id: doc.id, ...doc.data() });
         });
         setLeads(leadData);
-        setTotalLeads(leadData.length); // Set total number of leads
       });
     return unsubscribe;
   };
@@ -301,7 +298,7 @@ const AdminPage = () => {
             color="primary"
             onClick={() => setActiveSection("Admins")}
           >
-            Admins ({totalAdmins})
+            Admins
           </Button>
           <Button
             className={classes.headerButton}
@@ -309,7 +306,7 @@ const AdminPage = () => {
             color="primary"
             onClick={() => setActiveSection("Leads")}
           >
-            Project Leads ({totalLeads})
+            Project Leads
           </Button>
           <Button
             className={classes.headerButton}
@@ -317,7 +314,7 @@ const AdminPage = () => {
             color="primary"
             onClick={() => setActiveSection("Volunteers")}
           >
-            Non-UW Preceptors ({totalVolunteers})
+            Non-UW Preceptors
           </Button>
         </div>
         <Button style={{marginLeft: "auto"}} onClick={() => setHelpDialogOpen(true)}>
