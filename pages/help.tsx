@@ -191,6 +191,7 @@ const HelpPage: NextPage<Props> = ({ classes }) => {
             </Typography>
         </MuiAccordionDetails>
         </MuiAccordion>
+      
         <MuiAccordion
           square
           expanded={expanded === "dropdown3"}

@@ -14,6 +14,15 @@ import HelpIcon from "@material-ui/icons/Help";
 import {useRouter} from 'next/router';
 import { handleHelpButtonClick } from "helpers/navigation";
 
+const UwLogo = (
+    <Avatar
+      alt="Uw Logo"
+      src="https://depts.washington.edu/compfin/web/wp-content/uploads/2015/09/UW-logo-512.png"
+      style={{ borderRadius: 0}}
+    />
+  );
+
+/* Having two log in methods was too complex 
 const MicrosoftLogo = (
     <Avatar
       alt="Microsoft Logo"
@@ -28,7 +37,8 @@ const GoogleLogo = (
         src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA"
     />
 );
-  
+*/
+
 const useStyles = makeStyles((theme) => ({
   dialog: {
     minWidth: 350,
@@ -110,13 +120,22 @@ const SignInPopup: React.FC<SignInPopupProps> = ({ open, close }) => {
               googleProvider.addScope("email");
               handleSignInWithProvider(googleProvider);
             }}
-            startIcon={GoogleLogo}
+            startIcon={UwLogo}
             className={classes.button}
           >
-            Sign In with Google
+            Sign In with UW email
           </Button>
         </div>
-        <div className={classes.buttonRow}>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default SignInPopup;
+
+
+/* Add the following under the first <div> in the <dialogContent> to add back microsoft log in
+       <div className={classes.buttonRow}>
           <Button
             variant="contained"
             onClick={() => {
@@ -132,10 +151,4 @@ const SignInPopup: React.FC<SignInPopupProps> = ({ open, close }) => {
           >
             Sign In with Microsoft
           </Button>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-};
-
-export default SignInPopup;
+        </div> */
