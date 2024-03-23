@@ -1,6 +1,6 @@
-import React from "react"
+import type { FC } from "react"
 
-const HeadlineBar: React.FC<{
+const HeadlineBar: FC<{
   color: string
   width: number
   height: number

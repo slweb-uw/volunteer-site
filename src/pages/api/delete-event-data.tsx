@@ -1,40 +1,40 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { firebaseAdmin } from "../../firebaseAdmin";
-import { useState, useEffect } from "react";
-import firebase from "firebase/app";
-import "firebase/firestore";
+import { NextApiRequest, NextApiResponse } from "next"
+import { firebaseAdmin } from "firebaseAdmin"
+import { useState, useEffect } from "react"
+import firebase from "firebase/app"
+import "firebase/firestore"
 
 export const config = {
   api: {
     externalResolver: true,
   },
-};
+}
 
 // Delete event
 export default async (req: NextApiRequest, resolve: NextApiResponse) => {
   const {
     userToken,
     eventData,
-  }: { userToken: any; eventData: CalendarEventData } = JSON.parse(req.body);
+  }: { userToken: any; eventData: CalendarEventData } = JSON.parse(req.body)
 
-  const token = await firebaseAdmin.auth().verifyIdToken(userToken);
-  const user = await firebaseAdmin.auth().getUser(token.uid);
+  const token = await firebaseAdmin.auth().verifyIdToken(userToken)
+  const user = await firebaseAdmin.auth().getUser(token.uid)
 
   if (true) {
     if (req.method === "POST") {
       try {
-        const res = await deleteEvent(eventData);
-        resolve.status(200).send("Success:" + res);
+        const res = await deleteEvent(eventData)
+        resolve.status(200).send("Success:" + res)
       } catch (err) {
-        resolve.status(400).send("Bad request: " + err);
+        resolve.status(400).send("Bad request: " + err)
       }
     } else {
-      resolve.status(400).send("Invalid request method");
+      resolve.status(400).send("Invalid request method")
     }
   } else {
-    resolve.status(400).send("Error: Unauthorized User");
+    resolve.status(400).send("Error: Unauthorized User")
   }
-};
+}
 
 /**
  * delete an event in firestore
@@ -42,7 +42,7 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
  */
 async function deleteEvent(event: CalendarEventData) {
   if (!event.id) {
-    throw new Error("Event ID is missing from data");
+    throw new Error("Event ID is missing from data")
   }
   firebaseAdmin
     .firestore()
@@ -50,9 +50,9 @@ async function deleteEvent(event: CalendarEventData) {
     .doc(event.id)
     .delete()
     .then(() => {
-      console.log("Document successfully deleted!");
+      console.log("Document successfully deleted!")
     })
     .catch((error) => {
-      throw new Error("Error removing document: " + error);
-    });
+      throw new Error("Error removing document: " + error)
+    })
 }

@@ -1,4 +1,4 @@
-import React from "react"
+import type { FC } from "react"
 import sanitizeHtmlRichText from "../helpers/sanitizeHtmlRichText"
 
 type RichTextFieldProps = {
@@ -6,10 +6,7 @@ type RichTextFieldProps = {
   removeTopMargin: boolean
 }
 
-const RichTextField: React.FC<RichTextFieldProps> = ({
-  value,
-  removeTopMargin,
-}) => {
+const RichTextField: FC<RichTextFieldProps> = ({ value, removeTopMargin }) => {
   const style: any = {}
   if (removeTopMargin) {
     style.marginTop = "-1em"

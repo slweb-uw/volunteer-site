@@ -1,21 +1,15 @@
-import React, { useEffect } from "react"
+import { useEffect } from "react"
 import sanitizeHtmlRichText from "../helpers/sanitizeHtmlRichText"
 import deepEqual from "deep-equal"
-
-// Material imports
-import {
-  Paper,
-  ToggleButton,
-  ToggleButtonGroup,
-  Tooltip,
-  Grid,
-  Popover,
-  TextField,
-  DialogContent,
-  DialogActions,
-  Button,
-  SxProps,
-} from "@mui/material"
+import Paper from "@mui/material/Paper"
+import ToggleButton from "@mui/material/ToggleButton"
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup"
+import Tooltip from "@mui/material/Tooltip"
+import Grid from "@mui/material/Grid"
+import Popover from "@mui/material/Popover"
+import DialogContent from "@mui/material/DialogContent"
+import DialogActions from "@mui/material/DialogActions"
+import Button from "@mui/material/Button"
 
 // TipTap Imports
 import {

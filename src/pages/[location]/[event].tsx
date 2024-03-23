@@ -1,7 +1,8 @@
 import { useRouter } from "next/router"
 import { useAuth } from "auth"
 import { firebaseClient } from "firebaseClient"
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
+import type { FC } from "react"
 import { NextPage } from "next"
 import IconBreadcrumbs from "src/components/breadcrumbs"
 

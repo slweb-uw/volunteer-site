@@ -1,6 +1,5 @@
-import React, { useEffect } from "react"
+import { useEffect } from "react"
 import { firebaseClient } from "firebaseClient"
-import { NextPage } from "next"
 import {
   createStyles,
   CssBaseline,
@@ -14,7 +13,7 @@ import IconBreadcrumbs from "src/components/breadcrumbs"
 import LocationSelector from "src/components/locationSelector"
 import { useRouter } from "next/router"
 import Link from "next/link"
-import Events from "../events"
+import Events from "src/components/events"
 import HelpIcon from "@material-ui/icons/Help"
 import {
   DEFAULT_LOCATION,
@@ -22,6 +21,8 @@ import {
   Location,
   setLocation,
 } from "src/helpers/locations"
+
+// import { setLocation } from "src/helpers/locations"
 import { handleHelpButtonClick } from "src/helpers/navigation"
 
 interface Props {
@@ -29,7 +30,7 @@ interface Props {
   enqueueSnackbar: (message: string) => void
 }
 
-const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
+const LocationPage = () => {
   const router = useRouter()
   let location =
     router.query.location && !Array.isArray(router.query.location)
@@ -67,7 +68,7 @@ const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   }, [router.isReady])
 
   return (
-    <div className={classes.page}>
+    <div>
       <CssBaseline />
       <div
         style={{
@@ -78,7 +79,7 @@ const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
       >
         <div>
           <IconBreadcrumbs crumbs={["Opportunities"]} parentURL={undefined} />
-          <Typography variant="h3" gutterBottom className={classes.header}>
+          <Typography variant="h3" gutterBottom>
             OPPORTUNITIES
           </Typography>
         </div>
@@ -95,7 +96,7 @@ const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
           </Tooltip>
         </div>
       </div>
-      <img src={"../goldbar.png"} alt="" className={classes.bar} style={{}} />
+      <img src={"../goldbar.png"} alt="" />
       <div
         style={{
           marginTop: "2em",
@@ -103,9 +104,9 @@ const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
       >
         <LocationSelector defaultLocation={DEFAULT_LOCATION} />
       </div>
-      {location !== DEFAULT_LOCATION && (
+      {/* {location !== DEFAULT_LOCATION && (
         <Events location={location as Location} />
-      )}
+      )} */}
     </div>
   )
 }

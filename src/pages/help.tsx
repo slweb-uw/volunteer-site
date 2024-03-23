@@ -12,7 +12,7 @@ import {
   Link,
   Divider,
 } from "@material-ui/core"
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 
 import MuiAccordion from "@material-ui/core/Accordion"
 import MuiAccordionSummary from "@material-ui/core/AccordionSummary"

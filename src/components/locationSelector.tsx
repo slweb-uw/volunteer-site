@@ -1,19 +1,20 @@
-import React from "react";
-import { MenuItem, Select, Typography } from "@material-ui/core";
-import BootstrapInput from "./bootstrapInput";
-import { useRouter } from "next/router";
-import { Location, setLocation } from "../helpers/locations";
+import type { FC } from "react"
+import { MenuItem, Select, Typography } from "@material-ui/core"
+import BootstrapInput from "./bootstrapInput"
+import { useRouter } from "next/router"
+import { Location, setLocation } from "../helpers/locations"
 
 type LocationSelectorProps = {
-  defaultLocation: string;
+  defaultLocation: string
 }
 
-const LocationSelector: React.FC<LocationSelectorProps> = ({
-  defaultLocation
-}) => {
-  const router = useRouter();
+const LocationSelector: FC<LocationSelectorProps> = ({ defaultLocation }) => {
+  const router = useRouter()
 
-  const location = (router.query.location && !Array.isArray(router.query.location)) ? router.query.location : defaultLocation;
+  const location =
+    router.query.location && !Array.isArray(router.query.location)
+      ? router.query.location
+      : defaultLocation
 
   return (
     <div style={{ display: "flex" }}>
@@ -21,7 +22,13 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
         id="select-location-filter"
         gutterBottom
         display="inline"
-        style={{ marginRight: "1em", fontFamily: "Encode Sans", fontSize: "1rem", textAlign: "center", paddingTop: "7px"}}
+        style={{
+          marginRight: "1em",
+          fontFamily: "Encode Sans",
+          fontSize: "1rem",
+          textAlign: "center",
+          paddingTop: "7px",
+        }}
       >
         <b>Select a Location</b>{" "}
       </Typography>
@@ -29,24 +36,31 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
         aria-labelledby="select-location-filter"
         value={location}
         onChange={(e) => {
-          const location = e.target.value as string;
+          const location = e.target.value as string
           if (location === defaultLocation) {
-            setLocation(router);
+            setLocation(router)
           } else {
-            setLocation(router, location as Location);
+            setLocation(router, location as Location)
           }
         }}
-        style={{ width: "fit-content"}}
+        style={{ width: "fit-content" }}
         input={<BootstrapInput />}
       >
-        <MenuItem value={defaultLocation} style={{ fontFamily: "Encode Sans" }}>Location</MenuItem>
+        <MenuItem value={defaultLocation} style={{ fontFamily: "Encode Sans" }}>
+          Location
+        </MenuItem>
         {Object.values(Location).map((location, index) => (
-          <MenuItem key={index} style={{ fontFamily: "Encode Sans" }} value={location}>{location}</MenuItem>
+          <MenuItem
+            key={index}
+            style={{ fontFamily: "Encode Sans" }}
+            value={location}
+          >
+            {location}
+          </MenuItem>
         ))}
       </Select>
     </div>
   )
 }
 
-
-export default LocationSelector;
+export default LocationSelector

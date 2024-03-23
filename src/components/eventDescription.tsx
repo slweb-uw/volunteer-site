@@ -1,23 +1,17 @@
-import React from "react";
-import { Typography } from "@material-ui/core";
-import RichTextField from "./richTextField";
+import { FC } from "react"
+import { Typography } from "@material-ui/core"
+import RichTextField from "./richTextField"
 
 type EventDescriptionProps = {
-  event: EventData;
+  event: EventData
 }
 
-const EventDescription: React.FC<EventDescriptionProps> = ({
-  event
-}) => {
+const EventDescription: FC<EventDescriptionProps> = ({ event }) => {
   if (event.Details) {
     return <RichTextField value={event.Details} removeTopMargin={true} />
   }
 
-  return (
-    <Typography>
-      {event["Project Description"]}
-    </Typography>
-  );
+  return <Typography>{event["Project Description"]}</Typography>
 }
 
-export default EventDescription;
+export default EventDescription

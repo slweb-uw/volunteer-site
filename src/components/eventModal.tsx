@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
+import type { ReactNode } from "react"
 import {
   createStyles,
   Theme,
@@ -37,7 +38,7 @@ const styles = (theme: Theme) =>
 
 export interface DialogTitleProps extends WithStyles<typeof styles> {
   id: string
-  children: React.ReactNode
+  children: ReactNode
   onClose: () => void
 }
 

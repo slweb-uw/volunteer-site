@@ -1,37 +1,37 @@
-import React from "react";
+import type { ReactNode, FC, KeyboardEvent, MouseEvent } from "react"
+import { useState, Fragment } from "react"
 
-import Box from "@material-ui/core/Box";
-import IconButton from "@material-ui/core/IconButton";
-import Menu from "@material-ui/icons/Menu";
-import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
+import Box from "@material-ui/core/Box"
+import IconButton from "@material-ui/core/IconButton"
+import Menu from "@material-ui/icons/Menu"
+import SwipeableDrawer from "@material-ui/core/SwipeableDrawer"
+import List from "@material-ui/core/List"
+import ListItem from "@material-ui/core/ListItem"
 
-type Anchor = "top";
+type Anchor = "top"
 
 interface Props {
-  links: React.ReactNode[];
+  links: ReactNode[]
 }
 
-const BasicMenu: React.FC<Props> = (Props) => {
-  const [state, setState] = React.useState({
+const BasicMenu: FC<Props> = (Props) => {
+  const [state, setState] = useState({
     top: false,
-  });
+  })
 
-  const toggleDrawer = (anchor: Anchor, open: boolean) => (
-    event: React.KeyboardEvent | React.MouseEvent
-  ) => {
-    if (
-      event &&
-      event.type === "keydown" &&
-      ((event as React.KeyboardEvent).key === "Tab" ||
-        (event as React.KeyboardEvent).key === "Shift")
-    ) {
-      return;
+  const toggleDrawer =
+    (anchor: Anchor, open: boolean) => (event: KeyboardEvent | MouseEvent) => {
+      if (
+        event &&
+        event.type === "keydown" &&
+        ((event as KeyboardEvent).key === "Tab" ||
+          (event as KeyboardEvent).key === "Shift")
+      ) {
+        return
+      }
+
+      setState({ ...state, [anchor]: open })
     }
-
-    setState({ ...state, [anchor]: open });
-  };
   const list = (anchor: Anchor) => (
     <Box
       sx={{ width: "40vw" }}
@@ -40,12 +40,12 @@ const BasicMenu: React.FC<Props> = (Props) => {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <List>
-        {Props.links.map((element: React.ReactNode, index) => {
-          return <ListItem key={index}>{element}</ListItem>;
+        {Props.links.map((element: ReactNode, index) => {
+          return <ListItem key={index}>{element}</ListItem>
         })}
       </List>
     </Box>
-  );
+  )
 
   return (
     <div
@@ -54,7 +54,7 @@ const BasicMenu: React.FC<Props> = (Props) => {
       }}
     >
       {(["top"] as const).map((anchor) => (
-        <React.Fragment key={anchor}>
+        <Fragment key={anchor}>
           <IconButton
             style={{ width: "min-content" }}
             onClick={toggleDrawer(anchor, true)}
@@ -69,10 +69,10 @@ const BasicMenu: React.FC<Props> = (Props) => {
           >
             {list(anchor)}
           </SwipeableDrawer>
-        </React.Fragment>
+        </Fragment>
       ))}
     </div>
-  );
-};
+  )
+}
 
-export default BasicMenu;
+export default BasicMenu

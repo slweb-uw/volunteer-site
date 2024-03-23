@@ -1,35 +1,35 @@
-import { useState, useEffect } from "react";
-import firebase from "firebase/app";
-import "firebase/firestore";
-import { NextApiRequest, NextApiResponse } from "next";
-import { firebaseAdmin } from "../../firebaseAdmin";
-import { promises as fsPromises } from "fs";
-import { google } from "googleapis";
-import calendarSecret from "../../calendarSecret.json";
+import { useState, useEffect } from "react"
+import firebase from "firebase/app"
+import "firebase/firestore"
+import { NextApiRequest, NextApiResponse } from "next"
+import { firebaseAdmin } from "firebaseAdmin"
+import { promises as fsPromises } from "fs"
+import { google } from "googleapis"
+import calendarSecret from "calendarSecret.json"
 
 const SCOPES = [
   "https://www.googleapis.com/auth/calendar",
   "https://www.googleapis.com/auth/calendar.events",
-];
+]
 
 export const config = {
   api: {
     externalResolver: true,
   },
-};
+}
 
 // Credential object.
 interface Creds {
-  type: string;
-  project_id: string;
-  private_key_id: string;
-  private_key: string;
-  client_email: string;
-  client_id: string;
-  auth_uri: string;
-  token_uri: string;
-  auth_provider_x509_cert_url: string;
-  client_x509_cert_url: string;
+  type: string
+  project_id: string
+  private_key_id: string
+  private_key: string
+  client_email: string
+  client_id: string
+  auth_uri: string
+  token_uri: string
+  auth_provider_x509_cert_url: string
+  client_x509_cert_url: string
 }
 
 // Put new event
@@ -44,68 +44,71 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
   const {
     eventData,
     userToken,
-  }: { eventData: CalendarEventData; userToken: string } = JSON.parse(req.body);
+  }: { eventData: CalendarEventData; userToken: string } = JSON.parse(req.body)
 
-  const token = await firebaseAdmin.auth().verifyIdToken(userToken);
-  const user = await firebaseAdmin.auth().getUser(token.uid);
+  const token = await firebaseAdmin.auth().verifyIdToken(userToken)
+  const user = await firebaseAdmin.auth().getUser(token.uid)
 
   // Admin authentication
-  const [admins, setAdmins] = useState([]);
+  const [admins, setAdmins] = useState([])
 
   useEffect(() => {
     const fetchAdmins = async () => {
       try {
-        const snapshot = await firebase.firestore().collection("Admins").get();
-        const adminsData = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setAdmins(adminsData);
+        const snapshot = await firebase.firestore().collection("Admins").get()
+        const adminsData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }))
+        setAdmins(adminsData)
       } catch (error) {
-        console.error("Error fetching admins", error);
+        console.error("Error fetching admins", error)
       }
-    };
-  
-    fetchAdmins();
-  }, []);
-  const isAdmin = admins.find((admin) => admin.email === user?.email);
+    }
+
+    fetchAdmins()
+  }, [])
+  const isAdmin = admins.find((admin) => admin.email === user?.email)
 
   // Verify user
   if (isAdmin) {
     if (req.method === "POST") {
       try {
-        const fcontent: Creds = calendarSecret;
+        const fcontent: Creds = calendarSecret
         const jwtClient = new google.auth.JWT(
           fcontent.client_email,
           undefined,
           fcontent.private_key,
           SCOPES
-        );
-        const _ = await jwtClient.authorize();
+        )
+        const _ = await jwtClient.authorize()
         const {
           update,
           updateEventId,
         }: { update: boolean; updateEventId: string | null } = await checkEvent(
           jwtClient,
           eventData
-        );
+        )
         const res = await addOrUpdateEvent(
           jwtClient,
           update,
           updateEventId,
           eventData
-        );
-        resolve.status(200).send("Success:" + res);
+        )
+        resolve.status(200).send("Success:" + res)
       } catch (err) {
-        console.log("Bad request: " + err);
-        resolve.status(400).send("Bad request: " + err);
+        console.log("Bad request: " + err)
+        resolve.status(400).send("Bad request: " + err)
       }
     } else {
-      console.log("Invalid request method");
-      resolve.status(400).send("Invalid request method");
+      console.log("Invalid request method")
+      resolve.status(400).send("Invalid request method")
     }
   } else {
-    console.log("Error: Unauthorized User");
-    resolve.status(400).send("Error: Unauthorized User");
+    console.log("Error: Unauthorized User")
+    resolve.status(400).send("Error: Unauthorized User")
   }
-};
+}
 
 /**
  * check if the given event already exists in the calendar.
@@ -113,15 +116,15 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
  * @param {CalendarEventData} event Event related information.
  */
 async function checkEvent(auth: any, event: CalendarEventData) {
-  const calendar = google.calendar({ version: "v3", auth });
+  const calendar = google.calendar({ version: "v3", auth })
   try {
     const res = await calendar.events.list({
       calendarId: "slweb@uw.edu",
       q: event.Title,
-    });
-    const events: any = res.data.items;
-    let update: boolean = false;
-    let updateEventId: string | null = null;
+    })
+    const events: any = res.data.items
+    let update: boolean = false
+    let updateEventId: string | null = null
     if (events.length) {
       events.forEach((content: any, index: number) => {
         if (
@@ -129,14 +132,14 @@ async function checkEvent(auth: any, event: CalendarEventData) {
           content.location === event.Location &&
           content.description.includes(event.id)
         ) {
-          update = true;
-          updateEventId = content.id;
+          update = true
+          updateEventId = content.id
         }
-      });
+      })
     }
-    return { update, updateEventId };
+    return { update, updateEventId }
   } catch (err) {
-    return { update: false, updateEventId: null };
+    return { update: false, updateEventId: null }
   }
 }
 
@@ -153,25 +156,25 @@ async function addOrUpdateEvent(
   updateEventId: string | null,
   event: CalendarEventData
 ) {
-  const calendar = google.calendar({ version: "v3", auth });
+  const calendar = google.calendar({ version: "v3", auth })
   try {
-    let body = createRequestBody(event, update);
+    let body = createRequestBody(event, update)
     if (update && updateEventId) {
       const res = await calendar.events.update({
         calendarId: "slweb@uw.edu",
         eventId: updateEventId,
         requestBody: body,
-      });
-      return res;
+      })
+      return res
     } else {
       const res = await calendar.events.insert({
         calendarId: "slweb@uw.edu",
         requestBody: body,
-      });
-      return res;
+      })
+      return res
     }
   } catch (err) {
-    throw new Error("Error from change:" + err);
+    throw new Error("Error from change:" + err)
   }
 }
 
@@ -181,24 +184,24 @@ async function addOrUpdateEvent(
  * @param {boolean} update Check if this is a update request body or insert event request body
  */
 function createRequestBody(event: CalendarEventData, update: boolean) {
-  let result: any = {};
-  result["end"] = { dateTime: event.EndDate, timeZone: event.Timezone };
-  result["start"] = { dateTime: event.StartDate, timeZone: event.Timezone };
+  let result: any = {}
+  result["end"] = { dateTime: event.EndDate, timeZone: event.Timezone }
+  result["start"] = { dateTime: event.StartDate, timeZone: event.Timezone }
   result["description"] =
     "https://servicelearning.washington.edu/" +
     event.Location +
     "/" +
     event.id +
     "\n" +
-    event["Project Description"];
+    event["Project Description"]
   if (!update) {
-    result["location"] = event.Location;
-    result["summary"] = event.Title;
+    result["location"] = event.Location
+    result["summary"] = event.Title
   }
   if (event.Recurrence) {
-    result["recurrence"] = event.Recurrence;
+    result["recurrence"] = event.Recurrence
   }
-  return result;
+  return result
 }
 
 /**

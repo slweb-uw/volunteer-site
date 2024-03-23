@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
+import type { FC } from "react"
 import { firebaseClient } from "firebaseClient"
 import {
   Dialog,
@@ -53,7 +54,7 @@ type SignInPopupProps = {
   close: () => void
 }
 
-const SignInPopup: React.FC<SignInPopupProps> = ({ open, close }) => {
+const SignInPopup: FC<SignInPopupProps> = ({ open, close }) => {
   const classes = useStyles()
   const [errorMessage, setErrorMessage] = useState("")
   const router = useRouter()

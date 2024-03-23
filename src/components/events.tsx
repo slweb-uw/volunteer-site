@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
+import type { FC } from "react"
 import { firebaseClient } from "firebaseClient"
 import {
   Button,
@@ -9,7 +10,6 @@ import {
   withStyles,
   Switch,
 } from "@material-ui/core"
-import Stack from "@mui/material/Stack"
 import Grid from "@mui/material/Grid"
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined"
 import Tooltip from "@material-ui/core/Tooltip"
@@ -30,7 +30,7 @@ type EventsProps = {
   classes?: any
 }
 
-const Events: React.FC<EventsProps> = ({ location, classes }) => {
+const Events: FC<EventsProps> = ({ location, classes }) => {
   const { user, isAdmin } = useAuth()
   const router = useRouter()
 
@@ -529,5 +529,5 @@ const styles = createStyles({
   },
 })
 
-//@ts-ignore
+// @ts-ignore
 export default withStyles(styles)(Events)

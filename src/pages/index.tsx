@@ -1,4 +1,5 @@
-import React, { useEffect } from "react"
+import { useEffect } from "react"
+import type { FC } from "react"
 import {
   Typography,
   Grid,
@@ -171,7 +172,7 @@ const useStyles = makeStyles(() => ({
   },
 }))
 
-const App: React.FC<{}> = () => {
+const App: FC<{}> = () => {
   const classes = useStyles()
 
   useEffect(() => {
@@ -433,28 +434,27 @@ const App: React.FC<{}> = () => {
                   margin: "0",
                 }}
               ></hr>
-              <Link href="/opportunities/Alaska?type=Providers">
-                <CardActionArea
-                  style={{ backgroundColor: "#4B2E83", color: "#ffffff" }}
-                  className={classes.cardhover}
-                >
-                  <CardContent>
-                    <div className={classes.cardlinks}>
-                      <Typography
-                        className={classes.cardtitle}
-                        style={{ color: "#ffffff" }}
-                      >
-                        Find Opportunities
-                      </Typography>
-                      <Typography>
-                        <ArrowForwardIos
-                          style={{ fontSize: "1em", color: "#ffffff" }}
-                        />
-                      </Typography>
-                    </div>
-                  </CardContent>
-                </CardActionArea>
-              </Link>
+              <CardActionArea
+                style={{ backgroundColor: "#4B2E83", color: "#ffffff" }}
+                className={classes.cardhover}
+                href="/opportunities/Alaska?type=Providers"
+              >
+                <CardContent>
+                  <div className={classes.cardlinks}>
+                    <Typography
+                      className={classes.cardtitle}
+                      style={{ color: "#ffffff" }}
+                    >
+                      Find Opportunities
+                    </Typography>
+                    <Typography>
+                      <ArrowForwardIos
+                        style={{ fontSize: "1em", color: "#ffffff" }}
+                      />
+                    </Typography>
+                  </div>
+                </CardContent>
+              </CardActionArea>
             </Card>
           </div>
           {/* Community Partners */}

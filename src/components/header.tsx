@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import Hidden from "@material-ui/core/Hidden";
-import { firebaseClient } from "firebaseClient";
-import { useAuth } from "auth";
-import BasicMenu from "./basicMenu";
-import SignInPopup from "./SignInPopup";
-import { makeStyles } from "@material-ui/core/styles";
-import "firebase/firestore";
+import { useState } from "react"
+import type { ReactNode, FC } from "react"
+import Hidden from "@material-ui/core/Hidden"
+import { firebaseClient } from "firebaseClient"
+import { useAuth } from "auth"
+import BasicMenu from "./basicMenu"
+import SignInPopup from "./SignInPopup"
+import { makeStyles } from "@material-ui/core/styles"
+import "firebase/firestore"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       color: "#B7A57A",
       transition: ".25s",
-      textDecoration: "underline"
+      textDecoration: "underline",
     },
     "&:focus-visible": {
       outline: "none",
@@ -51,11 +52,11 @@ const useStyles = makeStyles((theme) => ({
       borderColor: "#80bdff",
       borderRadius: "4px",
     },
-    "@media only screen and (max-width: 960px)":{
+    "@media only screen and (max-width: 960px)": {
       color: "black",
       margin: "0",
-      padding: "0", 
-    }
+      padding: "0",
+    },
   },
   logo: {
     position: "relative",
@@ -64,54 +65,78 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 5,
     paddingLeft: "10px",
     paddingTop: "5px",
-    "@media only screen and (max-width: 480px)":{
+    "@media only screen and (max-width: 480px)": {
       maxHeight: "100%",
       paddingLeft: "0",
       marginLeft: "0",
-      width: "80vw"
-    }
+      width: "80vw",
+    },
   },
-  divider:{
+  divider: {
     fontSize: "35px",
     color: "grey",
     marginTop: "8px",
-    "@media only screen and (max-width: 960px)":{
+    "@media only screen and (max-width: 960px)": {
       padding: "0px",
       fontSize: "0px",
       margin: "0px",
-    }
-  }
-}));
+    },
+  },
+}))
 
-const Divider = () => <span className={useStyles().divider}>/</span>;
+const Divider = () => <span className={useStyles().divider}>/</span>
 
-const Header: React.FC<{}> = (props) => {
-  const { user, isAdmin, isLead } = useAuth();
-  const [isSignInPopupOpen, setSignInPopupOpen] = useState(false);
+const Header: FC<{}> = (props) => {
+  const { user, isAdmin, isLead } = useAuth()
+  const [isSignInPopupOpen, setSignInPopupOpen] = useState(false)
 
-  const links: React.ReactNode[] = [
-      <a  href="/" className={useStyles().navtitle} tabIndex={0}>Home</a>,
-    <Divider/>,
-      <a href="/opportunities" className={useStyles().navtitle} tabIndex={0}>Opportunities</a>,
-    <Divider/>,
-      <a className={useStyles().navtitle} href="https://canvas.uw.edu/courses/1693188/pages/training-modules?module_item_id=18595279" target="_blank" tabIndex={0}>Training</a>,
+  const links: ReactNode[] = [
+    <a href="/" className={useStyles().navtitle} tabIndex={0}>
+      Home
+    </a>,
+    <Divider />,
+    <a href="/opportunities" className={useStyles().navtitle} tabIndex={0}>
+      Opportunities
+    </a>,
+    <Divider />,
+    <a
+      className={useStyles().navtitle}
+      href="https://canvas.uw.edu/courses/1693188/pages/training-modules?module_item_id=18595279"
+      target="_blank"
+      tabIndex={0}
+    >
+      Training
+    </a>,
     //*NOTE: Resources name was changed to Links*/
-    <Divider/>,
-      <a  href="/resources" className={useStyles().navtitle} tabIndex={0}>Links</a>,
-    <Divider/>,
-      <a href="https://canvas.uw.edu/courses/1693188/pages/protocols?module_item_id=18595280" className={useStyles().navtitle} target="_blank" tabIndex={0}>Protocols</a>,
-    <Divider/>,
-      <a href="/donations" className={useStyles().navtitle} tabIndex={0}>Donations</a>,
-    <Divider/>,
-      <a href="/help" className={useStyles().navtitle} tabIndex={0}>Help</a>,
-    <Divider/>,
+    <Divider />,
+    <a href="/resources" className={useStyles().navtitle} tabIndex={0}>
+      Links
+    </a>,
+    <Divider />,
+    <a
+      href="https://canvas.uw.edu/courses/1693188/pages/protocols?module_item_id=18595280"
+      className={useStyles().navtitle}
+      target="_blank"
+      tabIndex={0}
+    >
+      Protocols
+    </a>,
+    <Divider />,
+    <a href="/donations" className={useStyles().navtitle} tabIndex={0}>
+      Donations
+    </a>,
+    <Divider />,
+    <a href="/help" className={useStyles().navtitle} tabIndex={0}>
+      Help
+    </a>,
+    <Divider />,
     // sign in and out
     user ? (
       <>
         <a
           key="sign out"
           onClick={() => {
-            firebaseClient.auth().signOut();
+            firebaseClient.auth().signOut()
             setSignInPopupOpen(false)
           }}
           className={useStyles().navtitle}
@@ -119,13 +144,12 @@ const Header: React.FC<{}> = (props) => {
         >
           Sign Out
           {isAdmin && (
-          <p style={{color: "gold", margin: 0, fontSize: "12px"}}>ADMIN</p>
+            <p style={{ color: "gold", margin: 0, fontSize: "12px" }}>ADMIN</p>
           )}
           {isLead && (
-          <p style={{color: "gold", margin: 0, fontSize: "12px"}}>LEAD</p>
+            <p style={{ color: "gold", margin: 0, fontSize: "12px" }}>LEAD</p>
           )}
         </a>
-        
       </>
     ) : (
       <>
@@ -135,40 +159,38 @@ const Header: React.FC<{}> = (props) => {
           className={useStyles().navtitle}
           tabIndex={0}
         >
-          Sign In 
+          Sign In
         </a>
       </>
     ),
-    
-  ];
+  ]
 
   return (
     <div className={useStyles().root}>
-        <a href="/" tabIndex={0}>
-          <img
-            src="/header-logo.png"
-            alt="University of Washington School of Medicine logo"
-            className={useStyles().logo}
-          />
-        </a>
+      <a href="/" tabIndex={0}>
+        <img
+          src="/header-logo.png"
+          alt="University of Washington School of Medicine logo"
+          className={useStyles().logo}
+        />
+      </a>
 
       <Hidden only={["lg", "md", "xl"]}>
         <BasicMenu links={links} />
       </Hidden>
       <Hidden only={["sm", "xs"]}>
         <div style={{ marginRight: "3em", display: "flex" }}>
-          {links.map((element: React.ReactNode) => {
-            return element;
+          {links.map((element: ReactNode) => {
+            return element
           })}
-          
         </div>
       </Hidden>
-      <SignInPopup 
-         open={isSignInPopupOpen} 
-         close={() => setSignInPopupOpen(false)}
+      <SignInPopup
+        open={isSignInPopupOpen}
+        close={() => setSignInPopupOpen(false)}
       />
     </div>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header

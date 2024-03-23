@@ -1,17 +1,22 @@
-import React from "react";
+import type { ReactNode } from "react"
 
 interface Props {
-  href: string;
-  className: any;
-  children?: React.ReactNode;
+  href: string
+  className: any
+  children?: React.ReactNode
 }
 
 const ResourceLink: React.FC<Props> = ({ href, className, children }) => {
   return (
-    <a href={href} className={className} target="_blank" style={{ fontFamily: "Open Sans" }}>
+    <a
+      href={href}
+      className={className}
+      target="_blank"
+      style={{ fontFamily: "Open Sans" }}
+    >
       {children}
     </a>
-  );
-};
+  )
+}
 
-export default ResourceLink;
+export default ResourceLink

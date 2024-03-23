@@ -1,6 +1,6 @@
 import type { AppProps } from "next/app"
 import { AuthProvider } from "auth"
-import React from "react"
+import { useEffect } from "react"
 import {
   MuiThemeProvider,
   createTheme as createv4Theme,
@@ -44,7 +44,7 @@ const v4theme = createv4Theme(theme)
 const v5theme = createv5Theme(theme)
 
 function MyApp({ Component, pageProps }: AppProps) {
-  React.useEffect(() => {
+  useEffect(() => {
     const jssStyles = document.querySelector("#jss-server-side")
     if (jssStyles && jssStyles.parentElement) {
       jssStyles.parentElement.removeChild(jssStyles)

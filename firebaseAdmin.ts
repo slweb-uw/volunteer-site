@@ -1,5 +1,5 @@
-import firebaseAdmin from "firebase-admin";
-import serviceAccount from "./secret.json";
+import firebaseAdmin from "firebase-admin"
+import serviceAccount from "./secret.json"
 
 if (!firebaseAdmin.apps.length) {
   firebaseAdmin.initializeApp({
@@ -9,7 +9,8 @@ if (!firebaseAdmin.apps.length) {
       projectId: serviceAccount.project_id,
     }),
     databaseURL: "https://sign-up-9453b.firebaseio.com",
-  });
+  })
 }
 
-export { firebaseAdmin };
+export const db = firebaseAdmin.firestore()
+export { firebaseAdmin }
