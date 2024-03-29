@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import Button from "@material-ui/core/Button"
 import { makeStyles } from "@material-ui/core/styles"
 import SignInPopup from "src/components/SignInPopup"
