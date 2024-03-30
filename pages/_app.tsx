@@ -9,7 +9,11 @@ import { SnackbarProvider } from "notistack"
 import Layout from "components/layout"
 import type {} from "@mui/lab/themeAugmentation"
 import "../global.css"
+import { Theme } from "@mui/material/styles"
 
+declare module "@mui/styles" {
+  interface DefaultTheme extends Theme {}
+}
 // Global Theme
 const theme = {
   components: {
