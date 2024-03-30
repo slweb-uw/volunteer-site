@@ -1,11 +1,11 @@
 import React from "react";
 
-import Box from "@material-ui/core/Box";
-import IconButton from "@material-ui/core/IconButton";
-import Menu from "@material-ui/icons/Menu";
-import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/icons-material/Menu";
+import SwipeableDrawer from "@mui/material/SwipeableDrawer";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
 
 type Anchor = "top";
 
@@ -58,7 +58,7 @@ const BasicMenu: React.FC<Props> = (Props) => {
           <IconButton
             style={{ width: "min-content" }}
             onClick={toggleDrawer(anchor, true)}
-          >
+            size="large">
             <Menu style={{ color: "white" }} />
           </IconButton>
           <SwipeableDrawer

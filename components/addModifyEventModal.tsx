@@ -1,11 +1,9 @@
 import React, {ChangeEvent, useEffect, useState} from "react";
-import {
-  createStyles,
-  Theme,
-  withStyles,
-  WithStyles,
-} from "@material-ui/core/styles";
-import CloseIcon from "@material-ui/icons/Close";
+import { Theme } from "@mui/material/styles";
+import { WithStyles } from '@mui/styles';
+import createStyles from '@mui/styles/createStyles';
+import withStyles from '@mui/styles/withStyles';
+import CloseIcon from "@mui/icons-material/Close";
 import {
   Dialog,
   DialogTitle,
@@ -24,7 +22,7 @@ import {
   Input,
   Button,
   Switch
-} from "@material-ui/core";
+} from "@mui/material";
 import { firebaseClient } from "firebaseClient";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { DateTimePicker, LocalizationProvider, LoadingButton } from "@mui/lab";
@@ -79,14 +77,14 @@ export interface DialogTitleProps extends WithStyles<typeof styles> {
 const ModalDialogTitle = withStyles(styles)((props: DialogTitleProps) => {
   const { children, classes, onClose, ...other } = props;
   return (
-    <DialogTitle disableTypography className={classes.root} {...other}>
+    <DialogTitle className={classes.root} {...other}>
       <Typography variant="h6">{children}</Typography>
       {onClose ? (
         <IconButton
           aria-label="close"
           className={classes.closeButton}
           onClick={onClose}
-        >
+          size="large">
           <CloseIcon />
         </IconButton>
       ) : null}

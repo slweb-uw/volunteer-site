@@ -1,9 +1,9 @@
-import { makeStyles } from "@material-ui/core/styles";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
-import Typography from "@material-ui/core/Typography";
-import Button from "@material-ui/core/Button"
+import makeStyles from "@mui/styles/makeStyles"
+import Card from "@mui/material/Card"
+import CardContent from "@mui/material/CardContent"
+import CardMedia from "@mui/material/CardMedia"
+import Typography from "@mui/material/Typography"
+import Button from "@mui/material/Button"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,21 +25,21 @@ const useStyles = makeStyles((theme) => ({
     width: 230,
     height: 300,
     "@media only screen and (max-width: 600px)": {
-      marginTop: '.5em',
+      marginTop: ".5em",
       display: "none",
     },
   },
-}));
+}))
 
 interface Props {
-  title: String;
-  description: String;
-  donate: string;
-  img: string;
+  title: string
+  description: string
+  donate: string
+  img: string
 }
 
 const DonateCard: React.FC<Props> = (props) => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <Card
@@ -55,18 +55,38 @@ const DonateCard: React.FC<Props> = (props) => {
       />
       <div className={classes.details}>
         <CardContent className={classes.content}>
-          <Typography component="h6" variant="h6" style={{ fontFamily: "Encode Sans", }}>
+          <Typography
+            component="h6"
+            variant="h6"
+            style={{ fontFamily: "Encode Sans" }}
+          >
             <b>{props.title}</b>
           </Typography>
-          <Typography variant="subtitle1" gutterBottom style={{ fontFamily: "Open Sans" }}>
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            style={{ fontFamily: "Open Sans" }}
+          >
             {props.description}
           </Typography>
-          <Button style={{marginTop: "1rem", fontFamily: "Encode Sans", marginBottom: "0"}} variant="contained" color="secondary" target="_blank" href={props.donate} alt={"Donate to " + props.title}>Donate</Button>
+          <a href={props.donate} target="_blank">
+            <Button
+              style={{
+                marginTop: "1rem",
+                fontFamily: "Encode Sans",
+                marginBottom: "0",
+              }}
+              variant="contained"
+              color="secondary"
+              href={props.donate}
+            >
+              Donate
+            </Button>
+          </a>
         </CardContent>
       </div>
     </Card>
+  )
+}
 
-  );
-};
-
-export default DonateCard;
+export default DonateCard

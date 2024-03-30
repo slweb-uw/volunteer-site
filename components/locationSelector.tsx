@@ -1,5 +1,5 @@
 import React from "react";
-import { MenuItem, Select, Typography } from "@material-ui/core";
+import { MenuItem, Select, Typography } from "@mui/material";
 import BootstrapInput from "./bootstrapInput";
 import { useRouter } from "next/router";
 import { Location, setLocation } from "../helpers/locations";
