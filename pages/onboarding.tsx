@@ -1,28 +1,19 @@
 import { NextPage } from "next";
-import {
-  createStyles,
-  CssBaseline,
-  Typography,
-  Select,
-  MenuItem,
-  withStyles,
-  Grid,
-  Button,
-  Link,
-  Divider,
-} from "@material-ui/core";
+import { CssBaseline, Typography, Select, MenuItem, Grid, Button, Link, Divider } from "@mui/material";
+import createStyles from '@mui/styles/createStyles';
+import withStyles from '@mui/styles/withStyles';
 import { useState } from "react";
 
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
-import MuiAccordion from "@material-ui/core/Accordion";
-import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
-import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import MuiAccordion from "@mui/material/Accordion";
+import MuiAccordionSummary from "@mui/material/AccordionSummary";
+import MuiAccordionDetails from "@mui/material/AccordionDetails";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import IconBreadcrumbs from "../components/breadcrumbs"
 import ArrowDropDownCircleOutlinedIcon from '@mui/icons-material/ArrowDropDownCircleOutlined';
-import { yellow } from "@material-ui/core/colors";
-import { WarningOutlined } from "@material-ui/icons";
+import { yellow } from "@mui/material/colors";
+import { WarningOutlined } from "@mui/icons-material";
 import HeadlineBar from "components/headlineBar";
 interface Props {
   classes?: any;

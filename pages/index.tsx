@@ -1,20 +1,12 @@
 import React, { useEffect } from "react";
-import {
-  withStyles,
-  createStyles,
-  Typography,
-  Grid,
-  makeStyles,
-  Button,
-  CardActionArea,
-  Card,
-  CardContent,
-  CardMedia
-} from "@material-ui/core";
+import { Typography, Grid, Button, CardActionArea, Card, CardContent, CardMedia } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import Link from "next/link";
 
 import { firebaseClient } from "firebaseClient";
-import { ArrowForwardIos } from "@material-ui/icons";
+import { ArrowForwardIos } from "@mui/icons-material";
 import HeadlineBar from "components/headlineBar";
 
 const useStyles = makeStyles((theme) => ({

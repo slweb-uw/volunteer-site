@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@mui/styles/makeStyles';
 import firebase from "firebase/app";
 import "firebase/firestore";
 import { useAuth } from "auth";
@@ -14,7 +14,7 @@ import {
         Typography,
         Link,
         Switch
-} from "@material-ui/core";
+} from "@mui/material";
 import AddRounded from "@mui/icons-material/AddRounded";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -29,8 +29,8 @@ import VolunteerPopup from 'components/VolunteerSignupPopup';
 import SharePopup from 'components/SharePopup';
 import { exportToCSV } from 'helpers/csvExport';
 import AuthorizationMessage from 'pages/AuthorizationMessage';
-import { useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { handleHelpButtonClick } from "helpers/navigation";
 
 const useStyles = makeStyles((theme) => ({
@@ -138,7 +138,7 @@ const Signup = () => {
   const [shareLink, setShareLink] = useState('');
 
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   useEffect(() => {
     if (selectedEventId && events.length > 0) {

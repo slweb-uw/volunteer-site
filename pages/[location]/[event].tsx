@@ -5,15 +5,9 @@ import React, { useState, useEffect } from "react";
 import { NextPage } from "next";
 import IconBreadcrumbs from "../../components/breadcrumbs";
 
-import {
-  createStyles,
-  CssBaseline,
-  Typography,
-  Divider,
-  withStyles,
-  Grid,
-  Button,
-} from "@material-ui/core";
+import { CssBaseline, Typography, Divider, Grid, Button } from "@mui/material";
+import createStyles from '@mui/styles/createStyles';
+import withStyles from '@mui/styles/withStyles';
 import naturalJoin from "../../helpers/naturalJoin";
 import EventDescription from "../../components/eventDescription";
 import RichTextField from "../../components/richTextField";
