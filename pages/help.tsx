@@ -1,31 +1,22 @@
 import { NextPage } from "next";
 import { useRouter } from 'next/router';
-import {
-  createStyles,
-  CssBaseline,
-  Typography,
-  Select,
-  MenuItem,
-  withStyles,
-  Grid,
-  Button,
-  Link,
-  Divider,
-} from "@material-ui/core";
+import { CssBaseline, Typography, Select, MenuItem, Grid, Button, Link, Divider } from "@mui/material";
+import createStyles from '@mui/styles/createStyles';
+import withStyles from '@mui/styles/withStyles';
 import React, {
   useState,
   useEffect,
  } from "react";
 
-import MuiAccordion from "@material-ui/core/Accordion";
-import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
-import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
+import MuiAccordion from "@mui/material/Accordion";
+import MuiAccordionSummary from "@mui/material/AccordionSummary";
+import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import ArrowDropDownCircleOutlinedIcon from '@mui/icons-material/ArrowDropDownCircleOutlined';
 
 import ResourceLink from "../components/resourceLink";
 import IconBreadcrumbs from "../components/breadcrumbs";
 import HeadlineBar from "components/headlineBar";
-import { ExpandMore } from "@material-ui/icons";
+import { ExpandMore } from "@mui/icons-material";
 
 interface Props {
   classes?: any;

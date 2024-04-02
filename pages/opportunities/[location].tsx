@@ -1,21 +1,16 @@
 import React, {useEffect} from "react";
 import { firebaseClient } from "../../firebaseClient";
 import { NextPage } from "next";
-import {
-  createStyles,
-  CssBaseline,
-  Typography,
-  withStyles,
-  Button,
-  Tooltip,
-} from "@material-ui/core";
+import { CssBaseline, Typography, Button, Tooltip } from "@mui/material";
+import createStyles from '@mui/styles/createStyles';
+import withStyles from '@mui/styles/withStyles';
 import { withSnackbar } from "notistack";
 import IconBreadcrumbs from "components/breadcrumbs";
 import LocationSelector from "../../components/locationSelector";
 import { useRouter } from "next/router";
 import Link from 'next/link';
 import Events from "../events";
-import HelpIcon from "@material-ui/icons/Help";
+import HelpIcon from "@mui/icons-material/Help";
 import { DEFAULT_LOCATION, LAST_LOCATION_KEY, Location, setLocation } from "../../helpers/locations";
 import { handleHelpButtonClick } from "../../helpers/navigation";
 

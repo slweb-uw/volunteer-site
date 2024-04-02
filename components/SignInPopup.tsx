@@ -1,16 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { firebaseClient } from "firebaseClient";
-import { 
-    Dialog, 
-    DialogTitle, 
-    DialogContent, 
-    Button, 
-    Typography, 
-    makeStyles,
-    Avatar,
-    Tooltip,
-} from '@material-ui/core';
-import HelpIcon from "@material-ui/icons/Help";
+import { Dialog, DialogTitle, DialogContent, Button, Typography, Avatar, Tooltip } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import HelpIcon from "@mui/icons-material/Help";
 import {useRouter} from 'next/router';
 import { handleHelpButtonClick } from "helpers/navigation";
 
@@ -21,14 +13,14 @@ const MicrosoftLogo = (
       style={{ borderRadius: 0 }}
     />
   );
-  
+
 const GoogleLogo = (
     <Avatar
         alt="Google Logo"
         src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA"
     />
 );
-  
+
 const useStyles = makeStyles((theme) => ({
   dialog: {
     minWidth: 350,
