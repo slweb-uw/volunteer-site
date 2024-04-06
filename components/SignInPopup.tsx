@@ -75,7 +75,7 @@ export default function SignInPopup({ open, close }: SignInPopupProps) {
   }
 
   return (
-    <Dialog open={open} onClose={close} className={classes.dialog}>
+    <Dialog open={open} onClose={close} fullWidth maxWidth="xs">
       <DialogTitle style={{ display: "flex", justifyContent: "space-between" }}>
         {content === CONTENT.LOGIN ? "Sign in" : "Sign up"}
         <Tooltip title="Help" arrow>
@@ -140,7 +140,7 @@ function LoginContent({
   }
 
   return (
-    <div style={{ display: "flex", gap: 16, flexDirection: "column" }}>
+    <div className={classes.contentContainer}>
       <div style={{ maxWidth: "350px" }}>
         <span style={{ color: "red" }}>{errorMessage}</span>
       </div>
@@ -196,7 +196,7 @@ function LoginContent({
         Google
       </Button>
 
-      <Typography style={{ display: "flex", gap: 0.25 }}>
+      <Typography className={classes.authLink}>
         Don't have an account?
         <Link href="." onClick={openSignup}>
           Register
@@ -251,7 +251,7 @@ function SignupContent({
   }
 
   return (
-    <>
+    <div className={classes.contentContainer}>
       <form className={classes.form} onSubmit={handleSubmit}>
         <TextField
           label="Email"
@@ -287,19 +287,20 @@ function SignupContent({
           Sign up
         </Button>
       </form>
-      <Typography>
+      <Typography className={classes.authLink}>
         Already have an account?
         <Link href="." onClick={openLogin}>
           Sign in
         </Link>
       </Typography>
-    </>
+    </div>
   )
 }
 
 const useStyles = makeStyles((theme) => ({
   dialog: {
-    minWidth: 350,
+    // minWidth: 350,
+    width: "100%",
   },
   buttonRow: {
     display: "flex",
@@ -320,5 +321,17 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     gap: "1rem",
     padding: "0.5rem 0",
+  },
+
+  authLink: {
+    display: "flex",
+    gap: "0.25rem",
+    justifyContent: "center",
+  },
+
+  contentContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "1rem",
   },
 }))
