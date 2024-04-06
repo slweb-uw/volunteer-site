@@ -10,6 +10,7 @@ import {
   Tooltip,
   TextField,
   Divider,
+  emphasize,
 } from "@mui/material"
 import makeStyles from "@mui/styles/makeStyles"
 import HelpIcon from "@mui/icons-material/Help"
@@ -101,34 +102,20 @@ const SignInPopup: React.FC<SignInPopupProps> = ({ open, close }) => {
     }
   }
 
-  async function handleSignInWithEmail() {
-    await firebaseClient.auth().signInWithEmailAndPassword(email, password)
-  }
-
   return (
     <Dialog open={open} onClose={close} className={classes.dialog}>
-      <DialogTitle>
-        <Typography
-          variant="h5"
-          align="center"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          Sign In
-          <Tooltip title="Help" arrow>
-            <Button
-              variant="outlined"
-              color="secondary"
-              startIcon={<HelpIcon />}
-              onClick={handleHelpButtonClickLocation}
-            >
-              Help
-            </Button>
-          </Tooltip>
-        </Typography>
+      <DialogTitle style={{ display: "flex", justifyContent: "space-between" }}>
+        Sign In
+        <Tooltip title="Help" arrow>
+          <Button
+            variant="outlined"
+            color="secondary"
+            startIcon={<HelpIcon />}
+            onClick={handleHelpButtonClickLocation}
+          >
+            Help
+          </Button>
+        </Tooltip>
       </DialogTitle>
       <DialogContent>
         {content === CONTENT.LOGIN ? (
@@ -136,9 +123,13 @@ const SignInPopup: React.FC<SignInPopupProps> = ({ open, close }) => {
             errorMessage={errorMessage}
             handleSignInWithProvider={handleSignInWithProvider}
             openSignup={() => setContent(CONTENT.SIGNUP)}
+            close={close}
           />
         ) : (
-          <SignupContent openLogin={() => setContent(CONTENT.LOGIN)} />
+          <SignupContent
+            openLogin={() => setContent(CONTENT.LOGIN)}
+            close={close}
+          />
         )}
       </DialogContent>
     </Dialog>
@@ -149,23 +140,62 @@ function LoginContent({
   errorMessage,
   handleSignInWithProvider,
   openSignup,
+  close,
 }: {
   errorMessage: string
   handleSignInWithProvider: (
     provider: firebaseClient.auth.GoogleAuthProvider
   ) => void
   openSignup: () => void
+  close: () => void
 }) {
   const classes = useStyles()
+  const [formState, setFormState] = useState({
+    email: "",
+    password: "",
+  })
+
+  async function handleSignInWithEmail(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    try {
+      await firebaseClient
+        .auth()
+        .signInWithEmailAndPassword(formState.email, formState.password)
+      close()
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   return (
     <>
       <div style={{ maxWidth: "350px" }}>
         <span style={{ color: "red" }}>{errorMessage}</span>
       </div>
-      <form action="" className={classes.form}>
-        <TextField label="Email" variant="outlined" type="email" />
-        <TextField label="Password" variant="outlined" type="password" />
-        <Button variant="contained">Sign in</Button>
+      <form onSubmit={handleSignInWithEmail} className={classes.form}>
+        <TextField
+          label="Email"
+          variant="outlined"
+          type="email"
+          required
+          onChange={(e) =>
+            setFormState((prev) => ({ ...prev, email: e.target.value }))
+          }
+          value={formState.email}
+        />
+        <TextField
+          label="Password"
+          variant="outlined"
+          type="password"
+          required
+          onChange={(e) =>
+            setFormState((prev) => ({ ...prev, password: e.target.value }))
+          }
+          value={formState.password}
+        />
+        <Button variant="contained" type="submit">
+          Sign in
+        </Button>
       </form>
       <Divider>
         <Typography>Or continue with</Typography>
@@ -221,25 +251,69 @@ function LoginContent({
   )
 }
 
-function SignupContent({ openLogin }: { openLogin: () => void }) {
+function SignupContent({
+  openLogin,
+  close,
+}: {
+  openLogin: () => void
+  close: () => void
+}) {
   const classes = useStyles()
+  const [formState, setFormState] = useState({
+    email: "",
+    password: "",
+    confirmPassword: "",
+  })
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    if (formState.password !== formState.confirmPassword) return
+    try {
+      await firebaseClient
+        .auth()
+        .createUserWithEmailAndPassword(formState.email, formState.password)
+      close()
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   return (
     <>
-      <form className={classes.form}>
-        <TextField label="Email" variant="outlined" type="email" required />
+      <form className={classes.form} onSubmit={handleSubmit}>
+        <TextField
+          label="Email"
+          variant="outlined"
+          type="email"
+          required
+          onChange={(e) =>
+            setFormState((prev) => ({ ...prev, email: e.target.value }))
+          }
+        />
         <TextField
           label="Password"
           variant="outlined"
           type="password"
           required
+          onChange={(e) =>
+            setFormState((prev) => ({ ...prev, password: e.target.value }))
+          }
         />
         <TextField
           label="Confirm Password"
           variant="outlined"
           type="password"
           required
+          onChange={(e) =>
+            setFormState((prev) => ({
+              ...prev,
+              confirmPassword: e.target.value,
+            }))
+          }
         />
-        <Button variant="contained">Sign up</Button>
+        <Button variant="contained" type="submit">
+          Sign up
+        </Button>
       </form>
       <Typography>
         Already have an account?
