@@ -6,11 +6,9 @@ import {
   DialogContent,
   Button,
   Typography,
-  Avatar,
   Tooltip,
   TextField,
   Divider,
-  emphasize,
 } from "@mui/material"
 import makeStyles from "@mui/styles/makeStyles"
 import HelpIcon from "@mui/icons-material/Help"
@@ -19,46 +17,20 @@ import { handleHelpButtonClick } from "helpers/navigation"
 import Image from "next/image"
 import Link from "next/link"
 
-const MicrosoftLogo = (
-  <Avatar
-    alt="Microsoft Logo"
-    src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg"
-    style={{ borderRadius: 0 }}
-  />
-)
+// const MicrosoftLogo = (
+//   <Avatar
+//     alt="Microsoft Logo"
+//     src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg"
+//     style={{ borderRadius: 0 }}
+//   />
+// )
 
-const GoogleLogo = (
-  <Avatar
-    alt="Google Logo"
-    src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA"
-  />
-)
-
-const useStyles = makeStyles((theme) => ({
-  dialog: {
-    minWidth: 350,
-  },
-  buttonRow: {
-    display: "flex",
-    justifyContent: "center",
-    marginTop: theme.spacing(2),
-    marginBottom: "1.5rem",
-  },
-  button: {
-    margin: theme.spacing(1),
-    width: "200px",
-    color: "black",
-    border: "2px solid black",
-    backgroundColor: "white",
-  },
-
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "1rem",
-    padding: "0.5rem 0",
-  },
-}))
+// const GoogleLogo = (
+//   <Avatar
+//     alt="Google Logo"
+//     src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA"
+//   />
+// )
 
 type SignInPopupProps = {
   open: boolean
@@ -70,7 +42,7 @@ const CONTENT = {
   SIGNUP: "SIGNUP",
 }
 
-const SignInPopup: React.FC<SignInPopupProps> = ({ open, close }) => {
+export default function SignInPopup({ open, close }: SignInPopupProps) {
   const classes = useStyles()
   const [errorMessage, setErrorMessage] = useState("")
   const [content, setContent] = useState(CONTENT.LOGIN)
@@ -105,7 +77,7 @@ const SignInPopup: React.FC<SignInPopupProps> = ({ open, close }) => {
   return (
     <Dialog open={open} onClose={close} className={classes.dialog}>
       <DialogTitle style={{ display: "flex", justifyContent: "space-between" }}>
-        Sign In
+        {content === CONTENT.LOGIN ? "Sign in" : "Sign up"}
         <Tooltip title="Help" arrow>
           <Button
             variant="outlined"
@@ -168,7 +140,7 @@ function LoginContent({
   }
 
   return (
-    <>
+    <div style={{ display: "flex", gap: 16, flexDirection: "column" }}>
       <div style={{ maxWidth: "350px" }}>
         <span style={{ color: "red" }}>{errorMessage}</span>
       </div>
@@ -224,7 +196,7 @@ function LoginContent({
         Google
       </Button>
 
-      <Typography>
+      <Typography style={{ display: "flex", gap: 0.25 }}>
         Don't have an account?
         <Link href="." onClick={openSignup}>
           Register
@@ -247,7 +219,7 @@ function LoginContent({
           >
             Microsoft
           </Button> */}
-    </>
+    </div>
   )
 }
 
@@ -325,4 +297,28 @@ function SignupContent({
   )
 }
 
-export default SignInPopup
+const useStyles = makeStyles((theme) => ({
+  dialog: {
+    minWidth: 350,
+  },
+  buttonRow: {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: theme.spacing(2),
+    marginBottom: "1.5rem",
+  },
+  button: {
+    margin: theme.spacing(1),
+    width: "200px",
+    color: "black",
+    border: "2px solid black",
+    backgroundColor: "white",
+  },
+
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "1rem",
+    padding: "0.5rem 0",
+  },
+}))
