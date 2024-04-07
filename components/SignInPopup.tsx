@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { firebaseClient } from "firebaseClient"
 import {
   Dialog,
@@ -126,23 +126,33 @@ function LoginContent({
     email: "",
     password: "",
   })
+  const [loginError, setLoginError] = useState<string | null>()
 
   async function handleSignInWithEmail(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    setLoginError(null)
     try {
       await firebaseClient
         .auth()
         .signInWithEmailAndPassword(formState.email, formState.password)
       close()
     } catch (err) {
-      console.log(err)
+      setLoginError("Invalid email or password")
     }
   }
+
+  // clear errors when changing input values
+  useEffect(() => {
+    if (loginError) setLoginError(null)
+  }, [formState])
 
   return (
     <div className={classes.contentContainer}>
       <div style={{ maxWidth: "350px" }}>
-        <span style={{ color: "red" }}>{errorMessage}</span>
+        {/* <span style={{ color: "red" }}>{errorMessage}</span> */}
+        {loginError && (
+          <Typography style={{ color: "red" }}>{loginError}</Typography>
+        )}
       </div>
       <form onSubmit={handleSignInWithEmail} className={classes.form}>
         <TextField
@@ -154,6 +164,7 @@ function LoginContent({
             setFormState((prev) => ({ ...prev, email: e.target.value }))
           }
           value={formState.email}
+          autoFocus
         />
         <TextField
           label="Password"
@@ -223,6 +234,17 @@ function LoginContent({
   )
 }
 
+const SIGNUP_ERRORS = {
+  WEAK_PASSWORD: {
+    CODE: "auth/weak-password",
+    MESSAGE: "Password should be at least six characters",
+  },
+  EMAIL_USED: {
+    CODE: "auth/email-already-in-use",
+    MESSAGE: "Email addressed already used by another account",
+  },
+}
+
 function SignupContent({
   openLogin,
   close,
@@ -234,24 +256,41 @@ function SignupContent({
   const [formState, setFormState] = useState({
     email: "",
     password: "",
-    confirmPassword: "",
   })
+
+  const [errors, setErrors] = useState<string | null>()
+
+  useEffect(() => {
+    if (errors) setErrors(null)
+  }, [formState])
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    if (formState.password !== formState.confirmPassword) return
     try {
       await firebaseClient
         .auth()
         .createUserWithEmailAndPassword(formState.email, formState.password)
       close()
     } catch (err) {
-      console.log(err)
+      switch (err.code) {
+        case SIGNUP_ERRORS.EMAIL_USED.CODE:
+          setErrors(SIGNUP_ERRORS.EMAIL_USED.MESSAGE)
+          break
+        case SIGNUP_ERRORS.WEAK_PASSWORD.CODE:
+          setErrors(SIGNUP_ERRORS.WEAK_PASSWORD.MESSAGE)
+          break
+        default:
+          setErrors("Something went wrong try again")
+          break
+      }
     }
   }
 
   return (
     <div className={classes.contentContainer}>
+      <div>
+        {errors && <Typography style={{ color: "red" }}>{errors}</Typography>}
+      </div>
       <form className={classes.form} onSubmit={handleSubmit}>
         <TextField
           label="Email"
@@ -261,6 +300,8 @@ function SignupContent({
           onChange={(e) =>
             setFormState((prev) => ({ ...prev, email: e.target.value }))
           }
+          value={formState.email}
+          autoFocus
         />
         <TextField
           label="Password"
@@ -270,18 +311,8 @@ function SignupContent({
           onChange={(e) =>
             setFormState((prev) => ({ ...prev, password: e.target.value }))
           }
-        />
-        <TextField
-          label="Confirm Password"
-          variant="outlined"
-          type="password"
-          required
-          onChange={(e) =>
-            setFormState((prev) => ({
-              ...prev,
-              confirmPassword: e.target.value,
-            }))
-          }
+          value={formState.password}
+          helperText="Password should be at least 6 characters"
         />
         <Button variant="contained" type="submit">
           Sign up
@@ -298,24 +329,6 @@ function SignupContent({
 }
 
 const useStyles = makeStyles((theme) => ({
-  dialog: {
-    // minWidth: 350,
-    width: "100%",
-  },
-  buttonRow: {
-    display: "flex",
-    justifyContent: "center",
-    marginTop: theme.spacing(2),
-    marginBottom: "1.5rem",
-  },
-  button: {
-    margin: theme.spacing(1),
-    width: "200px",
-    color: "black",
-    border: "2px solid black",
-    backgroundColor: "white",
-  },
-
   form: {
     display: "flex",
     flexDirection: "column",
