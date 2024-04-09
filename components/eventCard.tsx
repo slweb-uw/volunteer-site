@@ -60,7 +60,7 @@ const EventCard: React.FC<Props> = (props) => {
   }
 
 const volunteerTypes = props.event["Types of Volunteers Needed"];
-const isInterprofessional = volunteerTypes.filter((type) => type != "Providers" && type != "Undergraduates" && type != "Other").length > 1;
+const isInterprofessional = Array.isArray(volunteerTypes) && volunteerTypes.filter((type) => type != "Providers" && type != "Undergraduates" && type != "Other").length > 1;
 
   return (
     <Card
