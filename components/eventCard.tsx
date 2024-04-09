@@ -1,11 +1,11 @@
 import React from "react";
-import makeStyles from '@mui/styles/makeStyles';
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
+import { makeStyles } from "@material-ui/core/styles";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import CardMedia from "@material-ui/core/CardMedia";
+import Typography from "@material-ui/core/Typography";
 import EventImage from "./eventImage";
-import useMediaQuery from '@mui/material/useMediaQuery';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Bubble from "./interprofessionalTag"
 
 const useStyles = makeStyles((theme) => ({

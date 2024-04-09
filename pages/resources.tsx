@@ -1,20 +1,29 @@
 //*NOTE: Resources is renamed as Links on the Website /*
 import { NextPage } from "next";
-import { CssBaseline, Typography, Select, MenuItem, Grid, Button, Link, Divider } from "@mui/material";
-import createStyles from '@mui/styles/createStyles';
-import withStyles from '@mui/styles/withStyles';
+import {
+  createStyles,
+  CssBaseline,
+  Typography,
+  Select,
+  MenuItem,
+  withStyles,
+  Grid,
+  Button,
+  Link,
+  Divider,
+} from "@material-ui/core";
 import React, { useState } from "react";
 
-import MuiAccordion from "@mui/material/Accordion";
-import MuiAccordionSummary from "@mui/material/AccordionSummary";
-import MuiAccordionDetails from "@mui/material/AccordionDetails";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import MuiAccordion from "@material-ui/core/Accordion";
+import MuiAccordionSummary from "@material-ui/core/AccordionSummary";
+import MuiAccordionDetails from "@material-ui/core/AccordionDetails";
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import ArrowDropDownCircleOutlinedIcon from '@mui/icons-material/ArrowDropDownCircleOutlined';
 
 import ResourceLink from "../components/resourceLink";
 import IconBreadcrumbs from "../components/breadcrumbs";
 import HeadlineBar from "components/headlineBar";
-import { ExpandMore } from "@mui/icons-material";
+import { ExpandMore } from "@material-ui/icons";
 
 interface Props {
   classes?: any;

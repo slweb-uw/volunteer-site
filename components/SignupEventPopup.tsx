@@ -6,8 +6,8 @@ import {
   DialogContent,
   TextField,
   Button,
-} from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import 'react-quill/dist/quill.snow.css';
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });

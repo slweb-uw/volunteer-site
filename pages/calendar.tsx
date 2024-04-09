@@ -8,27 +8,32 @@ import {
   GetServerSidePropsContext,
   NextPage,
 } from "next";
-import { CssBaseline, Typography, Button, Link } from "@mui/material";
-import createStyles from '@mui/styles/createStyles';
-import withStyles from '@mui/styles/withStyles';
+import {
+  createStyles,
+  CssBaseline,
+  Typography,
+  withStyles,
+  Button,
+  Link,
+} from "@material-ui/core";
 import { withSnackbar } from "notistack";
 
 //// Only allow authenticated users, otherwise redirect to home page
 //export const getServerSideProps = async (ctx: GetServerSidePropsContext) => {
-//try {
-//const cookies = nookies.get(ctx);
-//const token = await firebaseAdmin.auth().verifyIdToken(cookies.token);
-//const user = await firebaseAdmin.auth().getUser(token.uid);
-//const { uid, email } = user;
-//return { props: { uid, email } };
-//} catch (err) {
-//// either the `token` cookie didn't exist
-//// or token verification failed
-//// either way: redirect to the home page
-//ctx.res.writeHead(302, { Location: "/" });
-//ctx.res.end();
-//return { props: {} as never };
-//}
+  //try {
+    //const cookies = nookies.get(ctx);
+    //const token = await firebaseAdmin.auth().verifyIdToken(cookies.token);
+    //const user = await firebaseAdmin.auth().getUser(token.uid);
+    //const { uid, email } = user;
+    //return { props: { uid, email } };
+  //} catch (err) {
+    //// either the `token` cookie didn't exist
+    //// or token verification failed
+    //// either way: redirect to the home page
+    //ctx.res.writeHead(302, { Location: "/" });
+    //ctx.res.end();
+    //return { props: {} as never };
+  //}
 //};
 
 interface Props {

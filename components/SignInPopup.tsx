@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { firebaseClient } from "firebaseClient";
-import { Dialog, DialogTitle, DialogContent, Button, Typography, Avatar, Tooltip } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
-import HelpIcon from "@mui/icons-material/Help";
-import {useRouter} from 'next/router';
-import { handleHelpButtonClick } from "helpers/navigation";
+import { 
+    Dialog, 
+    DialogTitle, 
+    DialogContent, 
+    Button, 
+    Typography, 
+    makeStyles,
+    Avatar 
+} from '@material-ui/core';
 
 const MicrosoftLogo = (
     <Avatar
@@ -13,14 +17,14 @@ const MicrosoftLogo = (
       style={{ borderRadius: 0 }}
     />
   );
-
+  
 const GoogleLogo = (
     <Avatar
         alt="Google Logo"
         src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA"
     />
 );
-
+  
 const useStyles = makeStyles((theme) => ({
   dialog: {
     minWidth: 350,
@@ -48,11 +52,6 @@ type SignInPopupProps = {
 const SignInPopup: React.FC<SignInPopupProps> = ({ open, close }) => {
   const classes = useStyles();
   const [errorMessage, setErrorMessage] = useState("");
-  const router = useRouter();
-  const handleHelpButtonClickLocation = () => {
-    handleHelpButtonClick(router, 'fromSignIn');
-    close();
-  };
 
   useEffect(() => {
     setErrorMessage("");
@@ -73,18 +72,8 @@ const SignInPopup: React.FC<SignInPopupProps> = ({ open, close }) => {
   return (
     <Dialog open={open} onClose={close} className={classes.dialog}>
       <DialogTitle>
-        <Typography variant="h5" align="center" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Typography variant="h5" align="center">
           Log In
-          <Tooltip title="Help" arrow>
-            <Button
-              variant='outlined'
-              color='secondary'
-              startIcon={<HelpIcon />}
-              onClick={handleHelpButtonClickLocation}
-            >
-              Help
-            </Button>
-          </Tooltip>
         </Typography>
       </DialogTitle>
       <DialogContent>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import Button from '@mui/material/Button';
-import makeStyles from '@mui/styles/makeStyles';
+import Button from '@material-ui/core/Button';
+import { makeStyles } from '@material-ui/core/styles';
 import SignInPopup from 'components/SignInPopup';
 
 const useStyles = makeStyles((theme) => ({
@@ -36,7 +36,7 @@ const AuthorizationMessage = ({ user }) => {
   return (
     <div className={`${classes.root} ${classes.message}`}>
       <div style={{ marginBottom: '1rem' }}>
-        Sign-in with registered account to view page
+        You are not authorized to access this page!
       </div>
       <div className={classes.buttonContainer}>
         {!user ? (
@@ -50,7 +50,7 @@ const AuthorizationMessage = ({ user }) => {
           </Button>
         ) : null}
         <a href="/">
-          <Button variant="outlined">
+          <Button variant="outlined" color="default">
             Return
           </Button>
         </a>

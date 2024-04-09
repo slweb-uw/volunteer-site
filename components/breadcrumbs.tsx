@@ -1,10 +1,10 @@
 import React from 'react';
-import makeStyles from '@mui/styles/makeStyles';
-import Typography from '@mui/material/Typography';
-import Breadcrumbs from '@mui/material/Breadcrumbs';
-import Link from '@mui/material/Link';
-import HomeIcon from '@mui/icons-material/Home';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import { makeStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import Link from '@material-ui/core/Link';
+import HomeIcon from '@material-ui/icons/Home';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 
 const useStyles = makeStyles((theme) => ({
     main: {

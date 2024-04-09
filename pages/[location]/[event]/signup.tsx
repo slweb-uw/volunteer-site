@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from '@material-ui/core/styles';
 import firebase from "firebase/app";
 import "firebase/firestore";
 import { useAuth } from "auth";
 import { useRouter } from "next/router";
-import { 
-        Button, 
-        Grid,
-        Tooltip,
-        Dialog,
-        DialogTitle,
-        DialogContent,
-        Typography,
-        Link,
-        Switch
-} from "@mui/material";
+import {
+  Button,
+  Grid,
+  Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Typography,
+  Link,
+  Switch
+} from "@material-ui/core";
 import AddRounded from "@mui/icons-material/AddRounded";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -29,9 +29,8 @@ import VolunteerPopup from 'components/VolunteerSignupPopup';
 import SharePopup from 'components/SharePopup';
 import { exportToCSV } from 'helpers/csvExport';
 import AuthorizationMessage from 'pages/AuthorizationMessage';
-import { useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { handleHelpButtonClick } from "helpers/navigation";
+import { useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -109,10 +108,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Signup = () => {
-  const handleHelpButtonClickLocation = () => {
-    handleHelpButtonClick(router, 'fromSignUpPage');
-    close();
-  };
   const router = useRouter();
   const { location, event, selectedEventId } = router.query;
   const classes = useStyles();
@@ -138,7 +133,7 @@ const Signup = () => {
   const [shareLink, setShareLink] = useState('');
 
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   useEffect(() => {
     if (selectedEventId && events.length > 0) {
@@ -468,7 +463,6 @@ const Signup = () => {
                 variant='outlined'
                 color='secondary'
                 startIcon={<HelpIcon />}
-                onClick={handleHelpButtonClickLocation}
               >
                 Help
               </Button>
@@ -711,33 +705,33 @@ const Signup = () => {
       />
       {selectedEvent && (
         <Dialog open={informationPopupOpen} onClose={() => setInformationPopupOpen(false)}>
-        <DialogTitle style={{ textAlign: 'center' }}>Event Information</DialogTitle>
-        <DialogContent>
-          <div style={{ marginBottom: '1rem', maxWidth: '600px', minWidth: '400px', wordWrap: 'break-word' }}>
-            <Typography component="div"  style={{ fontSize: '1rem' }}>
-              <div dangerouslySetInnerHTML={{ __html: selectedEvent.eventInformation }} />
-            </Typography>
-            <br />
-            <Typography style={{ fontSize: '0.9rem' }}>
-              <b>Event Lead Contact:</b> <Link href={`mailto:${selectedEvent.leadEmail}`}>{selectedEvent.leadEmail}</Link>
-            </Typography>
-            <Typography style={{ fontSize: '0.9rem', color: 'gray', fontStyle: 'italic' }}>
-              For technical issues please contact <Link href="mailto:somserve@gmail.com">somserve@uw.edu</Link>
-            </Typography>
-            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1.5em' }}>
-              <Link href={event ? "/" + location + "/" + event : "/"} style={{ textDecoration: "none" }} target="_blank">
-                <Button
-                  color="secondary"
-                  variant="contained"
-                >
-                  More Information
-                </Button>
-              </Link>
+          <DialogTitle style={{ textAlign: 'center' }}>Event Information</DialogTitle>
+          <DialogContent>
+            <div style={{ marginBottom: '1rem', maxWidth: '600px', minWidth: '400px', wordWrap: 'break-word' }}>
+              <Typography component="div" style={{ fontSize: '1rem' }}>
+                <div dangerouslySetInnerHTML={{ __html: selectedEvent.eventInformation }} />
+              </Typography>
+              <br />
+              <Typography style={{ fontSize: '0.9rem' }}>
+                <b>Event Lead Contact:</b> <Link href={`mailto:${selectedEvent.leadEmail}`}>{selectedEvent.leadEmail}</Link>
+              </Typography>
+              <Typography style={{ fontSize: '0.9rem', color: 'gray', fontStyle: 'italic' }}>
+                For technical issues please contact <Link href="mailto:somserve@gmail.com">somserve@gmail.com</Link>
+              </Typography>
+              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1.5em' }}>
+                <Link href={event ? "/" + location + "/" + event : "/"} style={{ textDecoration: "none" }} target="_blank">
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                  >
+                    More Information
+                  </Button>
+                </Link>
+              </div>
             </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-      
+          </DialogContent>
+        </Dialog>
+
       )}
       {sharePopupOpen && (
         <SharePopup onClose={() => setSharePopupOpen(false)} link={shareLink} />

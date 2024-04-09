@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react"
-import firebase from "firebase/app"
-import "firebase/firestore"
-import { useAuth } from "auth"
-import makeStyles from "@mui/styles/makeStyles"
-import DeleteIcon from "@mui/icons-material/Delete"
-import {
-  Typography,
-  TextField,
-  Button,
-  IconButton,
+import React, { useState, useEffect } from "react";
+import firebase from "firebase/app";
+import "firebase/firestore";
+import { useAuth } from "auth";
+import { makeStyles } from '@material-ui/core/styles';
+import DeleteIcon from "@material-ui/icons/Delete";
+import { 
+  Typography, 
+  TextField, 
+  Button, 
+  IconButton, 
   Dialog,
   DialogTitle,
   DialogContent,
@@ -18,10 +18,10 @@ import {
   TableHead,
   TableRow,
   TableCell,
-  TableBody,
-} from "@mui/material"
-import HelpIcon from "@mui/icons-material/HelpOutline"
-import AuthorizationMessage from "./AuthorizationMessage"
+  TableBody
+  } from "@material-ui/core";
+  import HelpIcon from '@mui/icons-material/HelpOutline';
+  import AuthorizationMessage from "./AuthorizationMessage";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -101,40 +101,40 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
-  },
-}))
+  }
+}));
 
 const label: any = {
-  Admins: "admin",
-  Leads: "project lead",
-  Volunteers: "non-UW preceptor",
-}
+  "Admins": "admin",
+  "Leads": "project lead",
+  "Volunteers": "non-UW preceptor"
+};
 
 const AdminPage = () => {
-  const classes = useStyles()
-  const { user, isAdmin } = useAuth()
-  const [admins, setAdmins] = useState([])
-  const [volunteers, setVolunteers] = useState([])
-  const [leads, setLeads] = useState([])
-  const [newUserEmail, setNewUserEmail] = useState("")
-  const [validEmail, setValidEmail] = useState(true)
-  const [existentEmail, setExistentEmail] = useState(false)
-  const [helpDialogOpen, setHelpDialogOpen] = useState(false)
-  const [activeSection, setActiveSection] = useState("Admins")
-  const [confirmationOpen, setConfirmationOpen] = useState(false)
-  const [selectedUser, setSelectedUser] = useState({})
+  const classes = useStyles();
+  const { user, isAdmin } = useAuth();
+  const [admins, setAdmins] = useState([]);
+  const [volunteers, setVolunteers] = useState([]);
+  const [leads, setLeads] = useState([]);
+  const [newUserEmail, setNewUserEmail] = useState("");
+  const [validEmail, setValidEmail] = useState(true);
+  const [existentEmail, setExistentEmail] = useState(false);
+  const [helpDialogOpen, setHelpDialogOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("Admins");
+  const [confirmationOpen, setConfirmationOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState({});
 
-  const [sortOrder, setSortOrder] = useState("asc")
-  const [sortedColumn, setSortedColumn] = useState("email")
-
-  const [totalAdmins, setTotalAdmins] = useState(0)
-  const [totalVolunteers, setTotalVolunteers] = useState(0)
-  const [totalLeads, setTotalLeads] = useState(0)
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortedColumn, setSortedColumn] = useState("email");
+  
+  const [totalAdmins, setTotalAdmins] = useState(0);
+  const [totalVolunteers, setTotalVolunteers] = useState(0);
+  const [totalLeads, setTotalLeads] = useState(0);
 
   const handleSort = (column) => {
-    setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"))
-    setSortedColumn(column)
-  }
+    setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
+    setSortedColumn(column);
+  };
 
   // Loads Admins
   const loadAdmins = () => {
@@ -142,14 +142,15 @@ const AdminPage = () => {
       .firestore()
       .collection("Admins")
       .onSnapshot((snapshot) => {
-        const adminsData = []
+        const adminsData = [];
         snapshot.forEach((doc) => {
-          adminsData.push({ id: doc.id, ...doc.data() })
-        })
-        setAdmins(adminsData)
-      })
-    return unsubscribe
-  }
+          adminsData.push({ id: doc.id, ...doc.data() });
+        });
+        setAdmins(adminsData);
+        setTotalAdmins(adminsData.length); // Set total number of admins
+      });
+    return unsubscribe;
+  };
 
   // Loads Volunteers
   const loadVolunteers = () => {
@@ -157,14 +158,15 @@ const AdminPage = () => {
       .firestore()
       .collection("Volunteers")
       .onSnapshot((snapshot) => {
-        const volunteerData = []
+        const volunteerData = [];
         snapshot.forEach((doc) => {
-          volunteerData.push({ id: doc.id, ...doc.data() })
-        })
-        setVolunteers(volunteerData)
-      })
-    return unsubscribe
-  }
+          volunteerData.push({ id: doc.id, ...doc.data() });
+        });
+        setVolunteers(volunteerData);
+        setTotalVolunteers(volunteerData.length); // Set total number of volunteers
+      });
+    return unsubscribe;
+  };
 
   // Loads Leads
   const loadLeads = () => {
@@ -172,70 +174,69 @@ const AdminPage = () => {
       .firestore()
       .collection("Leads")
       .onSnapshot((snapshot) => {
-        const leadData = []
+        const leadData = [];
         snapshot.forEach((doc) => {
-          leadData.push({ id: doc.id, ...doc.data() })
-        })
-        setLeads(leadData)
-      })
-    return unsubscribe
-  }
+          leadData.push({ id: doc.id, ...doc.data() });
+        });
+        setLeads(leadData);
+        setTotalLeads(leadData.length); // Set total number of leads
+      });
+    return unsubscribe;
+  };
 
   useEffect(() => {
-    const unsubscribe = loadAdmins()
-    return unsubscribe
-  }, [])
+    const unsubscribe = loadAdmins();
+    return unsubscribe;
+  }, []);
 
   useEffect(() => {
-    const unsubscribe = loadLeads()
-    return unsubscribe
-  }, [])
-
+    const unsubscribe = loadLeads();
+    return unsubscribe;
+  }, []);
+  
   useEffect(() => {
-    const unsubscribe = loadVolunteers()
-    return unsubscribe
-  }, [])
+    const unsubscribe = loadVolunteers();
+    return unsubscribe;
+  }, []);
 
   const addUser = (e) => {
-    e.preventDefault()
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    setExistentEmail(false)
-    setValidEmail(true)
+    e.preventDefault();
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    setExistentEmail(false);
+    setValidEmail(true);
 
-    if (!emailPattern.test(newUserEmail)) {
-      setValidEmail(false)
-      return
+    if(!emailPattern.test(newUserEmail)){
+      setValidEmail(false);
+      return;
     }
-
-    var existentEmail
-    if (activeSection === "Admins") {
-      existentEmail = admins.find((admin) => admin.email === newUserEmail)
-    } else {
-      existentEmail = volunteers.find(
-        (volunteer) => volunteer.email === newUserEmail
-      )
+    
+    var existentEmail;
+    if(activeSection === "Admins"){
+      existentEmail= admins.find((admin) => admin.email === newUserEmail);
+    }else{
+      existentEmail= volunteers.find((volunteer) => volunteer.email === newUserEmail);
     }
     if (existentEmail) {
-      setExistentEmail(true)
-      setNewUserEmail("")
-      return
+      setExistentEmail(true);
+      setNewUserEmail("");
+      return;
     }
-
+    
     firebase
       .firestore()
       .collection(activeSection)
-      .add({
+      .add({ 
         email: newUserEmail,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
       })
       .then(() => {
-        console.log("User added successfully!")
-        setNewUserEmail("")
+        console.log("User added successfully!");
+        setNewUserEmail("");
       })
       .catch((error) => {
-        console.error("Error adding user", error)
-      })
-  }
+        console.error("Error adding user", error);
+      });
+  };
 
   const removeUser = (userEmail) => {
     firebase
@@ -245,50 +246,47 @@ const AdminPage = () => {
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          doc.ref.delete()
-        })
-        console.log("User removed successfully!")
+          doc.ref.delete();
+        });
+        console.log("User removed successfully!");
       })
       .catch((error) => {
-        console.error("Error removing user: ", error)
-      })
-  }
+        console.error("Error removing user: ", error);
+      });
+  };
 
   if (!user || !isAdmin) {
-    return <AuthorizationMessage user={user} />
+    return (
+      <AuthorizationMessage user={user} />
+    );
   }
 
   const renderList = (type) => {
     return type
-      .filter((user) => user.email.toLowerCase().includes(newUserEmail))
-      .sort((a, b) => {
-        const order = sortOrder === "asc" ? 1 : -1
-        return a[sortedColumn] > b[sortedColumn] ? order : -order
-      })
-      .map((user, index) => (
-        <TableRow
-          key={user.id}
-          className={index % 2 === 0 ? classes.evenListItem : ""}
-        >
-          <TableCell className={classes.listItemText}>{user.email}</TableCell>
-          <TableCell>
-            {user.timestamp && user.timestamp.toDate().toLocaleString()}
-          </TableCell>
-          <TableCell align="right">
-            <IconButton
-              aria-label="delete"
-              className={classes.removeButton}
-              onClick={() => {
-                setConfirmationOpen(true)
-                setSelectedUser(user.email)
-              }}
-            >
-              <DeleteIcon style={{ height: "25px" }} />
-            </IconButton>
-          </TableCell>
-        </TableRow>
-      ))
-  }
+    .filter((user) => user.email.toLowerCase().includes(newUserEmail))
+    .sort((a, b) => {
+      const order = sortOrder === "asc" ? 1 : -1;
+      return a[sortedColumn] > b[sortedColumn] ? order : -order;
+    })
+    .map((user, index) => (
+      <TableRow key={user.id} className={index % 2 === 0 ? classes.evenListItem : ""}>
+        <TableCell className={classes.listItemText}>{user.email}</TableCell>
+        <TableCell>{user.timestamp && user.timestamp.toDate().toLocaleString()}</TableCell>
+        <TableCell align="right">
+          <IconButton
+            aria-label="delete"
+            className={classes.removeButton}
+            onClick={() => {
+              setConfirmationOpen(true);
+              setSelectedUser(user.email);
+            }}
+          >
+            <DeleteIcon style={{ height: "25px" }} />
+          </IconButton>
+        </TableCell>
+      </TableRow>
+    ));
+  };
 
   return (
     <div className={classes.root}>
@@ -303,7 +301,7 @@ const AdminPage = () => {
             color="primary"
             onClick={() => setActiveSection("Admins")}
           >
-            Admins
+            Admins ({totalAdmins})
           </Button>
           <Button
             className={classes.headerButton}
@@ -311,7 +309,7 @@ const AdminPage = () => {
             color="primary"
             onClick={() => setActiveSection("Leads")}
           >
-            Project Leads
+            Project Leads ({totalLeads})
           </Button>
           <Button
             className={classes.headerButton}
@@ -319,13 +317,10 @@ const AdminPage = () => {
             color="primary"
             onClick={() => setActiveSection("Volunteers")}
           >
-            Non-UW Preceptors
+            Non-UW Preceptors ({totalVolunteers})
           </Button>
         </div>
-        <Button
-          style={{ marginLeft: "auto" }}
-          onClick={() => setHelpDialogOpen(true)}
-        >
+        <Button style={{marginLeft: "auto"}} onClick={() => setHelpDialogOpen(true)}>
           <HelpIcon color="secondary" />
         </Button>
       </div>
@@ -341,97 +336,70 @@ const AdminPage = () => {
           Add
         </Button>
       </form>
-      {!validEmail && (
-        <div className={classes.popup}>*Invalid email format</div>
-      )}
-      {existentEmail && (
-        <div className={classes.popup} style={{ color: "orange" }}>
-          *Admin already exists
-        </div>
-      )}
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell onClick={() => handleSort("email")}>
-              Email Address{" "}
-              {sortedColumn === "email" && (
-                <span>{sortOrder === "asc" ? "▲" : "▼"}</span>
-              )}
+    {!validEmail && (
+      <div className={classes.popup}>*Invalid email format</div>
+    )}
+    {existentEmail && (
+      <div className={classes.popup} style={{color:'orange'}}>*Admin already exists</div>
+    )}
+    <Table>
+      <TableHead>
+        <TableRow >
+          <TableCell onClick={() => handleSort("email")}>
+            Email Address {sortedColumn === "email" && <span>{sortOrder === "asc" ? "▲" : "▼"}</span>}
+          </TableCell>
+          <TableCell onClick={() => handleSort("timestamp")}>
+              Date Added {sortedColumn === "timestamp" && <span>{sortOrder === "asc" ? "▲" : "▼"}</span>}
             </TableCell>
-            <TableCell onClick={() => handleSort("timestamp")}>
-              Date Added{" "}
-              {sortedColumn === "timestamp" && (
-                <span>{sortOrder === "asc" ? "▲" : "▼"}</span>
-              )}
-            </TableCell>
-            <TableCell align="right">Delete</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {activeSection === "Admins" ? renderList(admins) : null}
-          {activeSection === "Volunteers" ? renderList(volunteers) : null}
-          {activeSection === "Leads" ? renderList(leads) : null}
-        </TableBody>
-      </Table>
-      <Dialog
-        open={confirmationOpen}
-        onClose={() => setConfirmationOpen(false)}
-      >
-        <DialogTitle>
-          Delete {activeSection === "admins" ? "admin" : "volunteer"}?
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to remove the{" "}
-            {activeSection === "admins" ? "admin" : "volunteer"} with email:{" "}
-            {selectedUser}?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setConfirmationOpen(false)} color="primary">
-            Cancel
-          </Button>
-          <Button
-            onClick={() => {
-              removeUser(selectedUser)
-              setConfirmationOpen(false)
-            }}
-            color="primary"
-            autoFocus
-          >
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Dialog open={helpDialogOpen} onClose={() => setHelpDialogOpen(false)}>
-        <DialogTitle>User Manager Guide</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            The User Manager Interface provides a platform for listing and
-            managing the three types of users: <b>Admins</b>,{" "}
-            <b>Project Leads</b> and <b>Non-UW Preceptors</b>.
-          </DialogContentText>
-          <DialogContentText>
-            <b>Admins</b> have special privileges, allowing them to create,
-            edit, and remove projects and events.
-          </DialogContentText>
-          <DialogContentText>
-            <b>Project Leads</b> are restricted to managing events but are not
-            allowed to manage projects.
-          </DialogContentText>
-          <DialogContentText>
-            <b>Non-UW Preceptors</b> are users with non-UW email addresses who
-            have access to volunteer for events.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setHelpDialogOpen(false)} color="primary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
-  )
-}
+          <TableCell align="right">Delete</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+      {activeSection === "Admins" ? renderList(admins) : null}
+      {activeSection === "Volunteers" ? renderList(volunteers) : null}
+      {activeSection === "Leads" ? renderList(leads) : null}
+      </TableBody>
+    </Table>
+    <Dialog open={confirmationOpen} onClose={() => setConfirmationOpen(false)}>
+      <DialogTitle>Delete {activeSection === "admins" ?  "admin" : "volunteer"}?</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          Are you sure you want to remove the {activeSection === "admins" ?  "admin" : "volunteer"} with email: {selectedUser}?
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setConfirmationOpen(false)} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={() => {removeUser(selectedUser); setConfirmationOpen(false);}} color="primary" autoFocus>
+          Delete
+        </Button>
+      </DialogActions>
+    </Dialog>
+    <Dialog open={helpDialogOpen} onClose={() => setHelpDialogOpen(false)}>
+      <DialogTitle>User Manager Guide</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          The User Manager Interface provides a platform for listing and managing the three types of users: <b>Admins</b>, <b>Project Leads</b> and <b>Non-UW Preceptors</b>.
+        </DialogContentText>
+        <DialogContentText>
+          <b>Admins</b> have special privileges, allowing them to create, edit, and remove projects and events.
+        </DialogContentText>
+        <DialogContentText>
+          <b>Project Leads</b> are restricted to managing events but are not allowed to manage projects.
+        </DialogContentText>
+        <DialogContentText>
+          <b>Non-UW Preceptors</b> are users with non-UW email addresses who have access to volunteer for events.
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => setHelpDialogOpen(false)} color="primary">
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
+  </div>
+  );
+};
 
-export default AdminPage
+export default AdminPage;
