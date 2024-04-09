@@ -1,5 +1,5 @@
-import { withStyles } from '@material-ui/core/styles';
-import InputBase from '@material-ui/core/InputBase';
+import withStyles from '@mui/styles/withStyles';
+import InputBase from '@mui/material/InputBase';
 
 const BootstrapInput = withStyles((theme) => ({
   root: {

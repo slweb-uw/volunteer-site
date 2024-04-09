@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import makeStyles from '@mui/styles/makeStyles';
 import {
     Dialog,
     DialogTitle,
@@ -11,7 +11,7 @@ import {
     Typography,
     Select,
     MenuItem
-  } from '@material-ui/core';
+  } from '@mui/material';
 import { volunteerTypes } from "../components/addModifyEventModal";
 
 const useStyles = makeStyles({
@@ -140,7 +140,7 @@ const VolunteerPopup = ({ open, handleClose, email, uid, addVolunteer, onDeleteV
           </Select>
           {!studentDiscipline && (
             <Typography variant="caption" color="error" style={{ marginLeft: '10px' }}>
-                Please select a student discipline
+                Please select your student discipline
             </Typography>
           )}
         </div>

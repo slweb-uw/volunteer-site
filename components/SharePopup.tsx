@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, TextField, Button, Snackbar } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { Dialog, DialogTitle, DialogContent, TextField, Button, Snackbar } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles((theme) => ({
     title: {

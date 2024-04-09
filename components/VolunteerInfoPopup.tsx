@@ -1,7 +1,7 @@
 import React from 'react';
-import { Dialog, DialogTitle, DialogContent, Typography, IconButton, Button } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import CloseIcon from '@material-ui/icons/Close'; 
+import { Dialog, DialogTitle, DialogContent, Typography, IconButton, Button } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import CloseIcon from '@mui/icons-material/Close'; 
 
 const useStyles = makeStyles({
   title: {
@@ -41,39 +41,36 @@ const useStyles = makeStyles({
 const VolunteerInfoPopup = ({ open, handleClose, volunteer, handleDelete }) => {
   const classes = useStyles();
 
-  return (
-    
-    volunteer && (
-      <Dialog open={open} onClose={handleClose} classes={{ paper: classes.customDialog }}>
-        <DialogTitle className={classes.title}>
-          Volunteer Information
-          <IconButton className={classes.closeButton} onClick={handleClose}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent className={classes.information}>
-          <Typography variant="body1" className={classes.item}>
-            <span className={classes.label}>Name</span> {volunteer.firstName} {volunteer.lastName}
+  return volunteer && (
+    <Dialog open={open} onClose={handleClose} classes={{ paper: classes.customDialog }}>
+      <DialogTitle className={classes.title}>
+        Volunteer Information
+        <IconButton className={classes.closeButton} onClick={handleClose} size="large">
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent className={classes.information}>
+        <Typography variant="body1" className={classes.item}>
+          <span className={classes.label}>Name</span> {volunteer.firstName} {volunteer.lastName}
+        </Typography>
+        <Typography variant="body1" className={classes.item}>
+          <span className={classes.label}>Email</span> {volunteer.email}
+        </Typography>
+        <Typography variant="body1" className={classes.item}>
+          <span className={classes.label}>Phone Number</span> {volunteer.phoneNumber}
+        </Typography>
+        <Typography variant="body1" className={classes.item}>
+          <span className={classes.label}>Student Discipline</span> {volunteer.studentDiscipline}
+        </Typography>
+        { volunteer.comments && (
+          <Typography variant="body1" className={`${classes.item} ${classes.comments}`}>
+            <span className={classes.label}>Comments</span> 
+            <div className={classes.commentsText}>{volunteer.comments}</div>
           </Typography>
-          <Typography variant="body1" className={classes.item}>
-            <span className={classes.label}>Email</span> {volunteer.email}
-          </Typography>
-          <Typography variant="body1" className={classes.item}>
-            <span className={classes.label}>Phone Number</span> {volunteer.phoneNumber}
-          </Typography>
-          <Typography variant="body1" className={classes.item}>
-            <span className={classes.label}>Student Discipline</span> {volunteer.studentDiscipline}
-          </Typography>
-          { volunteer.comments && (
-            <Typography variant="body1" className={`${classes.item} ${classes.comments}`}>
-              <span className={classes.label}>Comments</span> 
-              <div className={classes.commentsText}>{volunteer.comments}</div>
-            </Typography>
-          )}
-          <Button variant="outlined" color="secondary" onClick={() => handleDelete(volunteer, "remove")}>Remove Volunteer</Button>
-        </DialogContent>
-      </Dialog>
-    )
+        )}
+        <Button variant="outlined" color="secondary" onClick={() => handleDelete(volunteer, "remove")}>Remove Volunteer</Button>
+      </DialogContent>
+    </Dialog>
   );
 };
 
