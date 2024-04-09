@@ -140,7 +140,7 @@ const VolunteerPopup = ({ open, handleClose, email, uid, addVolunteer, onDeleteV
           </Select>
           {!studentDiscipline && (
             <Typography variant="caption" color="error" style={{ marginLeft: '10px' }}>
-                Please select your student discipline
+                Please select a student discipline
             </Typography>
           )}
         </div>

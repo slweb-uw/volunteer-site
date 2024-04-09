@@ -56,11 +56,6 @@ type SignInPopupProps = {
 const SignInPopup: React.FC<SignInPopupProps> = ({ open, close }) => {
   const classes = useStyles();
   const [errorMessage, setErrorMessage] = useState("");
-  const router = useRouter();
-  const handleHelpButtonClickLocation = () => {
-    handleHelpButtonClick(router, 'fromSignIn');
-    close();
-  };
 
   useEffect(() => {
     setErrorMessage("");
@@ -81,18 +76,8 @@ const SignInPopup: React.FC<SignInPopupProps> = ({ open, close }) => {
   return (
     <Dialog open={open} onClose={close} className={classes.dialog}>
       <DialogTitle>
-        <Typography variant="h5" align="center" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Typography variant="h5" align="center">
           Log In
-          <Tooltip title="Help" arrow>
-            <Button
-              variant='outlined'
-              color='secondary'
-              startIcon={<HelpIcon />}
-              onClick={handleHelpButtonClickLocation}
-            >
-              Help
-            </Button>
-          </Tooltip>
         </Typography>
       </DialogTitle>
       <DialogContent>

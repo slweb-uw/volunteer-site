@@ -32,25 +32,11 @@ interface Props {
 }
 
 const HelpPage: NextPage<Props> = ({ classes }) => {
-  const router = useRouter();
   const [expanded, setExpanded] = useState("");
   const [schoolExpanded, setSchoolExpanded] = useState("")
 
-  useEffect(() => {
-    // Check if the state was set in the router indicating the "Help" button was clicked
-    if (router.query.fromLocationPage) {
-      setExpanded("dropdown3"); 
-    } else if (router.query.fromSignUpPage) {
-      setExpanded("dropdown4"); 
-    } else if (router.query.fromSignIn) {
-      setExpanded("dropdown1"); 
-    }
-  }, [router.query.fromLocationPage,
-      router.query.fromSignUpPage,
-      router.query.fromSignIn]);
-
   const handleChange = (panel: any) => (event: any, newExpanded: any) => {
-    setExpanded(newExpanded ? panel : "");
+    setExpanded(newExpanded ? panel : false);
   };
 
   const handleSchoolChange = (panel: any) => (event: any, newExpanded: any) => {
@@ -191,6 +177,7 @@ const HelpPage: NextPage<Props> = ({ classes }) => {
             </Typography>
         </MuiAccordionDetails>
         </MuiAccordion>
+
         <MuiAccordion
           square
           expanded={expanded === "dropdown3"}
@@ -246,45 +233,40 @@ const HelpPage: NextPage<Props> = ({ classes }) => {
               Here, you can view all of the details listed about the specific volunteer opportunity. For further details, you can visit the specific opportunity’s website link. <br /> 
               If you are ready to join, you can find the project lead's contact information in the Project Lead Contact List. 
               </Typography>
-        </MuiAccordionDetails>
-      </MuiAccordion>
+          </MuiAccordionDetails>
+        </MuiAccordion>
 
-      <MuiAccordion
-        square
-        expanded={expanded === "dropdown4"}
-        onChange={handleChange("dropdown4")}
-      >
-        <MuiAccordionSummary
-          aria-controls="dropdown4d-content"
-          id="dropdown4d-header"
-          expandIcon={<ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} />}
+        <MuiAccordion
+          square
+          expanded={expanded === "dropdown4"}
+          onChange={handleChange("dropdown4")}
         >
-          <Typography className={classes.title}>Navigating the signup page</Typography>
-        </MuiAccordionSummary>
-        <MuiAccordionDetails style={{ flexDirection: "column", alignItems: "center", marginTop: "2rem" }}>
-              <img
-                  style={{
-                  width: "60em",
-                  maxWidth: "100%",
-                  height: "auto",
-                  borderRadius: "10px",
-                  }}
-                  src="sign-up-page.png"
-                  alt="Sign up page"
-            />
-            <Typography style={{ textAlign: "center", marginTop: ".01rem", marginBottom: "5rem" }}>
-             Note: Page may look different depending on user type.
+          <MuiAccordionSummary
+            aria-controls="dropdown4d-content"
+            id="dropdown4d-header"
+            expandIcon={<ArrowDropDownCircleOutlinedIcon style={{ color: "#4B2E83", height: "1.5em", width: "auto" }} />}
+          >
+            <Typography className={classes.title}>How to use the sign up program</Typography>
+          </MuiAccordionSummary>
+          <MuiAccordionDetails style={{ flexDirection: "column", alignItems: "center", marginTop: "2rem" }}>
+            <div>
+              <iframe
+                width="1000"
+                height="600"
+                src="https://www.youtube.com/embed/9b9ZITj8_aw"
+                frameborder="0"
+                allowfullscreen
+                title="Sign Up Program Tutorial"
+                >
+              </iframe>
+            </div>
+            <Typography style={{ textAlign: "center", marginTop: "2rem", marginBottom: "5rem" }}>
+              Video tutorial for how to use the new sign up program. Click on the YouTube button 
+              in the bottom right corner to view in full screen.
             </Typography>
-            <Typography style={{ textAlign: "left", marginTop: ".5rem", marginBottom: "5rem" }}>
-             Once you are on the signup page, you're screen should look similar to the above image. <br />
-             Here is the breakdown of each section: <br />
-             1. Opprutunity title <br />
-             2. Available events <br />
-             3. Roles available in selected event <br />
-             4. Buttons for additional features
-            </Typography>
-        </MuiAccordionDetails>
-      </MuiAccordion>
+          </MuiAccordionDetails>
+        </MuiAccordion>
+
     </div>
   );
 };

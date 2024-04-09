@@ -109,10 +109,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Signup = () => {
-  const handleHelpButtonClickLocation = () => {
-    handleHelpButtonClick(router, 'fromSignUpPage');
-    close();
-  };
   const router = useRouter();
   const { location, event, selectedEventId } = router.query;
   const classes = useStyles();
@@ -468,7 +464,6 @@ const Signup = () => {
                 variant='outlined'
                 color='secondary'
                 startIcon={<HelpIcon />}
-                onClick={handleHelpButtonClickLocation}
               >
                 Help
               </Button>

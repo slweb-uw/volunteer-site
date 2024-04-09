@@ -19,7 +19,33 @@ import Link from "next/link";
 import AddModifyEventModal from "../components/addModifyEventModal";
 import EventCard from "../components/eventCard";
 import { useAuth } from "../auth";
+import React, { useEffect, useState } from "react";
+import { firebaseClient } from "../firebaseClient";
+import { 
+  Button,
+  MenuItem, 
+  Select, 
+  Typography, 
+  createStyles, 
+  withStyles, 
+  Switch,
+  } from "@material-ui/core";
+import Stack from '@mui/material/Stack';
+import Grid from '@mui/material/Grid';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import Tooltip from '@material-ui/core/Tooltip';
+import EventModal from "../components/eventModal";
+import BootstrapInput from "../components/bootstrapInput";
+import Link from "next/link";
+import AddModifyEventModal from "../components/addModifyEventModal";
+import EventCard from "../components/eventCard";
+import { useAuth } from "../auth";
 import { Location } from "../helpers/locations"
+import { volunteerTypes } from "../components/addModifyEventModal";
+import { CollectionReference, Query } from "@firebase/firestore-types";
+import {useRouter} from "next/router";
+import { useMediaQuery } from '@material-ui/core';
+
 import { volunteerTypes } from "../components/addModifyEventModal";
 import { CollectionReference, Query } from "@firebase/firestore-types";
 import {useRouter} from "next/router";
@@ -29,8 +55,15 @@ import { useMediaQuery } from '@material-ui/core';
 type EventsProps = {
   location: Location;
   classes?: any,
+  location: Location;
+  classes?: any,
 }
 
+const Events: React.FC<EventsProps> = ({
+  location, classes
+}) => {
+  const { user, isAdmin } = useAuth();
+  const router = useRouter();
 const Events: React.FC<EventsProps> = ({
   location, classes
 }) => {
@@ -42,37 +75,55 @@ const Events: React.FC<EventsProps> = ({
   const [cursor, setCursor] = useState<
     firebaseClient.firestore.QueryDocumentSnapshot
   >(); // cursor to last document loaded
+  const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
+  const [events, setEvents] = useState<EventData[]>([]); // list of loaded events
+  const [cursor, setCursor] = useState<
+    firebaseClient.firestore.QueryDocumentSnapshot
+  >(); // cursor to last document loaded
 
+  const ORGANIZATION_FILTER_QUERY_KEY = "org";
+  const STUDENT_TYPE_FILTER_QUERY_KEY = "type";
   const ORGANIZATION_FILTER_QUERY_KEY = "org";
   const STUDENT_TYPE_FILTER_QUERY_KEY = "type";
 
   const setQueryVar = (key: string, value: string) => {
     if (!router.isReady) {
       return;
+      return;
     }
+    const query = {...router.query}
     const query = {...router.query}
     if (value) {
       query[key] = value;
+      query[key] = value;
     } else {
+      delete query[key];
       delete query[key];
     }
     router.replace(
       {
         pathname: router.pathname,
         query: query
+        query: query
       },
       undefined,
       {
         scroll: false
       });
+        scroll: false
+      });
   }
 
   const organizationFilter = router.query[ORGANIZATION_FILTER_QUERY_KEY] ?? "";
+  const organizationFilter = router.query[ORGANIZATION_FILTER_QUERY_KEY] ?? "";
   const setOrganizationFilter = (value: string) => {
+    setQueryVar(ORGANIZATION_FILTER_QUERY_KEY, value);
     setQueryVar(ORGANIZATION_FILTER_QUERY_KEY, value);
   }
   const studentTypeFilter = router.query[STUDENT_TYPE_FILTER_QUERY_KEY] ?? "";
+  const studentTypeFilter = router.query[STUDENT_TYPE_FILTER_QUERY_KEY] ?? "";
   const setStudentTypeFilter = (value: string) => {
+    setQueryVar(STUDENT_TYPE_FILTER_QUERY_KEY, value);
     setQueryVar(STUDENT_TYPE_FILTER_QUERY_KEY, value);
   }
 
@@ -85,10 +136,13 @@ const Events: React.FC<EventsProps> = ({
   const [signUpAvailableFilter, setSignUpAvailableFilter] = useState<boolean>(false);
 
   const isProviderView = studentTypeFilter === "Providers";
+  const isProviderView = studentTypeFilter === "Providers";
   const setProviderView = (enabled: boolean) => {
     if (enabled) {
       setStudentTypeFilter("Providers");
+      setStudentTypeFilter("Providers");
     } else if (isProviderView) {
+      setStudentTypeFilter("");
       setStudentTypeFilter("");
     }
   }
@@ -108,6 +162,8 @@ const Events: React.FC<EventsProps> = ({
       .collection("cache")
       .doc(location.toString())
       .get()
+      .then((doc) => setOrganizations(Object.keys(doc.data() as string[]).sort()));
+  }, [location]);
       .then((doc) => setOrganizations(Object.keys(doc.data() as string[]).sort()));
   }, [location]);
 
@@ -133,6 +189,8 @@ const Events: React.FC<EventsProps> = ({
   const getOrder = (curSort: string) => {
     return curSort === "timestamp" ? "desc" : "asc";
   };
+    return curSort === "timestamp" ? "desc" : "asc";
+  };
 
   // Append more events from Firestore onto this page from position of cursor
   const loadEvents = async (keepPrev: boolean) => {
@@ -140,6 +198,7 @@ const Events: React.FC<EventsProps> = ({
     const order = getOrder(sortField);
     let query : CollectionReference | Query = firebaseClient.firestore().collection("/" + location);
     if (organizationFilter) {
+      query = query.where("Organization", "==", organizationFilter);
       query = query.where("Organization", "==", organizationFilter);
     }
     if (studentTypeFilter) {
@@ -156,35 +215,51 @@ const Events: React.FC<EventsProps> = ({
     }
     const next = await query.limit(11)
       .get();
+    const next = await query.limit(11)
+      .get();
 
+    const eventsToAdd: EventData[] = [];
     const eventsToAdd: EventData[] = [];
     next.docs.slice(0, 10).forEach((document) => {
       let eventDoc = document.data() as EventData;
       eventDoc.id = document.id; // adds event id to the EventData object
+      let eventDoc = document.data() as EventData;
+      eventDoc.id = document.id; // adds event id to the EventData object
       const volunteersNeeded: string | string[] | undefined =
+        eventDoc["Types of Volunteers Needed"];
         eventDoc["Types of Volunteers Needed"];
       if (volunteersNeeded && typeof volunteersNeeded === "string") {
         // If string, then obsolete. Remove data
+        eventDoc["Types of Volunteers Needed"] = [];
         eventDoc["Types of Volunteers Needed"] = [];
       }
       eventsToAdd.push(eventDoc);
     });
     setCursor(next.docs[next.docs.length - 2]);
+      eventsToAdd.push(eventDoc);
+    });
+    setCursor(next.docs[next.docs.length - 2]);
     if (keepPrev) {
+      setEvents((prevEvents) => [...prevEvents, ...eventsToAdd]);
       setEvents((prevEvents) => [...prevEvents, ...eventsToAdd]);
     } else {
       setEvents(eventsToAdd);
+      setEvents(eventsToAdd);
     }
+    setShowLoadButton(next.docs.length > 10);
+  };
     setShowLoadButton(next.docs.length > 10);
   };
 
   useEffect(() => {
     loadEvents(false)
       /*.catch((err) => {
+      /*.catch((err) => {
         console.error("Error loading events: " + err);
       });*/
-  }, [organizationFilter, studentTypeFilter, signUpAvailableFilter])
+  }, [organizationFilter, studentTypeFilter])
 
+  const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'));
   const isMobile = useMediaQuery(theme => theme.breakpoints.down('sm'));
 
   return (
@@ -215,6 +290,7 @@ const Events: React.FC<EventsProps> = ({
               value={organizationFilter}
               onChange={(e) => {
                 setOrganizationFilter(e.target.value as string);
+                setOrganizationFilter(e.target.value as string);
               }}
               displayEmpty
               className={classes.studentFilter}
@@ -222,6 +298,7 @@ const Events: React.FC<EventsProps> = ({
             >
               <MenuItem value="">Show All</MenuItem>
               {organizations.map((organization, index) => (
+                <MenuItem key={index} value={organization}>{organization}</MenuItem>
                 <MenuItem key={index} value={organization}>{organization}</MenuItem>
               ))}
             </Select>
@@ -253,9 +330,64 @@ const Events: React.FC<EventsProps> = ({
                   ))}
               </Select>
             </>}
+            {!isProviderView &&
+            <>
+              <Typography
+                id="student-type-filter"
+                className={classes.filterField}>
+                Student Discipline{" "}
+              </Typography>
+              <Select
+                aria-labelledby="student-type-filter"
+                value={studentTypeFilter}
+                className={classes.studentFilter}
+                onChange={(e) => {
+                  setStudentTypeFilter(e.target.value as string);
+                }}
+                displayEmpty
+                input={<BootstrapInput />}
+                disabled={ isProviderView }
+              >
+                <MenuItem value="">Show All</MenuItem>
+                {volunteerTypes
+                  .filter((studentType) => studentType !== "Providers")
+                  .map((studentType, index) => (
+                    <MenuItem key={index} value={studentType}>{studentType}</MenuItem>
+                  ))}
+              </Select>
+            </>}
           </Grid>
-          {/* Move the calendar button grid item up by one line */}
-          {location === "Seattle" && (
+          <Grid item xs={0} md={1}/>
+          <Grid item xs={12} md={3}>
+            <Stack direction="row" spacing={1}>
+              <Typography style= {{display: 'flex', alignItems: 'center'}}>
+                  <b style={{marginRight: '0.25rem',fontSize:'1rem'}}>Provider View</b>
+                  <Tooltip 
+                    title={
+                      <Typography>
+                        Providers are clinicians who supervise our students in providing medical care to underserved patients.
+                      </Typography>
+                    }
+                  >
+                    <InfoOutlinedIcon style={{fontSize:'1.5 rem', color: "#808080"}}/>
+                  </Tooltip>
+                </Typography>
+
+                <Switch
+                  color="primary"
+                  classes={{
+                    root: classes.root,
+                    switchBase: classes.switchBase,
+                    thumb: classes.thumb,
+                    track: classes.track,
+                    checked: classes.checked
+                  }}
+                  checked={isProviderView}
+                  onChange={(e) => setProviderView(e.target.checked)}
+                />
+              </Stack>
+            </Grid>
+            {location === "Seattle" && (
             <Grid item xs={12} md={2}>
               <Link href="/calendar">
                 <Button
@@ -342,6 +474,8 @@ const Events: React.FC<EventsProps> = ({
       </div>
       <Typography variant="h6" style={{ textAlign: "center", marginBottom: "3em", color: "#85754D" }}>
         <b>Note:</b> Please review  
+      <Typography variant="h6" style={{ textAlign: "center", marginBottom: "3em", color: "#85754D" }}>
+        <b>Note:</b> Please review  
         {topMessage}
       </Typography>
   
@@ -371,11 +505,14 @@ const Events: React.FC<EventsProps> = ({
         <div style={{ paddingBottom: "4em" }}>
           {events.length > 0 ? (
             <Grid container  spacing={isMobile ? 2 : 6}>
+            <Grid container  spacing={isMobile ? 2 : 6}>
               {events.map((event, index) => (
                 <Grid key={index} item xs={12} lg={6}>
                   <EventCard
                     event={event}
                     handleClick={() => {
+                      setModalOpen(true);
+                      setSelectedEvent(event);
                       setModalOpen(true);
                       setSelectedEvent(event);
                     }}
@@ -434,6 +571,7 @@ const styles = createStyles({
   },
   filterField: {
     fontFamily: 'Encode Sans',
+    fontFamily: 'Encode Sans',
     fontSize: "1rem",
     display: "inline",
     fontWeight: 700,
@@ -450,7 +588,18 @@ const styles = createStyles({
   track: {
     background: 'gray',
     opacity: '1 !important',
+    background: 'gray',
+    opacity: '1 !important',
     borderRadius: 20,
+    position: 'relative',
+    '&:before, &:after': {
+      display: 'inline-block',
+      position: 'absolute',
+      top: '50%',
+      width: '50%',
+      transform: 'translateY(-50%)',
+      color: '#fff',
+      textAlign: 'center',
     position: 'relative',
     '&:before, &:after': {
       display: 'inline-block',
@@ -462,10 +611,12 @@ const styles = createStyles({
       textAlign: 'center',
     },
     '&:before': {
+    '&:before': {
       content: '"On"',
       left: 4,
       opacity: 0,
     },
+    '&:after': {
     '&:after': {
       content: '"Off"',
       right: 4,
@@ -477,18 +628,30 @@ const styles = createStyles({
       transform: 'translateX(32px)',
       '&:hover': {
         backgroundColor: 'rgba(24,90,257,0.08)',
+    '&$switchBase': {
+      color: '#185a9d',
+      transform: 'translateX(32px)',
+      '&:hover': {
+        backgroundColor: 'rgba(24,90,257,0.08)',
       },
     },
+    '& $thumb': {
+      backgroundColor: '#fff',
     '& $thumb': {
       backgroundColor: '#fff',
     },
     '& + $track': {
       background: '#4B2E83',
       '&:before': {
+    '& + $track': {
+      background: '#4B2E83',
+      '&:before': {
         opacity: 1,
       },
       '&:after': {
+      '&:after': {
         opacity: 0,
+      }
       }
     },
   },
@@ -497,6 +660,9 @@ const styles = createStyles({
     width: "205px",
   }
 });
+  }
+});
 
 //@ts-ignore
+export default withStyles(styles)(Events);
 export default withStyles(styles)(Events);
