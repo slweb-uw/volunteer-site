@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import Hidden from "@material-ui/core/Hidden";
+import Hidden from "@mui/material/Hidden";
 import { firebaseClient } from "firebaseClient";
 import { useAuth } from "auth";
 import BasicMenu from "./basicMenu";
 import SignInPopup from "./SignInPopup";
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@mui/styles/makeStyles';
 import "firebase/firestore";
 
 const useStyles = makeStyles((theme) => ({

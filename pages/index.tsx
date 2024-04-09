@@ -1,21 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from "react"
 import {
-  withStyles,
-  createStyles,
   Typography,
   Grid,
-  makeStyles,
   Button,
   CardActionArea,
   Card,
   CardContent,
-  CardMedia
-} from "@material-ui/core";
-import Link from "next/link";
+  CardMedia,
+} from "@mui/material"
+import withStyles from "@mui/styles/withStyles"
+import createStyles from "@mui/styles/createStyles"
+import makeStyles from "@mui/styles/makeStyles"
+import Link from "next/link"
 
-import { firebaseClient } from "firebaseClient";
-import { ArrowForwardIos } from "@material-ui/icons";
-import HeadlineBar from "components/headlineBar";
+import { firebaseClient } from "firebaseClient"
+import { ArrowForwardIos } from "@mui/icons-material"
+import HeadlineBar from "components/headlineBar"
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -171,14 +171,14 @@ const useStyles = makeStyles((theme) => ({
       padding: "3em",
     },
   },
-}));
+}))
 
 const App: React.FC<{}> = () => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   useEffect(() => {
-    firebaseClient.analytics().logEvent("home_page_visit");
-  }, []);
+    firebaseClient.analytics().logEvent("home_page_visit")
+  }, [])
 
   return (
     <div
@@ -302,7 +302,10 @@ const App: React.FC<{}> = () => {
                   margin: "0",
                 }}
               ></hr>
-              <CardActionArea href="/requiredTraining" className={classes.cardhover}>
+              <CardActionArea
+                href="/requiredTraining"
+                className={classes.cardhover}
+              >
                 <CardContent>
                   <div className={classes.cardlinks}>
                     <Typography className={classes.cardtitle}>
@@ -372,10 +375,10 @@ const App: React.FC<{}> = () => {
                 marginTop: "2em",
               }}
             >
-            <div style={{ marginRight: "3em", textAlign: "right"  }}>
-              <HeadlineBar color="gold" width={320} height={10}></HeadlineBar>
+              <div style={{ marginRight: "3em", textAlign: "right" }}>
+                <HeadlineBar color="gold" width={320} height={10}></HeadlineBar>
+              </div>
             </div>
-          </div>
 
             <Card
               variant="outlined"
@@ -482,10 +485,10 @@ const App: React.FC<{}> = () => {
                 marginTop: "2em",
               }}
             >
-          <div style={{ marginRight: "2.5em", textAlign: "right" }}>
-              <HeadlineBar color="gold" width={310} height={10}></HeadlineBar>
-          </div>
-          </div>
+              <div style={{ marginRight: "2.5em", textAlign: "right" }}>
+                <HeadlineBar color="gold" width={310} height={10}></HeadlineBar>
+              </div>
+            </div>
 
             <Card
               variant="outlined"
@@ -533,7 +536,7 @@ const App: React.FC<{}> = () => {
           backgroundColor: "#E8E3D3",
         }}
       >
-        <Grid container spacing={2}>
+        <Grid container spacing="2px">
           <Grid item xs={12} md={6} lg={6}>
             <div
               style={{
@@ -559,10 +562,13 @@ const App: React.FC<{}> = () => {
               <Typography
                 style={{ fontFamily: "Open Sans", marginTop: "1rem" }}
               >
-                In Seattle, UW Health Sciences students are partnering with Harborview Medical Center (HMC) 
-                Downtown programs to provide urgent care services to residents of Low Income Housing Institute’s 
-                Tiny House Villages. Health sciences students will work on interprofessional teams to respond to 
-                community identified health needs while further developing their teamwork and clinical skills.
+                In Seattle, UW Health Sciences students are partnering with
+                Harborview Medical Center (HMC) Downtown programs to provide
+                urgent care services to residents of Low Income Housing
+                Institute’s Tiny House Villages. Health sciences students will
+                work on interprofessional teams to respond to community
+                identified health needs while further developing their teamwork
+                and clinical skills.
               </Typography>
               <div className={classes.mobileLearnMoreBtn}>
                 <Link href="https://collaborate.uw.edu/student-portal/mobile-health-outreach/">
@@ -604,7 +610,7 @@ const App: React.FC<{}> = () => {
 
       {/** Serve With Us section*/}
       <div className={useStyles().mobile}>
-        <Grid container spacing={2}>
+        <Grid container spacing={10}>
           <Grid item xs={12} md={6} lg={4}>
             <div
               style={{
@@ -691,12 +697,12 @@ const App: React.FC<{}> = () => {
                 Our Service Learning and Community Engagement programs strive to
                 enrich health sciences education by providing our students with
                 opportunities to hone their skills while addressing the health
-                needs of our under-resourced communities. We seek to foster the joy
-                of service in our students who are preparing for lives of civic
-                and social responsibility in an increasingly diverse and complex
-                global society.These goals could not be achieved without strong
-                community partnerships, dedicated supervising providers, and
-                mutual collaboration within our six health sciences schools.
+                needs of our under-resourced communities. We seek to foster the
+                joy of service in our students who are preparing for lives of
+                civic and social responsibility in an increasingly diverse and
+                complex global society.These goals could not be achieved without
+                strong community partnerships, dedicated supervising providers,
+                and mutual collaboration within our six health sciences schools.
               </Typography>
               <br></br>
               <br></br>
@@ -857,9 +863,7 @@ const App: React.FC<{}> = () => {
         </Grid>
       </div>
     </div>
-  );
-};
+  )
+}
 
-
-
-export default App;
+export default App
