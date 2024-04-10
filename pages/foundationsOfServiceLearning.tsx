@@ -1,11 +1,7 @@
 import { NextPage } from "next";
-import {
-  createStyles,
-  CssBaseline,
-  Typography,
-  withStyles,
-  Grid,
-} from "@material-ui/core";
+import { CssBaseline, Typography, Grid } from "@mui/material";
+import createStyles from '@mui/styles/createStyles';
+import withStyles from '@mui/styles/withStyles';
 import IconBreadcrumbs from "components/breadcrumbs";
 
 interface Props {

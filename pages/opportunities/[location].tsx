@@ -1,18 +1,18 @@
 import React, {useEffect} from "react";
 import { firebaseClient } from "../../firebaseClient";
 import { NextPage } from "next";
-import {
-  createStyles,
-  CssBaseline,
-  Typography,
-  withStyles,
-} from "@material-ui/core";
+import { CssBaseline, Typography, Button, Tooltip } from "@mui/material";
+import createStyles from '@mui/styles/createStyles';
+import withStyles from '@mui/styles/withStyles';
 import { withSnackbar } from "notistack";
 import IconBreadcrumbs from "components/breadcrumbs";
 import LocationSelector from "../../components/locationSelector";
 import { useRouter } from "next/router";
+import Link from 'next/link';
 import Events from "../events";
+import HelpIcon from "@mui/icons-material/Help";
 import { DEFAULT_LOCATION, LAST_LOCATION_KEY, Location, setLocation } from "../../helpers/locations";
+import { handleHelpButtonClick } from "../../helpers/navigation";
 
 interface Props {
   classes?: any;
@@ -23,6 +23,17 @@ const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   const router = useRouter();
   let location = (router.query.location && !Array.isArray(router.query.location)) ? router.query.location : DEFAULT_LOCATION;
 
+  /*const handleHelpButtonClick = () => {
+    router.push({
+      pathname: '/help',
+      query: { fromLocationPage: true },
+    });
+  };*/
+
+  //new logic using helper function
+  const handleHelpButtonClickLocation = () => {
+    handleHelpButtonClick(router, 'fromLocationPage');
+  };
   useEffect(() => {
     firebaseClient.analytics().logEvent("location_page_visit");
   }, []);
@@ -41,10 +52,26 @@ const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   return (
     <div className={classes.page}>
       <CssBaseline />
-      <IconBreadcrumbs crumbs={["Opportunities"]} parentURL={undefined} />
-      <Typography variant="h3" gutterBottom className={classes.header}>
-        OPPORTUNITIES
-      </Typography>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+        <div>
+          <IconBreadcrumbs crumbs={["Opportunities"]} parentURL={undefined} />
+          <Typography variant="h3" gutterBottom className={classes.header}>
+            OPPORTUNITIES
+          </Typography>
+        </div>
+      <div>
+        <Tooltip title="Help" arrow>
+            <Button
+              variant='outlined'
+              color='secondary'
+              startIcon={<HelpIcon />}
+              onClick={handleHelpButtonClickLocation}
+            >
+              Help
+            </Button>
+          </Tooltip>
+        </div>
+      </div>
       <img src={"../goldbar.png"} alt=""  className={classes.bar} style={{ }}/>
       <div style={{
         marginTop: "2em"
