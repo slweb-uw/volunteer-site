@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 interface Props {
   className?: string;
@@ -13,9 +14,11 @@ const EventImage: React.FC<Props> = (props) => {
     style.objectFit = "cover";
   }
   return (
-    <img
+    <Image
       className={props.className}
       style={style}
+      width={300}
+      height={300}
       src={
         props.imageURL ? props.imageURL : "/beigeSquare.png"
       }

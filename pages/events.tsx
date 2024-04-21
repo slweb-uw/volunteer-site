@@ -1,50 +1,52 @@
-import React, { useEffect, useState } from "react"
-import { firebaseClient } from "../firebaseClient"
-import { Button, MenuItem, Select, Typography, Switch } from "@mui/material"
-import createStyles from "@mui/styles/createStyles"
-import withStyles from "@mui/styles/withStyles"
-import Stack from "@mui/material/Stack"
-import Grid from "@mui/material/Grid"
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined"
-import Tooltip from "@mui/material/Tooltip"
-import EventModal from "../components/eventModal"
-import BootstrapInput from "../components/bootstrapInput"
-import Link from "next/link"
-import AddModifyEventModal from "../components/addModifyEventModal"
-import EventCard from "../components/eventCard"
-import { useAuth } from "../auth"
-import { Location } from "../helpers/locations"
-import { volunteerTypes } from "../components/addModifyEventModal"
-import { CollectionReference, Query } from "@firebase/firestore-types"
-import { useRouter } from "next/router"
-import { useMediaQuery } from "@mui/material"
+import React, { useEffect, useState } from "react";
+import { firebaseClient } from "../firebaseClient";
+import { Button, MenuItem, Select, Typography, Switch } from "@mui/material";
+import createStyles from "@mui/styles/createStyles";
+import withStyles from "@mui/styles/withStyles";
+import Stack from "@mui/material/Stack";
+import Grid from "@mui/material/Grid";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import Tooltip from "@mui/material/Tooltip";
+import EventModal from "../components/eventModal";
+import BootstrapInput from "../components/bootstrapInput";
+import Link from "next/link";
+import AddModifyEventModal from "../components/addModifyEventModal";
+import EventCard from "../components/eventCard";
+import { useAuth } from "../auth";
+import { Location } from "../helpers/locations";
+import { volunteerTypes } from "../components/addModifyEventModal";
+import { CollectionReference, Query } from "@firebase/firestore-types";
+import { useRouter } from "next/router";
+import { useMediaQuery } from "@mui/material";
+import { useInView } from "react-intersection-observer";
 
 type EventsProps = {
-  location: Location
-  classes?: any
-}
+  location: Location;
+  classes?: any;
+};
 
 const Events: React.FC<EventsProps> = ({ location, classes }) => {
-  const { user, isAdmin } = useAuth()
-  const router = useRouter()
+  const { user, isAdmin } = useAuth();
+  const router = useRouter();
+  const { ref, inView } = useInView();
 
-  const [organizations, setOrganizations] = useState<string[]>([]) // organizations at this location
-  const [events, setEvents] = useState<EventData[]>([]) // list of loaded events
+  const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
+  const [events, setEvents] = useState<EventData[]>([]); // list of loaded events
   const [cursor, setCursor] =
-    useState<firebaseClient.firestore.QueryDocumentSnapshot>() // cursor to last document loaded
+    useState<firebaseClient.firestore.QueryDocumentSnapshot>(); // cursor to last document loaded
 
-  const ORGANIZATION_FILTER_QUERY_KEY = "org"
-  const STUDENT_TYPE_FILTER_QUERY_KEY = "type"
+  const ORGANIZATION_FILTER_QUERY_KEY = "org";
+  const STUDENT_TYPE_FILTER_QUERY_KEY = "type";
 
   const setQueryVar = (key: string, value: string) => {
     if (!router.isReady) {
-      return
+      return;
     }
-    const query = { ...router.query }
+    const query = { ...router.query };
     if (value) {
-      query[key] = value
+      query[key] = value;
     } else {
-      delete query[key]
+      delete query[key];
     }
     router.replace(
       {
@@ -54,46 +56,46 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
       undefined,
       {
         scroll: false,
-      }
-    )
-  }
+      },
+    );
+  };
 
-  const organizationFilter = router.query[ORGANIZATION_FILTER_QUERY_KEY] ?? ""
+  const organizationFilter = router.query[ORGANIZATION_FILTER_QUERY_KEY] ?? "";
   const setOrganizationFilter = (value: string) => {
-    setQueryVar(ORGANIZATION_FILTER_QUERY_KEY, value)
-  }
-  const studentTypeFilter = router.query[STUDENT_TYPE_FILTER_QUERY_KEY] ?? ""
+    setQueryVar(ORGANIZATION_FILTER_QUERY_KEY, value);
+  };
+  const studentTypeFilter = router.query[STUDENT_TYPE_FILTER_QUERY_KEY] ?? "";
   const setStudentTypeFilter = (value: string) => {
-    setQueryVar(STUDENT_TYPE_FILTER_QUERY_KEY, value)
-  }
+    setQueryVar(STUDENT_TYPE_FILTER_QUERY_KEY, value);
+  };
 
-  const [showLoadButton, setShowLoadButton] = useState<boolean>(true)
-  const [modalOpen, setModalOpen] = useState<boolean>(false)
-  const [adminModalOpen, setAdminModalOpen] = useState<boolean>(false)
-  const [selectedEvent, setSelectedEvent] = useState<EventData>()
-  const [sortField, setSortField] = useState<string>("Title")
-  const [topMessage, setTopMessage] = useState<any>()
+  const [showLoadButton, setShowLoadButton] = useState<boolean>(true);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [adminModalOpen, setAdminModalOpen] = useState<boolean>(false);
+  const [selectedEvent, setSelectedEvent] = useState<EventData>();
+  const [sortField, setSortField] = useState<string>("Title");
+  const [topMessage, setTopMessage] = useState<any>();
   const [signUpAvailableFilter, setSignUpAvailableFilter] =
-    useState<boolean>(false)
+    useState<boolean>(false);
 
-  const isProviderView = studentTypeFilter === "Providers"
+  const isProviderView = studentTypeFilter === "Providers";
   const setProviderView = (enabled: boolean) => {
     if (enabled) {
-      setStudentTypeFilter("Providers")
+      setStudentTypeFilter("Providers");
     } else if (isProviderView) {
-      setStudentTypeFilter("")
+      setStudentTypeFilter("");
     }
-  }
+  };
 
   const hndlSignUpAvailableFilter = (enabled: boolean) => {
-    console.log("Sign Up Available Switch Toggled", enabled)
-    setSignUpAvailableFilter(enabled)
-  }
+    console.log("Sign Up Available Switch Toggled", enabled);
+    setSignUpAvailableFilter(enabled);
+  };
 
   useEffect(() => {
     // Load events
-    console.log("Component mounted or location changed. Loading events...")
-    loadEvents(false)
+    console.log("Component mounted or location changed. Loading events...");
+    loadEvents(false);
     // pull organizations for this location from the metadata cache
     firebaseClient
       .firestore()
@@ -101,10 +103,16 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
       .doc(location.toString())
       .get()
       .then((doc) =>
-        setOrganizations(Object.keys(doc.data() as string[]).sort())
-      )
-  }, [location])
+        setOrganizations(Object.keys(doc.data() as string[]).sort()),
+      );
+  }, [location]);
 
+  // load the events as the load more button is in view
+  useEffect(() => {
+    if (inView) {
+      loadEvents(true);
+    }
+  }, [inView]);
   // Adjusts state depending on whether provider view is on
   useEffect(() => {
     const message = isProviderView ? (
@@ -123,72 +131,72 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
         project specific training requirements before signing up for an
         opportunity.
       </span>
-    )
+    );
 
-    setTopMessage(message)
-  }, [isProviderView])
+    setTopMessage(message);
+  }, [isProviderView]);
 
   const getOrder = (curSort: string) => {
-    return curSort === "timestamp" ? "desc" : "asc"
-  }
+    return curSort === "timestamp" ? "desc" : "asc";
+  };
 
   // Append more events from Firestore onto this page from position of cursor
   const loadEvents = async (keepPrev: boolean) => {
-    console.log("Loading events...", signUpAvailableFilter)
-    const order = getOrder(sortField)
+    console.log("Loading events...", signUpAvailableFilter);
+    const order = getOrder(sortField);
     let query: CollectionReference | Query = firebaseClient
       .firestore()
-      .collection("/" + location)
+      .collection("/" + location);
     if (organizationFilter) {
-      query = query.where("Organization", "==", organizationFilter)
+      query = query.where("Organization", "==", organizationFilter);
     }
     if (studentTypeFilter) {
       query = query.where(
         "Types of Volunteers Needed",
         "array-contains",
-        studentTypeFilter
-      )
+        studentTypeFilter,
+      );
     }
     if (signUpAvailableFilter) {
-      query = query.where("SignupActive", "==", true)
+      query = query.where("SignupActive", "==", true);
     }
 
-    query = query.orderBy(sortField, order)
-    console.log("Firestore Query:", query)
+    query = query.orderBy(sortField, order);
+    console.log("Firestore Query:", query);
     if (keepPrev && cursor) {
-      query = query.startAfter(cursor)
+      query = query.startAfter(cursor);
     }
-    const next = await query.limit(11).get()
+    const next = await query.limit(11).get();
 
-    const eventsToAdd: EventData[] = []
+    const eventsToAdd: EventData[] = [];
     next.docs.slice(0, 10).forEach((document) => {
-      let eventDoc = document.data() as EventData
-      eventDoc.id = document.id // adds event id to the EventData object
+      let eventDoc = document.data() as EventData;
+      eventDoc.id = document.id; // adds event id to the EventData object
       const volunteersNeeded: string | string[] | undefined =
-        eventDoc["Types of Volunteers Needed"]
+        eventDoc["Types of Volunteers Needed"];
       if (volunteersNeeded && typeof volunteersNeeded === "string") {
         // If string, then obsolete. Remove data
-        eventDoc["Types of Volunteers Needed"] = []
+        eventDoc["Types of Volunteers Needed"] = [];
       }
-      eventsToAdd.push(eventDoc)
-    })
-    setCursor(next.docs[next.docs.length - 2])
+      eventsToAdd.push(eventDoc);
+    });
+    setCursor(next.docs[next.docs.length - 2]);
     if (keepPrev) {
-      setEvents((prevEvents) => [...prevEvents, ...eventsToAdd])
+      setEvents((prevEvents) => [...prevEvents, ...eventsToAdd]);
     } else {
-      setEvents(eventsToAdd)
+      setEvents(eventsToAdd);
     }
-    setShowLoadButton(next.docs.length > 10)
-  }
+    setShowLoadButton(next.docs.length > 10);
+  };
 
   useEffect(() => {
-    loadEvents(false)
+    loadEvents(false);
     /*.catch((err) => {
         console.error("Error loading events: " + err);
       });*/
-  }, [organizationFilter, studentTypeFilter, signUpAvailableFilter])
+  }, [organizationFilter, studentTypeFilter, signUpAvailableFilter]);
 
-  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"))
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
   return (
     <div>
@@ -217,7 +225,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
               aria-labelledby="opportunity-type-filter"
               value={organizationFilter}
               onChange={(e) => {
-                setOrganizationFilter(e.target.value as string)
+                setOrganizationFilter(e.target.value as string);
               }}
               displayEmpty
               className={classes.studentFilter}
@@ -245,7 +253,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
                   value={studentTypeFilter}
                   className={classes.studentFilter}
                   onChange={(e) => {
-                    setStudentTypeFilter(e.target.value as string)
+                    setStudentTypeFilter(e.target.value as string);
                   }}
                   displayEmpty
                   input={<BootstrapInput />}
@@ -373,14 +381,14 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
             open={adminModalOpen}
             location={location}
             handleClose={() => {
-              setAdminModalOpen(false)
+              setAdminModalOpen(false);
             }}
           />
           <Button
             variant="contained"
             color="secondary"
             onClick={() => {
-              setAdminModalOpen(true)
+              setAdminModalOpen(true);
             }}
           >
             Add Project
@@ -392,13 +400,13 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
         <div style={{ paddingBottom: "4em" }}>
           {events.length > 0 ? (
             <Grid container spacing={isMobile ? 2 : 6}>
-              {events.map((event, index) => (
-                <Grid key={index} item xs={12} lg={6}>
+              {events.map((event) => (
+                <Grid key={event.id} item xs={12} lg={6}>
                   <EventCard
                     event={event}
                     handleClick={() => {
-                      setModalOpen(true)
-                      setSelectedEvent(event)
+                      setModalOpen(true);
+                      setSelectedEvent(event);
                     }}
                   />
                 </Grid>
@@ -411,23 +419,9 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
               </Typography>
             </div>
           )}
+          {/*when this is in view it loads more projects*/}
           {showLoadButton && (
-            <div style={{ textAlign: "center" }}>
-              <Button
-                variant="outlined"
-                onClick={() => {
-                  loadEvents(
-                    true
-                  ) /*.catch((err) => {console.error("Error loading more events: " + err)*/
-                }}
-                style={{
-                  marginTop: "2em",
-                }}
-              >
-                <Typography variant="h6">
-                  <b>Load more</b>
-                </Typography>
-              </Button>
+            <div style={{ textAlign: "center" }} ref={ref}>
             </div>
           )}
         </div>
@@ -439,8 +433,8 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
 const styles = createStyles({
   page: {
@@ -521,7 +515,7 @@ const styles = createStyles({
     marginRight: "1em",
     width: "205px",
   },
-})
+});
 
 //@ts-ignore
-export default withStyles(styles)(Events)
+export default withStyles(styles)(Events);

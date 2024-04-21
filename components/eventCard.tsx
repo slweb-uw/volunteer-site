@@ -1,14 +1,14 @@
 import React from "react";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import EventImage from "./eventImage";
-import useMediaQuery from '@mui/material/useMediaQuery';
-import Bubble from "./interprofessionalTag"
+import useMediaQuery from "@mui/material/useMediaQuery";
+import Bubble from "./interprofessionalTag";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     cursor: "pointer",
     display: "flex",
@@ -34,41 +34,50 @@ const useStyles = makeStyles((theme) => ({
   cover: {
     "@media (max-width: 600px)": {
       height: 150,
-      marginTop: '.5em',
+      marginTop: ".5em",
       display: "none",
     },
     "@media (min-width: 600px)": {
       height: 300,
       width: 230,
     },
-  }
+  },
 }));
 
 interface Props {
   event: EventData | CalendarEventData;
-  handleClick: React.MouseEventHandler<HTMLDivElement> | undefined;
+  handleClick: () => void | undefined;
 }
 
-const NotSpecified = <i style={{color: 'gray'}}>Not specified</i>
+const NotSpecified = <i style={{ color: "gray" }}>Not specified</i>;
 
 const EventCard: React.FC<Props> = (props) => {
   const classes = useStyles();
-  const mobileView = useMediaQuery('(max-width: 600px)');
+  const mobileView = useMediaQuery("(max-width: 600px)");
   let imageURL = props.event.cardImageURL ?? props.event.imageURL;
   if (mobileView) {
     imageURL = props.event.imageURL;
   }
 
-const volunteerTypes = props.event["Types of Volunteers Needed"];
-const isInterprofessional = Array.isArray(volunteerTypes) && volunteerTypes.filter((type) => type != "Providers" && type != "Undergraduates" && type != "Other").length > 1;
+  const volunteerTypes = props.event["Types of Volunteers Needed"];
+  const isInterprofessional =
+    Array.isArray(volunteerTypes) &&
+    volunteerTypes.filter(
+      (type) =>
+        type != "Providers" && type != "Undergraduates" && type != "Other",
+    ).length > 1;
 
   return (
     <Card
       tabIndex={0}
       className={classes.root}
-      variant='outlined'
+      variant="outlined"
       onClick={props.handleClick}
-      onKeyDown={(e) => { if (e.key === 'Enter' && props.handleClick) { props.handleClick() }}}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" && props.handleClick) {
+          props.handleClick();
+        }
+      }}
     >
       <CardMedia>
         <EventImage
@@ -77,23 +86,19 @@ const isInterprofessional = Array.isArray(volunteerTypes) && volunteerTypes.filt
           eventTitle={props.event.Title}
         />
       </CardMedia>
-        <CardContent>
-          {props.event?.SignupActive && (
-            <Bubble text="Signup Available" /> 
-          )}
-          {isInterprofessional && (
-            <Bubble text="Interprofessional" /> 
-          )}
-          <Typography component='h6' variant='h6'>
-            <b>{props.event.Title}</b>
-          </Typography>
-          <Typography variant='subtitle1' color='textSecondary' gutterBottom>
-            {props.event.Organization}
-          </Typography>
-          <Typography className={classes.details}>
-            {props.event["Project Description"] ?? NotSpecified }
-          </Typography>
-        </CardContent>
+      <CardContent>
+        {props.event?.SignupActive && <Bubble text="Signup Available" />}
+        {isInterprofessional && <Bubble text="Interprofessional" />}
+        <Typography component="h6" variant="h6">
+          <b>{props.event.Title}</b>
+        </Typography>
+        <Typography variant="subtitle1" color="textSecondary" gutterBottom>
+          {props.event.Organization}
+        </Typography>
+        <Typography className={classes.details}>
+          {props.event["Project Description"] ?? NotSpecified}
+        </Typography>
+      </CardContent>
     </Card>
   );
 };

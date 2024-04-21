@@ -6,6 +6,9 @@ module.exports = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
+  images: {
+    domains: ["lh3.googleusercontent.com", "firebasestorage.googleapis.com"],
+  },
   webpack: (config, { isServer }) => {
     // Fixes npm packages that depend on `fs` module
     if (!isServer) {
