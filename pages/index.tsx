@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import Image from "next/image"
 import MobileOutReachSrc from "../public/Mobile_Outreach_Clinic_resized.jpg"
-import ServeWithUsSrc from  "../public/serveWithUs.jpg"
+import ServeWithUsSrc from  "../public/serve.jpg"
 import CommunityPartnersSrc from "../public/communityPartners.jpg"
 import {
   Typography,
