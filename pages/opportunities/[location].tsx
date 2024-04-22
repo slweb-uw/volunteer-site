@@ -8,7 +8,6 @@ import { withSnackbar } from "notistack";
 import IconBreadcrumbs from "components/breadcrumbs";
 import LocationSelector from "../../components/locationSelector";
 import { useRouter } from "next/router";
-import Link from 'next/link';
 import Events from "../events";
 import HelpIcon from "@mui/icons-material/Help";
 import { DEFAULT_LOCATION, LAST_LOCATION_KEY, Location, setLocation } from "../../helpers/locations";

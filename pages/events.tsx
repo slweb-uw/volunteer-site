@@ -70,9 +70,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
   };
 
   const [showLoadButton, setShowLoadButton] = useState<boolean>(true);
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [adminModalOpen, setAdminModalOpen] = useState<boolean>(false);
-  const [selectedEvent, setSelectedEvent] = useState<EventData>();
   const [sortField, setSortField] = useState<string>("Title");
   const [topMessage, setTopMessage] = useState<any>();
   const [signUpAvailableFilter, setSignUpAvailableFilter] =
@@ -191,6 +189,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
 
   useEffect(() => {
     loadEvents(false);
+    console.log("here");
     /*.catch((err) => {
         console.error("Error loading events: " + err);
       });*/
@@ -394,14 +393,10 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
         <div style={{ paddingBottom: "4em" }}>
           {events.length > 0 ? (
             <Grid container spacing={isMobile ? 2 : 6}>
-              {events.map((event) => (
-                <Grid key={event.id} item xs={12} lg={6}>
+              {events.map((event, index) => (
+                <Grid key={event.id + index} item xs={12} lg={6}>
                   <EventCard
                     event={event}
-                    handleClick={() => {
-                      setModalOpen(true);
-                      setSelectedEvent(event);
-                    }}
                   />
                 </Grid>
               ))}
@@ -415,8 +410,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
           )}
           {/*when this is in view it loads more projects*/}
           {showLoadButton && (
-            <div style={{ textAlign: "center" }} ref={ref}>
-            </div>
+            <div ref={ref} />
           )}
         </div>
       ) : (
