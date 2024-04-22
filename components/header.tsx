@@ -6,6 +6,7 @@ import BasicMenu from "./basicMenu";
 import SignInPopup from "./SignInPopup";
 import makeStyles from "@mui/styles/makeStyles";
 import "firebase/firestore";
+import Link from "next/link";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -90,13 +91,13 @@ const Header: React.FC<{}> = () => {
   const [isSignInPopupOpen, setSignInPopupOpen] = useState(false);
 
   const links: React.ReactNode[] = [
-    <a href="/" className={useStyles().navtitle} tabIndex={0}>
+    <Link href="/" className={useStyles().navtitle} tabIndex={0}>
       Home
-    </a>,
+    </Link>,
     <Divider />,
-    <a href="/opportunities" className={useStyles().navtitle} tabIndex={0}>
+    <Link href="/opportunities" className={useStyles().navtitle} tabIndex={0}>
       Opportunities
-    </a>,
+    </Link>,
     <Divider />,
     <a
       className={useStyles().navtitle}
@@ -108,9 +109,9 @@ const Header: React.FC<{}> = () => {
     </a>,
     //*NOTE: Resources name was changed to Links*/
     <Divider />,
-    <a href="/resources" className={useStyles().navtitle} tabIndex={0}>
+    <Link href="/resources" className={useStyles().navtitle} tabIndex={0}>
       Links
-    </a>,
+    </Link>,
     <Divider />,
     <a
       href="https://canvas.uw.edu/courses/1693188/pages/protocols?module_item_id=18595280"
@@ -121,13 +122,13 @@ const Header: React.FC<{}> = () => {
       Protocols
     </a>,
     <Divider />,
-    <a href="/donations" className={useStyles().navtitle} tabIndex={0}>
+    <Link href="/donations" className={useStyles().navtitle} tabIndex={0}>
       Donations
-    </a>,
+    </Link>,
     <Divider />,
-    <a href="/help" className={useStyles().navtitle} tabIndex={0}>
+    <Link href="/help" className={useStyles().navtitle} tabIndex={0}>
       Help
-    </a>,
+    </Link>,
     <Divider />,
     // sign in and out
     user ? (
@@ -166,13 +167,13 @@ const Header: React.FC<{}> = () => {
 
   return (
     <div className={useStyles().root}>
-      <a href="/" tabIndex={0}>
+      <Link href="/" tabIndex={0}>
         <img
           src="/header-logo.png"
           alt="University of Washington School of Medicine logo"
           className={useStyles().logo}
         />
-      </a>
+      </Link>
 
       <Hidden only={["lg", "md", "xl"]}>
         <BasicMenu links={links} />

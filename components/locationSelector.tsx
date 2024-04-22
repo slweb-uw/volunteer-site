@@ -6,14 +6,17 @@ import { Location, setLocation } from "../helpers/locations";
 
 type LocationSelectorProps = {
   defaultLocation: string;
-}
+};
 
 const LocationSelector: React.FC<LocationSelectorProps> = ({
-  defaultLocation
+  defaultLocation,
 }) => {
   const router = useRouter();
 
-  const location = (router.query.location && !Array.isArray(router.query.location)) ? router.query.location : defaultLocation;
+  const location =
+    router.query.location && !Array.isArray(router.query.location)
+      ? router.query.location
+      : defaultLocation;
 
   return (
     <div style={{ display: "flex" }}>
@@ -21,7 +24,13 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
         id="select-location-filter"
         gutterBottom
         display="inline"
-        style={{ marginRight: "1em", fontFamily: "Encode Sans", fontSize: "1rem", textAlign: "center", paddingTop: "7px"}}
+        style={{
+          marginRight: "1em",
+          fontFamily: "Encode Sans",
+          fontSize: "1rem",
+          textAlign: "center",
+          paddingTop: "7px",
+        }}
       >
         <b>Select a Location</b>{" "}
       </Typography>
@@ -36,17 +45,24 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
             setLocation(router, location as Location);
           }
         }}
-        style={{ width: "fit-content"}}
+        style={{ width: "fit-content" }}
         input={<BootstrapInput />}
       >
-        <MenuItem value={defaultLocation} style={{ fontFamily: "Encode Sans" }}>Location</MenuItem>
-        {Object.values(Location).map((location, index) => (
-          <MenuItem key={index} style={{ fontFamily: "Encode Sans" }} value={location}>{location}</MenuItem>
+        <MenuItem value={defaultLocation} style={{ fontFamily: "Encode Sans" }}>
+          Location
+        </MenuItem>
+        {Object.values(Location).map((location) => (
+          <MenuItem
+            key={location}
+            style={{ fontFamily: "Encode Sans" }}
+            value={location}
+          >
+            {location}
+          </MenuItem>
         ))}
       </Select>
     </div>
-  )
-}
-
+  );
+};
 
 export default LocationSelector;

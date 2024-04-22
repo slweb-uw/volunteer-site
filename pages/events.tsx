@@ -207,12 +207,6 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
           width: "100%",
         }}
       >
-        <EventModal
-          open={modalOpen}
-          event={selectedEvent}
-          location={location}
-          handleClose={() => setModalOpen(false)}
-        />
         <Grid container columns={16} spacing={2}>
           <Grid item xs={12} md={5}>
             <Typography
