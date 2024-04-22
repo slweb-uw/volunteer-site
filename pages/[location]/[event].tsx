@@ -1,17 +1,12 @@
 import { useRouter } from "next/router";
 import { useAuth } from "auth";
-import { firebaseClient } from "../../firebaseClient";
-import React, { useState, useEffect } from "react";
-import {
-  GetServerSideProps,
-  InferGetServerSidePropsType,
-} from "next";
+import React from "react";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
 import IconBreadcrumbs from "../../components/breadcrumbs";
+import makeStyles from "@mui/styles/makeStyles";
 
-import { CssBaseline, Typography, Divider, Grid, Button } from "@mui/material";
-import createStyles from "@mui/styles/createStyles";
-import withStyles from "@mui/styles/withStyles";
+import { CssBaseline, Typography, Divider, Grid, Button} from "@mui/material";
 import naturalJoin from "../../helpers/naturalJoin";
 import EventDescription from "../../components/eventDescription";
 import RichTextField from "../../components/richTextField";
@@ -19,9 +14,6 @@ import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Link from "next/link";
 import { firebaseAdmin } from "firebaseAdmin";
-interface Props {
-  classes?: any;
-}
 
 const initialGridKeys = [
   "Tips and Reminders",
@@ -127,31 +119,57 @@ const RichEventField: React.FC<RichEventFieldProps> = ({
   );
 };
 
+// fetch event data before rendering
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const location = ctx.params?.location;
   const event = ctx.params?.event;
 
-  if (typeof location === "undefined" && typeof event === "undefined") {
+  if (typeof location === "undefined" || typeof event === "undefined") {
     return {
       notFound: true,
     };
   }
 
+  // safe to to as string here because we already check they are undefined
+  // typescript for some reason does 
   const data = await firebaseAdmin
     .firestore()
-    .collection(location)
-    .doc(event)
+    .collection(location as string)
+    .doc(event as string)
     .get();
 
   return { props: { event: data.data() } };
 };
+
+const useStyles = makeStyles(() => ({
+  page: {
+    marginLeft: "auto",
+    marginRight: "auto",
+    maxWidth: 1500,
+    marginBottom: 300,
+    width: "90%",
+    paddingTop: "2em",
+    paddingBottom: "5em",
+  },
+  detailsImageContainer: {
+    display: "flex",
+    maxWidth: maxSize() + "px",
+  },
+  detailsImage: {
+    minWidth: "100%",
+    minHeight: "100%",
+    borderRadius: "10px",
+    objectFit: "cover",
+  },
+}));
+
 const Event: InferGetServerSidePropsType<typeof getServerSideProps> = ({
   event: eventData,
 }) => {
   const router = useRouter();
   const { isAdmin } = useAuth();
   const { location } = router.query; // current event id and location
-  // const [eventData, setEventData] = useState<EventData>();
+  const classes = useStyles()
 
   const options = { year: "numeric", month: "long", day: "numeric" };
 
@@ -188,8 +206,6 @@ const Event: InferGetServerSidePropsType<typeof getServerSideProps> = ({
               value={eventData?.Location}
               removeTopMargin={true}
             />
-            <p>{eventData.Location}</p>
-
             <RichEventField
               name="Clinic Schedule"
               value={eventData["Clinic Schedule"]}
@@ -279,27 +295,5 @@ function maxSize() {
   }
   return "500px";
 }
-
-const classes = createStyles({
-  page: {
-    marginLeft: "auto",
-    marginRight: "auto",
-    maxWidth: 1500,
-    marginBottom: 300,
-    width: "90%",
-    paddingTop: "2em",
-    paddingBottom: "5em",
-  },
-  detailsImageContainer: {
-    display: "flex",
-    maxWidth: maxSize() + "px",
-  },
-  detailsImage: {
-    minWidth: "100%",
-    minHeight: "100%",
-    borderRadius: "10px",
-    objectFit: "cover",
-  },
-});
 
 export default Event;
