@@ -28,7 +28,9 @@ type EventsProps = {
 const Events: React.FC<EventsProps> = ({ location, classes }) => {
   const { user, isAdmin } = useAuth();
   const router = useRouter();
-  const { ref, inView } = useInView();
+  const { ref, inView } = useInView({
+      threshold: 0.1
+    });
 
   const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
   const [events, setEvents] = useState<EventData[]>([]); // list of loaded events
