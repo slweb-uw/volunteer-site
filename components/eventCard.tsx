@@ -55,7 +55,6 @@ const useStyles = makeStyles(() => ({
 
 interface Props {
   event: EventData | CalendarEventData;
-  handleClick: () => void | undefined;
 }
 
 const NotSpecified = <i style={{ color: "gray" }}>Not specified</i>;
@@ -82,12 +81,6 @@ const EventCard: React.FC<Props> = (props) => {
       tabIndex={0}
       className={classes.root}
       variant="outlined"
-      onClick={props.handleClick}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" && props.handleClick) {
-          props.handleClick();
-        }
-      }}
     >
       <Link className={classes.actions} href={eventLink}>
         <CardActionArea className={classes.root}>

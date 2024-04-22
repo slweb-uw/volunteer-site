@@ -15,7 +15,6 @@ const EventImage: React.FC<Props> = (props) => {
   }
   return (
     <Image
-      className={props.className}
       style={style}
       width={300}
       height={300}
