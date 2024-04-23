@@ -16,7 +16,6 @@ const useStyles = makeStyles(() => ({
     cursor: "pointer",
     display: "flex",
     borderRadius: 8,
-    flex: "1 0 auto",
     height: 300,
     "&:focus-visible": {
       outline: "none",

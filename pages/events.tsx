@@ -29,11 +29,12 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
   const { user, isAdmin } = useAuth();
   const router = useRouter();
   const { ref, inView } = useInView({
-      threshold: 0.1
-    });
+    threshold: 0.1,
+  });
 
   const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
   const [events, setEvents] = useState<EventData[]>([]); // list of loaded events
+  const [fetchingEvents, setFetchingEvents] = useState(true);
   const [cursor, setCursor] =
     useState<firebaseClient.firestore.QueryDocumentSnapshot>(); // cursor to last document loaded
 
@@ -109,7 +110,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
 
   // load the events as the load more button is in view
   useEffect(() => {
-    if (inView) {
+    if (inView && showLoadButton && !fetchingEvents) {
       loadEvents(true);
     }
   }, [inView]);
@@ -142,6 +143,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
 
   // Append more events from Firestore onto this page from position of cursor
   const loadEvents = async (keepPrev: boolean) => {
+    setFetchingEvents(true);
     console.log("Loading events...", signUpAvailableFilter);
     const order = getOrder(sortField);
     let query: CollectionReference | Query = firebaseClient
@@ -182,16 +184,21 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
     });
     setCursor(next.docs[next.docs.length - 2]);
     if (keepPrev) {
+      console.log(events, eventsToAdd);
       setEvents((prevEvents) => [...prevEvents, ...eventsToAdd]);
     } else {
       setEvents(eventsToAdd);
     }
     setShowLoadButton(next.docs.length > 10);
+    setFetchingEvents(false)
   };
 
   useEffect(() => {
+    console.log(events.map((e) => e.id));
+  }, [events]);
+
+  useEffect(() => {
     loadEvents(false);
-    console.log("here");
     /*.catch((err) => {
         console.error("Error loading events: " + err);
       });*/
@@ -395,11 +402,9 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
         <div style={{ paddingBottom: "4em" }}>
           {events.length > 0 ? (
             <Grid container spacing={isMobile ? 2 : 6}>
-              {events.map((event, index) => (
-                <Grid key={event.id + index} item xs={12} lg={6}>
-                  <EventCard
-                    event={event}
-                  />
+              {events.map((event) => (
+                <Grid key={event.id} item xs={12} lg={6}>
+                  <EventCard event={event} />
                 </Grid>
               ))}
             </Grid>
@@ -411,9 +416,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
             </div>
           )}
           {/*when this is in view it loads more projects*/}
-          {showLoadButton && (
-            <div ref={ref} />
-          )}
+          {showLoadButton && <div ref={ref}>{fetchingEvents && "loading more events"}</div>}
         </div>
       ) : (
         <div style={{ textAlign: "center" }}>
