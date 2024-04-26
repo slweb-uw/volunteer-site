@@ -48,8 +48,7 @@ const useStyles = makeStyles(() => ({
   actions: {
     textDecoration: "none",
     color: "black",
-  }
-
+  },
 }));
 
 interface Props {
@@ -65,9 +64,9 @@ const EventCard: React.FC<Props> = (props) => {
   if (mobileView) {
     imageURL = props.event.imageURL;
   }
-  const router = useRouter()
+  const router = useRouter();
   const volunteerTypes = props.event["Types of Volunteers Needed"];
-  const eventLink = "/" + router.query.location + "/" + props.event.id
+  const eventLink = "/" + router.query.location + "/" + props.event.id;
   const isInterprofessional =
     Array.isArray(volunteerTypes) &&
     volunteerTypes.filter(
@@ -76,20 +75,18 @@ const EventCard: React.FC<Props> = (props) => {
     ).length > 1;
 
   return (
-    <Card
-      tabIndex={0}
-      className={classes.root}
-      variant="outlined"
-    >
+    <Card tabIndex={0} className={classes.root} variant="outlined">
       <Link className={classes.actions} href={eventLink}>
         <CardActionArea className={classes.root}>
-          <CardMedia>
-            <EventImage
-              className={classes.cover}
-              imageURL={imageURL}
-              eventTitle={props.event.Title}
-            />
-          </CardMedia>
+          {!mobileView && (
+            <CardMedia>
+              <EventImage
+                className={classes.cover}
+                imageURL={imageURL}
+                eventTitle={props.event.Title}
+              />
+            </CardMedia>
+          )}
           <CardContent>
             {props.event?.SignupActive && <Bubble text="Signup Available" />}
             {isInterprofessional && <Bubble text="Interprofessional" />}
