@@ -13,7 +13,7 @@ import Link from "next/link";
 import EventCard from "../components/eventCard";
 import { useAuth } from "../auth";
 import { Location } from "../helpers/locations";
-import { volunteerTypes } from "./create-event";
+import { volunteerTypes } from "pages/create-event";
 import { CollectionReference, Query } from "@firebase/firestore-types";
 import { useRouter } from "next/router";
 import { useMediaQuery } from "@mui/material";
