@@ -77,7 +77,7 @@ export interface DialogTitleProps {
   onClose: () => void;
 }
 
-// make sure user is admin to access page if not redirect back 
+// make sure user is admin to access page if not redirect back
 // to opportunities page
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   try {
@@ -635,7 +635,7 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
             enqueueSnackbar(`${uploadEvent.Title} Successfully created`, {
               autoHideDuration: 4000,
             });
-            router.push(`/${addedEvent.Location}/${addedEvent.id}`)
+            router.push(`/${addedEvent.Location}/${addedEvent.id}`);
             setMutating(false);
             // We refresh to update the page. TODO: add/update event to page via callback
           }
