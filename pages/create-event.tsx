@@ -1,11 +1,10 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useSnackbar } from "notistack";
 import { Theme } from "@mui/material/styles";
-import { WithStyles } from "@mui/styles";
-import createStyles from "@mui/styles/createStyles";
 import withStyles from "@mui/styles/withStyles";
 import CloseIcon from "@mui/icons-material/Close";
 import { useRouter } from "next/router";
+import nookies from "nookies";
 import {
   Dialog,
   DialogTitle,
@@ -38,46 +37,78 @@ import EventCard from "components/eventCard";
 import RichTextEditor from "components/richTextEditor";
 import { Location } from "../helpers/locations";
 import CollapsibleRichTextEditor from "components/collapsibleRichTextEditor";
+import makeStyles from "@mui/styles/makeStyles";
+import { GetServerSideProps } from "next";
+import { firebaseAdmin } from "firebaseAdmin";
 
-const styles = (theme: Theme) =>
-  createStyles({
-    root: {
-      margin: 0,
-      padding: theme.spacing(2),
-    },
-    preview: {
-      width: 300,
-      height: 300,
-      borderRadius: 10,
-    },
-    cropHolder: {
-      height: "calc(100% - 64px)",
-    },
-    mainImageSelector: {
-      rowGap: 20,
-    },
-    cardImageSelector: {
-      columnGap: 30,
-    },
-    closeButton: {
-      position: "absolute",
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500],
-    },
-    modalContent: {
-      overflowX: "hidden",
-    },
-  });
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    margin: 0,
+    padding: theme.spacing(2),
+  },
+  preview: {
+    width: 300,
+    height: 300,
+    borderRadius: 10,
+  },
+  cropHolder: {
+    height: "calc(100% - 64px)",
+  },
+  mainImageSelector: {
+    rowGap: 20,
+  },
+  cardImageSelector: {
+    columnGap: 30,
+  },
+  closeButton: {
+    position: "absolute",
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
+  modalContent: {
+    overflowX: "hidden",
+  },
+}));
 
-export interface DialogTitleProps extends WithStyles<typeof styles> {
+export interface DialogTitleProps {
   id: string;
   children: React.ReactNode;
   onClose: () => void;
 }
 
-const ModalDialogTitle = withStyles(styles)((props: DialogTitleProps) => {
-  const { children, classes, onClose, ...other } = props;
+// make sure user is admin to access page if not redirect back 
+// to opportunities page
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  try {
+    const cookies = nookies.get(ctx);
+    const token = await firebaseAdmin.auth().verifyIdToken(cookies.token);
+    const { uid } = token;
+    const userDocRef = firebaseAdmin.firestore().collection("Admins").doc(uid);
+    const user = await userDocRef.get();
+
+    if (!user)
+      return {
+        redirect: {
+          destination: "/opportunities",
+          permanent: true,
+        },
+        props: {},
+      };
+    return { props: {} };
+  } catch (err) {
+    return {
+      redirect: {
+        destination: "/opportunities",
+        permanent: true,
+      },
+      props: {},
+    };
+  }
+};
+const ModalDialogTitle = (props: DialogTitleProps) => {
+  const { children, onClose, ...other } = props;
+  const classes = useStyles();
   return (
     <DialogTitle className={classes.root} {...other}>
       <Typography variant="h6">{children}</Typography>
@@ -93,7 +124,7 @@ const ModalDialogTitle = withStyles(styles)((props: DialogTitleProps) => {
       ) : null}
     </DialogTitle>
   );
-});
+};
 
 const ModalDialogContent = withStyles((theme: Theme) => ({
   root: {
@@ -184,7 +215,7 @@ const weekdayOptions = [
 const monthOptions = generateLabelValuePairs(12);
 const monthDayOptions = generateLabelValuePairs(31);
 
-interface AddModifyEventModalProps extends WithStyles<typeof styles> {
+interface AddModifyEventModalProps {
   open: boolean;
   event?: EventData;
   location: Location;
@@ -199,7 +230,7 @@ interface ImageSelectorProps {
   deleteText: string;
 }
 
-interface CropModalProps extends WithStyles<typeof styles> {
+interface CropModalProps {
   cropImage: string;
   open: boolean;
   saveImage: (blob: Blob) => Promise<void>;
@@ -239,10 +270,9 @@ const ImageSelector = (props: ImageSelectorProps) => {
   return (
     <React.Fragment>
       <Button
-        variant="contained"
+        variant="outlined"
         color="secondary"
         onClick={() => {
-          console.log("here");
           fileInputRef.current?.click();
         }}
       >
@@ -276,12 +306,11 @@ const ImageSelector = (props: ImageSelectorProps) => {
   );
 };
 
-const CropModal = withStyles(styles)((props: CropModalProps) => {
+const CropModal = (props: CropModalProps) => {
   const cropperRef = React.useRef<HTMLImageElement>(null);
-  const { cropImage, open, aspectRatio, saveImage, handleClose, classes } =
-    props;
+  const classes = useStyles();
+  const { cropImage, open, aspectRatio, saveImage, handleClose } = props;
 
-  console.log(open);
   const [loading, setLoading] = useState(false);
 
   const onCrop = () => {
@@ -343,17 +372,18 @@ const CropModal = withStyles(styles)((props: CropModalProps) => {
       </DialogActions>
     </Dialog>
   );
-});
+};
 
 const AddModifyEventModal = (props: AddModifyEventModalProps) => {
-  const { open, event, handleClose, classes } = props;
+  const { event } = props;
+  const classes = useStyles();
 
   // Event fields
   const [recurrenceFromProps, setRecurrenceFromProps] = useState<
     string[] | undefined
   >();
 
-  const router = useRouter()
+  const router = useRouter();
   const [organizationList, setOrganizationList] = useState<string[]>([]);
   const [title, setTitle] = useState<string | undefined>();
   const [description, setDescription] = useState<string | undefined>();
@@ -603,12 +633,11 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
           if (addedEvent) {
             await calendarPromise(addedEvent, userToken);
             enqueueSnackbar(`${uploadEvent.Title} Successfully created event`, {
-              autoHideDuration: 1000,
+              autoHideDuration: 4000,
             });
-            router.push("..")
+            router.push("..");
             setMutating(false);
             // We refresh to update the page. TODO: add/update event to page via callback
-            // window.location.reload();
           }
         } catch (e) {
           setMutating(false);
@@ -727,7 +756,7 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
   const compiled = compileEvent();
 
   return (
-    <div>
+    <div style={{ padding: "1.5rem" }}>
       {cropImage !== undefined && (
         <CropModal
           cropImage={cropImage}
@@ -748,7 +777,7 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
           }}
         />
       )}
-      <div classes={{ root: classes.modalContent }}>
+      <div className={classes.modalContent}>
         <div style={{ marginBottom: "1rem" }}>
           <Button
             variant="outlined"
@@ -904,12 +933,6 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
           </Grid>
 
           <Grid item xs={12} sm={6}>
-            <Typography
-              variant="h6"
-              style={{ paddingTop: "2em", paddingBottom: "1em" }}
-            >
-              Outreach Event Date/Time
-            </Typography>
             <LocalizationProvider dateAdapter={AdapterDateFns}>
               <DateTimePicker
                 renderInput={(props) => {
@@ -1231,7 +1254,6 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
         </Grid>
         <LoadingButton
           variant="contained"
-          color="secondary"
           onClick={putEvent}
           loading={mutating}
         >
@@ -1241,4 +1263,4 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
     </div>
   );
 };
-export default withStyles(styles)(AddModifyEventModal);
+export default AddModifyEventModal;

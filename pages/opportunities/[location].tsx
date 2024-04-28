@@ -17,6 +17,8 @@ import {
   setLocation,
 } from "../../helpers/locations";
 import { handleHelpButtonClick } from "../../helpers/navigation";
+import Link from "next/link";
+import { useAuth } from "auth";
 
 interface Props {
   classes?: any;
@@ -25,6 +27,7 @@ interface Props {
 
 const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   const router = useRouter();
+  const { isAdmin } = useAuth();
   let location =
     router.query.location && !Array.isArray(router.query.location)
       ? router.query.location
@@ -76,7 +79,12 @@ const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
             OPPORTUNITIES
           </Typography>
         </div>
-        <div>
+        <div style={{ display: "flex", gap:"1rem"}}>
+          {isAdmin && (
+            <Link href="/create-event">
+              <Button variant="contained">Create Project</Button>
+            </Link>
+          )}
           <Tooltip title="Help" arrow>
             <Button
               variant="outlined"

@@ -207,7 +207,6 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
 
   return (
     <div>
-      {isAdmin && <Link href="/create-event">Add Project</Link>}
       <div
         style={{
           marginTop: "2em",
