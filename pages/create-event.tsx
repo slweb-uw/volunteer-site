@@ -632,10 +632,10 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
           const addedEvent = (await res.json()) as CalendarEventData;
           if (addedEvent) {
             await calendarPromise(addedEvent, userToken);
-            enqueueSnackbar(`${uploadEvent.Title} Successfully created event`, {
+            enqueueSnackbar(`${uploadEvent.Title} Successfully created`, {
               autoHideDuration: 4000,
             });
-            router.push("..");
+            router.push(`/${addedEvent.Location}/${addedEvent.id}`)
             setMutating(false);
             // We refresh to update the page. TODO: add/update event to page via callback
           }
@@ -841,25 +841,6 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
 
           <Grid item xs={12} sm={6}>
             <FormControl required fullWidth>
-              <InputLabel>Organization</InputLabel>
-              <Select
-                fullWidth
-                value={organization}
-                label="Organization *"
-                onChange={(e) => {
-                  setOrganization(e.target.value as string);
-                }}
-              >
-                {organizationList.map((organization) => (
-                  <MenuItem value={organization}>{organization}</MenuItem>
-                ))}
-              </Select>
-              <FormHelperText>Required</FormHelperText>
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <FormControl required fullWidth>
               <InputLabel>Location</InputLabel>
               <Select
                 fullWidth
@@ -871,6 +852,25 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
               >
                 {locations.map((loc) => (
                   <MenuItem value={loc}>{loc}</MenuItem>
+                ))}
+              </Select>
+              <FormHelperText>Required</FormHelperText>
+            </FormControl>
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <FormControl required fullWidth>
+              <InputLabel>Organization</InputLabel>
+              <Select
+                fullWidth
+                value={organization}
+                label="Organization *"
+                onChange={(e) => {
+                  setOrganization(e.target.value as string);
+                }}
+              >
+                {organizationList.map((organization) => (
+                  <MenuItem value={organization}>{organization}</MenuItem>
                 ))}
               </Select>
               <FormHelperText>Required</FormHelperText>
