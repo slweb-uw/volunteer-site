@@ -12,7 +12,8 @@ import {
     Select,
     MenuItem
   } from '@mui/material';
-import { volunteerTypes } from "../components/addModifyEventModal";
+
+import { volunteerTypes } from 'pages/create-event';
 
 const useStyles = makeStyles({
     title: {

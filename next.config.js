@@ -1,4 +1,9 @@
-module.exports = {
+// @ts-check
+ 
+/**
+ * @type {import('next').NextConfig}
+ */
+const nextConfig = {
   reactStrictMode: true,
   typescript: {
     // !! WARN !!
@@ -33,3 +38,8 @@ module.exports = {
     ];
   },
 };
+
+const withAnalyzer = require("@next/bundle-analyzer")()
+
+module.exports =
+  process.env.ANALYZE === 'true' ? withAnalyzer(nextConfig) : nextConfig

@@ -1,16 +1,21 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import { firebaseClient } from "../../firebaseClient";
 import { NextPage } from "next";
 import { CssBaseline, Typography, Button, Tooltip } from "@mui/material";
-import createStyles from '@mui/styles/createStyles';
-import withStyles from '@mui/styles/withStyles';
+import createStyles from "@mui/styles/createStyles";
+import withStyles from "@mui/styles/withStyles";
 import { withSnackbar } from "notistack";
 import IconBreadcrumbs from "components/breadcrumbs";
 import LocationSelector from "../../components/locationSelector";
 import { useRouter } from "next/router";
 import Events from "../events";
 import HelpIcon from "@mui/icons-material/Help";
-import { DEFAULT_LOCATION, LAST_LOCATION_KEY, Location, setLocation } from "../../helpers/locations";
+import {
+  DEFAULT_LOCATION,
+  LAST_LOCATION_KEY,
+  Location,
+  setLocation,
+} from "../../helpers/locations";
 import { handleHelpButtonClick } from "../../helpers/navigation";
 
 interface Props {
@@ -20,7 +25,10 @@ interface Props {
 
 const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   const router = useRouter();
-  let location = (router.query.location && !Array.isArray(router.query.location)) ? router.query.location : DEFAULT_LOCATION;
+  let location =
+    router.query.location && !Array.isArray(router.query.location)
+      ? router.query.location
+      : DEFAULT_LOCATION;
 
   /*const handleHelpButtonClick = () => {
     router.push({
@@ -31,7 +39,7 @@ const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
 
   //new logic using helper function
   const handleHelpButtonClickLocation = () => {
-    handleHelpButtonClick(router, 'fromLocationPage');
+    handleHelpButtonClick(router, "fromLocationPage");
   };
   useEffect(() => {
     firebaseClient.analytics().logEvent("location_page_visit");
@@ -43,26 +51,36 @@ const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
       return;
     }
     const lastLocation = window.localStorage.getItem(LAST_LOCATION_KEY);
-    if (lastLocation && lastLocation !== DEFAULT_LOCATION && location === DEFAULT_LOCATION) {
+    if (
+      lastLocation &&
+      lastLocation !== DEFAULT_LOCATION &&
+      location === DEFAULT_LOCATION
+    ) {
       setLocation(router, lastLocation as Location);
     }
-  }, [router.isReady])
+  }, [router.isReady]);
 
   return (
     <div className={classes.page}>
       <CssBaseline />
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <div>
           <IconBreadcrumbs crumbs={["Opportunities"]} parentURL={undefined} />
           <Typography variant="h3" gutterBottom className={classes.header}>
             OPPORTUNITIES
           </Typography>
         </div>
-      <div>
-        <Tooltip title="Help" arrow>
+        <div>
+          <Tooltip title="Help" arrow>
             <Button
-              variant='outlined'
-              color='secondary'
+              variant="outlined"
+              color="secondary"
               startIcon={<HelpIcon />}
               onClick={handleHelpButtonClickLocation}
             >
@@ -71,13 +89,17 @@ const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
           </Tooltip>
         </div>
       </div>
-      <img src={"../goldbar.png"} alt=""  className={classes.bar} style={{ }}/>
-      <div style={{
-        marginTop: "2em"
-      }}>
+      <img src={"../goldbar.png"} alt="" className={classes.bar} style={{}} />
+      <div
+        style={{
+          marginTop: "2em",
+        }}
+      >
         <LocationSelector defaultLocation={DEFAULT_LOCATION} />
       </div>
-      {location !== DEFAULT_LOCATION && <Events location={location as Location} />}
+      {location !== DEFAULT_LOCATION && (
+        <Events location={location as Location} />
+      )}
     </div>
   );
 };
@@ -93,22 +115,22 @@ const styles = createStyles({
     paddingBottom: "5em",
   },
   header: {
-    fontFamily: "Encode Sans", 
-    fontWeight: 800, 
-    marginBottom: "0rem", 
+    fontFamily: "Encode Sans",
+    fontWeight: 800,
+    marginBottom: "0rem",
     fontSize: "2.5rem",
     "@media only screen and (max-width: 600px)": {
       fontSize: "2rem",
     },
   },
-  bar:{
-    width: "310px", 
-    height: "11px", 
+  bar: {
+    width: "310px",
+    height: "11px",
     marginBottom: "30px",
     "@media only screen and (max-width: 600px)": {
-      width: "245px", 
+      width: "245px",
     },
-  }
+  },
 });
 
 //@ts-ignore

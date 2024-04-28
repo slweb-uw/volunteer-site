@@ -10,11 +10,10 @@ import Tooltip from "@mui/material/Tooltip";
 import EventModal from "../components/eventModal";
 import BootstrapInput from "../components/bootstrapInput";
 import Link from "next/link";
-import AddModifyEventModal from "../components/addModifyEventModal";
 import EventCard from "../components/eventCard";
 import { useAuth } from "../auth";
 import { Location } from "../helpers/locations";
-import { volunteerTypes } from "../components/addModifyEventModal";
+import { volunteerTypes } from "./create-event";
 import { CollectionReference, Query } from "@firebase/firestore-types";
 import { useRouter } from "next/router";
 import { useMediaQuery } from "@mui/material";
@@ -190,7 +189,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
       setEvents(eventsToAdd);
     }
     setShowLoadButton(next.docs.length > 10);
-    setFetchingEvents(false)
+    setFetchingEvents(false);
   };
 
   useEffect(() => {
@@ -208,6 +207,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
 
   return (
     <div>
+      {isAdmin && <Link href="/create-event">Add Project</Link>}
       <div
         style={{
           marginTop: "2em",
@@ -221,7 +221,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
               id="opportunity-type-filter"
               className={classes.filterField}
             >
-              Opportunity Type{" "}
+              Opportunity Type
             </Typography>
             <Select
               aria-labelledby="opportunity-type-filter"
@@ -377,26 +377,6 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
       </Typography>
 
       {/* Button-Modal Module for adding new events */}
-      {isAdmin && (
-        <div style={{ paddingBottom: "2em" }}>
-          <AddModifyEventModal
-            open={adminModalOpen}
-            location={location}
-            handleClose={() => {
-              setAdminModalOpen(false);
-            }}
-          />
-          <Button
-            variant="contained"
-            color="secondary"
-            onClick={() => {
-              setAdminModalOpen(true);
-            }}
-          >
-            Add Project
-          </Button>
-        </div>
-      )}
 
       {location ? (
         <div style={{ paddingBottom: "4em" }}>
@@ -416,7 +396,9 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
             </div>
           )}
           {/*when this is in view it loads more projects*/}
-          {showLoadButton && <div ref={ref}>{fetchingEvents && "loading more events"}</div>}
+          {showLoadButton && (
+            <div ref={ref}>{fetchingEvents && "loading more events"}</div>
+          )}
         </div>
       ) : (
         <div style={{ textAlign: "center" }}>

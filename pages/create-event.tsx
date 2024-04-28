@@ -1,9 +1,11 @@
-import React, {ChangeEvent, useEffect, useState} from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { useSnackbar } from "notistack";
 import { Theme } from "@mui/material/styles";
-import { WithStyles } from '@mui/styles';
-import createStyles from '@mui/styles/createStyles';
-import withStyles from '@mui/styles/withStyles';
+import { WithStyles } from "@mui/styles";
+import createStyles from "@mui/styles/createStyles";
+import withStyles from "@mui/styles/withStyles";
 import CloseIcon from "@mui/icons-material/Close";
+import { useRouter } from "next/router";
 import {
   Dialog,
   DialogTitle,
@@ -21,7 +23,7 @@ import {
   TextField,
   Input,
   Button,
-  Switch
+  Switch,
 } from "@mui/material";
 import { firebaseClient } from "firebaseClient";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
@@ -29,13 +31,13 @@ import { DateTimePicker, LocalizationProvider, LoadingButton } from "@mui/lab";
 import { DialogActions } from "@mui/material";
 import { rrulestr, RRule } from "rrule";
 import { Guid } from "guid-typescript";
-import EventImage from "./eventImage";
+import EventImage from "components/eventImage";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
-import EventCard from "./eventCard";
-import RichTextEditor from "./richTextEditor";
+import EventCard from "components/eventCard";
+import RichTextEditor from "components/richTextEditor";
 import { Location } from "../helpers/locations";
-import CollapsibleRichTextEditor from "./collapsibleRichTextEditor";
+import CollapsibleRichTextEditor from "components/collapsibleRichTextEditor";
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -46,16 +48,16 @@ const styles = (theme: Theme) =>
     preview: {
       width: 300,
       height: 300,
-      borderRadius: 10
+      borderRadius: 10,
     },
     cropHolder: {
-      height: "calc(100% - 64px)"
+      height: "calc(100% - 64px)",
     },
     mainImageSelector: {
-      rowGap: 20
+      rowGap: 20,
     },
     cardImageSelector: {
-      columnGap: 30
+      columnGap: 30,
     },
     closeButton: {
       position: "absolute",
@@ -64,8 +66,8 @@ const styles = (theme: Theme) =>
       color: theme.palette.grey[500],
     },
     modalContent: {
-      overflowX: "hidden"
-    }
+      overflowX: "hidden",
+    },
   });
 
 export interface DialogTitleProps extends WithStyles<typeof styles> {
@@ -84,7 +86,8 @@ const ModalDialogTitle = withStyles(styles)((props: DialogTitleProps) => {
           aria-label="close"
           className={classes.closeButton}
           onClick={onClose}
-          size="large">
+          size="large"
+        >
           <CloseIcon />
         </IconButton>
       ) : null}
@@ -99,7 +102,7 @@ const ModalDialogContent = withStyles((theme: Theme) => ({
 }))(DialogContent);
 
 const generateLabelValuePairs = (
-  upper: number
+  upper: number,
 ): { label: string; value: string }[] => {
   const ret: { label: string; value: string }[] = [];
   for (let i = 1; i <= upper; i++) {
@@ -166,7 +169,7 @@ const reservedFields = new Set([
   "EndDate",
   "Location",
   "SignupActive",
-  "Sign-up Link"
+  "Sign-up Link",
 ]);
 
 const weekdayOptions = [
@@ -207,7 +210,7 @@ interface CropModalProps extends WithStyles<typeof styles> {
 enum ModalState {
   Main,
   CropSquare,
-  CropCard
+  CropCard,
 }
 
 interface RichFieldEditorProps {
@@ -217,60 +220,68 @@ interface RichFieldEditorProps {
 }
 
 const RichFieldEditor = React.memo((props: RichFieldEditorProps) => {
-  return (<CollapsibleRichTextEditor
-    innerProps={{
-      initialContent: props.initialContent,
-      output: (output) => {
-        props.setField(props.fieldName, output ?? "")
-      },
-      placeholder: props.fieldName
-    }}
-  />)
-})
+  return (
+    <CollapsibleRichTextEditor
+      innerProps={{
+        initialContent: props.initialContent,
+        output: (output) => {
+          props.setField(props.fieldName, output ?? "");
+        },
+        placeholder: props.fieldName,
+      }}
+    />
+  );
+});
 
 const ImageSelector = (props: ImageSelectorProps) => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
-  return <React.Fragment>
-    <Button
-      variant="contained"
-      color="secondary"
-      onClick={() => {
-        fileInputRef.current?.click();
-      }}
-    >
-      {props.uploadText}
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={(evt) => {
-          props.setImage(evt);
-          // Bit of a hack to prevent onChange not firing when re-inputting the same image
-          // The issue is that file inputs are uncontrolled, so when the same image is input
-          // as before there is no "change". We manually clear the input here since all we
-          // need to do is process it, it doesn't need to stay here afterwards.
-          if (fileInputRef.current) {
-            fileInputRef.current.value = "";
-          }
-        }}
-        hidden
-      />
-    </Button>
-    {props.hasImage() && (
+  return (
+    <React.Fragment>
       <Button
         variant="contained"
         color="secondary"
-        onClick={props.deleteImage}
+        onClick={() => {
+          console.log("here");
+          fileInputRef.current?.click();
+        }}
       >
-        {props.deleteText}
+        {props.uploadText}
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={(evt) => {
+            props.setImage(evt);
+            // Bit of a hack to prevent onChange not firing when re-inputting the same image
+            // The issue is that file inputs are uncontrolled, so when the same image is input
+            // as before there is no "change". We manually clear the input here since all we
+            // need to do is process it, it doesn't need to stay here afterwards.
+            if (fileInputRef.current) {
+              fileInputRef.current.value = "";
+            }
+          }}
+          hidden
+        />
       </Button>
-    )}
-  </React.Fragment>
-}
+      {props.hasImage() && (
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={props.deleteImage}
+        >
+          {props.deleteText}
+        </Button>
+      )}
+    </React.Fragment>
+  );
+};
 
 const CropModal = withStyles(styles)((props: CropModalProps) => {
   const cropperRef = React.useRef<HTMLImageElement>(null);
-  const {cropImage, open, aspectRatio, saveImage, handleClose, classes} = props;
+  const { cropImage, open, aspectRatio, saveImage, handleClose, classes } =
+    props;
+
+  console.log(open);
   const [loading, setLoading] = useState(false);
 
   const onCrop = () => {
@@ -279,61 +290,70 @@ const CropModal = withStyles(styles)((props: CropModalProps) => {
     const cropper: any = imageElement?.cropper;
     setLoading(true);
     cropper.getCroppedCanvas().toBlob((blob: Blob | null) => {
-        if (!blob) {
-          console.error("blob failed")
-          return;
-        }
-        saveImage(blob).then(() => {
-          handleClose();
-          setLoading(false);
-        });
+      if (!blob) {
+        console.error("blob failed");
+        return;
       }
-    );
-  }
+      saveImage(blob).then(() => {
+        handleClose();
+        setLoading(false);
+      });
+    });
+  };
 
-  return <Dialog
-    onClose={handleClose}
-    aria-labelledby="crop-dialog"
-    open={open}
-    fullWidth={true}
-    PaperProps={{
-      classes: {
-        root: classes.cropHolder
-      }
-    }}
-    maxWidth={"lg"}
-    disableEnforceFocus={true}
-  >
-    <ModalDialogTitle id="crop-dialog" onClose={handleClose}>
-      <b>Crop Image</b>
-    </ModalDialogTitle>
-    <ModalDialogContent>
-      <Cropper
-        src={cropImage}
-        style={{ height: "100%", width: "100%" }}
-        ref={cropperRef}
-        aspectRatio={aspectRatio}
-        guides={false}
-      />
-    </ModalDialogContent>
-    <DialogActions>
-      <Typography style={{ marginRight: "auto" }}>
-        Scroll to zoom in/out; drag inside the box to move it; drag on the corners of the box to resize it
-      </Typography>
-      <LoadingButton loading={loading} variant="contained" color="secondary" onClick={onCrop}>
-        Crop
-      </LoadingButton>
-    </DialogActions>
-  </Dialog>
+  return (
+    <Dialog
+      onClose={handleClose}
+      aria-labelledby="crop-dialog"
+      open={open}
+      fullWidth={true}
+      PaperProps={{
+        classes: {
+          root: classes.cropHolder,
+        },
+      }}
+      maxWidth={"lg"}
+      disableEnforceFocus={true}
+    >
+      <ModalDialogTitle id="crop-dialog" onClose={handleClose}>
+        <b>Crop Image</b>
+      </ModalDialogTitle>
+      <ModalDialogContent>
+        <Cropper
+          src={cropImage}
+          style={{ height: "100%", width: "100%" }}
+          ref={cropperRef}
+          aspectRatio={aspectRatio}
+          guides={false}
+        />
+      </ModalDialogContent>
+      <DialogActions>
+        <Typography style={{ marginRight: "auto" }}>
+          Scroll to zoom in/out; drag inside the box to move it; drag on the
+          corners of the box to resize it
+        </Typography>
+        <LoadingButton
+          loading={loading}
+          variant="contained"
+          color="secondary"
+          onClick={onCrop}
+        >
+          Crop
+        </LoadingButton>
+      </DialogActions>
+    </Dialog>
+  );
 });
 
-const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps) => {
+const AddModifyEventModal = (props: AddModifyEventModalProps) => {
   const { open, event, handleClose, classes } = props;
 
   // Event fields
   const [recurrenceFromProps, setRecurrenceFromProps] = useState<
     string[] | undefined
   >();
+
+  const router = useRouter()
   const [organizationList, setOrganizationList] = useState<string[]>([]);
   const [title, setTitle] = useState<string | undefined>();
   const [description, setDescription] = useState<string | undefined>();
@@ -348,19 +368,25 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
   const [modalState, setModalState] = useState(ModalState.Main);
   const [cropImage, setCropImage] = useState<string | undefined>();
   const [signupActive, setSignupActive] = useState(false);
-  const [otherFields, dispatchOtherFields] = React.useReducer((state: any, action: any) => {
-    const { type, field, value } = action;
-    if (type === "set_all") {
-      return {...value};
-    } else if (type === "set_field") {
-      return {
-        ...state,
-        [field]: value
-      };
-    } else {
-      throw new Error("Unknown action type " + type);
-    }
-  }, {});
+  const { enqueueSnackbar } = useSnackbar();
+  const [isCropperOpen, setIsCropperOpen] = useState(false);
+  const [mutating, setMutating] = useState(false);
+  const [otherFields, dispatchOtherFields] = React.useReducer(
+    (state: any, action: any) => {
+      const { type, field, value } = action;
+      if (type === "set_all") {
+        return { ...value };
+      } else if (type === "set_field") {
+        return {
+          ...state,
+          [field]: value,
+        };
+      } else {
+        throw new Error("Unknown action type " + type);
+      }
+    },
+    {},
+  );
 
   // Recurrence fields
   const [recurrenceType, setRecurrencyType] = useState<string>("Daily");
@@ -384,17 +410,19 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
   for (let i = 1; i <= 31; i++) {
     initialMonths[i] = false;
   }
-  const [monthDays, setMonthDays] = useState<Record<string, boolean>>(
-    initialMonthDays
-  );
+  const [monthDays, setMonthDays] =
+    useState<Record<string, boolean>>(initialMonthDays);
 
-  const deleteImage = async (url: string | undefined, setter: (v: string) => any) => {
+  const deleteImage = async (
+    url: string | undefined,
+    setter: (v: string) => any,
+  ) => {
     if (url) {
       const imageRef = firebaseClient.storage().refFromURL(url);
       await imageRef.delete();
       setter("");
       alert(
-        "Image deleted. Please save the event, or set the image and save the event."
+        "Image deleted. Please save the event, or set the image and save the event.",
       );
     }
   };
@@ -406,7 +434,7 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
     // Upload image to firebase storage then get its URL
     const snapshot = await storageRef.put(image);
     return (await snapshot.ref.getDownloadURL()) as string;
-  }
+  };
 
   const setImage = (evt: React.FormEvent<HTMLInputElement>) => {
     const target = evt.target as HTMLInputElement;
@@ -419,6 +447,7 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
     reader.onerror = (error) => {
       console.error("Image reader error: ", error);
     };
+    console.log(imageFile);
   };
 
   const compileEvent = (): CalendarEventData | null => {
@@ -435,7 +464,7 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
       timestamp: new Date(),
     };
 
-    uploadEvent.Details = details ? details : ""
+    uploadEvent.Details = details ? details : "";
     if (startDateTime && endDateTime) {
       uploadEvent.StartDate = startDateTime.toISOString();
       uploadEvent.EndDate = endDateTime.toISOString();
@@ -540,12 +569,13 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
     }
     uploadEvent.SignupActive = signupActive ? true : false;
     return uploadEvent;
-  }
+  };
 
   // Puts event to Firestore and Google Calendar
   const putEvent = () => {
+    setMutating(true);
     const uploadEvent = compileEvent();
-    
+
     if (!uploadEvent?.SignupActive && !event?.SignupActive) {
       uploadEvent.SignupActive = false;
     }
@@ -572,11 +602,16 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
           const addedEvent = (await res.json()) as CalendarEventData;
           if (addedEvent) {
             await calendarPromise(addedEvent, userToken);
-            handleClose();
+            enqueueSnackbar(`${uploadEvent.Title} Successfully created event`, {
+              autoHideDuration: 1000,
+            });
+            router.push("..")
+            setMutating(false);
             // We refresh to update the page. TODO: add/update event to page via callback
-            window.location.reload();
+            // window.location.reload();
           }
         } catch (e) {
+          setMutating(false);
           alert(e);
         }
       });
@@ -644,12 +679,12 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
         .then((doc) => {
           const cachedOrganizations = doc.data();
           setOrganizationList(
-            cachedOrganizations ? Object.keys(cachedOrganizations) : []
+            cachedOrganizations ? Object.keys(cachedOrganizations) : [],
           ); // Doc has fields which are the organizations
         })
         .catch((_) => {
           alert(
-            "Error fetching organizations for location. Please refresh the page."
+            "Error fetching organizations for location. Please refresh the page.",
           );
         });
     }
@@ -670,7 +705,7 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
   };
 
   const handleMonthDaysChange = (
-    event: React.ChangeEvent<HTMLInputElement>
+    event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setMonthDays({
       ...monthDays,
@@ -678,60 +713,62 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
     });
   };
 
-  const setField = React.useCallback((fieldName, value) => {
-    dispatchOtherFields({
-      type: "set_field",
-      field: fieldName,
-      value: value
-    });
-  }, [dispatchOtherFields]);
+  const setField = React.useCallback(
+    (fieldName, value) => {
+      dispatchOtherFields({
+        type: "set_field",
+        field: fieldName,
+        value: value,
+      });
+    },
+    [dispatchOtherFields],
+  );
 
   const compiled = compileEvent();
 
-  return (<React.Fragment>
-    {(cropImage !== undefined &&
-      <CropModal
-        cropImage={cropImage}
-        open={open && modalState != ModalState.Main}
-        saveImage={(blob) => {
-          return saveImage(blob)
-            .then((url) => {
+  return (
+    <div>
+      {cropImage !== undefined && (
+        <CropModal
+          cropImage={cropImage}
+          open={isCropperOpen}
+          saveImage={(blob) => {
+            return saveImage(blob).then((url) => {
               if (modalState == ModalState.CropSquare) {
                 setImageURL(url);
               } else {
                 setCardImageURL(url);
               }
             });
-        }}
-        aspectRatio={modalState == ModalState.CropSquare ? 1 : (23 / 30)}
-        handleClose={() => {
-          setModalState(ModalState.Main)
-        }}
-      />
-    )}
-    <Dialog
-      onClose={handleClose}
-      aria-labelledby="event-dialog"
-      open={open}
-      fullWidth={true}
-      maxWidth={"lg"}
-      disableEnforceFocus={true}
-    >
-      <ModalDialogTitle id="event-dialog" onClose={handleClose}>
-        <b>{event ? "Modify Event" : "Add Event"}</b>
-      </ModalDialogTitle>
-      <ModalDialogContent classes={{root: classes.modalContent}}>
-        <div style={{marginBottom: "1rem"}}>
-          <Button variant="outlined" onClick={() => setSignupActive(!signupActive)}>
+          }}
+          aspectRatio={modalState == ModalState.CropSquare ? 1 : 23 / 30}
+          handleClose={() => {
+            setModalState(ModalState.Main);
+            setIsCropperOpen(false);
+          }}
+        />
+      )}
+      <div classes={{ root: classes.modalContent }}>
+        <div style={{ marginBottom: "1rem" }}>
+          <Button
+            variant="outlined"
+            onClick={() => setSignupActive(!signupActive)}
+          >
             <Switch
               checked={signupActive}
               onClick={() => setSignupActive(!signupActive)}
               color="primary"
-              inputProps={{ 'aria-label': 'controlled' }}
+              inputProps={{ "aria-label": "controlled" }}
             />
             Allow Signup
           </Button>
-          <span style={{ fontStyle: 'italic', color: 'gray', marginLeft: "0.5rem" }}>
+          <span
+            style={{
+              fontStyle: "italic",
+              color: "gray",
+              marginLeft: "0.5rem",
+            }}
+          >
             Note: This will make the signup button available to volunteers
           </span>
         </div>
@@ -758,10 +795,7 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
           </Grid>
 
           <Grid style={{ maxWidth: "100%" }} item sm={12}>
-            <Typography
-              variant="h6"
-              style={{ textAlign: "center" }}
-            >
+            <Typography variant="h6" style={{ textAlign: "center" }}>
               Detailed Project Description
             </Typography>
             <RichTextEditor
@@ -769,8 +803,8 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
               output={setDetails}
               editorOptions={{
                 attributes: {
-                  style: "min-height: 250px"
-                }
+                  style: "min-height: 250px",
+                },
               }}
               placeholder="Add a detailed project description here. If left empty, the project summary will be used."
             />
@@ -826,7 +860,7 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
                   setVolunteersNeeded(
                     typeof value === "string"
                       ? value.split(",")
-                      : (value as string[])
+                      : (value as string[]),
                   );
                 }}
                 input={<Input />}
@@ -851,19 +885,23 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
 
           {Object.keys(otherFields).map((fieldName) => {
             const val = otherFields[fieldName];
-            return <Grid key={fieldName} item xs={12} sm={6}>
-              <Typography style={{ paddingLeft: "10px" }}>
-                {fieldName}
-              </Typography>
-              <RichFieldEditor
-                fieldName={fieldName}
-                setField={setField}
-                initialContent={!Array.isArray(val) ? (val ?? "") : ""}
-              />
-            </Grid>;
+            return (
+              <Grid key={fieldName} item xs={12} sm={6}>
+                <Typography style={{ paddingLeft: "10px" }}>
+                  {fieldName}
+                </Typography>
+                <RichFieldEditor
+                  fieldName={fieldName}
+                  setField={setField}
+                  initialContent={!Array.isArray(val) ? val ?? "" : ""}
+                />
+              </Grid>
+            );
           })}
 
-          <Grid item sm={12}>{/* spacer so that the below components are always aligned */}</Grid>
+          <Grid item sm={12}>
+            {/* spacer so that the below components are always aligned */}
+          </Grid>
 
           <Grid item xs={12} sm={6}>
             <Typography
@@ -1107,17 +1145,14 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
           */}
           <Grid item sm={12}>
             <Grid
-                container
-                direction="row"
-                justifyContent="center"
-                alignItems="center"
-                spacing={4}
+              container
+              direction="row"
+              justifyContent="center"
+              alignItems="center"
+              spacing={4}
             >
               <Grid item xs={12}>
-                <Typography
-                    variant="h6"
-                    style={{ textAlign: "center" }}
-                >
+                <Typography variant="h6" style={{ textAlign: "center" }}>
                   Main Image Preview
                 </Typography>
               </Grid>
@@ -1128,82 +1163,82 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
                   className={classes.mainImageSelector}
                 >
                   <ImageSelector
-                      setImage={(e) => {
-                        setModalState(ModalState.CropSquare);
-                        setImage(e);
-                      }}
-                      deleteImage={() => {
-                        deleteImage(imageURL, setImageURL);
-                      }}
-                      hasImage={() => !!imageURL}
-                      uploadText={"Upload Image"}
-                      deleteText={"Delete Image"}
+                    setImage={(e) => {
+                      setModalState(ModalState.CropSquare);
+                      setImage(e);
+                      setIsCropperOpen(true);
+                    }}
+                    deleteImage={() => {
+                      deleteImage(imageURL, setImageURL);
+                    }}
+                    hasImage={() => !!imageURL}
+                    uploadText={"Upload Image"}
+                    deleteText={"Delete Image"}
                   />
                 </Grid>
               </Grid>
               <Grid item sm={4}>
                 <EventImage
-                    className={classes.preview}
-                    imageURL={imageURL}
-                    eventTitle={title ?? "event"}
+                  className={classes.preview}
+                  imageURL={imageURL}
+                  eventTitle={title ?? "event"}
                 />
               </Grid>
             </Grid>
           </Grid>
 
-          {compiled &&
-              <Grid item sm={12}>
-                <Grid
-                  container
-                  direction="row"
-                  justifyContent="center"
-                  alignItems="center"
-                  spacing={4}
-                >
-                  <Grid item xs={12}>
-                    <Typography
-                        variant="h6"
-                        style={{ textAlign: "center" }}
-                    >
-                      Card Preview
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Grid
-                        container
-                        justifyContent="center"
-                        alignItems="center"
-                        className={classes.cardImageSelector}
-                    >
-                      <ImageSelector
-                          setImage={(e) => {
-                            setModalState(ModalState.CropCard);
-                            setImage(e);
-                          }}
-                          deleteImage={() => {
-                            deleteImage(cardImageURL, setCardImageURL);
-                          }}
-                          hasImage={() => !!cardImageURL}
-                          uploadText={"Upload Card Image"}
-                          deleteText={"Delete Card Image"}
-                      />
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={9} sm={7}>
-                    <EventCard event={compiled} handleClick={undefined} />
+          {compiled && (
+            <Grid item sm={12}>
+              <Grid
+                container
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                spacing={4}
+              >
+                <Grid item xs={12}>
+                  <Typography variant="h6" style={{ textAlign: "center" }}>
+                    Card Preview
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <Grid
+                    container
+                    justifyContent="center"
+                    alignItems="center"
+                    className={classes.cardImageSelector}
+                  >
+                    <ImageSelector
+                      setImage={(e) => {
+                        setModalState(ModalState.CropCard);
+                        setImage(e);
+                      }}
+                      deleteImage={() => {
+                        deleteImage(cardImageURL, setCardImageURL);
+                      }}
+                      hasImage={() => !!cardImageURL}
+                      uploadText={"Upload Card Image"}
+                      deleteText={"Delete Card Image"}
+                    />
                   </Grid>
                 </Grid>
+                <Grid item xs={9} sm={7}>
+                  <EventCard event={compiled} handleClick={undefined} />
+                </Grid>
               </Grid>
-          }
+            </Grid>
+          )}
         </Grid>
-      </ModalDialogContent>
-      <DialogActions>
-        <Button variant="contained" color="secondary" onClick={putEvent}>
-          Save Project
-        </Button>
-      </DialogActions>
-    </Dialog>
-  </React.Fragment>);
-});
-
-export default AddModifyEventModal;
+        <LoadingButton
+          variant="contained"
+          color="secondary"
+          onClick={putEvent}
+          loading={mutating}
+        >
+          Create Project
+        </LoadingButton>
+      </div>
+    </div>
+  );
+};
+export default withStyles(styles)(AddModifyEventModal);
