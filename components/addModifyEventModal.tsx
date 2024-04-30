@@ -546,10 +546,11 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
   const putEvent = () => {
     const uploadEvent = compileEvent();
     
-    if (!uploadEvent?.SignupActive && !event?.SignupActive) {
-      uploadEvent.SignupActive = false;
-    }
-    if (!uploadEvent) {
+    if (uploadEvent) {
+      if (!uploadEvent.SignupActive && !event?.SignupActive) {
+        uploadEvent.SignupActive = false;
+      }
+    } else {
       alert("Error: missing required field.");
     }
     const calendarPromise = async (calEvent: any, userToken: any) => {
@@ -560,6 +561,7 @@ const AddModifyEventModal = withStyles(styles)((props: AddModifyEventModalProps)
         });
       }
     };
+    
     firebaseClient
       .auth()
       .currentUser?.getIdToken()
