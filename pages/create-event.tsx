@@ -24,7 +24,14 @@ import {
   Button,
   Switch,
 } from "@mui/material";
-import { firebaseClient } from "firebaseClient";
+import {
+  ref,
+  getDownloadURL,
+  uploadBytes,
+  deleteObject,
+} from "firebase/storage";
+import { getAuth } from "firebase/auth";
+import { storage, db} from "firebaseClient";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { DateTimePicker, LocalizationProvider, LoadingButton } from "@mui/lab";
 import { DialogActions } from "@mui/material";
@@ -40,6 +47,7 @@ import CollapsibleRichTextEditor from "components/collapsibleRichTextEditor";
 import makeStyles from "@mui/styles/makeStyles";
 import { GetServerSideProps } from "next";
 import { firebaseAdmin } from "firebaseAdmin";
+import { doc, getDoc } from "firebase/firestore";
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -448,8 +456,11 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
     setter: (v: string) => any,
   ) => {
     if (url) {
-      const imageRef = firebaseClient.storage().refFromURL(url);
-      await imageRef.delete();
+      const id = url.slice(url.lastIndexOf("/") + 1, url.indexOf("?"));
+
+      const imageRef = ref(storage, id);
+
+      await deleteObject(imageRef);
       setter("");
       alert(
         "Image deleted. Please save the event, or set the image and save the event.",
@@ -460,10 +471,11 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
   // Selects and uploads image to Firebase Storage and returns the image URL
   const saveImage = async (image: Blob): Promise<string> => {
     const photoId = Guid.create().toString();
-    const storageRef = firebaseClient.storage().ref(photoId);
+    const storageRef = ref(storage, photoId);
     // Upload image to firebase storage then get its URL
-    const snapshot = await storageRef.put(image);
-    return (await snapshot.ref.getDownloadURL()) as string;
+    const snapshot = await uploadBytes(storageRef, image);
+    const url = await getDownloadURL(snapshot.ref);
+    return url;
   };
 
   const setImage = (evt: React.FormEvent<HTMLInputElement>) => {
@@ -620,8 +632,8 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
         });
       }
     };
-    firebaseClient
-      .auth()
+
+    getAuth()
       .currentUser?.getIdToken()
       .then(async (userToken) => {
         try {
@@ -700,18 +712,15 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
   useEffect(() => {
     // Update organization list when the location changes
     if (location && typeof location === "string") {
-      firebaseClient
-        .firestore()
-        .collection("cache")
-        .doc(location)
-        .get()
+      const docRef = doc(db, "cache", location);
+      getDoc(docRef)
         .then((doc) => {
           const cachedOrganizations = doc.data();
           setOrganizationList(
             cachedOrganizations ? Object.keys(cachedOrganizations) : [],
           ); // Doc has fields which are the organizations
         })
-        .catch((_) => {
+        .catch(() => {
           alert(
             "Error fetching organizations for location. Please refresh the page.",
           );
@@ -897,8 +906,8 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
                   <Box sx={{ display: "flex", flexWrap: "wrap" }}>
                     {typeof selected === "object"
                       ? selected.map((value: string) => (
-                          <Chip key={value} label={value} />
-                        ))
+                        <Chip key={value} label={value} />
+                      ))
                       : []}
                   </Box>
                 )}

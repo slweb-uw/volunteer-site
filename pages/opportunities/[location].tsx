@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { firebaseClient } from "../../firebaseClient";
+import { getAppAnalytics } from "firebaseClient";
 import { NextPage } from "next";
 import { CssBaseline, Typography, Button, Tooltip } from "@mui/material";
 import createStyles from "@mui/styles/createStyles";
@@ -19,6 +19,7 @@ import {
 import { handleHelpButtonClick } from "../../helpers/navigation";
 import Link from "next/link";
 import { useAuth } from "auth";
+import { logEvent } from "firebase/analytics";
 
 interface Props {
   classes?: any;
@@ -45,7 +46,8 @@ const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
     handleHelpButtonClick(router, "fromLocationPage");
   };
   useEffect(() => {
-    firebaseClient.analytics().logEvent("location_page_visit");
+    const analytics = getAppAnalytics()
+    logEvent(analytics,"location_page_visit")
   }, []);
 
   // Handle last location saving/loading

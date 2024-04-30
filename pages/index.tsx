@@ -17,7 +17,8 @@ import createStyles from "@mui/styles/createStyles"
 import makeStyles from "@mui/styles/makeStyles"
 import Link from "next/link"
 
-import { firebaseClient } from "firebaseClient"
+import { logEvent } from "firebase/analytics"
+import { getAppAnalytics } from "firebaseClient"
 import { ArrowForwardIos } from "@mui/icons-material"
 import HeadlineBar from "components/headlineBar"
 
@@ -181,7 +182,8 @@ const App: React.FC<{}> = () => {
   const classes = useStyles()
 
   useEffect(() => {
-    firebaseClient.analytics().logEvent("home_page_visit")
+    const analytics = getAppAnalytics()
+    logEvent(analytics, "home_page_visit")
   }, [])
 
   return (

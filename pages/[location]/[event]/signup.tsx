@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import makeStyles from '@mui/styles/makeStyles';
 import firebase from "firebase/app";
+import { db } from 'firebaseClient';
+import { collection, doc, getDoc, getDocs} from 'firebase/firestore';
 import "firebase/firestore";
 import { useAuth } from "auth";
 import { useRouter } from "next/router";
@@ -217,12 +219,8 @@ const Signup = () => {
   // Loads Title
   useEffect(() => {
     const fetchTitle = async () => {
-      const documentSnapshot = await firebase
-        .firestore()
-        .collection("" + location)
-        .doc("" + event)
-        .get();
 
+      const documentSnapshot = await getDoc(doc(db, location + "", event + ""))
       if (documentSnapshot && documentSnapshot.data()) {
         setTitle(documentSnapshot.data().Title);
       }
@@ -232,24 +230,18 @@ const Signup = () => {
 
   // Retrieves the events
   const fetchData = () => {
-    const unsubscribe = firebase
-      .firestore()
-      .collection("" + location)
-      .doc("" + event)
-      .collection("signup")
-      .onSnapshot((snapshot) => {
-        const data = [];
 
-        snapshot.forEach((doc) => {
+    const eventsRef = collection(db, "" +location + event + "/signup")
+    const data = []
+    getDocs(eventsRef).then(docs => {
+        docs.forEach((doc) => {
           const eventData = { id: doc.id, ...doc.data() };
           data.push(eventData);
         });
 
         data.sort((a, b) => a.date - b.date);
         setUnfilteredEvents(data);
-      });
-
-    return () => unsubscribe();
+      })
   };
 
   useEffect(() => {

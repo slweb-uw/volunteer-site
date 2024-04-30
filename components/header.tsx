@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import Hidden from "@mui/material/Hidden";
-import { firebaseClient } from "firebaseClient";
 import { useAuth } from "auth";
 import BasicMenu from "./basicMenu";
 import SignInPopup from "./SignInPopup";
 import makeStyles from "@mui/styles/makeStyles";
-import "firebase/firestore";
+import { signOut } from "firebase/auth";
+import { auth } from "firebaseClient";
 import Link from "next/link";
 
 const useStyles = makeStyles((theme) => ({
@@ -136,7 +136,7 @@ const Header: React.FC<{}> = () => {
         <a
           key="sign out"
           onClick={() => {
-            firebaseClient.auth().signOut();
+            signOut(auth)
             setSignInPopupOpen(false);
           }}
           className={useStyles().navtitle}

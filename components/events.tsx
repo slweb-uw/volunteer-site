@@ -1,20 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { firebaseClient } from "../firebaseClient";
+import {
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  collection,
+  query,
+  where,
+  orderBy,
+  startAfter,
+} from "firebase/firestore";
+import type { QueryDocumentSnapshot } from "firebase/firestore";
+import { db } from "firebaseClient";
 import { Button, MenuItem, Select, Typography, Switch } from "@mui/material";
 import createStyles from "@mui/styles/createStyles";
 import withStyles from "@mui/styles/withStyles";
-import Stack from "@mui/material/Stack";
 import Grid from "@mui/material/Grid";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import Tooltip from "@mui/material/Tooltip";
-import EventModal from "../components/eventModal";
 import BootstrapInput from "../components/bootstrapInput";
 import Link from "next/link";
 import EventCard from "../components/eventCard";
-import { useAuth } from "../auth";
 import { Location } from "../helpers/locations";
 import { volunteerTypes } from "pages/create-event";
-import { CollectionReference, Query } from "@firebase/firestore-types";
 import { useRouter } from "next/router";
 import { useMediaQuery } from "@mui/material";
 import { useInView } from "react-intersection-observer";
@@ -25,7 +33,6 @@ type EventsProps = {
 };
 
 const Events: React.FC<EventsProps> = ({ location, classes }) => {
-  const { user, isAdmin } = useAuth();
   const router = useRouter();
   const { ref, inView } = useInView({
     threshold: 0.1,
@@ -34,8 +41,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
   const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
   const [events, setEvents] = useState<EventData[]>([]); // list of loaded events
   const [fetchingEvents, setFetchingEvents] = useState(true);
-  const [cursor, setCursor] =
-    useState<firebaseClient.firestore.QueryDocumentSnapshot>(); // cursor to last document loaded
+  const [cursor, setCursor] = useState<QueryDocumentSnapshot>(); // cursor to last document loaded
 
   const ORGANIZATION_FILTER_QUERY_KEY = "org";
   const STUDENT_TYPE_FILTER_QUERY_KEY = "type";
@@ -96,20 +102,17 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
     // Load events
     console.log("Component mounted or location changed. Loading events...");
     loadEvents(false);
+    const cacheRef = doc(db, "cache", location.toString());
+    getDoc(cacheRef).then((doc) =>
+      setOrganizations(Object.keys(doc.data() as string[]).sort()),
+    );
     // pull organizations for this location from the metadata cache
-    firebaseClient
-      .firestore()
-      .collection("cache")
-      .doc(location.toString())
-      .get()
-      .then((doc) =>
-        setOrganizations(Object.keys(doc.data() as string[]).sort()),
-      );
   }, [location]);
 
   // load the events as the load more button is in view
   useEffect(() => {
-    if (inView && showLoadButton && !fetchingEvents) {
+    if (inView && !fetchingEvents) {
+      console.log("here");
       loadEvents(true);
     }
   }, [inView]);
@@ -141,34 +144,42 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
   };
 
   // Append more events from Firestore onto this page from position of cursor
-  const loadEvents = async (keepPrev: boolean) => {
+  async function loadEvents(keepPrev: boolean) {
     setFetchingEvents(true);
-    console.log("Loading events...", signUpAvailableFilter);
     const order = getOrder(sortField);
-    let query: CollectionReference | Query = firebaseClient
-      .firestore()
-      .collection("/" + location);
+
+    // initialize query
+    let q: any = collection(db, "/" + location);
+
+    // build up query
     if (organizationFilter) {
-      query = query.where("Organization", "==", organizationFilter);
+      q = query(q, where("Organization", "==", organizationFilter));
     }
     if (studentTypeFilter) {
-      query = query.where(
-        "Types of Volunteers Needed",
-        "array-contains",
-        studentTypeFilter,
+      q = query(
+        q,
+        where(
+          "Types of Volunteers Needed",
+          "array-contains",
+          studentTypeFilter,
+        ),
       );
     }
     if (signUpAvailableFilter) {
-      query = query.where("SignupActive", "==", true);
+      q = query(q, where("SignupActive", "==", true));
     }
 
-    query = query.orderBy(sortField, order);
-    console.log("Firestore Query:", query);
-    if (keepPrev && cursor) {
-      query = query.startAfter(cursor);
-    }
-    const next = await query.limit(11).get();
+    q = query(q, orderBy(sortField, order), limit(20));
 
+    // if we have a cursor, and we want to keep prev then fetch by cursor
+    if (cursor && keepPrev) {
+      q = query(q, startAfter(cursor));
+    }
+
+    const next = await getDocs(q);
+
+    // add fetch data to state
+    // TODO: add event type
     const eventsToAdd: EventData[] = [];
     next.docs.slice(0, 10).forEach((document) => {
       let eventDoc = document.data() as EventData;
@@ -183,24 +194,16 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
     });
     setCursor(next.docs[next.docs.length - 2]);
     if (keepPrev) {
-      console.log(events, eventsToAdd);
       setEvents((prevEvents) => [...prevEvents, ...eventsToAdd]);
     } else {
       setEvents(eventsToAdd);
     }
     setShowLoadButton(next.docs.length > 10);
     setFetchingEvents(false);
-  };
-
-  useEffect(() => {
-    console.log(events.map((e) => e.id));
-  }, [events]);
+  }
 
   useEffect(() => {
     loadEvents(false);
-    /*.catch((err) => {
-        console.error("Error loading events: " + err);
-      });*/
   }, [organizationFilter, studentTypeFilter, signUpAvailableFilter]);
 
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
