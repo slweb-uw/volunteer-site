@@ -169,7 +169,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
       q = query(q, where("SignupActive", "==", true));
     }
 
-    q = query(q, orderBy(sortField, order), limit(20));
+    q = query(q, orderBy(sortField, order), limit(11));
 
     // if we have a cursor, and we want to keep prev then fetch by cursor
     if (cursor && keepPrev) {
