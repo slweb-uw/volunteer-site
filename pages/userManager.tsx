@@ -149,7 +149,8 @@ const AdminPage = () => {
   const loadUserType = async (userType, setState) => {
     const userTypeRef = collection(db, userType);
     const snapshot = await getDocs(userTypeRef);
-    const data = snapshot.forEach((doc) => {
+    const data = [] 
+    snapshot.forEach((doc) => {
       data.push({ id: doc.id, ...doc.data() });
     });
     setState(data);
