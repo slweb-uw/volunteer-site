@@ -1,14 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { getAppAnalytics } from "firebaseClient";
-import { NextPage } from "next";
+import makeStyles from "@mui/styles/makeStyles";
 import { CssBaseline, Typography, Button, Tooltip } from "@mui/material";
-import createStyles from "@mui/styles/createStyles";
 import withStyles from "@mui/styles/withStyles";
 import { withSnackbar } from "notistack";
 import IconBreadcrumbs from "components/breadcrumbs";
 import LocationSelector from "../../components/locationSelector";
 import { useRouter } from "next/router";
-import Events from "components/events"
+import Events from "components/events";
 import HelpIcon from "@mui/icons-material/Help";
 import {
   DEFAULT_LOCATION,
@@ -17,18 +16,16 @@ import {
   setLocation,
 } from "../../helpers/locations";
 import { handleHelpButtonClick } from "../../helpers/navigation";
-import Link from "next/link";
 import { useAuth } from "auth";
 import { logEvent } from "firebase/analytics";
+import AddModifyEventModal from "components/AddModifyEventModal";
+// import AddModifyEventModal from "components/AddModifyEventModal";
 
-interface Props {
-  classes?: any;
-  enqueueSnackbar: (message: string) => void;
-}
-
-const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
+const LocationPage = () => {
+  const classes = useStyles();
   const router = useRouter();
   const { isAdmin } = useAuth();
+  const [createEventOpen, setCreateEventOpen] = useState(false);
   let location =
     router.query.location && !Array.isArray(router.query.location)
       ? router.query.location
@@ -46,8 +43,8 @@ const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
     handleHelpButtonClick(router, "fromLocationPage");
   };
   useEffect(() => {
-    const analytics = getAppAnalytics()
-    logEvent(analytics,"location_page_visit")
+    const analytics = getAppAnalytics();
+    logEvent(analytics, "location_page_visit");
   }, []);
 
   // Handle last location saving/loading
@@ -81,11 +78,22 @@ const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
             OPPORTUNITIES
           </Typography>
         </div>
-        <div style={{ display: "flex", gap:"1rem"}}>
+        <div style={{ display: "flex", gap: "1rem" }}>
           {isAdmin && (
-            <Link href="/create-event">
-              <Button variant="contained">Create Project</Button>
-            </Link>
+            <>
+              <Button
+                variant="contained"
+                onClick={() => setCreateEventOpen(true)}
+              >
+                Create Project
+              </Button>
+              <AddModifyEventModal
+                open={createEventOpen}
+                handleClose={() => {
+                  setCreateEventOpen(false);
+                }}
+              />
+            </>
           )}
           <Tooltip title="Help" arrow>
             <Button
@@ -114,7 +122,7 @@ const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
   );
 };
 
-const styles = createStyles({
+const useStyles = makeStyles(() => ({
   page: {
     marginLeft: "auto",
     marginRight: "auto",
@@ -141,7 +149,6 @@ const styles = createStyles({
       width: "245px",
     },
   },
-});
+}));
 
-//@ts-ignore
-export default withStyles(styles)(withSnackbar(LocationPage));
+export default LocationPage;

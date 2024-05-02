@@ -22,7 +22,7 @@ import BootstrapInput from "../components/bootstrapInput";
 import Link from "next/link";
 import EventCard from "../components/eventCard";
 import { Location } from "../helpers/locations";
-import { volunteerTypes } from "pages/create-event";
+import { volunteerTypes } from "components/AddModifyEventModal"
 import { useRouter } from "next/router";
 import { useMediaQuery } from "@mui/material";
 import { useInView } from "react-intersection-observer";

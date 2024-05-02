@@ -31,7 +31,7 @@ import {
   deleteObject,
 } from "firebase/storage";
 import { getAuth } from "firebase/auth";
-import { storage, db} from "firebaseClient";
+import { storage, db } from "firebaseClient";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import { DateTimePicker, LocalizationProvider, LoadingButton } from "@mui/lab";
 import { DialogActions } from "@mui/material";
@@ -42,7 +42,6 @@ import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import EventCard from "components/eventCard";
 import RichTextEditor from "components/richTextEditor";
-import { Location } from "../helpers/locations";
 import CollapsibleRichTextEditor from "components/collapsibleRichTextEditor";
 import makeStyles from "@mui/styles/makeStyles";
 import { GetServerSideProps } from "next";
@@ -87,33 +86,6 @@ export interface DialogTitleProps {
 
 // make sure user is admin to access page if not redirect back
 // to opportunities page
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  try {
-    const cookies = nookies.get(ctx);
-    const token = await firebaseAdmin.auth().verifyIdToken(cookies.token);
-    const { uid } = token;
-    const userDocRef = firebaseAdmin.firestore().collection("Admins").doc(uid);
-    const user = await userDocRef.get();
-
-    if (!user)
-      return {
-        redirect: {
-          destination: "/opportunities",
-          permanent: true,
-        },
-        props: {},
-      };
-    return { props: {} };
-  } catch (err) {
-    return {
-      redirect: {
-        destination: "/opportunities",
-        permanent: true,
-      },
-      props: {},
-    };
-  }
-};
 const ModalDialogTitle = (props: DialogTitleProps) => {
   const { children, onClose, ...other } = props;
   const classes = useStyles();
@@ -226,7 +198,6 @@ const monthDayOptions = generateLabelValuePairs(31);
 interface AddModifyEventModalProps {
   open: boolean;
   event?: EventData;
-  location: Location;
   handleClose: any;
 }
 
@@ -383,7 +354,7 @@ const CropModal = (props: CropModalProps) => {
 };
 
 const AddModifyEventModal = (props: AddModifyEventModalProps) => {
-  const { event } = props;
+  const { event, open, handleClose } = props;
   const classes = useStyles();
 
   // Event fields
@@ -765,196 +736,209 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
   const compiled = compileEvent();
 
   return (
-    <div style={{ padding: "1.5rem" }}>
-      {cropImage !== undefined && (
-        <CropModal
-          cropImage={cropImage}
-          open={isCropperOpen}
-          saveImage={(blob) => {
-            return saveImage(blob).then((url) => {
-              if (modalState == ModalState.CropSquare) {
-                setImageURL(url);
-              } else {
-                setCardImageURL(url);
-              }
-            });
-          }}
-          aspectRatio={modalState == ModalState.CropSquare ? 1 : 23 / 30}
-          handleClose={() => {
-            setModalState(ModalState.Main);
-            setIsCropperOpen(false);
-          }}
-        />
-      )}
-      <div className={classes.modalContent}>
-        <div style={{ marginBottom: "1rem" }}>
-          <Button
-            variant="outlined"
-            onClick={() => setSignupActive(!signupActive)}
-          >
-            <Switch
-              checked={signupActive}
-              onClick={() => setSignupActive(!signupActive)}
-              color="primary"
-              inputProps={{ "aria-label": "controlled" }}
-            />
-            Allow Signup
-          </Button>
-          <span
-            style={{
-              fontStyle: "italic",
-              color: "gray",
-              marginLeft: "0.5rem",
-            }}
-          >
-            Note: This will make the signup button available to volunteers
-          </span>
-        </div>
-        <Grid container spacing={5}>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              required
-              fullWidth
-              label="Project Name"
-              value={title}
-              onChange={(e) => setTitle(e.target.value as string)}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <TextField
-              required
-              multiline
-              fullWidth
-              label="Project Summary"
-              value={description}
-              onChange={(e) => setDescription(e.target.value as string)}
-            />
-          </Grid>
-
-          <Grid style={{ maxWidth: "100%" }} item sm={12}>
-            <Typography variant="h6" style={{ textAlign: "center" }}>
-              Detailed Project Description
-            </Typography>
-            <RichTextEditor
-              initialContent={event?.Details ?? ""}
-              output={setDetails}
-              editorOptions={{
-                attributes: {
-                  style: "min-height: 250px",
-                },
+    <Dialog
+      onClose={handleClose}
+      open={open}
+      fullWidth
+      disableEnforceFocus
+      maxWidth="lg"
+    >
+      <ModalDialogTitle id="event-dialog" onClose={handleClose}>
+        <b>{event ? "Modify Event" : "Add Event"}</b>
+      </ModalDialogTitle>
+      <DialogContent>
+        <div style={{ padding: "1.5rem" }}>
+          {cropImage !== undefined && (
+            <CropModal
+              cropImage={cropImage}
+              open={isCropperOpen}
+              saveImage={(blob) => {
+                return saveImage(blob).then((url) => {
+                  if (modalState == ModalState.CropSquare) {
+                    setImageURL(url);
+                  } else {
+                    setCardImageURL(url);
+                  }
+                });
               }}
-              placeholder="Add a detailed project description here. If left empty, the project summary will be used."
+              aspectRatio={modalState == ModalState.CropSquare ? 1 : 23 / 30}
+              handleClose={() => {
+                setModalState(ModalState.Main);
+                setIsCropperOpen(false);
+              }}
             />
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <FormControl required fullWidth>
-              <InputLabel>Location</InputLabel>
-              <Select
-                fullWidth
-                value={location}
-                label="Location *"
-                onChange={(e) => {
-                  setLocation(e.target.value as string);
+          )}
+          <div className={classes.modalContent}>
+            <div style={{ marginBottom: "1rem" }}>
+              <Button
+                variant="outlined"
+                onClick={() => setSignupActive(!signupActive)}
+              >
+                <Switch
+                  checked={signupActive}
+                  onClick={() => setSignupActive(!signupActive)}
+                  color="primary"
+                  inputProps={{ "aria-label": "controlled" }}
+                />
+                Allow Signup
+              </Button>
+              <span
+                style={{
+                  fontStyle: "italic",
+                  color: "gray",
+                  marginLeft: "0.5rem",
                 }}
               >
-                {locations.map((loc) => (
-                  <MenuItem value={loc}>{loc}</MenuItem>
-                ))}
-              </Select>
-              <FormHelperText>Required</FormHelperText>
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <FormControl required fullWidth>
-              <InputLabel>Organization</InputLabel>
-              <Select
-                fullWidth
-                value={organization}
-                label="Organization *"
-                onChange={(e) => {
-                  setOrganization(e.target.value as string);
-                }}
-              >
-                {organizationList.map((organization) => (
-                  <MenuItem value={organization}>{organization}</MenuItem>
-                ))}
-              </Select>
-              <FormHelperText>Required</FormHelperText>
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Types of Volunteers Needed</InputLabel>
-              <Select
-                fullWidth
-                multiple
-                value={!Array.isArray(volunteersNeeded) ? [] : volunteersNeeded}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  setVolunteersNeeded(
-                    typeof value === "string"
-                      ? value.split(",")
-                      : (value as string[]),
-                  );
-                }}
-                input={<Input />}
-                renderValue={(selected: any) => (
-                  <Box sx={{ display: "flex", flexWrap: "wrap" }}>
-                    {typeof selected === "object"
-                      ? selected.map((value: string) => (
-                        <Chip key={value} label={value} />
-                      ))
-                      : []}
-                  </Box>
-                )}
-              >
-                {volunteerTypes.map((type) => (
-                  <MenuItem key={type} value={type}>
-                    {type}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-
-          {Object.keys(otherFields).map((fieldName) => {
-            const val = otherFields[fieldName];
-            return (
-              <Grid key={fieldName} item xs={12} sm={6}>
-                <Typography style={{ paddingLeft: "10px" }}>
-                  {fieldName}
-                </Typography>
-                <RichFieldEditor
-                  fieldName={fieldName}
-                  setField={setField}
-                  initialContent={!Array.isArray(val) ? val ?? "" : ""}
+                Note: This will make the signup button available to volunteers
+              </span>
+            </div>
+            <Grid container spacing={5}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  fullWidth
+                  label="Project Name"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value as string)}
                 />
               </Grid>
-            );
-          })}
 
-          <Grid item sm={12}>
-            {/* spacer so that the below components are always aligned */}
-          </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  multiline
+                  fullWidth
+                  label="Project Summary"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value as string)}
+                />
+              </Grid>
 
-          <Grid item xs={12} sm={6}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DateTimePicker
-                renderInput={(props) => {
-                  //@ts-ignore
-                  return <TextField {...props} />;
-                }}
-                label="Start Date/Time*"
-                value={startDateTime}
-                onChange={(newValue) => {
-                  setStartDateTime(newValue);
-                }}
-              />
-              {/* <span style={{ marginLeft: "1em" }}>
+              <Grid style={{ maxWidth: "100%" }} item sm={12}>
+                <Typography variant="h6" style={{ textAlign: "center" }}>
+                  Detailed Project Description
+                </Typography>
+                <RichTextEditor
+                  initialContent={event?.Details ?? ""}
+                  output={setDetails}
+                  editorOptions={{
+                    attributes: {
+                      style: "min-height: 250px",
+                    },
+                  }}
+                  placeholder="Add a detailed project description here. If left empty, the project summary will be used."
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <FormControl required fullWidth>
+                  <InputLabel>Location</InputLabel>
+                  <Select
+                    fullWidth
+                    value={location}
+                    label="Location *"
+                    onChange={(e) => {
+                      setLocation(e.target.value as string);
+                    }}
+                  >
+                    {locations.map((loc) => (
+                      <MenuItem value={loc}>{loc}</MenuItem>
+                    ))}
+                  </Select>
+                  <FormHelperText>Required</FormHelperText>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <FormControl required fullWidth>
+                  <InputLabel>Organization</InputLabel>
+                  <Select
+                    fullWidth
+                    value={organization}
+                    label="Organization *"
+                    onChange={(e) => {
+                      setOrganization(e.target.value as string);
+                    }}
+                  >
+                    {organizationList.map((organization) => (
+                      <MenuItem value={organization}>{organization}</MenuItem>
+                    ))}
+                  </Select>
+                  <FormHelperText>Required</FormHelperText>
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <InputLabel>Types of Volunteers Needed</InputLabel>
+                  <Select
+                    fullWidth
+                    multiple
+                    value={
+                      !Array.isArray(volunteersNeeded) ? [] : volunteersNeeded
+                    }
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setVolunteersNeeded(
+                        typeof value === "string"
+                          ? value.split(",")
+                          : (value as string[]),
+                      );
+                    }}
+                    input={<Input />}
+                    renderValue={(selected: any) => (
+                      <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+                        {typeof selected === "object"
+                          ? selected.map((value: string) => (
+                              <Chip key={value} label={value} />
+                            ))
+                          : []}
+                      </Box>
+                    )}
+                  >
+                    {volunteerTypes.map((type) => (
+                      <MenuItem key={type} value={type}>
+                        {type}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              {Object.keys(otherFields).map((fieldName) => {
+                const val = otherFields[fieldName];
+                return (
+                  <Grid key={fieldName} item xs={12} sm={6}>
+                    <Typography style={{ paddingLeft: "10px" }}>
+                      {fieldName}
+                    </Typography>
+                    <RichFieldEditor
+                      fieldName={fieldName}
+                      setField={setField}
+                      initialContent={!Array.isArray(val) ? val ?? "" : ""}
+                    />
+                  </Grid>
+                );
+              })}
+
+              <Grid item sm={12}>
+                {/* spacer so that the below components are always aligned */}
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DateTimePicker
+                    renderInput={(props) => {
+                      //@ts-ignore
+                      return <TextField {...props} />;
+                    }}
+                    label="Start Date/Time*"
+                    value={startDateTime}
+                    onChange={(newValue) => {
+                      setStartDateTime(newValue);
+                    }}
+                  />
+                  {/* <span style={{ marginLeft: "1em" }}>
                 <DateTimePicker
                   renderInput={(props) => {
                     //@ts-ignore
@@ -967,10 +951,10 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
                   }}
                 />
               </span> */}
-            </LocalizationProvider>
-          </Grid>
-          {/* Recurrences Section - Not in use */}
-          {/*
+                </LocalizationProvider>
+              </Grid>
+              {/* Recurrences Section - Not in use */}
+              {/*
           <Grid item xs={12} sm={6}>
             <Typography
               variant="h6"
@@ -1175,101 +1159,103 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
             )}
           </Grid>
           */}
-          <Grid item sm={12}>
-            <Grid
-              container
-              direction="row"
-              justifyContent="center"
-              alignItems="center"
-              spacing={4}
-            >
-              <Grid item xs={12}>
-                <Typography variant="h6" style={{ textAlign: "center" }}>
-                  Main Image Preview
-                </Typography>
-              </Grid>
-              <Grid item xs={2}>
+              <Grid item sm={12}>
                 <Grid
                   container
-                  direction="column"
-                  className={classes.mainImageSelector}
+                  direction="row"
+                  justifyContent="center"
+                  alignItems="center"
+                  spacing={4}
                 >
-                  <ImageSelector
-                    setImage={(e) => {
-                      setModalState(ModalState.CropSquare);
-                      setImage(e);
-                      setIsCropperOpen(true);
-                    }}
-                    deleteImage={() => {
-                      deleteImage(imageURL, setImageURL);
-                    }}
-                    hasImage={() => !!imageURL}
-                    uploadText={"Upload Image"}
-                    deleteText={"Delete Image"}
-                  />
-                </Grid>
-              </Grid>
-              <Grid item sm={4}>
-                <EventImage
-                  className={classes.preview}
-                  imageURL={imageURL}
-                  eventTitle={title ?? "event"}
-                />
-              </Grid>
-            </Grid>
-          </Grid>
-
-          {compiled && (
-            <Grid item sm={12}>
-              <Grid
-                container
-                direction="row"
-                justifyContent="center"
-                alignItems="center"
-                spacing={4}
-              >
-                <Grid item xs={12}>
-                  <Typography variant="h6" style={{ textAlign: "center" }}>
-                    Card Preview
-                  </Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <Grid
-                    container
-                    justifyContent="center"
-                    alignItems="center"
-                    className={classes.cardImageSelector}
-                  >
-                    <ImageSelector
-                      setImage={(e) => {
-                        setModalState(ModalState.CropCard);
-                        setImage(e);
-                      }}
-                      deleteImage={() => {
-                        deleteImage(cardImageURL, setCardImageURL);
-                      }}
-                      hasImage={() => !!cardImageURL}
-                      uploadText={"Upload Card Image"}
-                      deleteText={"Delete Card Image"}
+                  <Grid item xs={12}>
+                    <Typography variant="h6" style={{ textAlign: "center" }}>
+                      Main Image Preview
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Grid
+                      container
+                      direction="column"
+                      className={classes.mainImageSelector}
+                    >
+                      <ImageSelector
+                        setImage={(e) => {
+                          setModalState(ModalState.CropSquare);
+                          setImage(e);
+                          setIsCropperOpen(true);
+                        }}
+                        deleteImage={() => {
+                          deleteImage(imageURL, setImageURL);
+                        }}
+                        hasImage={() => !!imageURL}
+                        uploadText={"Upload Image"}
+                        deleteText={"Delete Image"}
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid item sm={4}>
+                    <EventImage
+                      className={classes.preview}
+                      imageURL={imageURL}
+                      eventTitle={title ?? "event"}
                     />
                   </Grid>
                 </Grid>
-                <Grid item xs={9} sm={7}>
-                  <EventCard event={compiled} handleClick={undefined} />
-                </Grid>
               </Grid>
+
+              {compiled && (
+                <Grid item sm={12}>
+                  <Grid
+                    container
+                    direction="row"
+                    justifyContent="center"
+                    alignItems="center"
+                    spacing={4}
+                  >
+                    <Grid item xs={12}>
+                      <Typography variant="h6" style={{ textAlign: "center" }}>
+                        Card Preview
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Grid
+                        container
+                        justifyContent="center"
+                        alignItems="center"
+                        className={classes.cardImageSelector}
+                      >
+                        <ImageSelector
+                          setImage={(e) => {
+                            setModalState(ModalState.CropCard);
+                            setImage(e);
+                          }}
+                          deleteImage={() => {
+                            deleteImage(cardImageURL, setCardImageURL);
+                          }}
+                          hasImage={() => !!cardImageURL}
+                          uploadText={"Upload Card Image"}
+                          deleteText={"Delete Card Image"}
+                        />
+                      </Grid>
+                    </Grid>
+                    <Grid item xs={9} sm={7}>
+                      <EventCard event={compiled} handleClick={undefined} />
+                    </Grid>
+                  </Grid>
+                </Grid>
+              )}
             </Grid>
-          )}
-        </Grid>
-        <LoadingButton
-          variant="contained"
-          onClick={putEvent}
-          loading={mutating}
-        >
-          Create Project
-        </LoadingButton>
-      </div>
-    </div>
+            <LoadingButton
+              variant="contained"
+              onClick={putEvent}
+              loading={mutating}
+            >
+              Create Project
+            </LoadingButton>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 export default AddModifyEventModal;

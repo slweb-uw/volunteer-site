@@ -13,7 +13,7 @@ import {
     MenuItem
   } from '@mui/material';
 
-import { volunteerTypes } from 'pages/create-event';
+import { volunteerTypes } from 'components/AddModifyEventModal';
 
 const useStyles = makeStyles({
     title: {
