@@ -1,15 +1,16 @@
 import Papa from 'papaparse';
 
-export const exportToCSV = (event) => {
+export const exportToCSV = (event: any) => {
+  console.log(JSON.stringify(event));
   if(event == null) return;
 
-  const csvData = [];
+  const csvData: { Role: any; Name: string; Email: any; Phone: any; Discipline: any; Comments: any; }[] = [];
     
     if (event.volunteerTypes && event.volunteers) {
-      event.volunteerTypes.forEach(type => {
-        const volunteersOfType = event.volunteers[type] || [];
+      event.volunteerTypes.forEach((type: any) => {
+        const volunteersOfType = event.volunteers[type] ? Object.values(event.volunteers[type]) : [];
 
-        volunteersOfType.forEach(volunteer => {
+        volunteersOfType.forEach((volunteer: any) => {
           const formattedPhoneNumber = volunteer.phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
 
           const volunteerRow = {
@@ -22,6 +23,7 @@ export const exportToCSV = (event) => {
           };
 
           csvData.push(volunteerRow);
+
         });
       });
     }
