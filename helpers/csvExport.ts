@@ -1,7 +1,6 @@
 import Papa from 'papaparse';
 
 export const exportToCSV = (event: any) => {
-  console.log(JSON.stringify(event));
   if(event == null) return;
 
   const csvData: { Role: any; Name: string; Email: any; Phone: any; Discipline: any; Comments: any; }[] = [];
