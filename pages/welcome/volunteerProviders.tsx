@@ -1,7 +1,9 @@
 import { NextPage } from "next";
+import Image from "next/image";
+import VolunteerProvideersUrl from "public/volunteerProviders.jpg"
 import { CssBaseline, Typography, Grid, Link } from "@mui/material";
-import createStyles from '@mui/styles/createStyles';
-import withStyles from '@mui/styles/withStyles';
+import createStyles from "@mui/styles/createStyles";
+import withStyles from "@mui/styles/withStyles";
 import IconBreadcrumbs from "components/breadcrumbs";
 import { BorderAllRounded } from "@mui/icons-material";
 
@@ -62,83 +64,83 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
               marginTop: "1em",
             }}
           >
-            <Typography style={{ fontSize: 16, fontFamily: "Open sans" }}>
-              <Typography className={classes.header}>
-                Volunteer Provider Role
-              </Typography>
-              As an experienced professional you will model for our students how
-              you think through a problem and how you communicate and
-              collaborate with patients. The students may know some of the
-              science of medicine, but not the art. You have a great deal to add
-              to their education. Thank you so much for sharing your wisdom and
-              passion for patient care!
-              <Typography className={classes.header}>
-                Interprofessional Approach
-              </Typography>
-              Many of our projects are now interdisciplinary! The development of
-              interprofessional teams has the added benefit of helping learners
-              understand the roles of other health professionals and their own
-              place and contribution to a well-functioning health care system.
-              <Typography className={classes.header}>
-                Links
-                <ul style={{ fontSize: "16px", color: "black" }}>
-                  <li>
-                    <Link href="../onboarding" className={classes.link}>
-                      Onboarding
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="../opportunities" className={classes.link}>
-                      Find Opportunities
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/calendar" className={classes.link}>
-                      Calendar
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="https://collaborate.uw.edu/mobile/"
-                      className={classes.link}
-                    >
-                      Health Sciences Mobile Health Outreach Van
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="https://canvas.uw.edu/courses/1693188/pages/training-modules?module_item_id=18595279"
-                      className={classes.link}
-                    >
-                      Training
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="categoriesOfService" className={classes.link}>
-                      Categories of Service
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="https://canvas.uw.edu/courses/1693188/pages/protocols?module_item_id=18595280"
-                      className={classes.link}
-                    >
-                      Protocols
-                    </Link>
-                  </li>
-                </ul>
-              </Typography>
-              <Typography className={classes.header}>Thank you</Typography>
-              Thank you for your interest in our programming. Sometimes we can
-              get so caught up in our studies that we lose track of the reasons
-              why we went into health care to begin with. Service learning can
-              help. It gives us a chance to serve the less fortunate in our
-              communities, identifying their inherent strengths, building on
-              those. Service learning gives trainees real life opportunities to
-              utilize the knowledge gained through course work and both
-              actualize and reflect on our values. Scratch that itch to do
-              something positive in the world!
+            <Typography className={classes.header}>
+              Volunteer Provider Role
             </Typography>
+            As an experienced professional you will model for our students how
+            you think through a problem and how you communicate and collaborate
+            with patients. The students may know some of the science of
+            medicine, but not the art. You have a great deal to add to their
+            education. Thank you so much for sharing your wisdom and passion for
+            patient care!
+            <Typography className={classes.header}>
+              Interprofessional Approach
+            </Typography>
+            Many of our projects are now interdisciplinary! The development of
+            interprofessional teams has the added benefit of helping learners
+            understand the roles of other health professionals and their own
+            place and contribution to a well-functioning health care system.
+            <div className={classes.header}>
+              Links
+              <ul style={{ fontSize: "16px", color: "black" }}>
+                <li>
+                  <Link href="../onboarding" className={classes.link}>
+                    Onboarding
+                  </Link>
+                </li>
+                <li>
+                  <Link href="../opportunities" className={classes.link}>
+                    Find Opportunities
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/calendar" className={classes.link}>
+                    Calendar
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="https://collaborate.uw.edu/mobile/"
+                    className={classes.link}
+                  >
+                    Health Sciences Mobile Health Outreach Van
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="https://canvas.uw.edu/courses/1693188/pages/training-modules?module_item_id=18595279"
+                    className={classes.link}
+                  >
+                    Training
+                  </Link>
+                </li>
+                <li>
+                  <Link href="categoriesOfService" className={classes.link}>
+                    Categories of Service
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="https://canvas.uw.edu/courses/1693188/pages/protocols?module_item_id=18595280"
+                    className={classes.link}
+                  >
+                    Protocols
+                  </Link>
+                </li>
+              </ul>
+              <Typography className={classes.header}>Thank you</Typography>
+              <Typography>
+                Thank you for your interest in our programming. Sometimes we can
+                get so caught up in our studies that we lose track of the
+                reasons why we went into health care to begin with. Service
+                learning can help. It gives us a chance to serve the less
+                fortunate in our communities, identifying their inherent
+                strengths, building on those. Service learning gives trainees
+                real life opportunities to utilize the knowledge gained through
+                course work and both actualize and reflect on our values.
+                Scratch that itch to do something positive in the world!
+              </Typography>
+            </div>
           </div>
         </div>
         <div>
@@ -150,15 +152,15 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
               marginTop: "1em",
             }}
           >
-            <img
+            <Image
               style={{
-                width: "506px",
-                height: "298px",
                 objectFit: "cover",
                 margin: "0px",
                 borderRadius: "10px",
               }}
-              src="/volunteerProviders.jpg"
+              src={VolunteerProvideersUrl}
+              width={506}
+              height={298}
               alt="Volunteer Provider Sample Image"
             />
           </div>
@@ -167,6 +169,8 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
       <div
         style={{
           display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
           justifyContent: "center",
         }}
       >
@@ -187,16 +191,16 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
           searching for ways to help the less fortunate is the best antidote to
           the COVID blues and political cynicism that I’ve found. It is a joyful
           experience. Give it a try and see if you don’t agree.”
-          <Typography
-            style={{
-              fontWeight: 700,
-              fontSize: 15,
-              marginTop: "20px",
-              marginLeft: "20px",
-            }}
-          >
-            - Richard Arnold, MD
-          </Typography>
+        </Typography>
+        <Typography
+          style={{
+            fontWeight: 700,
+            fontSize: 15,
+            marginTop: "20px",
+            marginLeft: "20px",
+          }}
+        >
+          - Richard Arnold, MD
         </Typography>
       </div>
     </div>

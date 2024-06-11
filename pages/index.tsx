@@ -1,8 +1,10 @@
-import React, { useEffect } from "react"
-import Image from "next/image"
-import MobileOutReachSrc from "../public/Mobile_Outreach_Clinic_resized.jpg"
-import ServeWithUsSrc from  "../public/serve.jpg"
-import CommunityPartnersSrc from "../public/communityPartners.jpg"
+import React, { useEffect } from "react";
+import Image from "next/image";
+import ProfileIcon from "public/profile-icon.png";
+import MailIcon from "public/mail-icon.png";
+import MobileOutReachSrc from "../public/Mobile_Outreach_Clinic_resized.jpg";
+import ServeWithUsSrc from "../public/serve.jpg";
+import CommunityPartnersSrc from "../public/communityPartners.jpg";
 import {
   Typography,
   Grid,
@@ -11,16 +13,16 @@ import {
   Card,
   CardContent,
   CardMedia,
-} from "@mui/material"
-import withStyles from "@mui/styles/withStyles"
-import createStyles from "@mui/styles/createStyles"
-import makeStyles from "@mui/styles/makeStyles"
-import Link from "next/link"
+} from "@mui/material";
+import withStyles from "@mui/styles/withStyles";
+import createStyles from "@mui/styles/createStyles";
+import makeStyles from "@mui/styles/makeStyles";
+import Link from "next/link";
 
-import { logEvent } from "firebase/analytics"
-import { getAppAnalytics } from "firebaseClient"
-import { ArrowForwardIos } from "@mui/icons-material"
-import HeadlineBar from "components/headlineBar"
+import { logEvent } from "firebase/analytics";
+import { getAppAnalytics } from "firebaseClient";
+import { ArrowForwardIos } from "@mui/icons-material";
+import HeadlineBar from "components/headlineBar";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -82,6 +84,8 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
+    textDecoration: "none",
+    color: "black",
   },
   cardhover: {
     "&:hover": {
@@ -176,15 +180,15 @@ const useStyles = makeStyles((theme) => ({
       padding: "3em",
     },
   },
-}))
+}));
 
 const App: React.FC<{}> = () => {
-  const classes = useStyles()
+  const classes = useStyles();
 
   useEffect(() => {
-    const analytics = getAppAnalytics()
-    logEvent(analytics, "home_page_visit")
-  }, [])
+    const analytics = getAppAnalytics();
+    logEvent(analytics, "home_page_visit");
+  }, []);
 
   return (
     <div
@@ -222,6 +226,7 @@ const App: React.FC<{}> = () => {
               the region.
             </Typography>
             <Link href="/opportunities">
+              {" "}
               <Button
                 color="primary"
                 variant="contained"
@@ -264,15 +269,7 @@ const App: React.FC<{}> = () => {
               Students
             </Typography>
 
-            <div
-              style={{
-                position: "absolute",
-                marginBottom: "0",
-                marginTop: "2em",
-              }}
-            >
-              <HeadlineBar color="gold" width={130} height={10}></HeadlineBar>
-            </div>
+            <HeadlineBar color="gold" width={130} height={10}></HeadlineBar>
 
             <Card
               variant="outlined"
@@ -284,12 +281,12 @@ const App: React.FC<{}> = () => {
                 style={{ height: "200px", width: "301px" }}
                 alt="Student volunteers"
               ></CardMedia>
-              <CardActionArea
-                href="/welcome/studentVolunteers"
-                className={classes.cardhover}
-              >
+              <CardActionArea className={classes.cardhover}>
                 <CardContent>
-                  <div className={classes.cardlinks}>
+                  <Link
+                    href="/welcome/studentVolunteers"
+                    className={classes.cardlinks}
+                  >
                     <Typography className={classes.cardtitle}>
                       Welcome
                     </Typography>
@@ -298,7 +295,7 @@ const App: React.FC<{}> = () => {
                         style={{ fontSize: "1em", color: "#4B2E83" }}
                       />
                     </Typography>
-                  </div>
+                  </Link>
                 </CardContent>
               </CardActionArea>
               <hr
@@ -308,12 +305,9 @@ const App: React.FC<{}> = () => {
                   margin: "0",
                 }}
               ></hr>
-              <CardActionArea
-                href="/requiredTraining"
-                className={classes.cardhover}
-              >
+              <CardActionArea className={classes.cardhover}>
                 <CardContent>
-                  <div className={classes.cardlinks}>
+                  <Link href="/requiredTraining" className={classes.cardlinks}>
                     <Typography className={classes.cardtitle}>
                       Onboarding
                     </Typography>
@@ -322,7 +316,7 @@ const App: React.FC<{}> = () => {
                         style={{ fontSize: "1em", color: "#4B2E83" }}
                       />
                     </Typography>
-                  </div>
+                  </Link>
                 </CardContent>
               </CardActionArea>
               <hr
@@ -334,11 +328,16 @@ const App: React.FC<{}> = () => {
               ></hr>
               <CardActionArea
                 href="/opportunities"
-                style={{ backgroundColor: "#4B2E83", color: "#ffffff" }}
+                style={{
+                  backgroundColor: "#4B2E83",
+                  color: "#ffffff",
+                  borderTopLeftRadius: 0,
+                  borderTopRightRadius: 0,
+                }}
                 className={classes.cardhover}
               >
                 <CardContent>
-                  <div className={classes.cardlinks}>
+                  <Link href="/opportunities" className={classes.cardlinks}>
                     <Typography
                       className={classes.cardtitle}
                       style={{ color: "#ffffff" }}
@@ -350,11 +349,12 @@ const App: React.FC<{}> = () => {
                         style={{ fontSize: "1em", color: "#ffffff" }}
                       />
                     </Typography>
-                  </div>
+                  </Link>
                 </CardContent>
               </CardActionArea>
             </Card>
           </div>
+
           {/* Volunteer Providers */}
           <div
             style={{
@@ -374,17 +374,7 @@ const App: React.FC<{}> = () => {
               Volunteer Providers
             </Typography>
 
-            <div
-              style={{
-                position: "absolute",
-                marginBottom: "0",
-                marginTop: "2em",
-              }}
-            >
-              <div style={{ marginRight: "3em", textAlign: "right" }}>
-                <HeadlineBar color="gold" width={320} height={10}></HeadlineBar>
-              </div>
-            </div>
+            <HeadlineBar color="gold" width={320} height={10}></HeadlineBar>
 
             <Card
               variant="outlined"
@@ -401,7 +391,10 @@ const App: React.FC<{}> = () => {
                 className={classes.cardhover}
               >
                 <CardContent>
-                  <div className={classes.cardlinks}>
+                  <Link
+                    href="/welcome/volunteerProviders"
+                    className={classes.cardlinks}
+                  >
                     <Typography className={classes.cardtitle}>
                       Welcome
                     </Typography>
@@ -410,7 +403,7 @@ const App: React.FC<{}> = () => {
                         style={{ fontSize: "1em", color: "#4B2E83" }}
                       />
                     </Typography>
-                  </div>
+                  </Link>
                 </CardContent>
               </CardActionArea>
               <hr
@@ -420,9 +413,9 @@ const App: React.FC<{}> = () => {
                   margin: "0",
                 }}
               ></hr>
-              <CardActionArea href="/onboarding" className={classes.cardhover}>
+              <CardActionArea className={classes.cardhover}>
                 <CardContent>
-                  <div className={classes.cardlinks}>
+                  <Link href="/onboarding" className={classes.cardlinks}>
                     <Typography className={classes.cardtitle}>
                       Onboarding
                     </Typography>
@@ -431,7 +424,7 @@ const App: React.FC<{}> = () => {
                         style={{ fontSize: "1em", color: "#4B2E83" }}
                       />
                     </Typography>
-                  </div>
+                  </Link>
                 </CardContent>
               </CardActionArea>
               <hr
@@ -441,28 +434,34 @@ const App: React.FC<{}> = () => {
                   margin: "0",
                 }}
               ></hr>
-              <Link href="/opportunities/Alaska?type=Providers">
-                <CardActionArea
-                  style={{ backgroundColor: "#4B2E83", color: "#ffffff" }}
-                  className={classes.cardhover}
-                >
-                  <CardContent>
-                    <div className={classes.cardlinks}>
-                      <Typography
-                        className={classes.cardtitle}
-                        style={{ color: "#ffffff" }}
-                      >
-                        Find Opportunities
-                      </Typography>
-                      <Typography>
-                        <ArrowForwardIos
-                          style={{ fontSize: "1em", color: "#ffffff" }}
-                        />
-                      </Typography>
-                    </div>
-                  </CardContent>
-                </CardActionArea>
-              </Link>
+              <CardActionArea
+                style={{
+                  backgroundColor: "#4B2E83",
+                  color: "#ffffff",
+                  borderTopLeftRadius: 0,
+                  borderTopRightRadius: 0,
+                }}
+                className={classes.cardhover}
+              >
+                <CardContent>
+                  <Link
+                    href="/opportunities/Alaska?type=Providers"
+                    className={classes.cardlinks}
+                  >
+                    <Typography
+                      className={classes.cardtitle}
+                      style={{ color: "#ffffff" }}
+                    >
+                      Find Opportunities
+                    </Typography>
+                    <Typography>
+                      <ArrowForwardIos
+                        style={{ fontSize: "1em", color: "#ffffff" }}
+                      />
+                    </Typography>
+                  </Link>
+                </CardContent>
+              </CardActionArea>
             </Card>
           </div>
           {/* Community Partners */}
@@ -484,17 +483,7 @@ const App: React.FC<{}> = () => {
               Community Partners
             </Typography>
 
-            <div
-              style={{
-                position: "absolute",
-                marginBottom: "0",
-                marginTop: "2em",
-              }}
-            >
-              <div style={{ marginRight: "2.5em", textAlign: "right" }}>
-                <HeadlineBar color="gold" width={310} height={10}></HeadlineBar>
-              </div>
-            </div>
+            <HeadlineBar color="gold" width={310} height={10}></HeadlineBar>
 
             <Card
               variant="outlined"
@@ -513,21 +502,19 @@ const App: React.FC<{}> = () => {
                   margin: "0",
                 }}
               ></hr>
-              <CardActionArea
-                href="/welcome/communitypartners"
-                className={classes.cardhover}
-              >
+              <CardActionArea className={classes.cardhover}>
                 <CardContent>
-                  <div className={classes.cardlinks}>
-                    <Typography className={classes.cardtitle}>
+                  <Typography className={classes.cardtitle}>
+                    <Link
+                      href="/welcome/communitypartners"
+                      className={classes.cardlinks}
+                    >
                       Become a Partner
-                    </Typography>
-                    <Typography>
                       <ArrowForwardIos
                         style={{ fontSize: "1em", color: "#4B2E83" }}
                       />
-                    </Typography>
-                  </div>
+                    </Link>
+                  </Typography>
                 </CardContent>
               </CardActionArea>
             </Card>
@@ -765,6 +752,7 @@ const App: React.FC<{}> = () => {
           </div>
         </div>
         <Grid
+          item
           container
           spacing={6}
           xs={12}
@@ -782,7 +770,7 @@ const App: React.FC<{}> = () => {
               <Grid item>
                 <Grid container direction="row" spacing={1}>
                   <Grid item>
-                    <img src="./profile-icon.png" alt="profile icon" />
+                    <Image src={ProfileIcon} alt="profile icon" />
                   </Grid>
                   <Grid item>
                     <Typography
@@ -834,7 +822,7 @@ const App: React.FC<{}> = () => {
               <Grid item>
                 <Grid container direction="row" spacing={2}>
                   <Grid item>
-                    <img src="./mail-icon.png" alt="mail icon" />
+                    <Image src={MailIcon} alt="mail icon" />
                   </Grid>
                   <Grid item>
                     <Typography
@@ -876,7 +864,7 @@ const App: React.FC<{}> = () => {
         </Grid>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;

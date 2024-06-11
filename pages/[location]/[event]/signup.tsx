@@ -11,6 +11,7 @@ import {
   setDoc,
   Timestamp,
   deleteDoc,
+  addDoc,
 } from "firebase/firestore";
 import { useAuth } from "auth";
 import { useRouter } from "next/router";
@@ -164,7 +165,7 @@ const Signup = () => {
         }
       }
     }
-  }, [selectedEventId, events]);
+  }, [selectedEventId, events, itemsPerPage]);
 
   useEffect(() => {
     if (selectedEvent) {
@@ -238,21 +239,21 @@ const Signup = () => {
   }, [location, event]);
 
   // Retrieves the events
-  const fetchData = () => {
-    const eventsRef = collection(db, `${location}/${event}/signup`);
-    const data = [];
-    getDocs(eventsRef).then((docs) => {
-      docs.forEach((doc) => {
-        const eventData = { id: doc.id, ...doc.data() };
-        data.push(eventData);
-      });
-
-      data.sort((a, b) => a.date - b.date);
-      setUnfilteredEvents(data);
-    });
-  };
 
   useEffect(() => {
+    const fetchData = () => {
+      const eventsRef = collection(db, `${location}/${event}/signup`);
+      const data = [];
+      getDocs(eventsRef).then((docs) => {
+        docs.forEach((doc) => {
+          const eventData = { id: doc.id, ...doc.data() };
+          data.push(eventData);
+        });
+
+        data.sort((a, b) => a.date - b.date);
+        setUnfilteredEvents(data);
+      });
+    };
     fetchData();
   }, [location, event]);
 
@@ -348,18 +349,24 @@ const Signup = () => {
   };
 
   const handleEventAction = (action: string, eventData: any) => {
-    const eventRef = doc(db, `${location}/${event}/signup`, eventData.id);
+    // TODO: lets handle edit and delete this would not work any more
+    // because we are not using the generate unique id
     if (action === "add") {
-      eventData.date = Timestamp.fromDate(eventData.date);
-      setDoc(eventRef, eventData).then(() => {
-        setSelectedEvent(eventData);
-      });
+      addDoc(collection(db, "events"), {
+        ...eventData,
+        projectName: title,
+        projectId: event,
+        // this is for caledar query
+        calendar: `${eventData.date.getFullYear()}-${eventData.date.getMonth()}`,
+        date: Timestamp.fromDate(eventData.date),
+        location: location,
+      }).then(() => setSelectedEvent(eventData));
     } else if (action === "edit") {
       setDoc(eventRef, eventData).then(() => {
         setSelectedEvent(eventData);
       });
     } else if (action === "delete") {
-      deleteDoc(eventRef)
+      deleteDoc(eventRef);
     }
   };
 
@@ -651,7 +658,7 @@ const Signup = () => {
                   selectedEvent.volunteers[type] &&
                   [...Object.entries(selectedEvent.volunteers[type])].map(
                     ([key, volunteer]) => (
-                      <div>
+                      <div key={key}>
                         {user && user.email === volunteer.email ? (
                           <Button
                             className={classes.roleButton}

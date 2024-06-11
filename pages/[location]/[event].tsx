@@ -6,7 +6,7 @@ import Image from "next/image";
 import IconBreadcrumbs from "../../components/breadcrumbs";
 import makeStyles from "@mui/styles/makeStyles";
 
-import { CssBaseline, Typography, Divider, Grid, Button} from "@mui/material";
+import { CssBaseline, Typography, Divider, Grid, Button } from "@mui/material";
 import naturalJoin from "../../helpers/naturalJoin";
 import EventDescription from "../../components/eventDescription";
 import RichTextField from "../../components/richTextField";
@@ -120,7 +120,9 @@ const RichEventField: React.FC<RichEventFieldProps> = ({
 };
 
 // fetch event data before rendering
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getServerSideProps: GetServerSideProps<{
+  event: EventData;
+}> = async (ctx) => {
   const location = ctx.params?.location;
   const event = ctx.params?.event;
 
@@ -131,14 +133,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
 
   // safe to to as string here because we already check they are undefined
-  // typescript for some reason does 
+  // typescript for some reason does
   const data = await firebaseAdmin
     .firestore()
     .collection(location as string)
     .doc(event as string)
     .get();
 
-  return { props: { event: data.data() } };
+  return { props: { event: data.data() as EventData } };
 };
 
 const useStyles = makeStyles(() => ({
@@ -163,13 +165,13 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Event: InferGetServerSidePropsType<typeof getServerSideProps> = ({
+const Event = ({
   event: eventData,
-}) => {
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
   const { isAdmin } = useAuth();
-  const { location } = router.query; // current event id and location
-  const classes = useStyles()
+  const { location } = router.query; // current location
+  const classes = useStyles();
 
   const options = { year: "numeric", month: "long", day: "numeric" };
 

@@ -1,19 +1,17 @@
 import React from "react";
-
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/icons-material/Menu";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
 
 type Anchor = "top";
 
 interface Props {
-  links: React.ReactNode[];
+  Links: React.ReactNode;
 }
 
-const BasicMenu: React.FC<Props> = (Props) => {
+const BasicMenu: React.FC<Props> = (Props : Props) => {
   const [state, setState] = React.useState({
     top: false,
   });
@@ -39,10 +37,8 @@ const BasicMenu: React.FC<Props> = (Props) => {
       onClick={toggleDrawer(anchor, false)}
       onKeyDown={toggleDrawer(anchor, false)}
     >
-      <List>
-        {Props.links.map((element: React.ReactNode, index) => {
-          return <ListItem key={index}>{element}</ListItem>;
-        })}
+      <List style={{display: 'flex', flexDirection: 'column', gap: 4, paddingLeft: "0.5rem"}}>
+        {Props.Links}
       </List>
     </Box>
   );

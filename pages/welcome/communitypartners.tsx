@@ -1,14 +1,15 @@
-import { NextPage } from "next";
-import { CssBaseline, Typography, Select, MenuItem, Grid, Button, Link, Divider } from "@mui/material";
-import createStyles from '@mui/styles/createStyles';
-import withStyles from '@mui/styles/withStyles';
+import { CssBaseline, Typography, Grid } from "@mui/material";
+import createStyles from "@mui/styles/createStyles";
+import withStyles from "@mui/styles/withStyles";
 import IconBreadcrumbs from "components/breadcrumbs";
-
+import Link from "next/link";
+import Image from "next/image";
+import CommunityPartners from "public/communityPartners.jpg";
 interface Props {
   classes?: any;
 }
 
-const Communitypartners: NextPage<Props> = ({ classes }) => {
+const Communitypartners = ({ classes }) => {
   return (
     <div className={classes.page}>
       <CssBaseline />
@@ -18,10 +19,10 @@ const Communitypartners: NextPage<Props> = ({ classes }) => {
       />
       <Typography
         variant="h4"
-        style={{ 
-          fontFamily: "Encode Sans", 
-          fontWeight: 800, 
-          fontSize: "2rem", 
+        style={{
+          fontFamily: "Encode Sans",
+          fontWeight: 800,
+          fontSize: "2rem",
         }}
       >
         WELCOME COMMUNITY PARTNERS
@@ -40,12 +41,13 @@ const Communitypartners: NextPage<Props> = ({ classes }) => {
               marginTop: "1em",
             }}
           >
-            <img
+            <Image
               style={{
-                width: "415px",
                 borderRadius: "10px",
+                height: "auto",
               }}
-              src="/communityPartners.jpg"
+              src={CommunityPartners}
+              width={415}
               alt="a masked vaccine volunteer holding a green sign"
             />
           </div>
@@ -67,12 +69,18 @@ const Communitypartners: NextPage<Props> = ({ classes }) => {
               serve our local communities. You might see our students involved
               in a variety of activities such as health screenings, vaccination
               clinics, health education programs or street outreach.
-              <Typography style={{ fontSize: 16, marginTop: "20px",  fontFamily: "Open sans"  }}>
-                To learn more about what students are working on now,{" "}
-                <a href="/opportunities">click here</a>. If you have an idea for a
-                future program, please contact the UWSOM Service Learning Team,{" "}
-                <a href="mailto://somserve@uw.edu">somserve@uw.edu</a>.
-              </Typography>
+            </Typography>
+            <Typography
+              style={{
+                fontSize: 16,
+                marginTop: "20px",
+                fontFamily: "Open sans",
+              }}
+            >
+              To learn more about what students are working on now,{" "}
+              <Link href="/opportunities">click here</Link>. If you have an idea
+              for a future program, please contact the UWSOM Service Learning
+              Team, <a href="mailto://somserve@uw.edu">somserve@uw.edu</a>.
             </Typography>
           </div>
         </Grid>

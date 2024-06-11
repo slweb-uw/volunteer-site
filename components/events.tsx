@@ -11,7 +11,7 @@ import {
   startAfter,
 } from "firebase/firestore";
 import type { QueryDocumentSnapshot } from "firebase/firestore";
-import { db } from "firebaseClient";
+import { db } from "../firebaseClient";
 import { Button, MenuItem, Select, Typography, Switch } from "@mui/material";
 import createStyles from "@mui/styles/createStyles";
 import withStyles from "@mui/styles/withStyles";
@@ -22,7 +22,7 @@ import BootstrapInput from "../components/bootstrapInput";
 import Link from "next/link";
 import EventCard from "../components/eventCard";
 import { Location } from "../helpers/locations";
-import { volunteerTypes } from "components/AddModifyEventModal"
+import { volunteerTypes } from "./AddModifyEventModal"
 import { useRouter } from "next/router";
 import { useMediaQuery } from "@mui/material";
 import { useInView } from "react-intersection-observer";
@@ -112,7 +112,6 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
   // load the events as the load more button is in view
   useEffect(() => {
     if (inView && !fetchingEvents) {
-      console.log("here");
       loadEvents(true);
     }
   }, [inView]);
@@ -122,9 +121,9 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
       <span>
         &nbsp;our&nbsp;
         <i>
-          <a style={{ color: "#85754D" }} href="/onboarding/">
+          <Link style={{ color: "#85754D" }} href="/onboarding/">
             Onboarding Instructions
-          </a>
+          </Link>
         </i>
         &nbsp;before signing up for an opportunity.
       </span>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Link from "next/link"
 import Button from '@mui/material/Button';
 import makeStyles from '@mui/styles/makeStyles';
 import SignInPopup from 'components/SignInPopup';
@@ -49,11 +50,11 @@ const AuthorizationMessage = ({ user }) => {
             Sign In
           </Button>
         ) : null}
-        <a href="/">
+        <Link href="/">
           <Button variant="outlined">
             Return
           </Button>
-        </a>
+        </Link>
       </div>
       <SignInPopup open={isSignInPopupOpen} close={() => setSignInPopupOpen(false)} />
     </div>

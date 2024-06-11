@@ -4,7 +4,6 @@ import { Theme } from "@mui/material/styles";
 import withStyles from "@mui/styles/withStyles";
 import CloseIcon from "@mui/icons-material/Close";
 import { useRouter } from "next/router";
-import nookies from "nookies";
 import {
   Dialog,
   DialogTitle,
@@ -44,8 +43,6 @@ import EventCard from "components/eventCard";
 import RichTextEditor from "components/richTextEditor";
 import CollapsibleRichTextEditor from "components/collapsibleRichTextEditor";
 import makeStyles from "@mui/styles/makeStyles";
-import { GetServerSideProps } from "next";
-import { firebaseAdmin } from "firebaseAdmin";
 import { doc, getDoc } from "firebase/firestore";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -229,7 +226,7 @@ interface RichFieldEditorProps {
   setField: (fieldName: string, output: string) => void;
 }
 
-const RichFieldEditor = React.memo((props: RichFieldEditorProps) => {
+const RichFieldEditor = React.memo(function RichFieldEditor(props: RichFieldEditorProps) {
   return (
     <CollapsibleRichTextEditor
       innerProps={{
@@ -613,7 +610,9 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
             body: JSON.stringify({ eventData: uploadEvent, userToken }),
           });
           const addedEvent = (await res.json()) as CalendarEventData;
+          console.log(res)
           if (addedEvent) {
+            console.log("here")
             await calendarPromise(addedEvent, userToken);
             enqueueSnackbar(`${uploadEvent.Title} Successfully created`, {
               autoHideDuration: 4000,
@@ -842,7 +841,7 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
                     }}
                   >
                     {locations.map((loc) => (
-                      <MenuItem value={loc}>{loc}</MenuItem>
+                      <MenuItem key={loc} value={loc}>{loc}</MenuItem>
                     ))}
                   </Select>
                   <FormHelperText>Required</FormHelperText>
@@ -861,7 +860,7 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
                     }}
                   >
                     {organizationList.map((organization) => (
-                      <MenuItem value={organization}>{organization}</MenuItem>
+                      <MenuItem value={organization} key={organization}>{organization}</MenuItem>
                     ))}
                   </Select>
                   <FormHelperText>Required</FormHelperText>
