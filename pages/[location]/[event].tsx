@@ -35,7 +35,6 @@ const reservedKeys = [
   "Order",
   "Organization",
   "Location",
-  "Contact Information and Cancellation Policy",
   "Contact Information",
   "Website Link",
   "Address;Parking;Directions",
@@ -176,7 +175,7 @@ const Event: NextPage<Props> = ({ classes }) => {
           </Stack>
           <RichEventField
             name="Contact Information"
-            value={eventData["Contact Information"] || eventData["Contact Information and Cancellation Policy"]}
+            value={eventData["Contact Information"]}
             removeTopMargin={true}
           />
           <RichEventField
