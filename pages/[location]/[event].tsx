@@ -32,7 +32,6 @@ const reservedKeys = [
   "Order",
   "Organization",
   "Location",
-  "Contact Information and Cancellation Policy",
   "Contact Information",
   "Website Link",
   "Address;Parking;Directions",
