@@ -1,22 +1,19 @@
 import { useRouter } from "next/router";
 import { useAuth } from "auth";
-import { firebaseClient } from "../../firebaseClient";
-import React, { useState, useEffect } from "react";
-import { NextPage } from "next";
+import React from "react";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import Image from "next/image";
 import IconBreadcrumbs from "../../components/breadcrumbs";
+import makeStyles from "@mui/styles/makeStyles";
 
-import { CssBaseline, Typography, Divider, Grid, Button } from "@mui/material";
-import createStyles from '@mui/styles/createStyles';
-import withStyles from '@mui/styles/withStyles';
+import { CssBaseline, Typography, Divider, Grid, Button} from "@mui/material";
 import naturalJoin from "../../helpers/naturalJoin";
 import EventDescription from "../../components/eventDescription";
 import RichTextField from "../../components/richTextField";
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 import Link from "next/link";
-interface Props {
-  classes?: any;
-}
+import { firebaseAdmin } from "firebaseAdmin";
 
 const initialGridKeys = [
   "Tips and Reminders",
@@ -50,45 +47,48 @@ const reservedKeys = [
   "original recurrence",
   "imageURL",
   "cardImageURL",
-  "DateObject"
+  "DateObject",
 ];
 
 type EventFieldProps = {
   name: string;
   value: string | string[] | JSX.Element | undefined;
-}
+};
 
 type RichEventFieldProps = {
   name: string;
   value: string | string[] | undefined;
   removeTopMargin: boolean;
-}
+};
 
-const EventField: React.FC<EventFieldProps> = ({
-  name,
-  value
-}) => {
+const EventField: React.FC<EventFieldProps> = ({ name, value }) => {
   let data: string | JSX.Element | undefined;
   if (value && Array.isArray(value)) {
     data = naturalJoin(value);
   } else {
     data = value;
   }
-  if(!data) return null;
+  if (!data) return null;
   return (
-      <Box style={{ pageBreakInside: "avoid", breakInside: "avoid-column", marginBottom: "5%"}}>
+    <Box
+      style={{
+        pageBreakInside: "avoid",
+        breakInside: "avoid-column",
+        marginBottom: "5%",
+      }}
+    >
       <Typography variant="h6" style={{ fontWeight: 600 }}>
         {name}
       </Typography>
       <Typography>{data}</Typography>
     </Box>
   );
-}
+};
 
 const RichEventField: React.FC<RichEventFieldProps> = ({
   name,
   value,
-  removeTopMargin
+  removeTopMargin,
 }) => {
   let data: string | undefined;
   if (value && Array.isArray(value)) {
@@ -96,140 +96,51 @@ const RichEventField: React.FC<RichEventFieldProps> = ({
   } else {
     data = value;
   }
-  const remove: boolean | undefined = removeTopMargin ? (typeof data === 'string' && data.includes("<p>")) : false;
-  if(!data) return null;
+  const remove: boolean | undefined = removeTopMargin
+    ? typeof data === "string" && data.includes("<p>")
+    : false;
+  if (!data) return null;
   return (
     <>
-      <Box style={{ pageBreakInside: "avoid", breakInside: "avoid-column", marginBottom: "5%" }} >
+      <Box
+        style={{
+          pageBreakInside: "avoid",
+          breakInside: "avoid-column",
+          marginBottom: "5%",
+        }}
+      >
         <Typography variant="h6" style={{ fontWeight: 600 }}>
           {name}
         </Typography>
-          <RichTextField value={data} removeTopMargin={remove ?? false} />  
+        <RichTextField value={data} removeTopMargin={remove ?? false} />
       </Box>
     </>
   );
-}
-
-const Event: NextPage<Props> = ({ classes }) => {
-  const router = useRouter();
-  const { isAdmin } = useAuth();
-  const { event, location } = router.query; // current event id and location
-  const [eventData, setEventData] = useState<EventData>();
-
-  useEffect(() => {
-    // Load initial events
-    if (event) {
-      loadEventData();
-    }
-  }, [router]);
-
-  const loadEventData = async () => {
-    const next = await firebaseClient
-      .firestore()
-      .collection("" + location)
-      .doc("" + event)
-      .get(); // queries data
-    setEventData(next.data() as EventData);
-  };
-
-  const options = { year: "numeric", month: "long", day: "numeric" };
-
-  let buttonText = eventData?.["Sign-up Link"]
-    ? "Sign up >"
-    : "No sign up links available yet";
-
-  return !eventData ? (
-    <div />
-  ) : (
-    <div className={classes.page}>
-      <CssBaseline />
-      <IconBreadcrumbs
-        parentURL={"/opportunities/" + location}
-        crumbs={["Opportunities in " + location, eventData.Title]}
-      />
-      {/* EVENT TITLE */}
-      <Typography variant="h5" style={{ fontWeight: 900, paddingBottom: 50 }}>
-        {eventData?.Title}
-      </Typography>
-
-      <Grid container spacing={6}>
-        <Grid item sm={12} md={6} className={classes.detailsImageContainer}>
-          <img
-            className={classes.detailsImage}
-            src={eventData?.imageURL ? eventData?.imageURL : "/beigeSquare.png"}
-            alt={eventData.Title}
-          />
-        </Grid>
-        <Grid item container direction="column" sm={12} md={6}>
-          <Stack direction="row" spacing={6} sx={{marginTop: "5%"}}>
-            <RichEventField
-              name="Location"
-              value={eventData?.Location}
-              removeTopMargin={true}
-            />
-            <RichEventField
-              name="Clinic Schedule"
-              value={eventData["Clinic Schedule"]}
-              removeTopMargin={true}
-            />
-          </Stack>
-          <RichEventField
-            name="Contact Information"
-            value={eventData["Contact Information"]}
-            removeTopMargin={true}
-          />
-          <RichEventField
-            name="Website Link"
-            value={eventData["Website Link"]}
-            removeTopMargin={true}
-          />
-          <RichEventField 
-            name="Types of Volunteers Needed"
-            value={eventData["Types of Volunteers Needed"] ? naturalJoin(eventData["Types of Volunteers Needed"]) : undefined}
-            removeTopMargin={true}
-          />
-          { (eventData?.SignupActive || isAdmin) && (
-            <Link href={`/${location}/${eventData.id}/signup`}>
-              <Button
-                color="primary"
-                variant="contained"
-                style={{ marginRight: "1em" }}
-              >
-                Sign up
-              </Button>
-            </Link>
-          )}
-         
-        </Grid>
-      </Grid>
-
-      <Divider style={{ marginBottom: "3em", marginTop: "3em", height: 3, borderRadius: "25px"}}></Divider>
-
-      <Box sx={{ columns: { xs: 1, md: 2 }, columnGap: 8 }}>
-        <EventField name="Project Description" value={<EventDescription event={eventData} />} />
-        {initialGridKeys.filter((name) => eventData[name] != null && eventData[name] != "").map((name) => (
-          <RichEventField key={name} name={name} value={eventData[name]} removeTopMargin={true} />
-        ))}
-        {Object.keys(eventData)
-          .filter((name) => !reservedKeys.includes(name))
-          .filter((name) => eventData[name] != null && eventData[name] != "")
-          .filter((name) => name != "SignupActive")
-          .map((name) => (
-            <RichEventField key={name} name={name} value={eventData[name]} removeTopMargin={true} />
-          ))}
-      </Box>
-    </div>
-  );
 };
 
-function maxSize(){
-  if (typeof window !== "undefined") {
-    return Math.min(500, window.innerWidth);
-  }
-  return "500px";
-}
+// fetch event data before rendering
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const location = ctx.params?.location;
+  const event = ctx.params?.event;
 
-const styles = createStyles({
+  if (typeof location === "undefined" || typeof event === "undefined") {
+    return {
+      notFound: true,
+    };
+  }
+
+  // safe to to as string here because we already check they are undefined
+  // typescript for some reason does 
+  const data = await firebaseAdmin
+    .firestore()
+    .collection(location as string)
+    .doc(event as string)
+    .get();
+
+  return { props: { event: data.data() } };
+};
+
+const useStyles = makeStyles(() => ({
   page: {
     marginLeft: "auto",
     marginRight: "auto",
@@ -249,5 +160,139 @@ const styles = createStyles({
     borderRadius: "10px",
     objectFit: "cover",
   },
-});
-export default withStyles(styles)(Event);
+}));
+
+const Event: InferGetServerSidePropsType<typeof getServerSideProps> = ({
+  event: eventData,
+}) => {
+  const router = useRouter();
+  const { isAdmin } = useAuth();
+  const { location } = router.query; // current event id and location
+  const classes = useStyles()
+
+  const options = { year: "numeric", month: "long", day: "numeric" };
+
+  let buttonText = eventData?.["Sign-up Link"]
+    ? "Sign up >"
+    : "No sign up links available yet";
+
+  return (
+    <div className={classes.page}>
+      <CssBaseline />
+      <IconBreadcrumbs
+        parentURL={"/opportunities/" + location}
+        crumbs={["Opportunities in " + location, eventData.Title]}
+      />
+      {/* EVENT TITLE */}
+      <Typography variant="h5" style={{ fontWeight: 900, paddingBottom: 50 }}>
+        {eventData?.Title}
+      </Typography>
+
+      <Grid container spacing={6}>
+        <Grid item sm={12} md={6} className={classes.detailsImageContainer}>
+          <Image
+            className={classes.detailsImage}
+            width={500}
+            height={500}
+            src={eventData?.imageURL ? eventData?.imageURL : "/beigeSquare.png"}
+            alt={eventData.Title}
+          />
+        </Grid>
+        <Grid item container direction="column" sm={12} md={6}>
+          <Stack direction="row" spacing={6} sx={{ marginTop: "5%" }}>
+            <RichEventField
+              name="Location"
+              value={eventData?.Location}
+              removeTopMargin={true}
+            />
+            <RichEventField
+              name="Clinic Schedule"
+              value={eventData["Clinic Schedule"]}
+              removeTopMargin={true}
+            />
+          </Stack>
+          <RichEventField
+            name="Contact Information"
+            value={
+              eventData["Contact Information"] ||
+              eventData["Contact Information and Cancellation Policy"]
+            }
+            removeTopMargin={true}
+          />
+          <RichEventField
+            name="Website Link"
+            value={eventData["Website Link"]}
+            removeTopMargin={true}
+          />
+          <RichEventField
+            name="Types of Volunteers Needed"
+            value={
+              eventData["Types of Volunteers Needed"]
+                ? naturalJoin(eventData["Types of Volunteers Needed"])
+                : undefined
+            }
+            removeTopMargin={true}
+          />
+          {(eventData?.SignupActive || isAdmin) && (
+            <Link href={`/${location}/${eventData.id}/signup`}>
+              <Button
+                color="primary"
+                variant="contained"
+                style={{ marginRight: "1em" }}
+              >
+                Sign up
+              </Button>
+            </Link>
+          )}
+        </Grid>
+      </Grid>
+
+      <Divider
+        style={{
+          marginBottom: "3em",
+          marginTop: "3em",
+          height: 3,
+          borderRadius: "25px",
+        }}
+      ></Divider>
+
+      <Box sx={{ columns: { xs: 1, md: 2 }, columnGap: 8 }}>
+        <EventField
+          name="Project Description"
+          value={<EventDescription event={eventData} />}
+        />
+        {initialGridKeys
+          .filter((name) => eventData[name] != null && eventData[name] != "")
+          .map((name) => (
+            <RichEventField
+              key={name}
+              name={name}
+              value={eventData[name]}
+              removeTopMargin={true}
+            />
+          ))}
+        {Object.keys(eventData)
+          .filter((name) => !reservedKeys.includes(name))
+          .filter((name) => eventData[name] != null && eventData[name] != "")
+          .filter((name) => name != "SignupActive")
+          .map((name) => (
+            <RichEventField
+              key={name}
+              name={name}
+              value={eventData[name]}
+              removeTopMargin={true}
+            />
+          ))}
+      </Box>
+    </div>
+  );
+};
+
+function maxSize() {
+  if (typeof window !== "undefined") {
+    return Math.min(500, window.innerWidth);
+  }
+  return "500px";
+}
+
+export default Event;

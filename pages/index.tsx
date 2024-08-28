@@ -1,4 +1,8 @@
 import React, { useEffect } from "react"
+import Image from "next/image"
+import MobileOutReachSrc from "../public/Mobile_Outreach_Clinic_resized.jpg"
+import ServeWithUsSrc from  "../public/serve.jpg"
+import CommunityPartnersSrc from "../public/communityPartners.jpg"
 import {
   Typography,
   Grid,
@@ -13,7 +17,8 @@ import createStyles from "@mui/styles/createStyles"
 import makeStyles from "@mui/styles/makeStyles"
 import Link from "next/link"
 
-import { firebaseClient } from "firebaseClient"
+import { logEvent } from "firebase/analytics"
+import { getAppAnalytics } from "firebaseClient"
 import { ArrowForwardIos } from "@mui/icons-material"
 import HeadlineBar from "components/headlineBar"
 
@@ -177,7 +182,8 @@ const App: React.FC<{}> = () => {
   const classes = useStyles()
 
   useEffect(() => {
-    firebaseClient.analytics().logEvent("home_page_visit")
+    const analytics = getAppAnalytics()
+    logEvent(analytics, "home_page_visit")
   }, [])
 
   return (
@@ -592,7 +598,7 @@ const App: React.FC<{}> = () => {
                 textAlign: "center",
               }}
             >
-              <img
+              <Image
                 style={{
                   width: "30em",
                   maxWidth: "100%",
@@ -600,7 +606,8 @@ const App: React.FC<{}> = () => {
                   borderRadius: "10px",
                 }}
                 //className={useStyles().img}
-                src="/Mobile_Outreach_Clinic_resized.jpg"
+                src={MobileOutReachSrc}
+                priority
                 alt="doctor caring for mom with child"
               />
             </div>
@@ -619,9 +626,15 @@ const App: React.FC<{}> = () => {
                 textAlign: "center",
               }}
             >
-              <img
-                className={useStyles().img}
-                src="/serve.jpg"
+              <Image
+                style={{
+                  width: "30em",
+                  maxWidth: "100%",
+                  height: "auto",
+                  borderRadius: "10px",
+                }}
+                src={ServeWithUsSrc}
+                placeholder="blur"
                 alt="doctor caring for mom with child"
               />
             </div>
@@ -721,9 +734,9 @@ const App: React.FC<{}> = () => {
                 textAlign: "center",
               }}
             >
-              <img
+              <Image
                 className={useStyles().img}
-                src="/communityPartners.jpg"
+                src={CommunityPartnersSrc}
                 alt="Two students smiling"
               />
             </div>

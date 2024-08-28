@@ -1,7 +1,6 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
 import makeStyles from '@mui/styles/makeStyles';
-import { firebaseClient } from "firebaseClient";
 import { useAuth } from "auth";
 
 const useStyles = makeStyles((theme) => ({

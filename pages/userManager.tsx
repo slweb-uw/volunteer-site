@@ -1,9 +1,18 @@
-import React, { useState, useEffect } from "react"
-import firebase from "firebase/app"
-import "firebase/firestore"
-import { useAuth } from "auth"
-import makeStyles from "@mui/styles/makeStyles"
-import DeleteIcon from "@mui/icons-material/Delete"
+import React, { useState, useEffect } from "react";
+import { db } from "firebaseClient";
+import {
+  addDoc,
+  collection,
+  getDocs,
+  serverTimestamp,
+  where,
+  query,
+  getDoc,
+  deleteDoc
+} from "firebase/firestore";
+import { useAuth } from "auth";
+import makeStyles from "@mui/styles/makeStyles";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Typography,
   TextField,
@@ -19,9 +28,9 @@ import {
   TableRow,
   TableCell,
   TableBody,
-} from "@mui/material"
-import HelpIcon from "@mui/icons-material/HelpOutline"
-import AuthorizationMessage from "./AuthorizationMessage"
+} from "@mui/material";
+import HelpIcon from "@mui/icons-material/HelpOutline";
+import AuthorizationMessage from "./AuthorizationMessage";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -102,168 +111,118 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     position: "absolute",
   },
-}))
+}));
 
 const label: any = {
   Admins: "admin",
   Leads: "project lead",
   Volunteers: "non-UW preceptor",
-}
+};
 
 const AdminPage = () => {
-  const classes = useStyles()
-  const { user, isAdmin } = useAuth()
-  const [admins, setAdmins] = useState([])
-  const [volunteers, setVolunteers] = useState([])
-  const [leads, setLeads] = useState([])
-  const [newUserEmail, setNewUserEmail] = useState("")
-  const [validEmail, setValidEmail] = useState(true)
-  const [existentEmail, setExistentEmail] = useState(false)
-  const [helpDialogOpen, setHelpDialogOpen] = useState(false)
-  const [activeSection, setActiveSection] = useState("Admins")
-  const [confirmationOpen, setConfirmationOpen] = useState(false)
-  const [selectedUser, setSelectedUser] = useState({})
+  const classes = useStyles();
+  const { user, isAdmin } = useAuth();
+  const [admins, setAdmins] = useState([]);
+  const [volunteers, setVolunteers] = useState([]);
+  const [leads, setLeads] = useState([]);
+  const [newUserEmail, setNewUserEmail] = useState("");
+  const [validEmail, setValidEmail] = useState(true);
+  const [existentEmail, setExistentEmail] = useState(false);
+  const [helpDialogOpen, setHelpDialogOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("Admins");
+  const [confirmationOpen, setConfirmationOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState({});
 
-  const [sortOrder, setSortOrder] = useState("asc")
-  const [sortedColumn, setSortedColumn] = useState("email")
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortedColumn, setSortedColumn] = useState("email");
 
-  const [totalAdmins, setTotalAdmins] = useState(0)
-  const [totalVolunteers, setTotalVolunteers] = useState(0)
-  const [totalLeads, setTotalLeads] = useState(0)
+  const [totalAdmins, setTotalAdmins] = useState(0);
+  const [totalVolunteers, setTotalVolunteers] = useState(0);
+  const [totalLeads, setTotalLeads] = useState(0);
 
   const handleSort = (column) => {
-    setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"))
-    setSortedColumn(column)
-  }
+    setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
+    setSortedColumn(column);
+  };
 
   // Loads Admins
-  const loadAdmins = () => {
-    const unsubscribe = firebase
-      .firestore()
-      .collection("Admins")
-      .onSnapshot((snapshot) => {
-        const adminsData = []
-        snapshot.forEach((doc) => {
-          adminsData.push({ id: doc.id, ...doc.data() })
-        })
-        setAdmins(adminsData)
-      })
-    return unsubscribe
-  }
-
-  // Loads Volunteers
-  const loadVolunteers = () => {
-    const unsubscribe = firebase
-      .firestore()
-      .collection("Volunteers")
-      .onSnapshot((snapshot) => {
-        const volunteerData = []
-        snapshot.forEach((doc) => {
-          volunteerData.push({ id: doc.id, ...doc.data() })
-        })
-        setVolunteers(volunteerData)
-      })
-    return unsubscribe
-  }
-
-  // Loads Leads
-  const loadLeads = () => {
-    const unsubscribe = firebase
-      .firestore()
-      .collection("Leads")
-      .onSnapshot((snapshot) => {
-        const leadData = []
-        snapshot.forEach((doc) => {
-          leadData.push({ id: doc.id, ...doc.data() })
-        })
-        setLeads(leadData)
-      })
-    return unsubscribe
-  }
+  const loadUserType = async (userType, setState) => {
+    const userTypeRef = collection(db, userType);
+    const snapshot = await getDocs(userTypeRef);
+    const data = [] 
+    snapshot.forEach((doc) => {
+      data.push({ id: doc.id, ...doc.data() });
+    });
+    setState(data);
+  };
 
   useEffect(() => {
-    const unsubscribe = loadAdmins()
-    return unsubscribe
-  }, [])
-
-  useEffect(() => {
-    const unsubscribe = loadLeads()
-    return unsubscribe
-  }, [])
-
-  useEffect(() => {
-    const unsubscribe = loadVolunteers()
-    return unsubscribe
-  }, [])
+    loadUserType("Admins", setAdmins);
+    loadUserType("Volunteer", setVolunteers);
+    loadUserType("Leads", setLeads);
+  }, []);
 
   const addUser = (e) => {
-    e.preventDefault()
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    setExistentEmail(false)
-    setValidEmail(true)
+    e.preventDefault();
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    setExistentEmail(false);
+    setValidEmail(true);
 
     if (!emailPattern.test(newUserEmail)) {
-      setValidEmail(false)
-      return
+      setValidEmail(false);
+      return;
     }
 
-    var existentEmail
+    var existentEmail;
     if (activeSection === "Admins") {
-      existentEmail = admins.find((admin) => admin.email === newUserEmail)
+      existentEmail = admins.find((admin) => admin.email === newUserEmail);
     } else {
       existentEmail = volunteers.find(
-        (volunteer) => volunteer.email === newUserEmail
-      )
+        (volunteer) => volunteer.email === newUserEmail,
+      );
     }
     if (existentEmail) {
-      setExistentEmail(true)
-      setNewUserEmail("")
-      return
+      setExistentEmail(true);
+      setNewUserEmail("");
+      return;
     }
 
-    firebase
-      .firestore()
-      .collection(activeSection)
-      .add({
-        email: newUserEmail,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      })
-      .then(() => {
-        console.log("User added successfully!")
-        setNewUserEmail("")
+    addDoc(collection(db, activeSection), {
+      email: newUserEmail,
+      timestamp: serverTimestamp(),
+    }).then(() => {
+        console.log("User added successfully!");
+        setNewUserEmail("");
       })
       .catch((error) => {
-        console.error("Error adding user", error)
-      })
-  }
+        console.error("Error adding user", error);
+      });
+  };
 
   const removeUser = (userEmail) => {
-    firebase
-      .firestore()
-      .collection(activeSection)
-      .where("email", "==", userEmail)
-      .get()
+    const usersRef = collection(db, activeSection)
+    getDocs(query(usersRef, where("email", "==", userEmail)))
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          doc.ref.delete()
-        })
-        console.log("User removed successfully!")
+          deleteDoc(doc)
+        });
+        console.log("User removed successfully!");
       })
       .catch((error) => {
-        console.error("Error removing user: ", error)
-      })
-  }
+        console.error("Error removing user: ", error);
+      });
+  };
 
   if (!user || !isAdmin) {
-    return <AuthorizationMessage user={user} />
+    return <AuthorizationMessage user={user} />;
   }
 
   const renderList = (type) => {
     return type
       .filter((user) => user.email.toLowerCase().includes(newUserEmail))
       .sort((a, b) => {
-        const order = sortOrder === "asc" ? 1 : -1
-        return a[sortedColumn] > b[sortedColumn] ? order : -order
+        const order = sortOrder === "asc" ? 1 : -1;
+        return a[sortedColumn] > b[sortedColumn] ? order : -order;
       })
       .map((user, index) => (
         <TableRow
@@ -279,16 +238,16 @@ const AdminPage = () => {
               aria-label="delete"
               className={classes.removeButton}
               onClick={() => {
-                setConfirmationOpen(true)
-                setSelectedUser(user.email)
+                setConfirmationOpen(true);
+                setSelectedUser(user.email);
               }}
             >
               <DeleteIcon style={{ height: "25px" }} />
             </IconButton>
           </TableCell>
         </TableRow>
-      ))
-  }
+      ));
+  };
 
   return (
     <div className={classes.root}>
@@ -393,8 +352,8 @@ const AdminPage = () => {
           </Button>
           <Button
             onClick={() => {
-              removeUser(selectedUser)
-              setConfirmationOpen(false)
+              removeUser(selectedUser);
+              setConfirmationOpen(false);
             }}
             color="primary"
             autoFocus
@@ -431,7 +390,7 @@ const AdminPage = () => {
         </DialogActions>
       </Dialog>
     </div>
-  )
-}
+  );
+};
 
-export default AdminPage
+export default AdminPage;

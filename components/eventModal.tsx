@@ -12,12 +12,12 @@ import Typography from "@mui/material/Typography"
 import { Button, Grid } from "@mui/material"
 import Link from "next/link"
 import { useAuth } from "auth"
-import { firebaseClient } from "firebaseClient"
 import AddModifyEventModal from "./addModifyEventModal"
 import EventImage from "./eventImage"
 import naturalJoin from "../helpers/naturalJoin"
 import EventDescription from "./eventDescription"
 import { Location } from "../helpers/locations"
+import { getAuth } from "firebase/auth"
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -68,7 +68,7 @@ const deleteEvent = async (eventData: EventData | undefined) => {
     eventData &&
     confirm("Please acknowledge you wish to delete this event.")
   ) {
-    const userToken = await firebaseClient.auth().currentUser?.getIdToken()
+    const userToken = await getAuth().currentUser?.getIdToken()
 
     try {
       await Promise.all([
