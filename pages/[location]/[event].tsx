@@ -21,7 +21,7 @@ const initialGridKeys = [
   "Required Trainings",
   "Address/Parking/Directions",
   "Provider Information",
-];
+] as const;
 
 const reservedKeys = [
   "Project Description",
@@ -48,7 +48,7 @@ const reservedKeys = [
   "imageURL",
   "cardImageURL",
   "DateObject",
-];
+] as const;
 
 type EventFieldProps = {
   name: string;
@@ -154,11 +154,10 @@ const useStyles = makeStyles(() => ({
   },
   detailsImageContainer: {
     display: "flex",
-    maxWidth: maxSize() + "px",
+    maxWidth: "500px",
   },
   detailsImage: {
-    minWidth: "100%",
-    minHeight: "100%",
+    width: "100%",
     borderRadius: "10px",
     objectFit: "cover",
   },
@@ -169,14 +168,8 @@ const Event = ({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
   const { isAdmin } = useAuth();
-  const { location } = router.query; // current location
+  const { location } = router.query; // current event id and location
   const classes = useStyles();
-
-  const options = { year: "numeric", month: "long", day: "numeric" };
-
-  let buttonText = eventData?.["Sign-up Link"]
-    ? "Sign up >"
-    : "No sign up links available yet";
 
   return (
     <div className={classes.page}>
@@ -215,10 +208,7 @@ const Event = ({
           </Stack>
           <RichEventField
             name="Contact Information"
-            value={
-              eventData["Contact Information"] ||
-              eventData["Contact Information and Cancellation Policy"]
-            }
+            value={eventData["Contact Information"]}
             removeTopMargin={true}
           />
           <RichEventField
@@ -289,12 +279,5 @@ const Event = ({
     </div>
   );
 };
-
-function maxSize() {
-  if (typeof window !== "undefined") {
-    return Math.min(500, window.innerWidth);
-  }
-  return "500px";
-}
 
 export default Event;

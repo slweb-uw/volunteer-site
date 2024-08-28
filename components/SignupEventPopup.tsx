@@ -159,6 +159,7 @@ const SignupEventPopup = ({ open, close, mode, event, handleEventAction }) => {
   };
 
   const handleSubmit = () => {
+    console.log(date)
     if (!date) {
       alert("Please select a date.");
       return;

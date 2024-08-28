@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
-import Image from "next/image";
+import React, { useEffect } from "react"
+import Image from "next/image"
+import MobileOutReachSrc from "../public/Mobile_Outreach_Clinic_resized.jpg"
+import ServeWithUsSrc from  "../public/serve.jpg"
+import CommunityPartnersSrc from "../public/communityPartners.jpg"
 import ProfileIcon from "public/profile-icon.png";
 import MailIcon from "public/mail-icon.png";
-import MobileOutReachSrc from "../public/Mobile_Outreach_Clinic_resized.jpg";
-import ServeWithUsSrc from "../public/serve.jpg";
-import CommunityPartnersSrc from "../public/communityPartners.jpg";
 import {
   Typography,
   Grid,
@@ -14,8 +14,6 @@ import {
   CardContent,
   CardMedia,
 } from "@mui/material";
-import withStyles from "@mui/styles/withStyles";
-import createStyles from "@mui/styles/createStyles";
 import makeStyles from "@mui/styles/makeStyles";
 import Link from "next/link";
 
@@ -24,7 +22,7 @@ import { getAppAnalytics } from "firebaseClient";
 import { ArrowForwardIos } from "@mui/icons-material";
 import HeadlineBar from "components/headlineBar";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   container: {
     height: "100%",
   },

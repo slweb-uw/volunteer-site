@@ -239,6 +239,16 @@ const Signup = () => {
   }, [location, event]);
 
   // Retrieves the events
+  const fetchData = () => {
+    const eventsRef = collection(db, `${location}/${event}/signup`);
+    const data = [];
+    getDocs(eventsRef).then((docs) => {
+      docs.forEach((doc) => {
+        const eventData = { id: doc.id, ...doc.data() };
+        data.push(eventData);
+      });
+    })
+  }
 
   useEffect(() => {
     const fetchData = () => {
@@ -351,6 +361,7 @@ const Signup = () => {
   const handleEventAction = (action: string, eventData: any) => {
     // TODO: lets handle edit and delete this would not work any more
     // because we are not using the generate unique id
+    console.log(eventData)
     if (action === "add") {
       addDoc(collection(db, "events"), {
         ...eventData,
@@ -362,11 +373,11 @@ const Signup = () => {
         location: location,
       }).then(() => setSelectedEvent(eventData));
     } else if (action === "edit") {
-      setDoc(eventRef, eventData).then(() => {
-        setSelectedEvent(eventData);
-      });
+      //  setDoc(eventRef, eventData).then(() => {
+      // setSelectedEvent(eventData);
+      // });
     } else if (action === "delete") {
-      deleteDoc(eventRef);
+      // deleteDoc(eventRef)
     }
   };
 
@@ -640,7 +651,7 @@ const Signup = () => {
           <b style={{ marginLeft: "5px" }}>No events to load.</b>
         </div>
       ) : (
-        <Grid container className={classes.gridContainer}>
+      <Grid container className={classes.gridContainer}>
           {selectedEvent &&
             selectedEvent.volunteerTypes.map((type, index) => (
               <Grid item key={index}>
@@ -658,7 +669,7 @@ const Signup = () => {
                   selectedEvent.volunteers[type] &&
                   [...Object.entries(selectedEvent.volunteers[type])].map(
                     ([key, volunteer]) => (
-                      <div key={key}>
+                      <div>
                         {user && user.email === volunteer.email ? (
                           <Button
                             className={classes.roleButton}
@@ -743,8 +754,8 @@ const Signup = () => {
                 )}
               </Grid>
             ))}
-        </Grid>
-      )}
+        </Grid>)
+      }
       <SignupEventPopup
         open={openEventFormPopup}
         close={() => setOpenEventFormPopup(false)}
@@ -767,72 +778,76 @@ const Signup = () => {
         volunteer={volunteerInfo}
         handleDelete={handleDeleteVolunteer}
       />
-      {selectedEvent && (
-        <Dialog
-          open={informationPopupOpen}
-          onClose={() => setInformationPopupOpen(false)}
-        >
-          <DialogTitle style={{ textAlign: "center" }}>
-            Event Information
-          </DialogTitle>
-          <DialogContent>
-            <div
-              style={{
-                marginBottom: "1rem",
-                maxWidth: "600px",
-                minWidth: "400px",
-                wordWrap: "break-word",
-              }}
-            >
-              <Typography component="div" style={{ fontSize: "1rem" }}>
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: selectedEvent.eventInformation,
-                  }}
-                />
-              </Typography>
-              <br />
-              <Typography style={{ fontSize: "0.9rem" }}>
-                <b>Event Lead Contact:</b>{" "}
-                <Link href={`mailto:${selectedEvent.leadEmail}`}>
-                  {selectedEvent.leadEmail}
-                </Link>
-              </Typography>
-              <Typography
-                style={{
-                  fontSize: "0.9rem",
-                  color: "gray",
-                  fontStyle: "italic",
-                }}
-              >
-                For technical issues please contact{" "}
-                <Link href="mailto:somserve@gmail.com">somserve@uw.edu</Link>
-              </Typography>
+      {
+        selectedEvent && (
+          <Dialog
+            open={informationPopupOpen}
+            onClose={() => setInformationPopupOpen(false)}
+          >
+            <DialogTitle style={{ textAlign: "center" }}>
+              Event Information
+            </DialogTitle>
+            <DialogContent>
               <div
                 style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  marginTop: "1.5em",
+                  marginBottom: "1rem",
+                  maxWidth: "600px",
+                  minWidth: "400px",
+                  wordWrap: "break-word",
                 }}
               >
-                <Link
-                  href={event ? "/" + location + "/" + event : "/"}
-                  style={{ textDecoration: "none" }}
-                  target="_blank"
+                <Typography component="div" style={{ fontSize: "1rem" }}>
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: selectedEvent.eventInformation,
+                    }}
+                  />
+                </Typography>
+                <br />
+                <Typography style={{ fontSize: "0.9rem" }}>
+                  <b>Event Lead Contact:</b>{" "}
+                  <Link href={`mailto:${selectedEvent.leadEmail}`}>
+                    {selectedEvent.leadEmail}
+                  </Link>
+                </Typography>
+                <Typography
+                  style={{
+                    fontSize: "0.9rem",
+                    color: "gray",
+                    fontStyle: "italic",
+                  }}
                 >
-                  <Button color="secondary" variant="contained">
-                    More Information
-                  </Button>
-                </Link>
+                  For technical issues please contact{" "}
+                  <Link href="mailto:somserve@gmail.com">somserve@uw.edu</Link>
+                </Typography>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: "1.5em",
+                  }}
+                >
+                  <Link
+                    href={event ? "/" + location + "/" + event : "/"}
+                    style={{ textDecoration: "none" }}
+                    target="_blank"
+                  >
+                    <Button color="secondary" variant="contained">
+                      More Information
+                    </Button>
+                  </Link>
+                </div>
               </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
-      {sharePopupOpen && (
-        <SharePopup onClose={() => setSharePopupOpen(false)} link={shareLink} />
-      )}
-    </div>
+            </DialogContent>
+          </Dialog>
+        )
+      }
+      {
+        sharePopupOpen && (
+          <SharePopup onClose={() => setSharePopupOpen(false)} link={shareLink} />
+        )
+      }
+    </div >
   );
 };
 

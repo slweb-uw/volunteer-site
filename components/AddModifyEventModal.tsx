@@ -226,7 +226,7 @@ interface RichFieldEditorProps {
   setField: (fieldName: string, output: string) => void;
 }
 
-const RichFieldEditor = React.memo(function RichFieldEditor(props: RichFieldEditorProps) {
+const RichFieldEditor = React.memo((props: RichFieldEditorProps) => {
   return (
     <CollapsibleRichTextEditor
       innerProps={{
@@ -889,8 +889,8 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
                       <Box sx={{ display: "flex", flexWrap: "wrap" }}>
                         {typeof selected === "object"
                           ? selected.map((value: string) => (
-                              <Chip key={value} label={value} />
-                            ))
+                            <Chip key={value} label={value} />
+                          ))
                           : []}
                       </Box>
                     )}

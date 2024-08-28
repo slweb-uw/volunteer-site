@@ -11,7 +11,7 @@ import {
   startAfter,
 } from "firebase/firestore";
 import type { QueryDocumentSnapshot } from "firebase/firestore";
-import { db } from "../firebaseClient";
+import { db } from "firebaseClient";
 import { Button, MenuItem, Select, Typography, Switch } from "@mui/material";
 import createStyles from "@mui/styles/createStyles";
 import withStyles from "@mui/styles/withStyles";
@@ -22,7 +22,7 @@ import BootstrapInput from "../components/bootstrapInput";
 import Link from "next/link";
 import EventCard from "../components/eventCard";
 import { Location } from "../helpers/locations";
-import { volunteerTypes } from "./AddModifyEventModal"
+import { volunteerTypes } from "components/AddModifyEventModal"
 import { useRouter } from "next/router";
 import { useMediaQuery } from "@mui/material";
 import { useInView } from "react-intersection-observer";
@@ -176,9 +176,6 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
     }
 
     const next = await getDocs(q);
-
-    // add fetch data to state
-    // TODO: add event type
     const eventsToAdd: EventData[] = [];
     next.docs.slice(0, 10).forEach((document) => {
       let eventDoc = document.data() as EventData;

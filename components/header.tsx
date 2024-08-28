@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import Hidden from "@mui/material/Hidden";
-import Image from "next/image";
-import HeaderLogo from "public/header-logo.png";
 import { useAuth } from "auth";
 import BasicMenu from "./basicMenu";
 import SignInPopup from "./SignInPopup";
@@ -63,6 +61,8 @@ const useStyles = makeStyles((theme) => ({
     width: "25em",
     height: "auto",
     minWidth: 5,
+    paddingLeft: "10px",
+    paddingTop: "5px",
     "@media only screen and (max-width: 480px)": {
       maxHeight: "100%",
       paddingLeft: "0",
@@ -84,151 +84,114 @@ const useStyles = makeStyles((theme) => ({
 
 const Divider = () => <span className={useStyles().divider}>/</span>;
 
-const Links = ({
-  handleSignout,
-  openSignup,
-}: {
-  handleSignout: () => void;
-  openSignup: () => void;
-}) => {
-  const { user, isLead, isAdmin } = useAuth();
-  const classes = useStyles();
-  return (
-    <>
-      <Link href="/" className={classes.navtitle} tabIndex={0}>
-        Home
-      </Link>
-      <Divider />
-      <Link href="/opportunities" className={classes.navtitle} tabIndex={0}>
-        Opportunities
-      </Link>
-      <Divider />
-      <a
-        className={classes.navtitle}
-        href="https://canvas.uw.edu/courses/1693188/pages/training-modules?module_item_id=18595279"
-        target="_blank"
-        tabIndex={0}
-      >
-        Training
-      </a>
-      <Divider />
-      <Link href="/resources" className={classes.navtitle} tabIndex={0}>
-        Links
-      </Link>
-      <Divider />
-      <a
-        href="https://canvas.uw.edu/courses/1693188/pages/protocols?module_item_id=18595280"
-        className={classes.navtitle}
-        target="_blank"
-        tabIndex={0}
-      >
-        Protocols
-      </a>
-      <Divider />
-      <Link href="/donations" className={classes.navtitle} tabIndex={0}>
-        Donations
-      </Link>
-      <Divider />
-      <Link href="/help" className={classes.navtitle} tabIndex={0}>
-        Help
-      </Link>
-      <Divider />
-      {
-        // sign in and out}
-        user ? (
-          <a
-            key="sign out"
-            onClick={handleSignout}
-            className={classes.navtitle}
-            tabIndex={0}
-          >
-            Sign Out
-            {isAdmin && (
-              <p
-                style={{
-                  color: "gold",
-                  margin: 0,
-                  fontSize: "12px",
-                  position: "absolute",
-                }}
-              >
-                ADMIN
-              </p>
-            )}
-            {isLead && (
-              <p
-                style={{
-                  color: "gold",
-                  margin: 0,
-                  fontSize: "12px",
-                  position: "absolute",
-                }}
-              >
-                LEAD
-              </p>
-            )}
-          </a>
-        ) : (
-          <>
-            <a
-              key="sign in"
-              onClick={openSignup}
-              className={classes.navtitle}
-              tabIndex={0}
-            >
-              Sign In
-            </a>
-          </>
-        )
-      }
-    </>
-  );
-};
 const Header: React.FC<{}> = () => {
+  const { user, isAdmin, isLead } = useAuth();
   const [isSignInPopupOpen, setSignInPopupOpen] = useState(false);
 
+  const links: React.ReactNode[] = [
+    <Link href="/" className={useStyles().navtitle} tabIndex={0}>
+      Home
+    </Link>,
+    <Divider />,
+    <Link href="/opportunities" className={useStyles().navtitle} tabIndex={0}>
+      Opportunities
+    </Link>,
+    <Divider />,
+    <a
+      className={useStyles().navtitle}
+      href="https://canvas.uw.edu/courses/1693188/pages/training-modules?module_item_id=18595279"
+      target="_blank"
+      tabIndex={0}
+    >
+      Training
+    </a>,
+    //*NOTE: Resources name was changed to Links*/
+    <Divider />,
+    <Link href="/resources" className={useStyles().navtitle} tabIndex={0}>
+      Links
+    </Link>,
+    <Divider />,
+    <a
+      href="https://canvas.uw.edu/courses/1693188/pages/protocols?module_item_id=18595280"
+      className={useStyles().navtitle}
+      target="_blank"
+      tabIndex={0}
+    >
+      Protocols
+    </a>,
+    <Divider />,
+    <Link href="/donations" className={useStyles().navtitle} tabIndex={0}>
+      Donations
+    </Link>,
+    <Divider />,
+    <Link href="/help" className={useStyles().navtitle} tabIndex={0}>
+      Help
+    </Link>,
+    <Divider />,
+    // sign in and out
+    user ? (
+      <>
+        <a
+          key="sign out"
+          onClick={() => {
+            signOut(auth)
+            setSignInPopupOpen(false);
+          }}
+          className={useStyles().navtitle}
+          tabIndex={0}
+        >
+          Sign Out
+          {isAdmin && (
+            <p style={{ color: "gold", margin: 0, fontSize: "12px" }}>ADMIN</p>
+          )}
+          {isLead && (
+            <p style={{ color: "gold", margin: 0, fontSize: "12px" }}>LEAD</p>
+          )}
+        </a>
+      </>
+    ) : (
+      <>
+        <a
+          key="sign in"
+          onClick={() => setSignInPopupOpen(true)}
+          className={useStyles().navtitle}
+          tabIndex={0}
+        >
+          Sign In
+        </a>
+      </>
+    ),
+  ];
+
   return (
-    <nav className={useStyles().root}>
+    <div className={useStyles().root}>
       <Link href="/" tabIndex={0}>
-        <Image
-          src={HeaderLogo}
+        <img
+          src="/header-logo.png"
           alt="University of Washington School of Medicine logo"
           className={useStyles().logo}
-          sizes="100vw"
-          width={200}
-          height={100}
         />
       </Link>
 
       <Hidden only={["lg", "md", "xl"]}>
         <BasicMenu
-          Links={
-            <Links
-              handleSignout={() => {
-                signOut(auth);
-                setSignInPopupOpen(false);
-              }}
-              openSignup={() => setSignInPopupOpen(true)}
-            />
-          }
+          links={links}
         />
       </Hidden>
       <Hidden only={["sm", "xs"]}>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <Links
-            handleSignout={() => {
-              signOut(auth);
-              setSignInPopupOpen(false);
-            }}
-            openSignup={() => setSignInPopupOpen(true)}
-          />
+        <div style={{ marginRight: "3em", display: "flex" }}>
+          {links.map((element: React.ReactNode, index) =>
+            <React.Fragment key={index}>
+              {element}
+            </React.Fragment>
+          )}
         </div>
       </Hidden>
       <SignInPopup
         open={isSignInPopupOpen}
         close={() => setSignInPopupOpen(false)}
       />
-    </nav>
+    </div>
   );
 };
 
