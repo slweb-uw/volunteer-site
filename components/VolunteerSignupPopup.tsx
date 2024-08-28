@@ -12,7 +12,8 @@ import {
     Select,
     MenuItem
   } from '@mui/material';
-import { volunteerTypes } from "../components/addModifyEventModal";
+
+import { volunteerTypes } from 'components/AddModifyEventModal';
 
 const useStyles = makeStyles({
     title: {
@@ -115,9 +116,6 @@ const VolunteerPopup = ({ open, handleClose, email, uid, addVolunteer, onDeleteV
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle className={classes.title}>Volunteer Information</DialogTitle>
       <DialogContent>
-        <Typography style={{ marginRight: '15px', fontStyle: 'italic', fontSize: "0.8rem" }}>
-          (*) Required fields
-        </Typography>
         <TextField
         label="Email"
         value={email}
@@ -189,19 +187,15 @@ const VolunteerPopup = ({ open, handleClose, email, uid, addVolunteer, onDeleteV
           fullWidth
           margin="normal"
         />
-        <FormControlLabel
-          style={{marginTop: "0.75rem", marginBottom: "1.5rem", display: 'flex', alignItems: 'flex-start'}}
-          control={<Checkbox color="primary" checked={certified} onChange={(e) => setCertified(e.target.checked)} style={{transform: 'scale(0.8)', marginTop: "0rem", paddingTop: "0", verticalAlign: "top"}}/>}
-          label={
-            <span style={{ fontSize: 'small', transform: 'scale(0.8)'}}>
-                I certify that I will complete the required <a href="https://canvas.uw.edu/courses/1693188/pages/training-modules?module_item_id=18595279" target='blank'>Training</a> and
-                the review appropriate <a href="https://canvas.uw.edu/courses/1693188/pages/protocols?module_item_id=18595280" target='blank'>Protocols</a> (see project details page for specifics).
-                <span style={{color: "red"}}>*</span>
-            </span>
-          }
-        />
+        <Typography style={{ marginRight: '15px', fontSize: 'small', fontSize: "0.9rem", marginTop: "0.5rem", marginBottom: "0.5rem"}}>
+           Click <a href="https://canvas.uw.edu/courses/1693188/modules" target='blank'>here</a> to learn more
+           about the service learning training and protocols.
+        </Typography>
+        <Typography style={{ marginRight: '15px', fontStyle: 'italic', fontSize: "0.7rem" }}>
+          (*) Required fields
+        </Typography>
         <div className={classes.buttonContainer}>
-            {volunteer ? ( 
+            {volunteer ? (
             <>
               <Button variant="outlined" onClick={() => onDeleteVolunteer(volunteer)} style={{marginRight: "1rem", color: "gray"}}>
                 Withdraw
@@ -214,9 +208,8 @@ const VolunteerPopup = ({ open, handleClose, email, uid, addVolunteer, onDeleteV
               <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isSubmitDisabled}>
                 Signup
               </Button>
-            )} 
+            )}
         </div>
-        
       </DialogContent>
     </Dialog>
   );

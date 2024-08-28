@@ -1,27 +1,35 @@
-import React, {useEffect} from "react";
-import { firebaseClient } from "../../firebaseClient";
-import { NextPage } from "next";
+import React, { useEffect, useState } from "react";
+import { getAppAnalytics } from "firebaseClient";
+import makeStyles from "@mui/styles/makeStyles";
 import { CssBaseline, Typography, Button, Tooltip } from "@mui/material";
-import createStyles from '@mui/styles/createStyles';
-import withStyles from '@mui/styles/withStyles';
+import withStyles from "@mui/styles/withStyles";
 import { withSnackbar } from "notistack";
 import IconBreadcrumbs from "components/breadcrumbs";
 import LocationSelector from "../../components/locationSelector";
 import { useRouter } from "next/router";
-import Link from 'next/link';
-import Events from "../events";
+import Events from "components/events";
 import HelpIcon from "@mui/icons-material/Help";
-import { DEFAULT_LOCATION, LAST_LOCATION_KEY, Location, setLocation } from "../../helpers/locations";
+import {
+  DEFAULT_LOCATION,
+  LAST_LOCATION_KEY,
+  Location,
+  setLocation,
+} from "../../helpers/locations";
 import { handleHelpButtonClick } from "../../helpers/navigation";
+import { useAuth } from "auth";
+import { logEvent } from "firebase/analytics";
+import AddModifyEventModal from "components/AddModifyEventModal";
+// import AddModifyEventModal from "components/AddModifyEventModal";
 
-interface Props {
-  classes?: any;
-  enqueueSnackbar: (message: string) => void;
-}
-
-const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
+const LocationPage = () => {
+  const classes = useStyles();
   const router = useRouter();
-  let location = (router.query.location && !Array.isArray(router.query.location)) ? router.query.location : DEFAULT_LOCATION;
+  const { isAdmin } = useAuth();
+  const [createEventOpen, setCreateEventOpen] = useState(false);
+  let location =
+    router.query.location && !Array.isArray(router.query.location)
+      ? router.query.location
+      : DEFAULT_LOCATION;
 
   /*const handleHelpButtonClick = () => {
     router.push({
@@ -32,10 +40,11 @@ const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
 
   //new logic using helper function
   const handleHelpButtonClickLocation = () => {
-    handleHelpButtonClick(router, 'fromLocationPage');
+    handleHelpButtonClick(router, "fromLocationPage");
   };
   useEffect(() => {
-    firebaseClient.analytics().logEvent("location_page_visit");
+    const analytics = getAppAnalytics();
+    logEvent(analytics, "location_page_visit");
   }, []);
 
   // Handle last location saving/loading
@@ -44,26 +53,52 @@ const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
       return;
     }
     const lastLocation = window.localStorage.getItem(LAST_LOCATION_KEY);
-    if (lastLocation && lastLocation !== DEFAULT_LOCATION && location === DEFAULT_LOCATION) {
+    if (
+      lastLocation &&
+      lastLocation !== DEFAULT_LOCATION &&
+      location === DEFAULT_LOCATION
+    ) {
       setLocation(router, lastLocation as Location);
     }
-  }, [router.isReady])
+  }, [router.isReady]);
 
   return (
     <div className={classes.page}>
       <CssBaseline />
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <div>
           <IconBreadcrumbs crumbs={["Opportunities"]} parentURL={undefined} />
           <Typography variant="h3" gutterBottom className={classes.header}>
             OPPORTUNITIES
           </Typography>
         </div>
-      <div>
-        <Tooltip title="Help" arrow>
+        <div style={{ display: "flex", gap: "1rem" }}>
+          {isAdmin && (
+            <>
+              <Button
+                variant="contained"
+                onClick={() => setCreateEventOpen(true)}
+              >
+                Create Project
+              </Button>
+              <AddModifyEventModal
+                open={createEventOpen}
+                handleClose={() => {
+                  setCreateEventOpen(false);
+                }}
+              />
+            </>
+          )}
+          <Tooltip title="Help" arrow>
             <Button
-              variant='outlined'
-              color='secondary'
+              variant="outlined"
+              color="secondary"
               startIcon={<HelpIcon />}
               onClick={handleHelpButtonClickLocation}
             >
@@ -72,18 +107,22 @@ const LocationPage: NextPage<Props> = ({ classes, enqueueSnackbar }) => {
           </Tooltip>
         </div>
       </div>
-      <img src={"../goldbar.png"} alt=""  className={classes.bar} style={{ }}/>
-      <div style={{
-        marginTop: "2em"
-      }}>
+      <img src={"../goldbar.png"} alt="" className={classes.bar} style={{}} />
+      <div
+        style={{
+          marginTop: "2em",
+        }}
+      >
         <LocationSelector defaultLocation={DEFAULT_LOCATION} />
       </div>
-      {location !== DEFAULT_LOCATION && <Events location={location as Location} />}
+      {location !== DEFAULT_LOCATION && (
+        <Events location={location as Location} />
+      )}
     </div>
   );
 };
 
-const styles = createStyles({
+const useStyles = makeStyles(() => ({
   page: {
     marginLeft: "auto",
     marginRight: "auto",
@@ -94,23 +133,22 @@ const styles = createStyles({
     paddingBottom: "5em",
   },
   header: {
-    fontFamily: "Encode Sans", 
-    fontWeight: 800, 
-    marginBottom: "0rem", 
+    fontFamily: "Encode Sans",
+    fontWeight: 800,
+    marginBottom: "0rem",
     fontSize: "2.5rem",
     "@media only screen and (max-width: 600px)": {
       fontSize: "2rem",
     },
   },
-  bar:{
-    width: "310px", 
-    height: "11px", 
+  bar: {
+    width: "310px",
+    height: "11px",
     marginBottom: "30px",
     "@media only screen and (max-width: 600px)": {
-      width: "245px", 
+      width: "245px",
     },
-  }
-});
+  },
+}));
 
-//@ts-ignore
-export default withStyles(styles)(withSnackbar(LocationPage));
+export default LocationPage;

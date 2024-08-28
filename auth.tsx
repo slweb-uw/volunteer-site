@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useContext, createContext } from 'react';
 import nookies from 'nookies';
-import { firebaseClient } from './firebaseClient';
+import { db } from 'firebaseClient';
+import { getDocs, collection} from 'firebase/firestore';
+import { getAuth, onIdTokenChanged, User } from 'firebase/auth';
+import { auth } from "firebaseClient"
 
 const AuthContext = createContext<{
-  user: firebaseClient.User | null;
+  user: User | null;
   isAdmin: boolean;
   isAuthorized: boolean;
   admins: any;
@@ -19,7 +22,7 @@ const AuthContext = createContext<{
 });
 
 export function AuthProvider({ children }: any) {
-  const [user, setUser] = useState<firebaseClient.User | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLead, setIsLead] = useState(false);
   const [isAuthorized, setIsAuthorized] = useState(false);
@@ -29,20 +32,18 @@ export function AuthProvider({ children }: any) {
 
   useEffect(() => {
     const fetchData = async () => {
-      const adminsSnapshot = await firebaseClient.firestore().collection('Admins').get();
+      const adminsSnapshot = await getDocs(collection(db,'Admins'));
       const adminsData: any = adminsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       adminsData.sort((a: any, b: any) => (a.email > b.email ? 1 : -1));
       setAdmins(adminsData);
-
-      const volunteersSnapshot = await firebaseClient.firestore().collection('Volunteers').get();
+      const volunteersSnapshot = await getDocs(collection(db,'Volunteers'));
       const authorizedUsersData: any = volunteersSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setAuthorizedUsers(authorizedUsersData);
-
-      const leadSnapshot = await firebaseClient.firestore().collection('Leads').get();
+      const leadSnapshot = await getDocs(collection(db,'Volunteers'));
       const leadData: any = leadSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setLeads(leadData);
 
-      const user = firebaseClient.auth().currentUser;
+      const user = getAuth().currentUser
       if (!user) {
         setUser(null);
         setIsAdmin(false);
@@ -64,7 +65,7 @@ export function AuthProvider({ children }: any) {
       nookies.set(undefined, 'token', token, {});
     };
 
-    const unsubscribe = firebaseClient.auth().onIdTokenChanged(() => {
+    const unsubscribe = onIdTokenChanged(auth, () => {
       fetchData();
     });
 

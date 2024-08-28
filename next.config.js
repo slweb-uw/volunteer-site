@@ -1,4 +1,10 @@
-module.exports = {
+// @ts-check
+ 
+/**
+ * @type {import('next').NextConfig}
+ */
+const nextConfig = {
+  reactStrictMode: true,
   typescript: {
     // !! WARN !!
     // Dangerously allow production builds to successfully complete even if
@@ -7,7 +13,7 @@ module.exports = {
     ignoreBuildErrors: true,
   },
   images: {
-    domains: ["lh3.googleusercontent.com"],
+    domains: ["lh3.googleusercontent.com", "firebasestorage.googleapis.com"],
   },
   webpack: (config, { isServer }) => {
     // Fixes npm packages that depend on `fs` module
@@ -31,4 +37,9 @@ module.exports = {
       },
     ]
   },
-}
+};
+
+const withAnalyzer = require("@next/bundle-analyzer")()
+
+module.exports =
+  process.env.ANALYZE === 'true' ? withAnalyzer(nextConfig) : nextConfig

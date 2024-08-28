@@ -1,5 +1,11 @@
-import { useState, useEffect } from "react"
-import { firebaseClient } from "firebaseClient"
+import React, { useState, useEffect } from "react";
+import {
+  signInWithPopup,
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "firebaseClient";
 import {
   Dialog,
   DialogTitle,
@@ -9,13 +15,13 @@ import {
   Tooltip,
   TextField,
   Divider,
-} from "@mui/material"
-import makeStyles from "@mui/styles/makeStyles"
-import HelpIcon from "@mui/icons-material/Help"
-import { useRouter } from "next/router"
-import { handleHelpButtonClick } from "helpers/navigation"
-import Image from "next/image"
-import Link from "next/link"
+} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import HelpIcon from "@mui/icons-material/Help";
+import { useRouter } from "next/router";
+import { handleHelpButtonClick } from "helpers/navigation";
+import Image from "next/image";
+import Link from "next/link";
 
 // const MicrosoftLogo = (
 //   <Avatar
@@ -33,46 +39,46 @@ import Link from "next/link"
 // )
 
 type SignInPopupProps = {
-  open: boolean
-  close: () => void
-}
+  open: boolean;
+  close: () => void;
+};
 
 const CONTENT = {
   LOGIN: "LOGIN",
   SIGNUP: "SIGNUP",
-}
+};
 
 export default function SignInPopup({ open, close }: SignInPopupProps) {
-  const classes = useStyles()
-  const [errorMessage, setErrorMessage] = useState("")
-  const [content, setContent] = useState(CONTENT.LOGIN)
-  const router = useRouter()
+  const classes = useStyles();
+  const [errorMessage, setErrorMessage] = useState("");
+  const [content, setContent] = useState(CONTENT.LOGIN);
+  const router = useRouter();
   const handleHelpButtonClickLocation = () => {
-    handleHelpButtonClick(router, "fromSignIn")
-    close()
-  }
+    handleHelpButtonClick(router, "fromSignIn");
+    close();
+  };
 
   useEffect(() => {
-    setErrorMessage("")
-  }, [open])
+    setErrorMessage("");
+  }, [open]);
 
   const handleSignInWithProvider = async (provider: any) => {
     try {
-      await firebaseClient.auth().signInWithPopup(provider)
-      close()
+      await signInWithPopup(auth, provider);
+      close();
     } catch (error) {
       if (
         error &&
         error.code == "auth/account-exists-with-different-credential"
       ) {
-        const option = provider.id == "google.com" ? "Microsoft" : "Google"
+        const option = provider.id == "google.com" ? "Microsoft" : "Google";
         setErrorMessage(
           "An account already exists with the same email address but different sign-in credentials. Please try signing-in using: " +
-            option
-        )
+            option,
+        );
       }
     }
-  }
+  };
 
   return (
     <Dialog open={open} onClose={close} fullWidth maxWidth="xs">
@@ -105,7 +111,7 @@ export default function SignInPopup({ open, close }: SignInPopupProps) {
         )}
       </DialogContent>
     </Dialog>
-  )
+  );
 }
 
 function LoginContent({
@@ -114,37 +120,39 @@ function LoginContent({
   openSignup,
   close,
 }: {
-  errorMessage: string
+  errorMessage: string;
   handleSignInWithProvider: (
-    provider: firebaseClient.auth.GoogleAuthProvider
-  ) => void
-  openSignup: () => void
-  close: () => void
+    provider: GoogleAuthProvider,
+  ) => void;
+  openSignup: () => void;
+  close: () => void;
 }) {
-  const classes = useStyles()
+  const classes = useStyles();
   const [formState, setFormState] = useState({
     email: "",
     password: "",
-  })
-  const [loginError, setLoginError] = useState<string | null>()
+  });
+  const [loginError, setLoginError] = useState<string | null>();
 
   async function handleSignInWithEmail(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    setLoginError(null)
+    e.preventDefault();
+    setLoginError(null);
     try {
-      await firebaseClient
-        .auth()
-        .signInWithEmailAndPassword(formState.email, formState.password)
-      close()
+      await signInWithEmailAndPassword(
+        auth,
+        formState.email,
+        formState.password,
+      );
+      close();
     } catch (err) {
-      setLoginError("Invalid email or password")
+      setLoginError("Invalid email or password");
     }
   }
 
   // clear errors when changing input values
   useEffect(() => {
-    if (loginError) setLoginError(null)
-  }, [formState])
+    if (loginError) setLoginError(null);
+  }, [formState]);
 
   return (
     <div className={classes.contentContainer}>
@@ -188,12 +196,12 @@ function LoginContent({
         variant="outlined"
         fullWidth
         onClick={() => {
-          const googleProvider = new firebaseClient.auth.GoogleAuthProvider()
+          const googleProvider = new GoogleAuthProvider();
           googleProvider.setCustomParameters({
             prompt: "consent",
-          })
-          googleProvider.addScope("email")
-          handleSignInWithProvider(googleProvider)
+          });
+          googleProvider.addScope("email");
+          handleSignInWithProvider(googleProvider);
         }}
         startIcon={
           <Image
@@ -231,7 +239,7 @@ function LoginContent({
             Microsoft
           </Button> */}
     </div>
-  )
+  );
 }
 
 const SIGNUP_ERRORS = {
@@ -243,45 +251,47 @@ const SIGNUP_ERRORS = {
     CODE: "auth/email-already-in-use",
     MESSAGE: "Email addressed already used by another account",
   },
-}
+};
 
 function SignupContent({
   openLogin,
   close,
 }: {
-  openLogin: () => void
-  close: () => void
+  openLogin: () => void;
+  close: () => void;
 }) {
-  const classes = useStyles()
+  const classes = useStyles();
   const [formState, setFormState] = useState({
     email: "",
     password: "",
-  })
+  });
 
-  const [errors, setErrors] = useState<string | null>()
+  const [errors, setErrors] = useState<string | null>();
 
   useEffect(() => {
-    if (errors) setErrors(null)
-  }, [formState])
+    if (errors) setErrors(null);
+  }, [formState]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
+    e.preventDefault();
     try {
-      await firebaseClient
-        .auth()
-        .createUserWithEmailAndPassword(formState.email, formState.password)
-      close()
+      await createUserWithEmailAndPassword(
+        auth,
+        formState.email,
+        formState.password,
+      );
+      close();
     } catch (err) {
       switch (err.code) {
         case SIGNUP_ERRORS.EMAIL_USED.CODE:
-          setErrors(SIGNUP_ERRORS.EMAIL_USED.MESSAGE)
-          break
+          setErrors(SIGNUP_ERRORS.EMAIL_USED.MESSAGE);
+          break;
         case SIGNUP_ERRORS.WEAK_PASSWORD.CODE:
-          setErrors(SIGNUP_ERRORS.WEAK_PASSWORD.MESSAGE)
-          break
+          setErrors(SIGNUP_ERRORS.WEAK_PASSWORD.MESSAGE);
+          break;
         default:
-          setErrors("Something went wrong try again")
-          break
+          setErrors("Something went wrong try again");
+          break;
       }
     }
   }
@@ -325,7 +335,7 @@ function SignupContent({
         </Link>
       </Typography>
     </div>
-  )
+  );
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -347,4 +357,4 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     gap: "1rem",
   },
-}))
+}));
