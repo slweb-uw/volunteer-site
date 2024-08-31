@@ -17,8 +17,6 @@ import {
   Tooltip,
   TextField,
   Divider,
-  Snackbar,
-  Input,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import HelpIcon from "@mui/icons-material/Help";
@@ -41,7 +39,6 @@ const CONTENT = {
 };
 
 export default function SignInPopup({ open, close }: SignInPopupProps) {
-  const classes = useStyles();
   const [errorMessage, setErrorMessage] = useState("");
   const [content, setContent] = useState(CONTENT.LOGIN);
   const router = useRouter();
@@ -60,7 +57,7 @@ export default function SignInPopup({ open, close }: SignInPopupProps) {
       close();
     } catch (error) {
       if (
-        error &&
+        error instanceof FirebaseError &&
         error.code == "auth/account-exists-with-different-credential"
       ) {
         const option = provider.id == "google.com" ? "Microsoft" : "Google";
@@ -367,10 +364,9 @@ function ForgotPasswordContent({ openLogin }: { openLogin: () => void }) {
   const [error, setError] = useState("");
   const { enqueueSnackbar } = useSnackbar();
 
-
   useEffect(() => {
-    setError("")
-  }, [email])
+    setError("");
+  }, [email]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -380,7 +376,7 @@ function ForgotPasswordContent({ openLogin }: { openLogin: () => void }) {
         autoHideDuration: 5000,
       });
     } catch (err) {
-      setError("user not found")
+      setError("user not found");
     }
   }
   return (
@@ -412,7 +408,7 @@ function ForgotPasswordContent({ openLogin }: { openLogin: () => void }) {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   form: {
     display: "flex",
     flexDirection: "column",
