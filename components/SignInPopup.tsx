@@ -4,6 +4,8 @@ import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  sendEmailVerification,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import { auth } from "firebaseClient";
 import {
@@ -15,6 +17,8 @@ import {
   Tooltip,
   TextField,
   Divider,
+  Snackbar,
+  Input,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import HelpIcon from "@mui/icons-material/Help";
@@ -22,21 +26,8 @@ import { useRouter } from "next/router";
 import { handleHelpButtonClick } from "helpers/navigation";
 import Image from "next/image";
 import Link from "next/link";
-
-// const MicrosoftLogo = (
-//   <Avatar
-//     alt="Microsoft Logo"
-//     src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg"
-//     style={{ borderRadius: 0 }}
-//   />
-// )
-
-// const GoogleLogo = (
-//   <Avatar
-//     alt="Google Logo"
-//     src="https://lh3.googleusercontent.com/COxitqgJr1sJnIDe8-jiKhxDx1FrYbtRHKJ9z_hELisAlapwE9LUPh6fcXIfb5vwpbMl4xl9H9TRFPc5NOO8Sb3VSgIBrfRYvW6cUA"
-//   />
-// )
+import { FirebaseError } from "firebase/app";
+import { useSnackbar } from "notistack";
 
 type SignInPopupProps = {
   open: boolean;
@@ -46,6 +37,7 @@ type SignInPopupProps = {
 const CONTENT = {
   LOGIN: "LOGIN",
   SIGNUP: "SIGNUP",
+  FORGOT_PASSWORD: "FORGOT_PASSWORD",
 };
 
 export default function SignInPopup({ open, close }: SignInPopupProps) {
@@ -83,7 +75,11 @@ export default function SignInPopup({ open, close }: SignInPopupProps) {
   return (
     <Dialog open={open} onClose={close} fullWidth maxWidth="xs">
       <DialogTitle style={{ display: "flex", justifyContent: "space-between" }}>
-        {content === CONTENT.LOGIN ? "Sign in" : "Sign up"}
+        {content === CONTENT.LOGIN
+          ? "Sign in"
+          : content === CONTENT.FORGOT_PASSWORD
+            ? "Forgot password"
+            : "Sign up"}
         <Tooltip title="Help" arrow>
           <Button
             variant="outlined"
@@ -101,8 +97,11 @@ export default function SignInPopup({ open, close }: SignInPopupProps) {
             errorMessage={errorMessage}
             handleSignInWithProvider={handleSignInWithProvider}
             openSignup={() => setContent(CONTENT.SIGNUP)}
+            openForgotPassword={() => setContent(CONTENT.FORGOT_PASSWORD)}
             close={close}
           />
+        ) : content === CONTENT.FORGOT_PASSWORD ? (
+          <ForgotPasswordContent openLogin={() => setContent(CONTENT.LOGIN)} />
         ) : (
           <SignupContent
             openLogin={() => setContent(CONTENT.LOGIN)}
@@ -115,16 +114,15 @@ export default function SignInPopup({ open, close }: SignInPopupProps) {
 }
 
 function LoginContent({
-  errorMessage,
   handleSignInWithProvider,
   openSignup,
+  openForgotPassword,
   close,
 }: {
   errorMessage: string;
-  handleSignInWithProvider: (
-    provider: GoogleAuthProvider,
-  ) => void;
+  handleSignInWithProvider: (provider: GoogleAuthProvider) => void;
   openSignup: () => void;
+  openForgotPassword: () => void;
   close: () => void;
 }) {
   const classes = useStyles();
@@ -133,6 +131,7 @@ function LoginContent({
     password: "",
   });
   const [loginError, setLoginError] = useState<string | null>();
+  const { enqueueSnackbar } = useSnackbar();
 
   async function handleSignInWithEmail(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -143,6 +142,10 @@ function LoginContent({
         formState.email,
         formState.password,
       );
+      enqueueSnackbar(`Sucessfully logged in ${formState.email}`, {
+        autoHideDuration: 4000,
+        variant: "success",
+      });
       close();
     } catch (err) {
       setLoginError("Invalid email or password");
@@ -184,6 +187,15 @@ function LoginContent({
           }
           value={formState.password}
         />
+
+        <Button
+          variant="text"
+          type="button"
+          onClick={openForgotPassword}
+          sx={{ fontSize: "0.7rem", padding: 0, color: "grey" }}
+        >
+          Forgot password
+        </Button>
         <Button variant="contained" type="submit">
           Sign in
         </Button>
@@ -261,6 +273,7 @@ function SignupContent({
   close: () => void;
 }) {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
   const [formState, setFormState] = useState({
     email: "",
     password: "",
@@ -275,23 +288,33 @@ function SignupContent({
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
-      await createUserWithEmailAndPassword(
+      const user = await createUserWithEmailAndPassword(
         auth,
         formState.email,
         formState.password,
       );
+      await sendEmailVerification(user.user);
+      enqueueSnackbar(
+        `Successfully registered ${user.user.email}, check email for verification`,
+        {
+          autoHideDuration: 5000,
+          variant: "success",
+        },
+      );
       close();
     } catch (err) {
-      switch (err.code) {
-        case SIGNUP_ERRORS.EMAIL_USED.CODE:
-          setErrors(SIGNUP_ERRORS.EMAIL_USED.MESSAGE);
-          break;
-        case SIGNUP_ERRORS.WEAK_PASSWORD.CODE:
-          setErrors(SIGNUP_ERRORS.WEAK_PASSWORD.MESSAGE);
-          break;
-        default:
-          setErrors("Something went wrong try again");
-          break;
+      if (err instanceof FirebaseError) {
+        switch (err.code) {
+          case SIGNUP_ERRORS.EMAIL_USED.CODE:
+            setErrors(SIGNUP_ERRORS.EMAIL_USED.MESSAGE);
+            break;
+          case SIGNUP_ERRORS.WEAK_PASSWORD.CODE:
+            setErrors(SIGNUP_ERRORS.WEAK_PASSWORD.MESSAGE);
+            break;
+          default:
+            setErrors("Something went wrong try again");
+            break;
+        }
       }
     }
   }
@@ -335,6 +358,58 @@ function SignupContent({
         </Link>
       </Typography>
     </div>
+  );
+}
+
+function ForgotPasswordContent({ openLogin }: { openLogin: () => void }) {
+  const classes = useStyles();
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const { enqueueSnackbar } = useSnackbar();
+
+
+  useEffect(() => {
+    setError("")
+  }, [email])
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    try {
+      await sendPasswordResetEmail(auth, email);
+      enqueueSnackbar(`check ${email}, for reset password email`, {
+        autoHideDuration: 5000,
+      });
+      openLogin()
+    } catch (err) {
+      setError("user not found")
+    }
+  }
+  return (
+    <form
+      className={classes.contentContainer}
+      onSubmit={(e) => handleSubmit(e)}
+    >
+      <Typography style={{ color: "red" }}>{error}</Typography>
+      <TextField
+        label="Email"
+        variant="outlined"
+        type="email"
+        required
+        onChange={(e) => setEmail(e.target.value)}
+        value={email}
+        autoFocus
+      />
+      <Button variant="contained" type="submit">
+        Send email
+      </Button>
+
+      <Typography className={classes.authLink}>
+        Go back to
+        <Link href="." onClick={openLogin}>
+          Login
+        </Link>
+      </Typography>
+    </form>
   );
 }
 
