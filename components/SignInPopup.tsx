@@ -379,7 +379,6 @@ function ForgotPasswordContent({ openLogin }: { openLogin: () => void }) {
       enqueueSnackbar(`check ${email}, for reset password email`, {
         autoHideDuration: 5000,
       });
-      openLogin()
     } catch (err) {
       setError("user not found")
     }
