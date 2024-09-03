@@ -6,6 +6,7 @@ import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
   sendPasswordResetEmail,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "firebaseClient";
 import {
@@ -230,23 +231,6 @@ function LoginContent({
           Register
         </Link>
       </Typography>
-      {/* <Button
-            variant="contained"
-            onClick={() => {
-              const microsoftProvider = new firebaseClient.auth.OAuthProvider(
-                "microsoft.com"
-              )
-              microsoftProvider.setCustomParameters({
-                prompt: "consent",
-              })
-              microsoftProvider.addScope("email")
-              handleSignInWithProvider(microsoftProvider)
-            }}
-            startIcon={MicrosoftLogo}
-            className={classes.button}
-          >
-            Microsoft
-          </Button> */}
     </div>
   );
 }
@@ -272,6 +256,7 @@ function SignupContent({
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const [formState, setFormState] = useState({
+    fullName: "",
     email: "",
     password: "",
   });
@@ -290,7 +275,14 @@ function SignupContent({
         formState.email,
         formState.password,
       );
-      await sendEmailVerification(user.user);
+
+      await Promise.all([
+        updateProfile(user.user, {
+          displayName: formState.fullName,
+        }),
+        sendEmailVerification(user.user),
+      ]);
+
       enqueueSnackbar(
         `Successfully registered ${user.user.email}, check email for verification`,
         {
@@ -323,6 +315,17 @@ function SignupContent({
       </div>
       <form className={classes.form} onSubmit={handleSubmit}>
         <TextField
+          label="Full name"
+          variant="outlined"
+          type="text"
+          required
+          onChange={(e) =>
+            setFormState((prev) => ({ ...prev, fullName: e.target.value }))
+          }
+          value={formState.fullName}
+          autoFocus
+        />
+        <TextField
           label="Email"
           variant="outlined"
           type="email"
@@ -331,7 +334,6 @@ function SignupContent({
             setFormState((prev) => ({ ...prev, email: e.target.value }))
           }
           value={formState.email}
-          autoFocus
         />
         <TextField
           label="Password"
