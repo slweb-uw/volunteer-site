@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 type ProjectData = {
   id: string;
   Title: string;
@@ -25,4 +27,18 @@ type ProjectData = {
   "Clinic Flow": string;
 };
 
-//Create event data type for events
+//Specific to events per project
+type EventData = {
+    calendar: string;
+    date: Timestamp;
+    endTime: string;
+    eventInformation: string;
+    leadEmail: string;
+    location: string;
+    openings: [{number, string}];
+    projectId: string;
+    projectName: string;
+    startTime: string;
+    volunteerQty: [string]
+    volunteerTypes: [string]
+};
