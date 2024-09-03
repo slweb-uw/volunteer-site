@@ -194,7 +194,7 @@ const monthDayOptions = generateLabelValuePairs(31);
 
 interface AddModifyEventModalProps {
   open: boolean;
-  event?: EventData;
+  event?: ProjectData;
   handleClose: any;
 }
 
@@ -465,7 +465,7 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
       return null;
     }
 
-    // CalendarEventData is superset of EventData used in the APIs
+    // CalendarEventData is superset of ProjectData used in the APIs
     const uploadEvent: CalendarEventData = {
       Title: title,
       "Project Description": description,

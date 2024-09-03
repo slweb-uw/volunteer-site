@@ -16,7 +16,7 @@ export const config = {
 //    3a. Add organization to cache
 
 // WHEN DONE:
-//  Use API routes for a componenet (popup modal) that would take an EventData object and
+//  Use API routes for a componenet (popup modal) that would take an ProjectData object and
 //  show them all in modifiable text boxes with a save button at the bottom.
 //  Should also have a way to add new fields and delete them
 

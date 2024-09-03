@@ -3,7 +3,7 @@ import { Typography } from "@mui/material";
 import RichTextField from "./richTextField";
 
 type EventDescriptionProps = {
-  event: EventData;
+  event: ProjectData;
 }
 
 const EventDescription: React.FC<EventDescriptionProps> = ({

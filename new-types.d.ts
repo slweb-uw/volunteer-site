@@ -1,4 +1,4 @@
-type EventData = {
+type ProjectData = {
   id: string;
   Title: string;
   Details: string;
@@ -25,3 +25,4 @@ type EventData = {
   "Clinic Flow": string;
 };
 
+//Create event data type for events
