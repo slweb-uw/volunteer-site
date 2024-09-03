@@ -136,7 +136,7 @@ const Header: React.FC<{}> = () => {
         <a
           key="sign out"
           onClick={() => {
-            signOut(auth)
+            signOut(auth);
             setSignInPopupOpen(false);
           }}
           className={useStyles().navtitle}
@@ -144,7 +144,11 @@ const Header: React.FC<{}> = () => {
         >
           Sign Out
           {isAdmin && (
-            <p style={{ color: "gold", margin: 0, fontSize: "12px" }}>ADMIN</p>
+            <>
+              <p style={{ color: "gold", margin: 0, fontSize: "12px" }}>
+                ADMIN
+              </p>
+            </>
           )}
           {isLead && (
             <p style={{ color: "gold", margin: 0, fontSize: "12px" }}>LEAD</p>
@@ -180,11 +184,9 @@ const Header: React.FC<{}> = () => {
       </Hidden>
       <Hidden only={["sm", "xs"]}>
         <div style={{ marginRight: "3em", display: "flex" }}>
-          {links.map((element: React.ReactNode, index) => 
-            <React.Fragment key={index}>
-             {element}
-            </React.Fragment>
-          )}
+          {links.map((element: React.ReactNode, index) => (
+            <React.Fragment key={index}>{element}</React.Fragment>
+          ))}
         </div>
       </Hidden>
       <SignInPopup
