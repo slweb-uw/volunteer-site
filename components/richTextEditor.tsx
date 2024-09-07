@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import sanitizeHtmlRichText from "../helpers/sanitizeHtmlRichText";
 import deepEqual from "deep-equal";
 
@@ -23,8 +23,8 @@ import {
   EditorContent,
   Editor,
   Mark,
-  mergeAttributes
-} from "@tiptap/react"
+  mergeAttributes,
+} from "@tiptap/react";
 // TipTap Extensions
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
@@ -64,11 +64,11 @@ import LinkOffIcon from "@mui/icons-material/LinkOff";
 
 type ToolProps = {
   editor: Editor;
-}
+};
 
 type ActiveToolProps = ToolProps & {
   setActive: (active: boolean) => void;
-}
+};
 
 // The delay, in milliseconds, before a transition is considered to have occurred
 // This is necessary because between the user switching focus from the text box
@@ -76,9 +76,7 @@ type ActiveToolProps = ToolProps & {
 // delay before the toolbar registers that it is active
 const BLUR_TRANSITION_DELAY = 100;
 
-const FormatTools: React.FC<ToolProps> = ({
-  editor
-}) => {
+const FormatTools: React.FC<ToolProps> = ({ editor }) => {
   const checkFormats = ["bold", "italic", "underline", "strike"];
   const formats: string[] = [];
   for (const format of checkFormats) {
@@ -95,14 +93,16 @@ const FormatTools: React.FC<ToolProps> = ({
         editor.chain().focus().unsetMark(format).run();
       }
     }
-  }
+  };
 
   return (
     <ToggleButtonGroup
       aria-label="text formatting"
       size="small"
       value={formats}
-      onChange={(event, newFormats: string[]) => { setFormats(newFormats); }}
+      onChange={(event, newFormats: string[]) => {
+        setFormats(newFormats);
+      }}
     >
       <ToggleButton value="bold">
         <Tooltip title="Bold text" placement="top">
@@ -125,15 +125,13 @@ const FormatTools: React.FC<ToolProps> = ({
         </Tooltip>
       </ToggleButton>
     </ToggleButtonGroup>
-  )
-}
+  );
+};
 
-const AlignmentTools: React.FC<ToolProps> = ({
-  editor
-}) => {
+const AlignmentTools: React.FC<ToolProps> = ({ editor }) => {
   const setFormat = (newFormat: string) => {
-    editor.chain().focus().setTextAlign(newFormat).run()
-  }
+    editor.chain().focus().setTextAlign(newFormat).run();
+  };
 
   return (
     <ToggleButtonGroup
@@ -141,7 +139,11 @@ const AlignmentTools: React.FC<ToolProps> = ({
       size="small"
       value={editor.getAttributes("paragraph")?.textAlign}
       exclusive
-      onChange={(event, newFormat: string | null) => { if (newFormat) { setFormat(newFormat); } }}
+      onChange={(event, newFormat: string | null) => {
+        if (newFormat) {
+          setFormat(newFormat);
+        }
+      }}
     >
       <ToggleButton value="left">
         <Tooltip title="Left align" placement="top">
@@ -164,12 +166,10 @@ const AlignmentTools: React.FC<ToolProps> = ({
         </Tooltip>
       </ToggleButton>
     </ToggleButtonGroup>
-  )
-}
+  );
+};
 
-const ListTools: React.FC<ToolProps> = ({
-  editor
-}) => {
+const ListTools: React.FC<ToolProps> = ({ editor }) => {
   const checkFormats = ["bulletList", "orderedList"];
 
   let activeFormat = "";
@@ -182,7 +182,7 @@ const ListTools: React.FC<ToolProps> = ({
 
   const setFormat = (newFormat: string) => {
     editor.chain().focus().toggleList(newFormat, "listItem").run();
-  }
+  };
 
   return (
     <ToggleButtonGroup
@@ -225,17 +225,12 @@ const ListTools: React.FC<ToolProps> = ({
         </Tooltip>
       </ToggleButton>
     </ToggleButtonGroup>
-  )
-}
+  );
+};
 
-const HistoryTools: React.FC<ToolProps> = ({
-  editor
-}) => {
+const HistoryTools: React.FC<ToolProps> = ({ editor }) => {
   return (
-    <ToggleButtonGroup
-      aria-label="history tools"
-      size="small"
-    >
+    <ToggleButtonGroup aria-label="history tools" size="small">
       <ToggleButton
         onClick={() => editor.chain().focus().undo().run()}
         disabled={!editor.can().undo()}
@@ -255,13 +250,10 @@ const HistoryTools: React.FC<ToolProps> = ({
         </Tooltip>
       </ToggleButton>
     </ToggleButtonGroup>
-  )
-}
+  );
+};
 
-const LinkTools: React.FC<ActiveToolProps> = ({
-  setActive,
-  editor
-}) => {
+const LinkTools: React.FC<ActiveToolProps> = ({ setActive, editor }) => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [url, setUrl] = React.useState<string | null>(null);
   const [urlErr, setUrlErr] = React.useState<boolean>(false);
@@ -272,7 +264,7 @@ const LinkTools: React.FC<ActiveToolProps> = ({
 
   useEffect(() => {
     setUrl(getSelectedUrl());
-  }, [getSelectedUrl()])
+  }, [getSelectedUrl()]);
 
   const setLink = () => {
     if (!url) {
@@ -295,9 +287,14 @@ const LinkTools: React.FC<ActiveToolProps> = ({
 
     // Note: rel attribute currently set automatically by TipTap
     // rel MUST be "noopener noreferrer nofollow" per sanitizeHtmlRichText
-    editor.chain().focus().extendMarkRange("link").setLink({href: url, target: "_blank"}).run();
+    editor
+      .chain()
+      .focus()
+      .extendMarkRange("link")
+      .setLink({ href: url, target: "_blank" })
+      .run();
     closePopover();
-  }
+  };
 
   const closePopover = () => {
     setUrlErr(false);
@@ -305,31 +302,25 @@ const LinkTools: React.FC<ActiveToolProps> = ({
     setUrl(getSelectedUrl());
     editor.chain().focus().unsetMark("textSelection").run();
     setActive(false);
-  }
+  };
 
   const openPopover = (event: React.MouseEvent<HTMLElement>) => {
     setActive(true);
     editor.chain().focus().setMark("textSelection").blur().run();
     setAnchorEl(event.currentTarget);
-  }
+  };
 
   return (
     <div>
-      <ToggleButtonGroup
-        aria-label="link tools"
-        size="small"
-      >
-        <ToggleButton
-          onClick={openPopover}
-          value="link"
-        >
+      <ToggleButtonGroup aria-label="link tools" size="small">
+        <ToggleButton onClick={openPopover} value="link">
           <Tooltip title="Add link" placement="top">
             <InsertLinkIcon />
           </Tooltip>
         </ToggleButton>
         <ToggleButton
           onClick={() => editor.chain().focus().unsetLink().run()}
-          disabled={!editor.isActive('link')}
+          disabled={!editor.isActive("link")}
           value="unlink"
         >
           <Tooltip title="Remove link" placement="top">
@@ -342,45 +333,46 @@ const LinkTools: React.FC<ActiveToolProps> = ({
         anchorEl={anchorEl}
         onClose={closePopover}
         anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'left',
+          vertical: "bottom",
+          horizontal: "left",
         }}
         PaperProps={{
           sx: {
-            width: "250px"
-          }
+            width: "250px",
+          },
         }}
       >
         <DialogContent sx={{ paddingBottom: 0 }}>
           <TextField
             value={url}
             error={urlErr}
-            helperText={"URL must start with one of the following:\n" + allowedSchemes.join(", ")}
-            onFocus={() => { setUrlErr(false); }}
-            onChange={(event) => { setUrl(event.currentTarget.value); }}
+            helperText={
+              "URL must start with one of the following:\n" +
+              allowedSchemes.join(", ")
+            }
+            onFocus={() => {
+              setUrlErr(false);
+            }}
+            onChange={(event) => {
+              setUrl(event.currentTarget.value);
+            }}
             label="Link URL"
             variant="standard"
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={setLink}>
-            Set Link
-          </Button>
+          <Button onClick={setLink}>Set Link</Button>
         </DialogActions>
       </Popover>
     </div>
-  )
-}
+  );
+};
 
 type ToolbarProps = ActiveToolProps & {
-  sx?: SxProps
-}
+  sx?: SxProps;
+};
 
-const Toolbar: React.FC<ToolbarProps> = ({
-  editor,
-  setActive,
-  sx
-}) => {
+const Toolbar: React.FC<ToolbarProps> = ({ editor, setActive, sx }) => {
   return (
     <Grid container spacing={2} sx={sx}>
       <Grid item>
@@ -399,8 +391,8 @@ const Toolbar: React.FC<ToolbarProps> = ({
         <HistoryTools editor={editor} />
       </Grid>
     </Grid>
-  )
-}
+  );
+};
 
 // A custom mark that allows us to highlight a text selection even when the editor is not focused
 // This is used to highlight selected text even when we are adding a link URL and focus changes
@@ -408,9 +400,13 @@ const TextSelection = Mark.create({
   name: "textSelection",
 
   renderHTML({ HTMLAttributes }) {
-    return ["span", mergeAttributes(HTMLAttributes, { style: "background-color: #c7e0ff;" }), 0];
-  }
-})
+    return [
+      "span",
+      mergeAttributes(HTMLAttributes, { style: "background-color: #c7e0ff;" }),
+      0,
+    ];
+  },
+});
 
 export type RichTextEditorOptions = {
   // True to make the editor read only, false to allow editing
@@ -428,7 +424,7 @@ export type RichTextEditorOptions = {
   onBlur?: () => void;
   // MUI system styles to apply to the toolbar
   toolbarSx?: SxProps;
-}
+};
 
 export type RichTextEditorProps = {
   // An HTML string representing the initial content of the editor, will be sanitized
@@ -442,14 +438,14 @@ export type RichTextEditorProps = {
   placeholder: string;
   // Optional options
   editorOptions?: RichTextEditorOptions;
-}
+};
 
 // Rich text editor built on TipTap
 const RichTextEditor: React.FC<RichTextEditorProps> = ({
   initialContent,
   output,
   placeholder,
-  editorOptions
+  editorOptions,
 }) => {
   const [focused, setFocused] = React.useState<boolean>(false);
   const [moused, setMoused] = React.useState<boolean>(false);
@@ -483,12 +479,12 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       Placeholder.configure({ placeholder }),
       Link.configure({
         openOnClick: false,
-        autolink: true
+        autolink: true,
       }),
-      TextSelection
+      TextSelection,
     ],
     editorProps: {
-      attributes: editorOptions?.attributes
+      attributes: editorOptions?.attributes,
     },
     editable: !(editorOptions?.readonly ?? false),
     onFocus: () => {
@@ -508,33 +504,38 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
      DO NOT EDIT THIS SECTION UNLESS YOU KNOW WHAT YOU ARE DOING
      AND USE EXTREME CAUTION EVEN IF YOU DO
      ***********************************************************/
-    content: sanitizeHtmlRichText(initialContent)
+    content: sanitizeHtmlRichText(initialContent),
     /***********************************************************
      ***********************************************************/
-  })
+  });
 
-  if (editorOptions?.onFocus || editorOptions?.onBlur) {
-    React.useEffect(() => {
+  React.useEffect(() => {
+    if (editorOptions?.onFocus || editorOptions?.onBlur) {
       if (focusedRef.current || toolbarActiveRef.current) {
         if (editorOptions?.onFocus) {
           editorOptions.onFocus();
         }
       } else if (editorOptions?.onBlur) {
         setTimeout(() => {
-          if (!focusedRef.current && !toolbarActiveRef.current && !mousedRef.current && editorOptions?.onBlur) {
+          if (
+            !focusedRef.current &&
+            !toolbarActiveRef.current &&
+            !mousedRef.current &&
+            editorOptions?.onBlur
+          ) {
             editorOptions.onBlur();
           }
         }, BLUR_TRANSITION_DELAY);
       }
-    }, [focused, toolbarActive, moused]);
-  }
+    }
+  }, [focused, toolbarActive, moused]);
 
   return (
     <Paper
       variant="outlined"
       sx={{
         margin: "10px",
-        padding: "10px"
+        padding: "10px",
       }}
       component="div"
       onMouseEnter={() => {
@@ -544,7 +545,13 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         setMoused(false);
       }}
     >
-      {editor && <Toolbar setActive={setToolbarActive} editor={editor} sx={editorOptions?.toolbarSx} />}
+      {editor && (
+        <Toolbar
+          setActive={setToolbarActive}
+          editor={editor}
+          sx={editorOptions?.toolbarSx}
+        />
+      )}
       <style global jsx>{`
         .ProseMirror-focused:focus {
           outline: none;
@@ -557,11 +564,9 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           pointer-events: none;
         }
       `}</style>
-      <EditorContent
-        editor={editor}
-      />
+      <EditorContent editor={editor} />
     </Paper>
-  )
-}
+  );
+};
 
 export default React.memo(RichTextEditor, deepEqual);

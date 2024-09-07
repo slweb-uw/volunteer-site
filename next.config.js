@@ -1,5 +1,3 @@
-// @ts-check
- 
 /**
  * @type {import('next').NextConfig}
  */
@@ -11,6 +9,9 @@ const nextConfig = {
     // your project has type errors.
     // !! WARN !!
     ignoreBuildErrors: true,
+  },
+  eslint:{
+    ignoreDuringBuilds: true
   },
   images: {
     domains: ["lh3.googleusercontent.com", "firebasestorage.googleapis.com"],

@@ -1,9 +1,11 @@
 import { NextPage } from "next";
-import { CssBaseline, Typography, Select, MenuItem, Grid, Button, Link, Divider } from "@mui/material";
-import createStyles from '@mui/styles/createStyles';
-import withStyles from '@mui/styles/withStyles';
+import { CssBaseline, Typography, Grid } from "@mui/material";
+import createStyles from "@mui/styles/createStyles";
+import withStyles from "@mui/styles/withStyles";
 import IconBreadcrumbs from "components/breadcrumbs";
-import HeadlineBar from "components/headlineBar";
+import Image from "next/image";
+import StudentVolunteersUrl from "public/studentVolunteers.png";
+import Goldbar from "public/goldbar.png";
 
 interface Props {
   classes?: any;
@@ -24,9 +26,12 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
       >
         WELCOME STUDENT VOLUNTEERS
       </Typography>
-      <img
-        src={"../goldbar.png"}
-        style={{ width: "535px", height: "10px", marginBottom: "5px" }}
+      <Image
+        src={Goldbar}
+        width={535}
+        height={10}
+        alt="UW gold bar"
+        style={{ marginBottom: "5px" }}
       />
       <Grid container spacing={2}>
         <Grid item xs={12} md={6} lg={8}>
@@ -43,35 +48,25 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
               communities! Sometimes we can get so caught up in our studies that
               we lose track of the reasons why we went into health care to begin
               with. Service learning can help.
-              <Typography
-                style={{
-                  fontSize: 16,
-                  marginTop: "20px",
-                  fontFamily: "Open Sans",
-                }}
-              >
-                <ul>
-                  <li>
-                    Take advantage of real-life opportunities to get involved.
-                  </li>{" "}
-                  {/* LINK TO Find Opportunities PAGE */}
-                  <li>
-                    Utilize the skills that you are gaining in the classroom to
-                    actualize your values.
-                  </li>
-                  <li>
-                    Take time to reflect on what medicine means in our world.
-                  </li>
-                  <li>
-                    Serve in the way that fits your interests - Clinical, Health
-                    Education, Mentorship, or Advocacy.
-                  </li>{" "}
-                  <li>
-                    Scratch that itch to do something positive in the world.
-                  </li>
-                </ul>
-              </Typography>
             </Typography>
+            <ul>
+              <li>
+                <Typography>
+                  Take advantage of real-life opportunities to get involved.
+                </Typography>
+              </li>{" "}
+              {/* LINK TO Find Opportunities PAGE */}
+              <li>
+                Utilize the skills that you are gaining in the classroom to
+                actualize your values.
+              </li>
+              <li>Take time to reflect on what medicine means in our world.</li>
+              <li>
+                Serve in the way that fits your interests - Clinical, Health
+                Education, Mentorship, or Advocacy.
+              </li>{" "}
+              <li>Scratch that itch to do something positive in the world.</li>
+            </ul>
           </div>
         </Grid>
         <Grid item xs={12} md={6} lg={4}>
@@ -83,20 +78,27 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
               marginTop: "1em",
             }}
           >
-            <img
+            <Image
               style={{
-                width: "466px",
-                height: "255px",
                 margin: "0px",
                 borderRadius: "10px",
                 objectFit: "cover",
               }}
-              src="/studentVolunteers.png"
+              src={StudentVolunteersUrl}
+              width={466}
+              height={255}
               alt="Student Volunteer Sample Image"
             />
           </div>
         </Grid>
-        <div style={{ display: "flex", justifyContent: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <Typography
             style={{
               fontWeight: 400,
@@ -116,16 +118,16 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
             surrounded by students and faculty who have such large hearts,
             helping hands and altruistic spirits. I can only hope to model those
             characteristics for the rest of my life.”
-            <Typography
-              style={{
-                fontWeight: 700,
-                fontSize: 20,
-                marginTop: "15px",
-                marginLeft: "20px",
-              }}
-            >
-              - Kierney Ross, Montana WWAMI
-            </Typography>
+          </Typography>
+          <Typography
+            style={{
+              fontWeight: 700,
+              fontSize: 20,
+              marginTop: "15px",
+              marginLeft: "20px",
+            }}
+          >
+            - Kierney Ross, Montana WWAMI
           </Typography>
         </div>
       </Grid>

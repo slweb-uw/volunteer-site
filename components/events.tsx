@@ -112,7 +112,6 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
   // load the events as the load more button is in view
   useEffect(() => {
     if (inView && !fetchingEvents) {
-      console.log("here");
       loadEvents(true);
     }
   }, [inView]);
@@ -122,9 +121,9 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
       <span>
         &nbsp;our&nbsp;
         <i>
-          <a style={{ color: "#85754D" }} href="/onboarding/">
+          <Link style={{ color: "#85754D" }} href="/onboarding/">
             Onboarding Instructions
-          </a>
+          </Link>
         </i>
         &nbsp;before signing up for an opportunity.
       </span>
@@ -177,9 +176,6 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
     }
 
     const next = await getDocs(q);
-
-    // add fetch data to state
-    // TODO: add event type
     const eventsToAdd: EventData[] = [];
     next.docs.slice(0, 10).forEach((document) => {
       let eventDoc = document.data() as EventData;

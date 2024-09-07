@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { getAppAnalytics } from "firebaseClient";
 import makeStyles from "@mui/styles/makeStyles";
 import { CssBaseline, Typography, Button, Tooltip } from "@mui/material";
-import withStyles from "@mui/styles/withStyles";
-import { withSnackbar } from "notistack";
 import IconBreadcrumbs from "components/breadcrumbs";
 import LocationSelector from "../../components/locationSelector";
 import { useRouter } from "next/router";
@@ -121,6 +119,7 @@ const LocationPage = () => {
     </div>
   );
 };
+
 
 const useStyles = makeStyles(() => ({
   page: {

@@ -10,16 +10,12 @@ import Link from "next/link";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: "flex",
     backgroundColor: "#4B2E83",
-    padding: "1em",
-    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    padding: "0.5rem",
     height: "3.75rem",
-    paddingTop: "5px",
-    paddingBottom: "5px",
     justifyContent: "space-between",
-    alignContent: "flex-end",
-    alignItems: "flex-start",
     [theme.breakpoints.up("md")]: {
       justifyContent: "space-between",
     },
@@ -37,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: "none",
     margin: "1em",
     marginLeft: "0.5em",
+    width: "fit-content",
     marginRight: "0.5em",
     paddingBottom: "5px",
     letterSpacing: ".01em",
@@ -62,6 +59,7 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
     cursor: "pointer",
     width: "25em",
+    height: "auto",
     minWidth: 5,
     paddingLeft: "10px",
     paddingTop: "5px",
@@ -89,18 +87,19 @@ const Divider = () => <span className={useStyles().divider}>/</span>;
 const Header: React.FC<{}> = () => {
   const { user, isAdmin, isLead } = useAuth();
   const [isSignInPopupOpen, setSignInPopupOpen] = useState(false);
+  const classes = useStyles()
 
   const links: React.ReactNode[] = [
-    <Link href="/" className={useStyles().navtitle} tabIndex={0}>
+    <Link href="/" className={classes.navtitle} tabIndex={0}>
       Home
     </Link>,
     <Divider />,
-    <Link href="/opportunities" className={useStyles().navtitle} tabIndex={0}>
+    <Link href="/opportunities" className={classes.navtitle} tabIndex={0}>
       Opportunities
     </Link>,
     <Divider />,
     <a
-      className={useStyles().navtitle}
+      className={classes.navtitle}
       href="https://canvas.uw.edu/courses/1693188/pages/training-modules?module_item_id=18595279"
       target="_blank"
       tabIndex={0}
@@ -109,24 +108,24 @@ const Header: React.FC<{}> = () => {
     </a>,
     //*NOTE: Resources name was changed to Links*/
     <Divider />,
-    <Link href="/resources" className={useStyles().navtitle} tabIndex={0}>
+    <Link href="/resources" className={classes.navtitle} tabIndex={0}>
       Links
     </Link>,
     <Divider />,
     <a
       href="https://canvas.uw.edu/courses/1693188/pages/protocols?module_item_id=18595280"
-      className={useStyles().navtitle}
+      className={classes.navtitle}
       target="_blank"
       tabIndex={0}
     >
       Protocols
     </a>,
     <Divider />,
-    <Link href="/donations" className={useStyles().navtitle} tabIndex={0}>
+    <Link href="/donations" className={classes.navtitle} tabIndex={0}>
       Donations
     </Link>,
     <Divider />,
-    <Link href="/help" className={useStyles().navtitle} tabIndex={0}>
+    <Link href="/help" className={classes.navtitle} tabIndex={0}>
       Help
     </Link>,
     <Divider />,
@@ -139,7 +138,7 @@ const Header: React.FC<{}> = () => {
             signOut(auth);
             setSignInPopupOpen(false);
           }}
-          className={useStyles().navtitle}
+          className={classes.navtitle}
           tabIndex={0}
         >
           Sign Out
@@ -160,7 +159,7 @@ const Header: React.FC<{}> = () => {
         <a
           key="sign in"
           onClick={() => setSignInPopupOpen(true)}
-          className={useStyles().navtitle}
+          className={classes.navtitle}
           tabIndex={0}
         >
           Sign In
@@ -180,7 +179,9 @@ const Header: React.FC<{}> = () => {
       </Link>
 
       <Hidden only={["lg", "md", "xl"]}>
-        <BasicMenu links={links} />
+        <BasicMenu
+          links={links}
+        />
       </Hidden>
       <Hidden only={["sm", "xs"]}>
         <div style={{ marginRight: "3em", display: "flex" }}>

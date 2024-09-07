@@ -20,49 +20,51 @@ export const config = {
 //  show them all in modifiable text boxes with a save button at the bottom.
 //  Should also have a way to add new fields and delete them
 
-export default async (req: NextApiRequest, resolve: NextApiResponse) => {
+export default async function handler(
+  req: NextApiRequest,
+  resolve: NextApiResponse,
+) {
   const {
     eventData,
     userToken,
   }: { eventData: CalendarEventData; userToken: string } = JSON.parse(req.body);
+  console.log(eventData);
 
   const token = await firebaseAdmin.auth().verifyIdToken(userToken);
   const user = await firebaseAdmin.auth().getUser(token.uid);
 
-  if (true) {
-    if (req.method === "POST") {
-      try {
-        let document = null;
-        if (eventData.id != null) {
-          document = firebaseAdmin
-            .firestore()
-            .collection(eventData.Location)
-            .doc(eventData.id);
-        }
-        const {
-          update,
-          updateEventId,
-        }: { update: boolean; updateEventId: string | null } = await checkEvent(
-          eventData,
-          document
-        );
-        const res = await addOrUpdateEvent(
-          update,
-          updateEventId,
-          eventData,
-          document
-        );
-        resolve.status(200).send(JSON.stringify(res));
-      } catch (err) {
-        resolve.status(400).send("Bad request: " + err);
+  console.log(user, "I am putting an event into the calendar")
+
+  if (req.method === "POST") {
+    try {
+      let document = null;
+      if (eventData.id != null) {
+        document = firebaseAdmin
+          .firestore()
+          .collection(eventData.Location)
+          .doc(eventData.id);
       }
-    } else {
-      resolve.status(400).send("Invalid request method");
+      const {
+        update,
+        updateEventId,
+      }: { update: boolean; updateEventId: string | null } = await checkEvent(
+        eventData,
+        document,
+      );
+      const res = await addOrUpdateEvent(
+        update,
+        updateEventId,
+        eventData,
+        document,
+      );
+      resolve.status(200).send(JSON.stringify(res));
+    } catch (err) {
+      resolve.status(400).send("Bad request: " + err);
     }
   } else {
-    resolve.status(400).send("Error: Unauthorized User");
+    resolve.status(400).send("Invalid request method");
   }
-};
+}
 
 /**
  * check if the given event already exists in firestore
@@ -94,7 +96,7 @@ async function addOrUpdateEvent(
   update: boolean,
   updateEventId: string | null,
   event: CalendarEventData,
-  document: any
+  document: any,
 ) {
   try {
     const body = createRequestBody(event, update);
@@ -102,10 +104,7 @@ async function addOrUpdateEvent(
       await document.update({ ...body });
       return body;
     } else {
-      document = firebaseAdmin
-        .firestore()
-        .collection(event.Location)
-        .doc();
+      document = firebaseAdmin.firestore().collection(event.Location).doc();
       body["id"] = document.id;
       await document.set(body);
 
@@ -134,6 +133,7 @@ async function addOrUpdateEvent(
     }
   } catch (err) {
     throw new Error("Error from change:" + err);
+
   }
 }
 

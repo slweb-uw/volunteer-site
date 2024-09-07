@@ -1,11 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { firebaseAdmin } from "../../firebaseAdmin";
-import { promises as fsPromises } from "fs";
 import { google } from "googleapis";
 import calendarSecret from "../../calendarSecret.json";
-import { useState, useEffect } from "react";
-import firebase from "firebase/app";
-import "firebase/firestore";
 
 const SCOPES = [
   "https://www.googleapis.com/auth/calendar",
@@ -41,7 +37,10 @@ interface Creds {
 // Add event to calendar, which will have some name, description, time,
 // location, and recurrence
 
-export default async (req: NextApiRequest, resolve: NextApiResponse) => {
+export default async function handler(
+  req: NextApiRequest,
+  resolve: NextApiResponse,
+) {
   const {
     userToken,
     eventData,
@@ -49,23 +48,13 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
 
   const token = await firebaseAdmin.auth().verifyIdToken(userToken);
   const user = await firebaseAdmin.auth().getUser(token.uid);
+  const snapshot = await firebaseAdmin.firestore().collection("Admins").get();
+  const admins = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
 
   // Admin authentication
-  const [admins, setAdmins] = useState([]);
-
-  useEffect(() => {
-    const fetchAdmins = async () => {
-      try {
-        const snapshot = await firebase.firestore().collection("Admins").get();
-        const adminsData = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setAdmins(adminsData);
-      } catch (error) {
-        console.error("Error fetching admins", error);
-      }
-    };
-  
-    fetchAdmins();
-  }, []);
   const isAdmin = admins.find((admin) => admin.email === user?.email);
 
   // Verify user and that user has custom claim "authorization" to edit the calendar
@@ -77,7 +66,7 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
           fcontent.client_email,
           undefined,
           fcontent.private_key,
-          SCOPES
+          SCOPES,
         );
         const _ = await jwtClient.authorize();
         const deleteEventId = await checkEvent(jwtClient, eventData);
@@ -96,7 +85,7 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
     console.log("Unauthorized user");
     resolve.status(400).send("Error: Unauthorized User");
   }
-};
+}
 
 /**
  * check if the given event already exists in the calendar.
@@ -139,7 +128,7 @@ async function checkEvent(auth: any, event: CalendarEventData) {
 async function deleteEvent(
   auth: any,
   deleteEventId: string | null,
-  event: CalendarEventData
+  event: CalendarEventData,
 ) {
   const calendar = google.calendar({ version: "v3", auth });
   try {

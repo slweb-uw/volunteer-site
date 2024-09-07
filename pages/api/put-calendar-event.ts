@@ -1,9 +1,5 @@
-import { useState, useEffect } from "react";
-import firebase from "firebase/app";
-import "firebase/firestore";
 import { NextApiRequest, NextApiResponse } from "next";
 import { firebaseAdmin } from "../../firebaseAdmin";
-import { promises as fsPromises } from "fs";
 import { google } from "googleapis";
 import calendarSecret from "../../calendarSecret.json";
 
@@ -40,7 +36,10 @@ interface Creds {
 
 // Add event to calendar, which will have some name, description, time,
 // location, and recurrence
-export default async (req: NextApiRequest, resolve: NextApiResponse) => {
+export default async function handler(
+  req: NextApiRequest,
+  resolve: NextApiResponse,
+) {
   const {
     eventData,
     userToken,
@@ -48,23 +47,19 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
 
   const token = await firebaseAdmin.auth().verifyIdToken(userToken);
   const user = await firebaseAdmin.auth().getUser(token.uid);
+  let admins = [];
+  try {
+    const snapshot = await firebaseAdmin.firestore().collection("Admins").get();
+    const adminsData = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    admins = adminsData;
+  } catch (error) {
+    console.error("Error fetching admins", error);
+  }
 
   // Admin authentication
-  const [admins, setAdmins] = useState([]);
-
-  useEffect(() => {
-    const fetchAdmins = async () => {
-      try {
-        const snapshot = await firebase.firestore().collection("Admins").get();
-        const adminsData = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        setAdmins(adminsData);
-      } catch (error) {
-        console.error("Error fetching admins", error);
-      }
-    };
-  
-    fetchAdmins();
-  }, []);
   const isAdmin = admins.find((admin) => admin.email === user?.email);
 
   // Verify user
@@ -76,7 +71,7 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
           fcontent.client_email,
           undefined,
           fcontent.private_key,
-          SCOPES
+          SCOPES,
         );
         const _ = await jwtClient.authorize();
         const {
@@ -84,13 +79,13 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
           updateEventId,
         }: { update: boolean; updateEventId: string | null } = await checkEvent(
           jwtClient,
-          eventData
+          eventData,
         );
         const res = await addOrUpdateEvent(
           jwtClient,
           update,
           updateEventId,
-          eventData
+          eventData,
         );
         resolve.status(200).send("Success:" + res);
       } catch (err) {
@@ -105,7 +100,7 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
     console.log("Error: Unauthorized User");
     resolve.status(400).send("Error: Unauthorized User");
   }
-};
+}
 
 /**
  * check if the given event already exists in the calendar.
@@ -151,7 +146,7 @@ async function addOrUpdateEvent(
   auth: any,
   update: boolean,
   updateEventId: string | null,
-  event: CalendarEventData
+  event: CalendarEventData,
 ) {
   const calendar = google.calendar({ version: "v3", auth });
   try {
@@ -204,7 +199,7 @@ function createRequestBody(event: CalendarEventData, update: boolean) {
 /**
  * the following is a simple test script for the above api.
  * comment out the firbase verification part before running the following script.
- * Use node to run the following script.
+ * Use node to run the following script.**/ 
 "use strict";
 exports.__esModule = true;
 var http_1 = require("http");
@@ -222,4 +217,22 @@ req.write(JSON.stringify({
     eventData: data
 }));
 req.end();
-*/
+  const [admins, setAdmins] = useState([]);
+
+  useEffect(() => {
+    const fetchAdmins = async () => {
+      try {
+        const snapshot = await firebase.firestore().collection("Admins").get();
+        const adminsData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setAdmins(adminsData);
+      } catch (error) {
+        console.error("Error fetching admins", error);
+      }
+    };
+
+    fetchAdmins();
+  }, []);
+

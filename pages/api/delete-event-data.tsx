@@ -1,8 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { firebaseAdmin } from "../../firebaseAdmin";
-import { useState, useEffect } from "react";
-import firebase from "firebase/app";
-import "firebase/firestore";
 
 export const config = {
   api: {
@@ -11,7 +8,10 @@ export const config = {
 };
 
 // Delete event
-export default async (req: NextApiRequest, resolve: NextApiResponse) => {
+export default async function hadler(
+  req: NextApiRequest,
+  resolve: NextApiResponse,
+) {
   const {
     userToken,
     eventData,
@@ -20,21 +20,17 @@ export default async (req: NextApiRequest, resolve: NextApiResponse) => {
   const token = await firebaseAdmin.auth().verifyIdToken(userToken);
   const user = await firebaseAdmin.auth().getUser(token.uid);
 
-  if (true) {
-    if (req.method === "POST") {
-      try {
-        const res = await deleteEvent(eventData);
-        resolve.status(200).send("Success:" + res);
-      } catch (err) {
-        resolve.status(400).send("Bad request: " + err);
-      }
-    } else {
-      resolve.status(400).send("Invalid request method");
+  if (req.method === "POST") {
+    try {
+      const res = await deleteEvent(eventData);
+      resolve.status(200).send("Success:" + res);
+    } catch (err) {
+      resolve.status(400).send("Bad request: " + err);
     }
   } else {
-    resolve.status(400).send("Error: Unauthorized User");
+    resolve.status(400).send("Invalid request method");
   }
-};
+}
 
 /**
  * delete an event in firestore
