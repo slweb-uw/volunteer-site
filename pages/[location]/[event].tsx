@@ -73,7 +73,7 @@ const RichEventField: React.FC<RichEventFieldProps> = ({
         <Typography variant="h6" style={{ fontWeight: 600 }}>
           {name}
         </Typography>
-        <RichTextField sx={sx} value={data} variant="body1" component="div"/>
+        <RichTextField sx={sx} value={data}/>
       </Box>
     </>
   );
