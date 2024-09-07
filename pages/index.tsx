@@ -1,8 +1,8 @@
-import React, { useEffect } from "react"
-import Image from "next/image"
-import MobileOutReachSrc from "../public/Mobile_Outreach_Clinic_resized.jpg"
-import ServeWithUsSrc from  "../public/serve.jpg"
-import CommunityPartnersSrc from "../public/communityPartners.jpg"
+import React, { useEffect } from "react";
+import Image from "next/image";
+import MobileOutReachSrc from "../public/Mobile_Outreach_Clinic_resized.jpg";
+import ServeWithUsSrc from "../public/serve.jpg";
+import CommunityPartnersSrc from "../public/communityPartners.jpg";
 import ProfileIcon from "public/profile-icon.png";
 import MailIcon from "public/mail-icon.png";
 import {
@@ -383,7 +383,7 @@ const App: React.FC<{}> = () => {
                 src="./volunteerProviders.jpg"
                 style={{ height: "200px", width: "301px", objectFit: "cover" }}
                 alt="University District Street Medicine volunteers"
-              ></CardMedia>
+              />
               <CardActionArea
                 href="/welcome/volunteerProviders"
                 className={classes.cardhover}

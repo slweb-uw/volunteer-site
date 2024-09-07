@@ -1,9 +1,8 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useState, Fragment } from "react";
 import { useSnackbar } from "notistack";
 import { Theme } from "@mui/material/styles";
 import withStyles from "@mui/styles/withStyles";
 import CloseIcon from "@mui/icons-material/Close";
-import { useRouter } from "next/router";
 import {
   Dialog,
   DialogTitle,
@@ -30,20 +29,20 @@ import {
   deleteObject,
 } from "firebase/storage";
 import { getAuth } from "firebase/auth";
-import { storage, db } from "firebaseClient";
-import AdapterDateFns from "@mui/lab/AdapterDateFns";
-import { DateTimePicker, LocalizationProvider, LoadingButton } from "@mui/lab";
+import { storage } from "firebaseClient";
+import { LoadingButton } from "@mui/lab";
 import { DialogActions } from "@mui/material";
-import { rrulestr, RRule } from "rrule";
 import { Guid } from "guid-typescript";
 import EventImage from "components/eventImage";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
-import EventCard from "components/eventCard";
 import RichTextEditor from "components/richTextEditor";
 import CollapsibleRichTextEditor from "components/collapsibleRichTextEditor";
 import makeStyles from "@mui/styles/makeStyles";
-import { doc, getDoc } from "firebase/firestore";
+import { serverTimestamp, Timestamp } from "firebase/firestore";
+import { useParams } from "next/navigation";
+import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
+import { setLocation } from "helpers/locations";
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -109,17 +108,6 @@ const ModalDialogContent = withStyles((theme: Theme) => ({
   },
 }))(DialogContent);
 
-const generateLabelValuePairs = (
-  upper: number,
-): { label: string; value: string }[] => {
-  const ret: { label: string; value: string }[] = [];
-  for (let i = 1; i <= upper; i++) {
-    const str = i + "";
-    ret.push({ label: str, value: str });
-  }
-  return ret;
-};
-
 export const volunteerTypes = [
   "School of Medicine",
   "School of Dentistry",
@@ -144,20 +132,21 @@ const locations = [
 ];
 
 const initialFields = [
-  "Contact Information",
+  "Types of Volunteers Needed",
   "Website Link",
-  "Address;Parking;Directions",
-  "Clinic Flow",
-  "Clinic Schedule",
+  "Contact Information",
+  "HS Grad Student Information",
+  "Project Description",
   "Project Specific Training",
+  "Provider Information",
   "Services Provided",
   "Tips and Reminders",
-  "Provider Information",
-  "HS Grad Student Information",
-  "Undergraduate Information",
-  "Cancellation Policy",
-  "Protocols",
-];
+  "Clinic Schedule",
+  "Clinic Flow",
+  "Address/Parking/Directions",
+] as const;
+
+
 
 const reservedFields = new Set([
   "Title",
@@ -179,18 +168,6 @@ const reservedFields = new Set([
   "SignupActive",
   "Sign-up Link",
 ]);
-
-const weekdayOptions = [
-  { label: "Monday", value: "MO" },
-  { label: "Tuesday", value: "TU" },
-  { label: "Wednesday", value: "WE" },
-  { label: "Thursday", value: "TH" },
-  { label: "Friday", value: "FR" },
-  { label: "Saturday", value: "SA" },
-  { label: "Sunday", value: "SU" },
-];
-const monthOptions = generateLabelValuePairs(12);
-const monthDayOptions = generateLabelValuePairs(31);
 
 interface AddModifyEventModalProps {
   open: boolean;
@@ -226,7 +203,9 @@ interface RichFieldEditorProps {
   setField: (fieldName: string, output: string) => void;
 }
 
-const RichFieldEditor = React.memo((props: RichFieldEditorProps) => {
+const RichFieldEditor = React.memo(function RichFieldEditor(
+  props: RichFieldEditorProps,
+) {
   return (
     <CollapsibleRichTextEditor
       innerProps={{
@@ -350,33 +329,86 @@ const CropModal = (props: CropModalProps) => {
   );
 };
 
+const organizationList = [
+  "Advocacy",
+  "Clinical",
+  "Health Education",
+  "Mentorship & Outreact",
+];
+
+type FormFields = {
+  Title: string;
+  Organization: string;
+  cardImageURL?: string;
+  imageURL?: string;
+  SignupActive: boolean;
+  timestamp: Timestamp;
+  Location: string;
+  "Types of Volunteers Needed": string[];
+  "Website Link"?: string;
+  "Contact Information"?: string;
+  "HS Grad Student Information": string;
+  "Project Description": string;
+  "Project Specific Training"?: string;
+  "Provider Information"?: string;
+  "Services Provided"?: string;
+  "Tips and Reminders"?: string;
+  "Clinic Schedule": string;
+  "Clinic Flow": string;
+  "Address/Parking/Directions": string;
+  Protocols: string;
+};
+
 const AddModifyEventModal = (props: AddModifyEventModalProps) => {
   const { event, open, handleClose } = props;
+  const { register, handleSubmit, watch, formState } = useForm<FormFields>({
+    defaultValues: {
+      Title: event?.Title ?? "",
+      Organization: event?.Organization ?? "",
+      cardImageURL: event?.cardImageURL ?? "",
+      imageURL: event?.cardImageURL ?? "",
+      SignupActive: event?.SignupActive ?? false,
+      "Types of Volunteers Needed": event?.["Types of Volunteers Needed"] ?? [],
+      "Website Link": event?.["Website Link"] ?? "",
+      "Contact Information": event?.["Website Link"] ?? "",
+      "HS Grad Student Information":
+        event?.["HS Grad Student Information"] ?? "",
+      "Project Description": event?.["Project Description"] ?? "",
+      "Project Specific Training": event?.["Project Description"] ?? "",
+      "Provider Information": event?.["Provider Information"] ?? "",
+      "Services Provided": event?.["Services Provided"] ?? "",
+      "Tips and Reminders": event?.["Tips and Reminders"] ?? "",
+      "Clinic Schedule": event?.["Clinic Schedule"] ?? "",
+      "Clinic Flow": event?.["Clinic Flow"] ?? "",
+      "Address/Parking/Directions": event?.["Address/Parking/Directions"] ?? "",
+      Protocols: event?.Protocols ?? "",
+    },
+  });
   const classes = useStyles();
-
-  // Event fields
-  const [recurrenceFromProps, setRecurrenceFromProps] = useState<
-    string[] | undefined
-  >();
-
-  const router = useRouter();
-  const [organizationList, setOrganizationList] = useState<string[]>([]);
-  const [title, setTitle] = useState<string | undefined>();
-  const [description, setDescription] = useState<string | undefined>();
-  const [details, setDetails] = useState<string | null>(null);
-  const [organization, setOrganization] = useState<string | undefined>();
-  const [location, setLocation] = useState<string | undefined>();
-  const [volunteersNeeded, setVolunteersNeeded] = useState<string[]>([]);
-  const [startDateTime, setStartDateTime] = useState<Date | null>(null);
-  const [endDateTime, setEndDateTime] = useState<Date | null>(null);
-  const [imageURL, setImageURL] = useState<string | undefined>();
-  const [cardImageURL, setCardImageURL] = useState<string | undefined>();
+  const [projectName, setProjectName] = useState<string>(event?.Title ?? "");
+  const [projectLocation, setProjectLocation] = useState(event?.Location ?? "");
+  const [description, setDescription] = useState<string>(
+    event?.["Project Description"] ?? "",
+  );
+  const [organization, setOrganization] = useState<string>(
+    event?.Organization ?? "",
+  );
+  const [volunteersNeeded, setVolunteersNeeded] = useState<string[]>(
+    event?.["Types of Volunteers Needed"] ?? [],
+  );
+  const [imageURL, setImageURL] = useState<string>(event?.imageURL ?? "");
+  const [cardImageURL, setCardImageURL] = useState<string>(
+    event?.cardImageURL ?? "",
+  );
   const [modalState, setModalState] = useState(ModalState.Main);
   const [cropImage, setCropImage] = useState<string | undefined>();
-  const [signupActive, setSignupActive] = useState(false);
+  const [signupActive, setSignupActive] = useState(
+    event?.SignupActive ?? false,
+  );
   const { enqueueSnackbar } = useSnackbar();
   const [isCropperOpen, setIsCropperOpen] = useState(false);
   const [mutating, setMutating] = useState(false);
+  const { location } = useParams();
   const [otherFields, dispatchOtherFields] = React.useReducer(
     (state: any, action: any) => {
       const { type, field, value } = action;
@@ -393,31 +425,6 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
     },
     {},
   );
-
-  // Recurrence fields
-  const [recurrenceType, setRecurrencyType] = useState<string>("Daily");
-  const [recEndDate, setRecEndDate] = useState<Date | null>(null);
-  const [interval, setInterval] = useState<number | null>(null);
-  const [weekdays, setWeekdays] = useState<Record<string, boolean>>({
-    SU: false,
-    MO: false,
-    TU: false,
-    WE: false,
-    TH: false,
-    FR: false,
-    SA: false,
-  });
-  const initialMonths: Record<string, boolean> = {};
-  for (let i = 1; i <= 12; i++) {
-    initialMonths[i] = false;
-  }
-  const [months, setMonths] = useState<Record<string, boolean>>(initialMonths);
-  const initialMonthDays: Record<string, boolean> = {};
-  for (let i = 1; i <= 31; i++) {
-    initialMonths[i] = false;
-  }
-  const [monthDays, setMonthDays] =
-    useState<Record<string, boolean>>(initialMonthDays);
 
   const deleteImage = async (
     url: string | undefined,
@@ -460,124 +467,31 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
     console.log(imageFile);
   };
 
-  const compileEvent = (): CalendarEventData | null => {
-    if (!title || !description || !location || !organization) {
+  const compileEvent = (): ProjectRequest | null => {
+    if (!projectName || !description || !location || !organization) {
       return null;
     }
 
     // CalendarEventData is superset of EventData used in the APIs
-    const uploadEvent: CalendarEventData = {
-      Title: title,
+    const uploadEvent: ProjectRequest = {
+      Title: projectName,
       "Project Description": description,
       Organization: organization,
-      Location: location,
-      timestamp: new Date(),
+      Location: projectLocation,
+      imageURL,
+      cardImageURL,
+      SignupActive: signupActive,
+      timestamp: serverTimestamp(),
     };
 
-    uploadEvent.Details = details ? details : "";
-    if (startDateTime && endDateTime) {
-      uploadEvent.StartDate = startDateTime.toISOString();
-      uploadEvent.EndDate = endDateTime.toISOString();
-    }
-
-    if (event && event.id) {
-      // If there is an id, the API knows to update the event
-      uploadEvent.id = event.id;
-    }
-
     // Generate recurrence if no event or event doesn't have a Recurrence
-    if (recEndDate && (!props.event || !props.event["Recurrence"])) {
-      if (recurrenceType === "Daily" && interval) {
-        const rule = new RRule({
-          freq: RRule.DAILY,
-          interval,
-          dtstart: startDateTime,
-          until: recEndDate,
-        });
-        uploadEvent.Recurrence = [rule.toString()];
-      } else if (recurrenceType === "WEEKLY") {
-        const ruleDays = [];
-        if (weekdays["MO"]) {
-          ruleDays.push(RRule.MO);
-        }
-        if (weekdays["TU"]) {
-          ruleDays.push(RRule.TU);
-        }
-        if (weekdays["WE"]) {
-          ruleDays.push(RRule.WE);
-        }
-        if (weekdays["TH"]) {
-          ruleDays.push(RRule.TH);
-        }
-        if (weekdays["FR"]) {
-          ruleDays.push(RRule.FR);
-        }
-        if (weekdays["SA"]) {
-          ruleDays.push(RRule.SA);
-        }
-        if (weekdays["SU"]) {
-          ruleDays.push(RRule.SU);
-        }
-        const rule = new RRule({
-          freq: RRule.WEEKLY,
-          interval: interval ?? 1,
-          byweekday: ruleDays,
-          dtstart: startDateTime,
-          until: recEndDate,
-        });
-        uploadEvent.Recurrence = [rule.toString()];
-      } else if (recurrenceType === "MONTHLY") {
-        const bymonthday: number[] = [];
-        Object.keys(monthDays).forEach((day) => {
-          if (monthDays[day]) {
-            bymonthday.push(parseInt(day));
-          }
-        });
-        const rule = new RRule({
-          freq: RRule.MONTHLY,
-          bymonthday,
-          dtstart: startDateTime,
-          until: recEndDate,
-        });
-        uploadEvent.Recurrence = [rule.toString()];
-      } else {
-        // Yearly recurrence
-        const bymonthday: number[] = [];
-        Object.keys(monthDays).forEach((day) => {
-          if (monthDays[day]) {
-            bymonthday.push(parseInt(day));
-          }
-        });
-        const bymonth: number[] = [];
-        Object.keys(months).forEach((month) => {
-          if (months[month]) {
-            bymonthday.push(parseInt(month));
-          }
-        });
-        const rule = new RRule({
-          freq: RRule.YEARLY,
-          bymonth,
-          bymonthday,
-          dtstart: startDateTime,
-          until: recEndDate,
-        });
-        uploadEvent.Recurrence = [rule.toString()];
-      }
-    }
-
     // Set other fields
-    Object.keys(otherFields).forEach((fieldName) => {
-      const cur = otherFields[fieldName];
-      if (typeof cur !== "undefined") {
-        uploadEvent[fieldName] = cur;
-      }
-    });
     uploadEvent.imageURL = imageURL;
     uploadEvent.cardImageURL = cardImageURL;
     if (volunteersNeeded) {
       uploadEvent["Types of Volunteers Needed"] = volunteersNeeded;
     }
-    uploadEvent.SignupActive = signupActive ? true : false;
+    uploadEvent.SignupActive = signupActive;
     return uploadEvent;
   };
 
@@ -586,21 +500,9 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
     setMutating(true);
     const uploadEvent = compileEvent();
 
-    if (!uploadEvent?.SignupActive && !event?.SignupActive) {
-      uploadEvent.SignupActive = false;
-    }
     if (!uploadEvent) {
       alert("Error: missing required field.");
     }
-    const calendarPromise = async (calEvent: any, userToken: any) => {
-      if (calEvent.StartDate) {
-        fetch("/api/put-calendar-event", {
-          method: "POST",
-          body: JSON.stringify({ eventData: calEvent, userToken }),
-        });
-      }
-    };
-
     getAuth()
       .currentUser?.getIdToken()
       .then(async (userToken) => {
@@ -609,116 +511,18 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
             method: "POST",
             body: JSON.stringify({ eventData: uploadEvent, userToken }),
           });
-          const addedEvent = (await res.json()) as CalendarEventData;
-          console.log(res)
-          if (addedEvent) {
-            console.log("here")
-            await calendarPromise(addedEvent, userToken);
-            enqueueSnackbar(`${uploadEvent.Title} Successfully created`, {
-              autoHideDuration: 4000,
-            });
-            router.push(`/${addedEvent.Location}/${addedEvent.id}`);
+
+          if (!res.ok) {
+            console.log(await res.json());
             setMutating(false);
-            // We refresh to update the page. TODO: add/update event to page via callback
           }
+          setMutating(false);
+          enqueueSnackbar("event created", { variant: "success" });
         } catch (e) {
           setMutating(false);
           alert(e);
         }
       });
-  };
-
-  useEffect(() => {
-    // Reset fields when event prop is updated
-    const newFields: Record<string, string | string[] | undefined> = {};
-    initialFields.forEach((f) => {
-      newFields[f] = undefined;
-    });
-    if (props.event) {
-      if (
-        props.event.Recurrence &&
-        typeof props.event.Recurrence === "object"
-      ) {
-        setRecurrenceFromProps(props.event.Recurrence);
-      }
-      if (
-        props.event["StartDate"] &&
-        typeof props.event["StartDate"] === "string"
-      ) {
-        setStartDateTime(new Date(props.event["StartDate"]));
-      }
-      if (
-        props.event["EndDate"] &&
-        typeof props.event["EndDate"] === "string"
-      ) {
-        setEndDateTime(new Date(props.event["EndDate"]));
-      }
-      if (props.event.Details) {
-        setDetails(props.event.Details);
-      }
-      setSignupActive(props.event.SignupActive);
-      setImageURL(props.event.imageURL);
-      setCardImageURL(props.event.cardImageURL);
-      setTitle(props.event.Title);
-      setDescription(props.event["Project Description"]);
-      setOrganization(props.event.Organization);
-      setVolunteersNeeded(props.event["Types of Volunteers Needed"] ?? []);
-      Object.keys(props.event).forEach((key) => {
-        if (props.event && !reservedFields.has(key)) {
-          newFields[key] = props.event[key];
-        }
-      });
-    }
-    dispatchOtherFields({ type: "set_all", value: newFields });
-  }, [props.event]);
-
-  useEffect(() => {
-    // Reset location when location prop is updated
-    if (props.location && typeof props.location === "string") {
-      setLocation(props.location);
-    }
-  }, [props.location]);
-
-  useEffect(() => {
-    // Update organization list when the location changes
-    if (location && typeof location === "string") {
-      const docRef = doc(db, "cache", location);
-      getDoc(docRef)
-        .then((doc) => {
-          const cachedOrganizations = doc.data();
-          setOrganizationList(
-            cachedOrganizations ? Object.keys(cachedOrganizations) : [],
-          ); // Doc has fields which are the organizations
-        })
-        .catch(() => {
-          alert(
-            "Error fetching organizations for location. Please refresh the page.",
-          );
-        });
-    }
-  }, [location]);
-
-  const handleWeekdaysChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setWeekdays({
-      ...weekdays,
-      [event.target.name]: event.target.checked,
-    });
-  };
-
-  const handleMonthsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setMonths({
-      ...months,
-      [event.target.name]: event.target.checked,
-    });
-  };
-
-  const handleMonthDaysChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setMonthDays({
-      ...monthDays,
-      [event.target.name]: event.target.checked,
-    });
   };
 
   const setField = React.useCallback(
@@ -794,22 +598,9 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
             <Grid container spacing={5}>
               <Grid item xs={12} sm={6}>
                 <TextField
-                  required
+                  {...register("Title", { required: true })}
                   fullWidth
                   label="Project Name"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value as string)}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  multiline
-                  fullWidth
-                  label="Project Summary"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value as string)}
                 />
               </Grid>
 
@@ -818,8 +609,8 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
                   Detailed Project Description
                 </Typography>
                 <RichTextEditor
-                  initialContent={event?.Details ?? ""}
-                  output={setDetails}
+                  initialContent={event?.["Project Description"] ?? ""}
+                  output={(value) => setDescription(value ?? "")}
                   editorOptions={{
                     attributes: {
                       style: "min-height: 250px",
@@ -834,14 +625,15 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
                   <InputLabel>Location</InputLabel>
                   <Select
                     fullWidth
-                    value={location}
+                    {...register("Location", { required: true })}
+                    value={projectLocation}
+                    onChange={e => setProjectLocation(e.target.value)}
                     label="Location *"
-                    onChange={(e) => {
-                      setLocation(e.target.value as string);
-                    }}
                   >
                     {locations.map((loc) => (
-                      <MenuItem key={loc} value={loc}>{loc}</MenuItem>
+                      <MenuItem key={loc} value={loc}>
+                        {loc}
+                      </MenuItem>
                     ))}
                   </Select>
                   <FormHelperText>Required</FormHelperText>
@@ -856,11 +648,13 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
                     value={organization}
                     label="Organization *"
                     onChange={(e) => {
-                      setOrganization(e.target.value as string);
+                      setOrganization(e.target.value);
                     }}
                   >
                     {organizationList.map((organization) => (
-                      <MenuItem value={organization} key={organization}>{organization}</MenuItem>
+                      <MenuItem value={organization} key={organization}>
+                        {organization}
+                      </MenuItem>
                     ))}
                   </Select>
                   <FormHelperText>Required</FormHelperText>
@@ -904,352 +698,41 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
                 </FormControl>
               </Grid>
 
-              {Object.keys(otherFields).map((fieldName) => {
-                const val = otherFields[fieldName];
+              {initialFields.map((fieldName) => {
                 return (
                   <Grid key={fieldName} item xs={12} sm={6}>
-                    <Typography style={{ paddingLeft: "10px" }}>
-                      {fieldName}
-                    </Typography>
-                    <RichFieldEditor
-                      fieldName={fieldName}
-                      setField={setField}
-                      initialContent={!Array.isArray(val) ? val ?? "" : ""}
+                    <TextField
+                      type="text"
+                      fullWidth
+                      label={fieldName}
+                      {...register(fieldName)}
+                      onChange={(e) => setField(fieldName, e.target.value)}
+                      variant="outlined"
                     />
                   </Grid>
                 );
               })}
 
-              <Grid item sm={12}>
-                {/* spacer so that the below components are always aligned */}
-              </Grid>
+              <Grid item sm={12}></Grid>
 
-              <Grid item xs={12} sm={6}>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DateTimePicker
-                    renderInput={(props) => {
-                      //@ts-ignore
-                      return <TextField {...props} />;
-                    }}
-                    label="Start Date/Time*"
-                    value={startDateTime}
-                    onChange={(newValue) => {
-                      setStartDateTime(newValue);
-                    }}
-                  />
-                  {/* <span style={{ marginLeft: "1em" }}>
-                <DateTimePicker
-                  renderInput={(props) => {
-                    //@ts-ignore
-                    return <TextField {...props} />;
-                  }}
-                  label="End Date/Time*"
-                  value={endDateTime}
-                  onChange={(newValue) => {
-                    setEndDateTime(newValue);
-                  }}
-                />
-              </span> */}
-                </LocalizationProvider>
-              </Grid>
-              {/* Recurrences Section - Not in use */}
-              {/*
-          <Grid item xs={12} sm={6}>
-            <Typography
-              variant="h6"
-              style={{ paddingTop: "2em", paddingBottom: "1em" }}
-            >
-              Recurrences (Optional)
-            </Typography>
-
-            {recurrenceFromProps ? (
-              <div>
-                <Typography>
-                  Current Recurrence:{" "}
-                  {rrulestr(recurrenceFromProps[0]).toText()}
-                </Typography>
-                <Button
-                  onClick={() => {
-                    setRecurrenceFromProps(undefined);
-                  }}
-                >
-                  Set New Recurrence
-                </Button>
-              </div>
-            ) : (
-              <Box sx={{ width: "100%" }}>
-                <Box
-                  sx={{
-                    borderBottom: 1,
-                    borderColor: "divider",
-                    marginBottom: "1em",
-                  }}
-                >
-                  <Tabs
-                    variant="scrollable"
-                    value={recurrenceType}
-                    onChange={(_, i) => {
-                      setRecurrencyType(i);
-                    }}
-                    aria-label="recurrence tabs"
-                  >
-                    <Tab label="Daily" value="Daily" />
-                    <Tab label="Weekly" value="Weekly" />
-                    <Tab label="Monthly" value="Monthly" />
-                    <Tab label="Yearly" value="Yearly" />
-                  </Tabs>
-                </Box>
-                {recurrenceType === "Daily" && (
-                  <div>
-                    Repeat Every{" "}
-                    <Select
-                      value={interval}
-                      label="Interval *"
-                      onChange={(e) => {
-                        setInterval(e.target.value as number);
-                      }}
-                    >
-                      <MenuItem value={1}>1</MenuItem>
-                      <MenuItem value={2}>2</MenuItem>
-                      <MenuItem value={3}>3</MenuItem>
-                      <MenuItem value={4}>4</MenuItem>
-                      <MenuItem value={5}>5</MenuItem>
-                      <MenuItem value={6}>6</MenuItem>
-                    </Select>{" "}
-                    Day(s)
-                  </div>
-                )}
-                {recurrenceType === "Weekly" && (
-                  <div>
-                    <FormControl
-                      component="fieldset"
-                      variant="standard"
-                      fullWidth
-                    >
-                      <FormLabel component="legend">
-                        Select Weekdays To Repeat On
-                      </FormLabel>
-                      <FormGroup style={{ display: "inline-block" }}>
-                        {weekdayOptions.map((option) => (
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={weekdays[option.value]}
-                                onChange={handleWeekdaysChange}
-                                name={option.label}
-                              />
-                            }
-                            label={option.label}
-                          />
-                        ))}
-                      </FormGroup>
-                    </FormControl>
-                    Repeat Every{" "}
-                    <Select
-                      value={interval}
-                      label="Interval *"
-                      onChange={(e) => {
-                        setInterval(e.target.value as number);
-                      }}
-                    >
-                      <MenuItem value={1}>1</MenuItem>
-                      <MenuItem value={2}>2</MenuItem>
-                      <MenuItem value={3}>3</MenuItem>
-                      <MenuItem value={4}>4</MenuItem>
-                      <MenuItem value={5}>5</MenuItem>
-                      <MenuItem value={6}>6</MenuItem>
-                    </Select>{" "}
-                    Week(s)
-                  </div>
-                )}
-                {recurrenceType === "Monthly" && (
-                  <div>
-                    <FormControl
-                      component="fieldset"
-                      variant="standard"
-                      fullWidth
-                    >
-                      <FormLabel component="legend">
-                        Select Days of the Month To Repeat On
-                      </FormLabel>
-                      <FormGroup style={{ display: "inline-block" }}>
-                        {monthDayOptions.map((option) => (
-                          <span style={{ display: "inline-block" }}>
-                            <FormControlLabel
-                              control={
-                                <Checkbox
-                                  checked={monthDays[option.label]}
-                                  onChange={handleMonthDaysChange}
-                                  name={option.label}
-                                />
-                              }
-                              label={option.label}
-                            />
-                          </span>
-                        ))}
-                      </FormGroup>
-                    </FormControl>
-                  </div>
-                )}
-                {recurrenceType === "Yearly" && (
-                  <div>
-                    <FormControl
-                      component="fieldset"
-                      variant="standard"
-                      fullWidth
-                    >
-                      <FormLabel component="legend">
-                        Select Months To Repeat On
-                      </FormLabel>
-                      <FormGroup style={{ display: "inline-block" }}>
-                        {monthOptions.map((option) => (
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={months[option.label]}
-                                onChange={handleMonthsChange}
-                                name={option.label}
-                              />
-                            }
-                            label={option.label}
-                          />
-                        ))}
-                      </FormGroup>
-                    </FormControl>
-                    <FormControl
-                      component="fieldset"
-                      variant="standard"
-                      fullWidth
-                    >
-                      <FormLabel component="legend">
-                        Select Days of the Month To Repeat On
-                      </FormLabel>
-                      <FormGroup style={{ display: "inline-block" }}>
-                        {monthDayOptions.map((option) => (
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={monthDays[option.label]}
-                                onChange={handleMonthDaysChange}
-                                name={option.label}
-                              />
-                            }
-                            label={option.label}
-                          />
-                        ))}
-                      </FormGroup>
-                    </FormControl>
-                  </div>
-                )}
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DateTimePicker
-                    renderInput={(props) => {
-                      //@ts-ignore
-                      return <TextField {...props} />;
-                    }}
-                    label="Recurrence End Date"
-                    value={recEndDate}
-                    onChange={(newValue) => {
-                      setRecEndDate(newValue);
-                    }}
-                  />
-                </LocalizationProvider>
-              </Box>
-            )}
-          </Grid>
-          */}
-              <Grid item sm={12}>
-                <Grid
-                  container
-                  direction="row"
-                  justifyContent="center"
-                  alignItems="center"
-                  spacing={4}
-                >
-                  <Grid item xs={12}>
-                    <Typography variant="h6" style={{ textAlign: "center" }}>
-                      Main Image Preview
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={2}>
-                    <Grid
-                      container
-                      direction="column"
-                      className={classes.mainImageSelector}
-                    >
-                      <ImageSelector
-                        setImage={(e) => {
-                          setModalState(ModalState.CropSquare);
-                          setImage(e);
-                          setIsCropperOpen(true);
-                        }}
-                        deleteImage={() => {
-                          deleteImage(imageURL, setImageURL);
-                        }}
-                        hasImage={() => !!imageURL}
-                        uploadText={"Upload Image"}
-                        deleteText={"Delete Image"}
-                      />
-                    </Grid>
-                  </Grid>
-                  <Grid item sm={4}>
-                    <EventImage
-                      className={classes.preview}
-                      imageURL={imageURL}
-                      eventTitle={title ?? "event"}
-                    />
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              {compiled && (
-                <Grid item sm={12}>
-                  <Grid
-                    container
-                    direction="row"
-                    justifyContent="center"
-                    alignItems="center"
-                    spacing={4}
-                  >
-                    <Grid item xs={12}>
-                      <Typography variant="h6" style={{ textAlign: "center" }}>
-                        Card Preview
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Grid
-                        container
-                        justifyContent="center"
-                        alignItems="center"
-                        className={classes.cardImageSelector}
-                      >
-                        <ImageSelector
-                          setImage={(e) => {
-                            setModalState(ModalState.CropCard);
-                            setImage(e);
-                          }}
-                          deleteImage={() => {
-                            deleteImage(cardImageURL, setCardImageURL);
-                          }}
-                          hasImage={() => !!cardImageURL}
-                          uploadText={"Upload Card Image"}
-                          deleteText={"Delete Card Image"}
-                        />
-                      </Grid>
-                    </Grid>
-                    <Grid item xs={9} sm={7}>
-                      <EventCard event={compiled} handleClick={undefined} />
-                    </Grid>
-                  </Grid>
-                </Grid>
-              )}
+              <ImagePreview
+                imageURL={imageURL}
+                setImage={(e) => {
+                  setModalState(ModalState.CropSquare);
+                  setImage(e);
+                  setIsCropperOpen(true);
+                }}
+                deleteImage={() => {
+                  deleteImage(imageURL, setImageURL);
+                }}
+              />
             </Grid>
             <LoadingButton
               variant="contained"
               onClick={putEvent}
               loading={mutating}
             >
-              Create Project
+              {!event ? "Create Project" : "Update Project"}
             </LoadingButton>
           </div>
         </div>
@@ -1257,4 +740,52 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
     </Dialog>
   );
 };
+
+type ImagePreviewProps = {
+  imageURL: string;
+  setImage: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  deleteImage: () => void;
+};
+function ImagePreview({ imageURL, setImage, deleteImage }: ImagePreviewProps) {
+  const classes = useStyles();
+  return (
+    <Grid item sm={12}>
+      <Grid
+        container
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
+        spacing={4}
+      >
+        <Grid item xs={12}>
+          <Typography variant="h6" style={{ textAlign: "center" }}>
+            Main Image Preview
+          </Typography>
+        </Grid>
+        <Grid item xs={2}>
+          <Grid
+            container
+            direction="column"
+            className={classes.mainImageSelector}
+          >
+            <ImageSelector
+              setImage={setImage}
+              deleteImage={deleteImage}
+              hasImage={() => !!imageURL}
+              uploadText={"Upload Image"}
+              deleteText={"Delete Image"}
+            />
+          </Grid>
+        </Grid>
+        <Grid item sm={4}>
+          <EventImage
+            className={classes.preview}
+            imageURL={imageURL}
+            eventTitle="Preview Image"
+          />
+        </Grid>
+      </Grid>
+    </Grid>
+  );
+}
 export default AddModifyEventModal;

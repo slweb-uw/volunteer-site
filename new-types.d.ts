@@ -1,7 +1,6 @@
 type EventData = {
   id: string;
   Title: string;
-  Details: string;
   Organization: string;
   cardImageURL?: string;
   imageURL?: string;
@@ -9,7 +8,7 @@ type EventData = {
   timestamp: string;
   StartDate?: string;
   EndDate?: string;
-  Location: "Seattle" | "Alaska" | "Idaho" | "Montana" | "Spokane" | "Wyoming";
+  Location: string 
   Order?: string[];
   "Types of Volunteers Needed": string[];
   "Website Link"?: string;
@@ -23,5 +22,7 @@ type EventData = {
   "Tips and Reminders"?: string;
   "Clinic Schedule": string;
   "Clinic Flow": string;
+  "Address/Parking/Directions": string
+  "Protocols": string
 };
 
