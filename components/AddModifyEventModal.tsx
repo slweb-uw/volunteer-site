@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState, Fragment } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { useSnackbar } from "notistack";
 import { Theme } from "@mui/material/styles";
 import withStyles from "@mui/styles/withStyles";
@@ -28,8 +28,7 @@ import {
   uploadBytes,
   deleteObject,
 } from "firebase/storage";
-import { getAuth } from "firebase/auth";
-import { storage } from "firebaseClient";
+import { db, storage } from "firebaseClient";
 import { LoadingButton } from "@mui/lab";
 import { DialogActions } from "@mui/material";
 import { Guid } from "guid-typescript";
@@ -37,12 +36,11 @@ import EventImage from "components/eventImage";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import RichTextEditor from "components/richTextEditor";
-import CollapsibleRichTextEditor from "components/collapsibleRichTextEditor";
 import makeStyles from "@mui/styles/makeStyles";
-import { serverTimestamp, Timestamp } from "firebase/firestore";
-import { useParams } from "next/navigation";
-import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
-import { setLocation } from "helpers/locations";
+import { addDoc, Timestamp, collection, setDoc, doc } from "firebase/firestore";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { useAuth } from "auth";
+import { useRouter } from "next/router";
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -91,6 +89,7 @@ const ModalDialogTitle = (props: DialogTitleProps) => {
       {onClose ? (
         <IconButton
           aria-label="close"
+          type="button"
           className={classes.closeButton}
           onClick={onClose}
           size="large"
@@ -131,8 +130,7 @@ const locations = [
   "Idaho",
 ];
 
-const initialFields = [
-  "Types of Volunteers Needed",
+const optinalFields = [
   "Website Link",
   "Contact Information",
   "HS Grad Student Information",
@@ -146,33 +144,12 @@ const initialFields = [
   "Address/Parking/Directions",
 ] as const;
 
-
-
-const reservedFields = new Set([
-  "Title",
-  "Project Description",
-  "Details",
-  "Types of Volunteers Needed",
-  "Organization",
-  "Order",
-  "id",
-  "imageURL",
-  "cardImageURL",
-  "timestamp",
-  "recurrences",
-  "recurrences original",
-  "Recurrence",
-  "StartDate",
-  "EndDate",
-  "Location",
-  "SignupActive",
-  "Sign-up Link",
-]);
-
 interface AddModifyEventModalProps {
   open: boolean;
   event?: EventData;
   handleClose: any;
+  location: string;
+  projectId: string;
 }
 
 interface ImageSelectorProps {
@@ -197,28 +174,6 @@ enum ModalState {
   CropCard,
 }
 
-interface RichFieldEditorProps {
-  initialContent: string;
-  fieldName: string;
-  setField: (fieldName: string, output: string) => void;
-}
-
-const RichFieldEditor = React.memo(function RichFieldEditor(
-  props: RichFieldEditorProps,
-) {
-  return (
-    <CollapsibleRichTextEditor
-      innerProps={{
-        initialContent: props.initialContent,
-        output: (output) => {
-          props.setField(props.fieldName, output ?? "");
-        },
-        placeholder: props.fieldName,
-      }}
-    />
-  );
-});
-
 const ImageSelector = (props: ImageSelectorProps) => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -226,6 +181,7 @@ const ImageSelector = (props: ImageSelectorProps) => {
     <React.Fragment>
       <Button
         variant="outlined"
+        type="button"
         color="secondary"
         onClick={() => {
           fileInputRef.current?.click();
@@ -251,6 +207,7 @@ const ImageSelector = (props: ImageSelectorProps) => {
       {props.hasImage() && (
         <Button
           variant="contained"
+          type="button"
           color="secondary"
           onClick={props.deleteImage}
         >
@@ -333,18 +290,15 @@ const organizationList = [
   "Advocacy",
   "Clinical",
   "Health Education",
-  "Mentorship & Outreact",
-];
+  "Mentorship & Outreach",
+] as const;
 
 type FormFields = {
   Title: string;
   Organization: string;
   cardImageURL?: string;
-  imageURL?: string;
   SignupActive: boolean;
   timestamp: Timestamp;
-  Location: string;
-  "Types of Volunteers Needed": string[];
   "Website Link"?: string;
   "Contact Information"?: string;
   "HS Grad Student Information": string;
@@ -359,16 +313,19 @@ type FormFields = {
   Protocols: string;
 };
 
-const AddModifyEventModal = (props: AddModifyEventModalProps) => {
-  const { event, open, handleClose } = props;
-  const { register, handleSubmit, watch, formState } = useForm<FormFields>({
+const AddModifyEventModal = ({
+  event,
+  open,
+  handleClose,
+  projectId,
+}: AddModifyEventModalProps) => {
+  const { isAdmin } = useAuth();
+  const { register, handleSubmit } = useForm<FormFields>({
     defaultValues: {
       Title: event?.Title ?? "",
       Organization: event?.Organization ?? "",
       cardImageURL: event?.cardImageURL ?? "",
-      imageURL: event?.cardImageURL ?? "",
       SignupActive: event?.SignupActive ?? false,
-      "Types of Volunteers Needed": event?.["Types of Volunteers Needed"] ?? [],
       "Website Link": event?.["Website Link"] ?? "",
       "Contact Information": event?.["Website Link"] ?? "",
       "HS Grad Student Information":
@@ -385,7 +342,7 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
     },
   });
   const classes = useStyles();
-  const [projectName, setProjectName] = useState<string>(event?.Title ?? "");
+  const router = useRouter()
   const [projectLocation, setProjectLocation] = useState(event?.Location ?? "");
   const [description, setDescription] = useState<string>(
     event?.["Project Description"] ?? "",
@@ -397,9 +354,6 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
     event?.["Types of Volunteers Needed"] ?? [],
   );
   const [imageURL, setImageURL] = useState<string>(event?.imageURL ?? "");
-  const [cardImageURL, setCardImageURL] = useState<string>(
-    event?.cardImageURL ?? "",
-  );
   const [modalState, setModalState] = useState(ModalState.Main);
   const [cropImage, setCropImage] = useState<string | undefined>();
   const [signupActive, setSignupActive] = useState(
@@ -408,23 +362,6 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const [isCropperOpen, setIsCropperOpen] = useState(false);
   const [mutating, setMutating] = useState(false);
-  const { location } = useParams();
-  const [otherFields, dispatchOtherFields] = React.useReducer(
-    (state: any, action: any) => {
-      const { type, field, value } = action;
-      if (type === "set_all") {
-        return { ...value };
-      } else if (type === "set_field") {
-        return {
-          ...state,
-          [field]: value,
-        };
-      } else {
-        throw new Error("Unknown action type " + type);
-      }
-    },
-    {},
-  );
 
   const deleteImage = async (
     url: string | undefined,
@@ -467,76 +404,50 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
     console.log(imageFile);
   };
 
-  const compileEvent = (): ProjectRequest | null => {
-    if (!projectName || !description || !location || !organization) {
-      return null;
-    }
-
-    // CalendarEventData is superset of EventData used in the APIs
-    const uploadEvent: ProjectRequest = {
-      Title: projectName,
-      "Project Description": description,
-      Organization: organization,
+  // Updates or create project
+  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+    // if we dont pass in an event we are creating else we are updating
+    const action = !event ? "created" : "updated";
+    // add all the data that react hook-form cant process
+    const requestData = {
       Location: projectLocation,
-      imageURL,
-      cardImageURL,
-      SignupActive: signupActive,
-      timestamp: serverTimestamp(),
+      description: description,
+      organization: organization,
+      "Types of Volunteers Needed": volunteersNeeded,
+      imageURL: imageURL,
+      signupActive: signupActive,
+      cardImageURL: imageURL,
+      ...data,
     };
 
-    // Generate recurrence if no event or event doesn't have a Recurrence
-    // Set other fields
-    uploadEvent.imageURL = imageURL;
-    uploadEvent.cardImageURL = cardImageURL;
-    if (volunteersNeeded) {
-      uploadEvent["Types of Volunteers Needed"] = volunteersNeeded;
-    }
-    uploadEvent.SignupActive = signupActive;
-    return uploadEvent;
-  };
+    try {
+      // check for permissions
+      if (!isAdmin) {
+        enqueueSnackbar("must be admin to edit", { variant: "error" });
+        return;
+      }
 
-  // Puts event to Firestore and Google Calendar
-  const putEvent = () => {
-    setMutating(true);
-    const uploadEvent = compileEvent();
-
-    if (!uploadEvent) {
-      alert("Error: missing required field.");
-    }
-    getAuth()
-      .currentUser?.getIdToken()
-      .then(async (userToken) => {
-        try {
-          const res = await fetch("/api/put-event-data", {
-            method: "POST",
-            body: JSON.stringify({ eventData: uploadEvent, userToken }),
-          });
-
-          if (!res.ok) {
-            console.log(await res.json());
-            setMutating(false);
-          }
-          setMutating(false);
-          enqueueSnackbar("event created", { variant: "success" });
-        } catch (e) {
-          setMutating(false);
-          alert(e);
-        }
+      setMutating(true);
+      if (!event) {
+        await addDoc(collection(db, projectLocation), requestData);
+      } else {
+        await setDoc(doc(db, projectLocation, projectId), requestData);
+      }
+      enqueueSnackbar(`successfully ${action} project ${data.Title}`, {
+        variant: "success",
+        autoHideDuration: 2000,
       });
-  };
-
-  const setField = React.useCallback(
-    (fieldName, value) => {
-      dispatchOtherFields({
-        type: "set_field",
-        field: fieldName,
-        value: value,
+      setMutating(false);
+      router.reload()
+      handleClose()
+    } catch (err) {
+      setMutating(false);
+      console.log(err);
+      enqueueSnackbar("something went wrong please try again", {
+        variant: "error",
       });
-    },
-    [dispatchOtherFields],
-  );
-
-  const compiled = compileEvent();
+    }
+  };
 
   return (
     <Dialog
@@ -550,19 +461,14 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
         <b>{event ? "Modify Event" : "Add Event"}</b>
       </ModalDialogTitle>
       <DialogContent>
-        <div style={{ padding: "1.5rem" }}>
+        <form style={{ padding: "1.5rem" }} onSubmit={handleSubmit(onSubmit)}>
           {cropImage !== undefined && (
             <CropModal
               cropImage={cropImage}
               open={isCropperOpen}
-              saveImage={(blob) => {
-                return saveImage(blob).then((url) => {
-                  if (modalState == ModalState.CropSquare) {
-                    setImageURL(url);
-                  } else {
-                    setCardImageURL(url);
-                  }
-                });
+              saveImage={async (blob) => {
+                const url = await saveImage(blob);
+                setImageURL(url);
               }}
               aspectRatio={modalState == ModalState.CropSquare ? 1 : 23 / 30}
               handleClose={() => {
@@ -575,6 +481,7 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
             <div style={{ marginBottom: "1rem" }}>
               <Button
                 variant="outlined"
+                type="button"
                 onClick={() => setSignupActive(!signupActive)}
               >
                 <Switch
@@ -625,9 +532,8 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
                   <InputLabel>Location</InputLabel>
                   <Select
                     fullWidth
-                    {...register("Location", { required: true })}
                     value={projectLocation}
-                    onChange={e => setProjectLocation(e.target.value)}
+                    onChange={(e) => setProjectLocation(e.target.value)}
                     label="Location *"
                   >
                     {locations.map((loc) => (
@@ -698,15 +604,15 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
                 </FormControl>
               </Grid>
 
-              {initialFields.map((fieldName) => {
+              {optinalFields.map((fieldName) => {
                 return (
                   <Grid key={fieldName} item xs={12} sm={6}>
                     <TextField
                       type="text"
                       fullWidth
+                      multiline
                       label={fieldName}
                       {...register(fieldName)}
-                      onChange={(e) => setField(fieldName, e.target.value)}
                       variant="outlined"
                     />
                   </Grid>
@@ -727,15 +633,11 @@ const AddModifyEventModal = (props: AddModifyEventModalProps) => {
                 }}
               />
             </Grid>
-            <LoadingButton
-              variant="contained"
-              onClick={putEvent}
-              loading={mutating}
-            >
+            <LoadingButton variant="contained" type="submit" loading={mutating}>
               {!event ? "Create Project" : "Update Project"}
             </LoadingButton>
           </div>
-        </div>
+        </form>
       </DialogContent>
     </Dialog>
   );

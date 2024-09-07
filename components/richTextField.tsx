@@ -1,11 +1,12 @@
 import { SxProps, Theme, Typography } from "@mui/material";
 import React from "react";
+
 import sanitizeHtmlRichText from "../helpers/sanitizeHtmlRichText";
 
-type RichTextFieldProps = {
+interface RichTextFieldProps {
   value: string;
   sx?: SxProps<Theme>;
-};
+}
 
 const RichTextField: React.FC<RichTextFieldProps> = ({
   value,
@@ -17,8 +18,8 @@ const RichTextField: React.FC<RichTextFieldProps> = ({
    ***********************************************************/
   return (
     <Typography
-      variant="body1"
       sx={{ lineHeight: "1.5rem", ...sx }}
+      component="div"
       dangerouslySetInnerHTML={{ __html: sanitizeHtmlRichText(value) }}
     />
   );
