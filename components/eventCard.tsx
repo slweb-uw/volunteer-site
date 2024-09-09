@@ -52,7 +52,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 interface Props {
-  event: EventData | CalendarEventData;
+  event: EventData 
 }
 
 const NotSpecified = <i style={{ color: "gray" }}>Not specified</i>;
@@ -75,7 +75,7 @@ const EventCard: React.FC<Props> = (props) => {
     ).length > 1;
 
   return (
-    <Card tabIndex={0} className={classes.root} variant="outlined">
+    <Card tabIndex={0} className={classes.root} variant="outlined" id={props.event.id}>
       <Link className={classes.actions} href={eventLink}>
         <CardActionArea className={classes.root}>
           {!mobileView && (

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { getAppAnalytics } from "firebaseClient";
 import makeStyles from "@mui/styles/makeStyles";
 import { CssBaseline, Typography, Button, Tooltip } from "@mui/material";
@@ -17,12 +17,16 @@ import { handleHelpButtonClick } from "../../helpers/navigation";
 import { useAuth } from "auth";
 import { logEvent } from "firebase/analytics";
 import AddModifyEventModal from "components/AddModifyEventModal";
-// import AddModifyEventModal from "components/AddModifyEventModal";
+import { useSearchParams } from "next/navigation";
 
 const LocationPage = () => {
   const classes = useStyles();
   const router = useRouter();
   const { isAdmin } = useAuth();
+  const searchParams = useSearchParams();
+  const from = searchParams.get("from");
+
+
   const [createEventOpen, setCreateEventOpen] = useState(false);
   let location =
     router.query.location && !Array.isArray(router.query.location)
@@ -45,6 +49,8 @@ const LocationPage = () => {
     logEvent(analytics, "location_page_visit");
   }, []);
 
+  useEffect(() => { }, [from]);
+
   // Handle last location saving/loading
   useEffect(() => {
     if (!router.isReady) {
@@ -60,9 +66,11 @@ const LocationPage = () => {
     }
   }, [router.isReady]);
 
+
   return (
-    <div className={classes.page}>
-      <CssBaseline />
+    <div
+      className={classes.page}
+    >
       <div
         style={{
           display: "flex",
@@ -87,6 +95,7 @@ const LocationPage = () => {
               </Button>
               <AddModifyEventModal
                 open={createEventOpen}
+                location={location}
                 handleClose={() => {
                   setCreateEventOpen(false);
                 }}
@@ -119,7 +128,6 @@ const LocationPage = () => {
     </div>
   );
 };
-
 
 const useStyles = makeStyles(() => ({
   page: {
