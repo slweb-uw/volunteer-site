@@ -404,20 +404,6 @@ const AddModifyEventModal = ({
     console.log(imageFile);
   };
 
-<<<<<<< HEAD
-  const compileEvent = (): CalendarEventData | null => {
-    if (!title || !description || !location || !organization) {
-      return null;
-    }
-
-    // CalendarEventData is superset of ProjectData used in the APIs
-    const uploadEvent: CalendarEventData = {
-      Title: title,
-      "Project Description": description,
-      Organization: organization,
-      Location: location,
-      timestamp: new Date(),
-=======
   // Updates or create project
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     // if we dont pass in an event we are creating else we are updating
@@ -432,7 +418,6 @@ const AddModifyEventModal = ({
       signupActive: signupActive,
       cardImageURL: imageURL,
       ...data,
->>>>>>> 86b26af436f233d6c1cbaae3db6f4290c4c6e89c
     };
 
     try {
@@ -705,4 +690,4 @@ function ImagePreview({ imageURL, setImage, deleteImage }: ImagePreviewProps) {
     </Grid>
   );
 }
-export default AddModifyEventModal;
+
