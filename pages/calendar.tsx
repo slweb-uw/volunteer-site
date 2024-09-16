@@ -139,7 +139,7 @@ function CalendarView({ curDate, events }: { curDate: Date; events: any }) {
               {getEventsForDate(date, events).map((event) => (
                 <Card key={event.id} style={{ boxShadow: "none" }}>
                   <Link
-                    href={`/${event.id}`}
+                    href={`/calendar/${event.id}`}
                     style={{
                       textDecoration: "none",
                       color: "black",
