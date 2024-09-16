@@ -3,7 +3,6 @@ import { Timestamp } from "firebase/firestore";
 type ProjectData = {
   id: string;
   Title: string;
-  Details: string;
   Organization: string;
   cardImageURL?: string;
   imageURL?: string;
@@ -11,7 +10,7 @@ type ProjectData = {
   timestamp: string;
   StartDate?: string;
   EndDate?: string;
-  Location: "Seattle" | "Alaska" | "Idaho" | "Montana" | "Spokane" | "Wyoming";
+  Location: string 
   Order?: string[];
   "Types of Volunteers Needed": string[];
   "Website Link"?: string;
@@ -25,6 +24,8 @@ type ProjectData = {
   "Tips and Reminders"?: string;
   "Clinic Schedule": string;
   "Clinic Flow": string;
+  "Address/Parking/Directions": string
+  "Protocols": string
 };
 
 //Specific to events per project

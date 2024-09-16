@@ -120,6 +120,7 @@ const LocationPage = () => {
   );
 };
 
+
 const useStyles = makeStyles(() => ({
   page: {
     marginLeft: "auto",

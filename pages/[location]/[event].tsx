@@ -1,94 +1,56 @@
 import { useRouter } from "next/router";
 import { useAuth } from "auth";
-import React from "react";
+import { useState } from "react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
-import IconBreadcrumbs from "../../components/breadcrumbs";
 import makeStyles from "@mui/styles/makeStyles";
+import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 
-import { CssBaseline, Typography, Divider, Grid, Button } from "@mui/material";
+import {
+  Typography,
+  Divider,
+  Grid,
+  Button,
+  SxProps,
+  Theme,
+} from "@mui/material";
 import naturalJoin from "../../helpers/naturalJoin";
-import EventDescription from "../../components/eventDescription";
 import RichTextField from "../../components/richTextField";
 import Box from "@mui/material/Box";
-import Stack from "@mui/material/Stack";
-import Link from "next/link";
+import NextLink from "next/link";
 import { firebaseAdmin } from "firebaseAdmin";
+import AddModifyEventModal from "components/AddModifyEventModal";
+import { useParams } from "next/navigation";
+import { deleteDoc, doc } from "firebase/firestore";
+import { db } from "firebaseClient";
+import { useSnackbar } from "notistack";
+import { LoadingButton } from "@mui/lab";
 
-const initialGridKeys = [
-  "Tips and Reminders",
-  "Clinic Flow",
-  "Required Trainings",
-  "Address/Parking/Directions",
-  "Provider Information",
-] as const;
-
-const reservedKeys = [
-  "Project Description",
-  "Details",
-  "Clinic Schedule",
-  "Types of Volunteers Needed",
-  "Title",
-  "Order",
-  "Organization",
+const fields = [
   "Location",
+  "Clinic Schedule",
+  "Organization",
   "Contact Information",
   "Website Link",
-  "Address;Parking;Directions",
+  "Address/Parking/Directions",
   "Clinic Flow",
   "Tips and Reminders",
   "Provider Information",
-  "id",
-  "timestamp",
-  "StartDate",
-  "EndDate",
-  "Recurrence",
-  "recurrences",
-  "original recurrence",
-  "imageURL",
-  "cardImageURL",
-  "DateObject",
+  "Protocols",
 ] as const;
 
-type EventFieldProps = {
-  name: string;
-  value: string | string[] | JSX.Element | undefined;
-};
 
 type RichEventFieldProps = {
   name: string;
   value: string | string[] | undefined;
   removeTopMargin: boolean;
-};
-
-const EventField: React.FC<EventFieldProps> = ({ name, value }) => {
-  let data: string | JSX.Element | undefined;
-  if (value && Array.isArray(value)) {
-    data = naturalJoin(value);
-  } else {
-    data = value;
-  }
-  if (!data) return null;
-  return (
-    <Box
-      style={{
-        pageBreakInside: "avoid",
-        breakInside: "avoid-column",
-        marginBottom: "5%",
-      }}
-    >
-      <Typography variant="h6" style={{ fontWeight: 600 }}>
-        {name}
-      </Typography>
-      <Typography>{data}</Typography>
-    </Box>
-  );
+  sx?: SxProps<Theme>;
 };
 
 const RichEventField: React.FC<RichEventFieldProps> = ({
   name,
   value,
-  removeTopMargin,
+  sx,
 }) => {
   let data: string | undefined;
   if (value && Array.isArray(value)) {
@@ -96,23 +58,22 @@ const RichEventField: React.FC<RichEventFieldProps> = ({
   } else {
     data = value;
   }
-  const remove: boolean | undefined = removeTopMargin
-    ? typeof data === "string" && data.includes("<p>")
-    : false;
   if (!data) return null;
   return (
     <>
       <Box
-        style={{
+        sx={{
           pageBreakInside: "avoid",
           breakInside: "avoid-column",
-          marginBottom: "5%",
+          display: "flex",
+          flexDirection: "column",
+          gap: "0.25rem",
         }}
       >
         <Typography variant="h6" style={{ fontWeight: 600 }}>
           {name}
         </Typography>
-        <RichTextField value={data} removeTopMargin={remove ?? false} />
+        <RichTextField sx={sx} value={data}/>
       </Box>
     </>
   );
@@ -168,19 +129,39 @@ const Event = ({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter();
   const { isAdmin } = useAuth();
-  const { location } = router.query; // current event id and location
+  const { location, event: projectId } = useParams();
   const classes = useStyles();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [deletingProject, setDeletingProject] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
+
+  async function HandleDeleteProject() {
+    if (!window.confirm("Are you sure you want to delete this project?"))
+      return;
+
+    setDeletingProject(true);
+    try {
+      await deleteDoc(doc(db, location.toString(), projectId.toString()));
+      router.push(`/${location}`);
+      enqueueSnackbar("Successfully deleted project", {
+        variant: "success",
+        autoHideDuration: 2000,
+      });
+      setDeletingProject(false);
+    } catch (err) {
+      setDeletingProject(false);
+      enqueueSnackbar("Could not delete project", {
+        variant: "error",
+        autoHideDuration: 2000,
+      });
+    }
+  }
 
   return (
     <div className={classes.page}>
-      <CssBaseline />
-      <IconBreadcrumbs
-        parentURL={"/opportunities/" + location}
-        crumbs={["Opportunities in " + location, eventData.Title]}
-      />
       {/* EVENT TITLE */}
-      <Typography variant="h5" style={{ fontWeight: 900, paddingBottom: 50 }}>
-        {eventData?.Title}
+      <Typography variant="h3" style={{ fontWeight: 900, paddingBottom: 50 }}>
+        {eventData.Title}
       </Typography>
 
       <Grid container spacing={6}>
@@ -193,49 +174,55 @@ const Event = ({
             alt={eventData.Title}
           />
         </Grid>
-        <Grid item container direction="column" sm={12} md={6}>
-          <Stack direction="row" spacing={6} sx={{ marginTop: "5%" }}>
+        <Grid item container direction="column" sm={12} md={6} gap={2}>
+          <RichEventField
+            name="Project Description"
+            value={eventData["Project Description"]}
+            removeTopMargin={true}
+            sx={{ lineHeight: "1.75rem" }}
+          />
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <Button
+              startIcon={<CalendarMonthOutlinedIcon />}
+              LinkComponent={NextLink}
+              fullWidth
+              href={`/${location}/${eventData.id}/calendar`}
+              variant="contained"
+              sx={{ display: "flex", gap: "0.5rem" }}
+            >
+              Avaliable events
+            </Button>
+          </Box>
+          {/* Navigation for events and admin page of each */}
+          <Box sx={{ columns: { xs: 1, md: 2 }, columnGap: 8 }}>
+            {fields
+              .filter(
+                (name) => eventData[name] != null && eventData[name] != "",
+              )
+              .map((name) => (
+                <RichEventField
+                  key={name}
+                  name={name}
+                  value={eventData[name]}
+                  removeTopMargin={true}
+                />
+              ))}
             <RichEventField
-              name="Location"
-              value={eventData?.Location}
+              name="Types of Volunteers Needed"
+              value={
+                eventData["Types of Volunteers Needed"]
+                  ? naturalJoin(eventData["Types of Volunteers Needed"])
+                  : undefined
+              }
               removeTopMargin={true}
             />
-            <RichEventField
-              name="Clinic Schedule"
-              value={eventData["Clinic Schedule"]}
-              removeTopMargin={true}
-            />
-          </Stack>
-          <RichEventField
-            name="Contact Information"
-            value={eventData["Contact Information"]}
-            removeTopMargin={true}
-          />
-          <RichEventField
-            name="Website Link"
-            value={eventData["Website Link"]}
-            removeTopMargin={true}
-          />
-          <RichEventField
-            name="Types of Volunteers Needed"
-            value={
-              eventData["Types of Volunteers Needed"]
-                ? naturalJoin(eventData["Types of Volunteers Needed"])
-                : undefined
-            }
-            removeTopMargin={true}
-          />
-          {(eventData?.SignupActive || isAdmin) && (
-            <Link href={`/${location}/${eventData.id}/signup`}>
-              <Button
-                color="primary"
-                variant="contained"
-                style={{ marginRight: "1em" }}
-              >
-                Sign up
-              </Button>
-            </Link>
-          )}
+          </Box>
         </Grid>
       </Grid>
 
@@ -248,34 +235,32 @@ const Event = ({
         }}
       ></Divider>
 
-      <Box sx={{ columns: { xs: 1, md: 2 }, columnGap: 8 }}>
-        <EventField
-          name="Project Description"
-          value={<EventDescription event={eventData} />}
-        />
-        {initialGridKeys
-          .filter((name) => eventData[name] != null && eventData[name] != "")
-          .map((name) => (
-            <RichEventField
-              key={name}
-              name={name}
-              value={eventData[name]}
-              removeTopMargin={true}
-            />
-          ))}
-        {Object.keys(eventData)
-          .filter((name) => !reservedKeys.includes(name))
-          .filter((name) => eventData[name] != null && eventData[name] != "")
-          .filter((name) => name != "SignupActive")
-          .map((name) => (
-            <RichEventField
-              key={name}
-              name={name}
-              value={eventData[name]}
-              removeTopMargin={true}
-            />
-          ))}
-      </Box>
+      {isAdmin && (
+      <>
+      <Typography component="h3" variant="h4">Admin Options</Typography>
+        <Box sx={{ display: "flex", gap: "1rem", padding: "1rem 0 " }}>
+          <Button onClick={() => setModalOpen(true)} variant="contained">
+            Edit Project
+          </Button>
+          <LoadingButton
+            loading={deletingProject}
+            variant="outlined"
+            color="error"
+            onClick={HandleDeleteProject}
+          >
+            Delete Project
+          </LoadingButton>
+
+          <AddModifyEventModal
+            open={modalOpen}
+            event={eventData}
+            location={location?.toString()}
+            projectId={projectId.toString()}
+            handleClose={() => setModalOpen(false)}
+          />
+        </Box>
+      </>
+      )}
     </div>
   );
 };

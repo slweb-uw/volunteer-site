@@ -87,18 +87,19 @@ const Divider = () => <span className={useStyles().divider}>/</span>;
 const Header: React.FC<{}> = () => {
   const { user, isAdmin, isLead } = useAuth();
   const [isSignInPopupOpen, setSignInPopupOpen] = useState(false);
+  const classes = useStyles()
 
   const links: React.ReactNode[] = [
-    <Link href="/" className={useStyles().navtitle} tabIndex={0}>
+    <Link href="/" className={classes.navtitle} tabIndex={0}>
       Home
     </Link>,
     <Divider />,
-    <Link href="/opportunities" className={useStyles().navtitle} tabIndex={0}>
+    <Link href="/opportunities" className={classes.navtitle} tabIndex={0}>
       Opportunities
     </Link>,
     <Divider />,
     <a
-      className={useStyles().navtitle}
+      className={classes.navtitle}
       href="https://canvas.uw.edu/courses/1693188/pages/training-modules?module_item_id=18595279"
       target="_blank"
       tabIndex={0}
@@ -107,24 +108,24 @@ const Header: React.FC<{}> = () => {
     </a>,
     //*NOTE: Resources name was changed to Links*/
     <Divider />,
-    <Link href="/resources" className={useStyles().navtitle} tabIndex={0}>
+    <Link href="/resources" className={classes.navtitle} tabIndex={0}>
       Links
     </Link>,
     <Divider />,
     <a
       href="https://canvas.uw.edu/courses/1693188/pages/protocols?module_item_id=18595280"
-      className={useStyles().navtitle}
+      className={classes.navtitle}
       target="_blank"
       tabIndex={0}
     >
       Protocols
     </a>,
     <Divider />,
-    <Link href="/donations" className={useStyles().navtitle} tabIndex={0}>
+    <Link href="/donations" className={classes.navtitle} tabIndex={0}>
       Donations
     </Link>,
     <Divider />,
-    <Link href="/help" className={useStyles().navtitle} tabIndex={0}>
+    <Link href="/help" className={classes.navtitle} tabIndex={0}>
       Help
     </Link>,
     <Divider />,
@@ -134,15 +135,19 @@ const Header: React.FC<{}> = () => {
         <a
           key="sign out"
           onClick={() => {
-            signOut(auth)
+            signOut(auth);
             setSignInPopupOpen(false);
           }}
-          className={useStyles().navtitle}
+          className={classes.navtitle}
           tabIndex={0}
         >
           Sign Out
           {isAdmin && (
-            <p style={{ color: "gold", margin: 0, fontSize: "12px" }}>ADMIN</p>
+            <>
+              <p style={{ color: "gold", margin: 0, fontSize: "12px" }}>
+                ADMIN
+              </p>
+            </>
           )}
           {isLead && (
             <p style={{ color: "gold", margin: 0, fontSize: "12px" }}>LEAD</p>
@@ -154,7 +159,7 @@ const Header: React.FC<{}> = () => {
         <a
           key="sign in"
           onClick={() => setSignInPopupOpen(true)}
-          className={useStyles().navtitle}
+          className={classes.navtitle}
           tabIndex={0}
         >
           Sign In
@@ -180,11 +185,9 @@ const Header: React.FC<{}> = () => {
       </Hidden>
       <Hidden only={["sm", "xs"]}>
         <div style={{ marginRight: "3em", display: "flex" }}>
-          {links.map((element: React.ReactNode, index) =>
-            <React.Fragment key={index}>
-              {element}
-            </React.Fragment>
-          )}
+          {links.map((element: React.ReactNode, index) => (
+            <React.Fragment key={index}>{element}</React.Fragment>
+          ))}
         </div>
       </Hidden>
       <SignInPopup

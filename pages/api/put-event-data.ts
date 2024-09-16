@@ -133,6 +133,7 @@ async function addOrUpdateEvent(
     }
   } catch (err) {
     throw new Error("Error from change:" + err);
+
   }
 }
 
