@@ -35,10 +35,16 @@ type EventData = {
     eventInformation: string;
     leadEmail: string;
     location: string;
-    openings: [{number, string}];
+    openings: { [key: string]: number | string }[]; //TODO: Define openings as a map of strings to either numbers or strings.
     projectId: string;
     projectName: string;
     startTime: string;
     volunteerQty: [string]
     volunteerTypes: [string]
+};
+
+type VolunteerData = {
+    id: string;
+    type: string;
+    name: string;
 };
