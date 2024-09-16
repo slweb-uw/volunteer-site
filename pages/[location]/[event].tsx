@@ -201,7 +201,7 @@ const Event = ({
               variant="contained"
               sx={{ display: "flex", gap: "0.5rem" }}
             >
-              Avaliable events
+              Available events
             </Button>
           </Box>
           {/* Navigation for events and admin page of each */}

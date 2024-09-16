@@ -1,8 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   doc,
   getDoc,
@@ -181,7 +177,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
       const from = searchParams.get("from");
       if (!from) return;
 
-      setQueryVar("from", "")
+      setQueryVar("from", "");
     };
 
     addEventListener("scrollend", onScrollEnd);
@@ -205,7 +201,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
         scrollTo?.scrollIntoView();
       } catch (err) {
         // clear query params since we dont scroll
-        setQueryVar("from", "")
+        setQueryVar("from", "");
         router.replace(`/opportunities/${location}`, undefined, {
           shallow: true,
         });
@@ -284,27 +280,17 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
             )}
           </Grid>
           {/* Move the calendar button grid item up by one line */}
-          {location === "Seattle" && (
-            <Grid item xs={12} md={2}>
-              <Link href="/calendar">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  style={{
-                    minWidth: "130px",
-                    borderRadius: 10,
-                    fontFamily: "Encode Sans",
-                    fontWeight: 800,
-                    textAlign: "center",
-                    marginTop: "0.5rem",
-                    //marginLeft: "5rem"
-                  }}
-                >
-                  Calendar
-                </Button>
-              </Link>
-            </Grid>
-          )}
+          <Grid item xs={12} md={2}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              LinkComponent={Link}
+              fullWidth
+              href={`/${location}/calendar`}
+            >
+             Events calendar
+            </Button>
+          </Grid>
           <Grid container item xs={12} md={6} alignItems="center" spacing={2}>
             <Grid container item xs={12} md={6} spacing={1} alignItems="center">
               <Grid item>

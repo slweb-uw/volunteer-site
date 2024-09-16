@@ -25,12 +25,13 @@ export default function useEvents(location: string, projectId?: string) {
           "==",
           `${curDate.getFullYear()}-${curDate.getMonth()}`,
         ),
-        orderBy("date"),
       );
 
       if (projectId) {
         q = query(q, where("projectId", "==", projectId));
       }
+
+      q = query(q, orderBy("date"))
 
       const qSnap = await getDocs(q);
       const data: EventData[] = [];
