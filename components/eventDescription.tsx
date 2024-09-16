@@ -1,9 +1,10 @@
 import React from "react";
 import { Typography } from "@mui/material";
 import RichTextField from "./richTextField";
+import { ProjectData } from "new-types";
 
 type EventDescriptionProps = {
-  event: EventData;
+  event: ProjectData;
 }
 
 const EventDescription: React.FC<EventDescriptionProps> = ({

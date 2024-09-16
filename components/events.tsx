@@ -1,22 +1,17 @@
 import React, {
-  LegacyRef,
   useCallback,
   useEffect,
-  useRef,
   useState,
 } from "react";
 import {
   doc,
   getDoc,
   getDocs,
-  limit,
   collection,
   query,
   where,
   orderBy,
-  startAfter,
 } from "firebase/firestore";
-import type { QueryDocumentSnapshot } from "firebase/firestore";
 import { db } from "firebaseClient";
 import { Button, MenuItem, Select, Typography, Switch } from "@mui/material";
 import createStyles from "@mui/styles/createStyles";
@@ -31,8 +26,8 @@ import { Location } from "../helpers/locations";
 import { volunteerTypes } from "components/AddModifyEventModal";
 import { useRouter } from "next/router";
 import { useMediaQuery } from "@mui/material";
-import { useInView } from "react-intersection-observer";
 import { useSearchParams } from "next/navigation";
+import { ProjectData } from "new-types";
 
 type EventsProps = {
   location: Location;
@@ -42,9 +37,7 @@ type EventsProps = {
 const Events: React.FC<EventsProps> = ({ location, classes }) => {
   const router = useRouter();
   const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
-  const [events, setEvents] = useState<EventData[]>([]); // list of loaded events
-  const [fetchingEvents, setFetchingEvents] = useState(true);
-  const [cursor, setCursor] = useState<QueryDocumentSnapshot>(); // cursor to last document loaded
+  const [events, setEvents] = useState<ProjectData[]>([]); // list of loaded events
   const searchParams = useSearchParams();
 
   const ORGANIZATION_FILTER_QUERY_KEY = "org";
@@ -139,7 +132,6 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
 
   // Append more events from Firestore onto this page from position of cursor
   async function loadEvents() {
-    setFetchingEvents(true);
     const order = getOrder(sortField);
 
     // initialize query
@@ -167,10 +159,9 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
 
     // if we have a cursor, and we want to keep prev then fetch by cursor
     const next = await getDocs(q);
-
-    const eventsToAdd: EventData[] = [];
+    const eventsToAdd: ProjectData[] = [];
     next.docs.forEach((document) => {
-      let eventDoc = document.data() as EventData;
+      let eventDoc = document.data() as ProjectData;
       eventDoc.id = document.id; // adds event id to the EventData object
       const volunteersNeeded: string | string[] | undefined =
         eventDoc["Types of Volunteers Needed"];
@@ -182,7 +173,6 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
     });
 
     setEvents(eventsToAdd);
-    setFetchingEvents(false);
   }
 
   // clear from query param whenever done scrolling

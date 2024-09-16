@@ -78,7 +78,7 @@ const RichEventField: React.FC<RichEventFieldProps> = ({ name, value, sx }) => {
 
 // fetch event data before rendering
 export const getServerSideProps: GetServerSideProps<{
-  event: EventData;
+  event: ProjectData;
 }> = async (ctx) => {
   const location = ctx.params?.location;
   const event = ctx.params?.event;
@@ -97,7 +97,7 @@ export const getServerSideProps: GetServerSideProps<{
     .doc(event as string)
     .get();
 
-  return { props: { event: data.data() as EventData } };
+  return { props: { event: data.data() as ProjectData } };
 };
 
 const useStyles = makeStyles(() => ({

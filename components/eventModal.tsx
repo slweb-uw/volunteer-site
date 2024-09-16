@@ -63,7 +63,7 @@ const DialogContent = withStyles((theme: Theme) => ({
   },
 }))(MuiDialogContent)
 
-const deleteEvent = async (eventData: EventData | undefined) => {
+const deleteEvent = async (eventData: ProjectData | undefined) => {
   if (
     eventData &&
     confirm("Please acknowledge you wish to delete this event.")
@@ -96,7 +96,7 @@ const deleteEvent = async (eventData: EventData | undefined) => {
 
 export default function EventModal(props: {
   open: boolean
-  event: EventData | undefined
+  event: ProjectData | undefined
   location: Location
   handleClose: any
 }) {
