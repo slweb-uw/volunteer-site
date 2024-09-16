@@ -690,4 +690,4 @@ function ImagePreview({ imageURL, setImage, deleteImage }: ImagePreviewProps) {
     </Grid>
   );
 }
-
+export default AddModifyEventModal;
