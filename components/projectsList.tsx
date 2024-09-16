@@ -21,7 +21,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import Tooltip from "@mui/material/Tooltip";
 import BootstrapInput from "../components/bootstrapInput";
 import Link from "next/link";
-import EventCard from "../components/eventCard";
+import ProjectCard from "../components/projectCard";
 import { Location } from "../helpers/locations";
 import { volunteerTypes } from "components/AddModifyEventModal";
 import { useRouter } from "next/router";
@@ -394,7 +394,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
             <Grid container spacing={isMobile ? 2 : 6}>
               {events.map((event) => (
                 <Grid key={event.id} item xs={12} lg={6}>
-                  <EventCard event={event} />
+                  <ProjectCard event={event} />
                 </Grid>
               ))}
             </Grid>

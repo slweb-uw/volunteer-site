@@ -32,7 +32,7 @@ import { db, storage } from "firebaseClient";
 import { LoadingButton } from "@mui/lab";
 import { DialogActions } from "@mui/material";
 import { Guid } from "guid-typescript";
-import EventImage from "components/eventImage";
+import ProjectImage from "components/projectImage";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import RichTextEditor from "components/richTextEditor";
@@ -681,7 +681,7 @@ function ImagePreview({ imageURL, setImage, deleteImage }: ImagePreviewProps) {
           </Grid>
         </Grid>
         <Grid item sm={4}>
-          <EventImage
+          <ProjectImage
             className={classes.preview}
             imageURL={imageURL}
             eventTitle="Preview Image"

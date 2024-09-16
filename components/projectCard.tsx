@@ -4,12 +4,13 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import EventImage from "./eventImage";
+import ProjectImage from "./projectImage";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Bubble from "./interprofessionalTag";
 import { CardActionArea } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { ProjectData } from "new-types";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -51,13 +52,13 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-interface Props {
-  event: ProjectData | CalendarEventData;
+interface EventCardProps {
+  event: ProjectData; 
 }
 
 const NotSpecified = <i style={{ color: "gray" }}>Not specified</i>;
 
-const EventCard: React.FC<Props> = (props) => {
+const ProjectCard: React.FC<EventCardProps> = (props) => {
   const classes = useStyles();
   const mobileView = useMediaQuery("(max-width: 600px)");
   let imageURL = props.event.cardImageURL ?? props.event.imageURL;
@@ -80,7 +81,7 @@ const EventCard: React.FC<Props> = (props) => {
         <CardActionArea className={classes.root}>
           {!mobileView && (
             <CardMedia>
-              <EventImage
+              <ProjectImage
                 className={classes.cover}
                 imageURL={imageURL}
                 eventTitle={props.event.Title}
@@ -106,4 +107,4 @@ const EventCard: React.FC<Props> = (props) => {
   );
 };
 
-export default EventCard;
+export default ProjectCard;

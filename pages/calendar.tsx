@@ -1,14 +1,13 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { NextPage } from "next";
 import Link from "next/link";
-import { collection, query, where, getDocs, orderBy } from "firebase/firestore";
-import { db } from "../firebaseClient";
 import { Typography, Button, Card, CardActionArea } from "@mui/material";
 import createStyles from "@mui/styles/createStyles";
 import withStyles from "@mui/styles/withStyles";
 import { withSnackbar } from "notistack";
-import { EventData, EventRecurrance } from "new-types";
 import makeStyles from "@mui/styles/makeStyles";
+import { EventData } from "new-types";
+import useEvents from "hooks/useEvents";
 
 interface Props {
   uid: string;
@@ -43,44 +42,9 @@ months.set(11, "December");
 
 const Page: NextPage<Props> = () => {
   // pass in a function so it only runs once
-  const [curDate, setCurDate] = useState(() => new Date(Date.now()));
-  const [events, setEvents] = useState<EventData[]>([]);
+  const { events, nextMonthEvents, prevMonthEvents, curDate } =
+    useEvents("Seattle");
   const classes = useStyles();
-
-  useEffect(() => {
-    // fetch event data
-    const fetchData = async () => {
-      const eventsRef = collection(db, "events");
-      const q = query(
-        eventsRef,
-        where("location", "==", "Seattle"),
-        where(
-          "calendar",
-          "==",
-          `${curDate.getFullYear()}-${curDate.getMonth()}`,
-        ),
-        orderBy("date"),
-      );
-      const qSnap = await getDocs(q);
-      const data: EventRecurrance[] = [];
-      qSnap.forEach((doc) =>
-        data.push({
-          id: doc.id,
-          ...doc.data(),
-        } as EventRecurrance),
-      );
-      setEvents(data);
-    };
-    fetchData();
-  }, [curDate]);
-
-  function increaseMonth() {
-    setCurDate((prev) => new Date(prev.setMonth(prev.getMonth() + 1)));
-  }
-
-  function decreaseMonth() {
-    setCurDate((prev) => new Date(prev.setMonth(prev.getMonth() - 1)));
-  }
 
   return (
     <div>
@@ -90,8 +54,8 @@ const Page: NextPage<Props> = () => {
         style={{ padding: "1rem 2rem" }}
       >{`${months.get(curDate.getMonth())} ${curDate.getFullYear()}`}</Typography>
 
-      <Button onClick={decreaseMonth}>Back</Button>
-      <Button onClick={increaseMonth}>Next</Button>
+      <Button onClick={nextMonthEvents}>Back</Button>
+      <Button onClick={prevMonthEvents}>Next</Button>
       <CalendarView curDate={curDate} events={events} />
     </div>
   );

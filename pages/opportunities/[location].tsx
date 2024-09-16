@@ -1,11 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getAppAnalytics } from "firebaseClient";
 import makeStyles from "@mui/styles/makeStyles";
-import { CssBaseline, Typography, Button, Tooltip } from "@mui/material";
+import { Typography, Button, Tooltip } from "@mui/material";
 import IconBreadcrumbs from "components/breadcrumbs";
 import LocationSelector from "../../components/locationSelector";
 import { useRouter } from "next/router";
-import Events from "components/events";
+import ProjectsList from "components/projectsList";
 import HelpIcon from "@mui/icons-material/Help";
 import {
   DEFAULT_LOCATION,
@@ -25,7 +25,6 @@ const LocationPage = () => {
   const { isAdmin } = useAuth();
   const searchParams = useSearchParams();
   const from = searchParams.get("from");
-
 
   const [createEventOpen, setCreateEventOpen] = useState(false);
   let location =
@@ -49,7 +48,7 @@ const LocationPage = () => {
     logEvent(analytics, "location_page_visit");
   }, []);
 
-  useEffect(() => { }, [from]);
+  useEffect(() => {}, [from]);
 
   // Handle last location saving/loading
   useEffect(() => {
@@ -66,11 +65,8 @@ const LocationPage = () => {
     }
   }, [router.isReady]);
 
-
   return (
-    <div
-      className={classes.page}
-    >
+    <div className={classes.page}>
       <div
         style={{
           display: "flex",
@@ -123,7 +119,7 @@ const LocationPage = () => {
         <LocationSelector defaultLocation={DEFAULT_LOCATION} />
       </div>
       {location !== DEFAULT_LOCATION && (
-        <Events location={location as Location} />
+        <ProjectsList location={location as Location} />
       )}
     </div>
   );
