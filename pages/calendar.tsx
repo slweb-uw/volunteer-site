@@ -7,7 +7,7 @@ import { Typography, Button, Card, CardActionArea } from "@mui/material";
 import createStyles from "@mui/styles/createStyles";
 import withStyles from "@mui/styles/withStyles";
 import { withSnackbar } from "notistack";
-import { EventRecurrance } from "new-types";
+import { EventData, EventRecurrance } from "new-types";
 import makeStyles from "@mui/styles/makeStyles";
 
 interface Props {
@@ -42,8 +42,9 @@ months.set(10, "November");
 months.set(11, "December");
 
 const Page: NextPage<Props> = () => {
+  // pass in a function so it only runs once
   const [curDate, setCurDate] = useState(() => new Date(Date.now()));
-  const [events, setEvents] = useState<EventRecurrance[]>([]);
+  const [events, setEvents] = useState<EventData[]>([]);
   const classes = useStyles();
 
   useEffect(() => {
@@ -97,7 +98,6 @@ const Page: NextPage<Props> = () => {
 };
 
 function CalendarView({ curDate, events }: { curDate: Date; events: any }) {
-  
   // calculate dates for calendar whenever user changes calendar date
   const dates = useMemo(
     () => getDaysInMonth(curDate.getMonth(), curDate.getFullYear()),
@@ -139,7 +139,7 @@ function CalendarView({ curDate, events }: { curDate: Date; events: any }) {
               {getEventsForDate(date, events).map((event) => (
                 <Card key={event.id} style={{ boxShadow: "none" }}>
                   <Link
-                    href={`/calendar/${event.id}`}
+                    href={`/${event.id}`}
                     style={{
                       textDecoration: "none",
                       color: "black",
@@ -165,7 +165,7 @@ function CalendarView({ curDate, events }: { curDate: Date; events: any }) {
   );
 }
 
-function getEventsForDate(date: Date, events) {
+function getEventsForDate(date: Date, events: EventData[]) {
   return events.filter((event) => {
     const eventDate: Date = event.date.toDate();
     const eventMonth = eventDate.getMonth();
