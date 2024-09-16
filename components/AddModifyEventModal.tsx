@@ -149,7 +149,7 @@ interface AddModifyEventModalProps {
   event?: ProjectData;
   handleClose: any;
   location: string;
-  projectId: string;
+  projectId?: string;
 }
 
 interface ImageSelectorProps {
@@ -431,6 +431,7 @@ const AddModifyEventModal = ({
       if (!event) {
         await addDoc(collection(db, projectLocation), requestData);
       } else {
+        if(!projectId) return
         await setDoc(doc(db, projectLocation, projectId), requestData);
       }
       enqueueSnackbar(`successfully ${action} project ${data.Title}`, {

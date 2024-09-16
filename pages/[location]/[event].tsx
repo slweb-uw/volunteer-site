@@ -25,6 +25,8 @@ import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "firebaseClient";
 import { useSnackbar } from "notistack";
 import { LoadingButton } from "@mui/lab";
+import Link from "next/link";
+import { ChevronLeft } from "@mui/icons-material";
 
 const fields = [
   "Location",
@@ -39,7 +41,6 @@ const fields = [
   "Protocols",
 ] as const;
 
-
 type RichEventFieldProps = {
   name: string;
   value: string | string[] | undefined;
@@ -47,11 +48,7 @@ type RichEventFieldProps = {
   sx?: SxProps<Theme>;
 };
 
-const RichEventField: React.FC<RichEventFieldProps> = ({
-  name,
-  value,
-  sx,
-}) => {
+const RichEventField: React.FC<RichEventFieldProps> = ({ name, value, sx }) => {
   let data: string | undefined;
   if (value && Array.isArray(value)) {
     data = naturalJoin(value);
@@ -73,7 +70,7 @@ const RichEventField: React.FC<RichEventFieldProps> = ({
         <Typography variant="h6" style={{ fontWeight: 600 }}>
           {name}
         </Typography>
-        <RichTextField sx={sx} value={data}/>
+        <RichTextField sx={sx} value={data} />
       </Box>
     </>
   );
@@ -160,6 +157,14 @@ const Event = ({
   return (
     <div className={classes.page}>
       {/* EVENT TITLE */}
+
+      <Button
+        LinkComponent={Link}
+        href={`/opportunities/${location.toString()}?from=${projectId}`}
+        startIcon={<ChevronLeft />}
+      >
+        Back
+      </Button>
       <Typography variant="h3" style={{ fontWeight: 900, paddingBottom: 50 }}>
         {eventData.Title}
       </Typography>
@@ -192,7 +197,7 @@ const Event = ({
               startIcon={<CalendarMonthOutlinedIcon />}
               LinkComponent={NextLink}
               fullWidth
-              href={`/${location}/${eventData.id}/calendar`}
+              href={`/${location}/${projectId}/calendar`}
               variant="contained"
               sx={{ display: "flex", gap: "0.5rem" }}
             >
@@ -236,30 +241,32 @@ const Event = ({
       ></Divider>
 
       {isAdmin && (
-      <>
-      <Typography component="h3" variant="h4">Admin Options</Typography>
-        <Box sx={{ display: "flex", gap: "1rem", padding: "1rem 0 " }}>
-          <Button onClick={() => setModalOpen(true)} variant="contained">
-            Edit Project
-          </Button>
-          <LoadingButton
-            loading={deletingProject}
-            variant="outlined"
-            color="error"
-            onClick={HandleDeleteProject}
-          >
-            Delete Project
-          </LoadingButton>
+        <>
+          <Typography component="h3" variant="h4">
+            Admin Options
+          </Typography>
+          <Box sx={{ display: "flex", gap: "1rem", padding: "1rem 0 " }}>
+            <Button onClick={() => setModalOpen(true)} variant="contained">
+              Edit Project
+            </Button>
+            <LoadingButton
+              loading={deletingProject}
+              variant="outlined"
+              color="error"
+              onClick={HandleDeleteProject}
+            >
+              Delete Project
+            </LoadingButton>
 
-          <AddModifyEventModal
-            open={modalOpen}
-            event={eventData}
-            location={location?.toString()}
-            projectId={projectId.toString()}
-            handleClose={() => setModalOpen(false)}
-          />
-        </Box>
-      </>
+            <AddModifyEventModal
+              open={modalOpen}
+              event={eventData}
+              location={location?.toString()}
+              projectId={projectId.toString()}
+              handleClose={() => setModalOpen(false)}
+            />
+          </Box>
+        </>
       )}
     </div>
   );

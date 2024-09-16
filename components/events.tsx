@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import {
   doc,
   getDoc,
   getDocs,
-  limit,
   collection,
   query,
   where,
   orderBy,
-  startAfter,
 } from "firebase/firestore";
-import type { QueryDocumentSnapshot } from "firebase/firestore";
 import { db } from "firebaseClient";
 import { Button, MenuItem, Select, Typography, Switch } from "@mui/material";
 import createStyles from "@mui/styles/createStyles";
@@ -22,10 +23,11 @@ import BootstrapInput from "../components/bootstrapInput";
 import Link from "next/link";
 import EventCard from "../components/eventCard";
 import { Location } from "../helpers/locations";
-import { volunteerTypes } from "components/AddModifyEventModal"
+import { volunteerTypes } from "components/AddModifyEventModal";
 import { useRouter } from "next/router";
 import { useMediaQuery } from "@mui/material";
-import { useInView } from "react-intersection-observer";
+import { useSearchParams } from "next/navigation";
+import { ProjectData } from "new-types";
 
 type EventsProps = {
   location: Location;
@@ -34,14 +36,9 @@ type EventsProps = {
 
 const Events: React.FC<EventsProps> = ({ location, classes }) => {
   const router = useRouter();
-  const { ref, inView } = useInView({
-    threshold: 0.1,
-  });
-
   const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
   const [events, setEvents] = useState<ProjectData[]>([]); // list of loaded events
-  const [fetchingEvents, setFetchingEvents] = useState(true);
-  const [cursor, setCursor] = useState<QueryDocumentSnapshot>(); // cursor to last document loaded
+  const searchParams = useSearchParams();
 
   const ORGANIZATION_FILTER_QUERY_KEY = "org";
   const STUDENT_TYPE_FILTER_QUERY_KEY = "type";
@@ -77,8 +74,6 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
     setQueryVar(STUDENT_TYPE_FILTER_QUERY_KEY, value);
   };
 
-  const [showLoadButton, setShowLoadButton] = useState<boolean>(true);
-  const [adminModalOpen, setAdminModalOpen] = useState<boolean>(false);
   const [sortField, setSortField] = useState<string>("Title");
   const [topMessage, setTopMessage] = useState<any>();
   const [signUpAvailableFilter, setSignUpAvailableFilter] =
@@ -100,8 +95,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
 
   useEffect(() => {
     // Load events
-    console.log("Component mounted or location changed. Loading events...");
-    loadEvents(false);
+    loadEvents();
     const cacheRef = doc(db, "cache", location.toString());
     getDoc(cacheRef).then((doc) =>
       setOrganizations(Object.keys(doc.data() as string[]).sort()),
@@ -109,12 +103,6 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
     // pull organizations for this location from the metadata cache
   }, [location]);
 
-  // load the events as the load more button is in view
-  useEffect(() => {
-    if (inView && !fetchingEvents) {
-      loadEvents(true);
-    }
-  }, [inView]);
   // Adjusts state depending on whether provider view is on
   useEffect(() => {
     const message = isProviderView ? (
@@ -143,8 +131,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
   };
 
   // Append more events from Firestore onto this page from position of cursor
-  async function loadEvents(keepPrev: boolean) {
-    setFetchingEvents(true);
+  async function loadEvents() {
     const order = getOrder(sortField);
 
     // initialize query
@@ -168,18 +155,14 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
       q = query(q, where("SignupActive", "==", true));
     }
 
-    q = query(q, orderBy(sortField, order), limit(11));
+    q = query(q, orderBy(sortField, order));
 
     // if we have a cursor, and we want to keep prev then fetch by cursor
-    if (cursor && keepPrev) {
-      q = query(q, startAfter(cursor));
-    }
-
     const next = await getDocs(q);
     const eventsToAdd: ProjectData[] = [];
-    next.docs.slice(0, 10).forEach((document) => {
+    next.docs.forEach((document) => {
       let eventDoc = document.data() as ProjectData;
-      eventDoc.id = document.id; // adds event id to the ProjectData object
+      eventDoc.id = document.id; // adds event id to the EventData object
       const volunteersNeeded: string | string[] | undefined =
         eventDoc["Types of Volunteers Needed"];
       if (volunteersNeeded && typeof volunteersNeeded === "string") {
@@ -188,19 +171,48 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
       }
       eventsToAdd.push(eventDoc);
     });
-    setCursor(next.docs[next.docs.length - 2]);
-    if (keepPrev) {
-      setEvents((prevEvents) => [...prevEvents, ...eventsToAdd]);
-    } else {
-      setEvents(eventsToAdd);
-    }
-    setShowLoadButton(next.docs.length > 10);
-    setFetchingEvents(false);
+
+    setEvents(eventsToAdd);
   }
 
+  // clear from query param whenever done scrolling
   useEffect(() => {
-    loadEvents(false);
+    const onScrollEnd = () => {
+      const from = searchParams.get("from");
+      if (!from) return;
+
+      setQueryVar("from", "")
+    };
+
+    addEventListener("scrollend", onScrollEnd);
+
+    return () => {
+      removeEventListener("scrollend", onScrollEnd);
+    };
+  }, []);
+
+  useEffect(() => {
+    loadEvents();
   }, [organizationFilter, studentTypeFilter, signUpAvailableFilter]);
+
+  // call back to scroll to event the user was previously on
+  const eventsref = useCallback(
+    (node: HTMLDivElement) => {
+      const from = searchParams.get("from");
+      if (!node || !from || !events) return;
+      try {
+        const scrollTo = node.querySelector(`#${from}`);
+        scrollTo?.scrollIntoView();
+      } catch (err) {
+        // clear query params since we dont scroll
+        setQueryVar("from", "")
+        router.replace(`/opportunities/${location}`, undefined, {
+          shallow: true,
+        });
+      }
+    },
+    [events, searchParams, location, router],
+  );
 
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
@@ -377,7 +389,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
       {/* Button-Modal Module for adding new events */}
 
       {location ? (
-        <div style={{ paddingBottom: "4em" }}>
+        <div style={{ paddingBottom: "4em" }} ref={eventsref}>
           {events.length > 0 ? (
             <Grid container spacing={isMobile ? 2 : 6}>
               {events.map((event) => (
@@ -392,10 +404,6 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
                 <b>No results found.</b>
               </Typography>
             </div>
-          )}
-          {/*when this is in view it loads more projects*/}
-          {showLoadButton && (
-            <div ref={ref}>{fetchingEvents && "loading more events"}</div>
           )}
         </div>
       ) : (
