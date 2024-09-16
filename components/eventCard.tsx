@@ -52,7 +52,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 interface Props {
-  event: EventData | CalendarEventData;
+  event: ProjectData | CalendarEventData;
 }
 
 const NotSpecified = <i style={{ color: "gray" }}>Not specified</i>;

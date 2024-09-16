@@ -29,6 +29,7 @@ const DAYS = [
 
 const months = new Map();
 months.set(0, "January");
+months.set(1, "February");
 months.set(2, "March");
 months.set(3, "April");
 months.set(4, "May");
@@ -162,7 +163,7 @@ const Page: NextPage<Props> = () => {
               {getEventsForDate(date).map((event) => (
                 <Card key={event.id} style={{ boxShadow: "none" }}>
                   <Link
-                    href={`/${event.id}`}
+                    href={`/calendar/${event.id}`}
                     style={{
                       textDecoration: "none",
                       color: "black",

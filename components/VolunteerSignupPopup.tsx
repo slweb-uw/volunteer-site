@@ -46,20 +46,17 @@ const useStyles = makeStyles({
     },
 });
 
-const VolunteerPopup = ({ open, handleClose, email, uid, addVolunteer, onDeleteVolunteer, volunteer }) => {
+const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, addVolunteer, onDeleteVolunteer, volunteer }) => {
     const classes = useStyles();
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
+    // const [displayName, setDisplayName] = useState(name as string);
+    const [phoneNumber, setPhoneNumber] = useState(phone || ''); //TODO Set default state to phone number if provided
     const [comments, setComments] = useState('');
     const [studentDiscipline, setStudentDiscipline] = useState('');
     const [certified, setCertified] = useState(false);
     const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
-    
+    console.log(volunteer + "test");
     useEffect(() => {
       if (volunteer) {
-        setFirstName(volunteer.firstName || '');
-        setLastName(volunteer.lastName || '');
         setPhoneNumber(volunteer.phoneNumber || '');
         setComments(volunteer.comments || '');
         setStudentDiscipline(volunteer.studentDiscipline || '');
@@ -91,21 +88,19 @@ const VolunteerPopup = ({ open, handleClose, email, uid, addVolunteer, onDeleteV
     };
 
     const isPhoneNumberValid = validatePhoneNumber(phoneNumber);
-    const isSubmitDisabled = !(email && firstName && lastName && studentDiscipline && certified);
+    const isSubmitDisabled = !(email && name && studentDiscipline && certified);
 
     const handleSubmit = () => {
       if (isPhoneNumberValid) {
         const volunteerData = {
             uid,
             email,
-            firstName,
-            lastName,
+            name,
             phoneNumber,
             studentDiscipline,
             comments
         };
-
-        addVolunteer(volunteerData);
+        console.log(volunteerData);
         handleClose();
       } else {
           alert('Invalid phone number!');
@@ -143,20 +138,13 @@ const VolunteerPopup = ({ open, handleClose, email, uid, addVolunteer, onDeleteV
           )}
         </div>
         <TextField
-          label="First Name *"
-          value={firstName}
+          label="Full Name *"
+          value={name}
           style={{ margin: "0 auto 0.75rem"}}
-          onChange={(e) => setFirstName(e.target.value)}
+        //   onChange={(e) => setDisplayName(e.target.value)}
           fullWidth
           margin="normal"
-        />
-        <TextField
-          label="Last Name *"
-          value={lastName}
-          style={{ margin: "0 auto 0.75rem"}}
-          onChange={(e) => setLastName(e.target.value)}
-          fullWidth
-          margin="normal"
+          disabled
         />
         <TextField
           label={(

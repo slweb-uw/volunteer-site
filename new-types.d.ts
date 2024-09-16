@@ -1,4 +1,6 @@
-type EventData = {
+import { Timestamp } from "firebase/firestore";
+
+type ProjectData = {
   id: string;
   Title: string;
   Organization: string;
@@ -26,3 +28,24 @@ type EventData = {
   "Protocols": string
 };
 
+//Specific to events per project
+type EventData = {
+    calendar: string;
+    date: Timestamp;
+    endTime: string;
+    eventInformation: string;
+    leadEmail: string;
+    location: string;
+    openings: { [key: string]: number | string }[]; //TODO: Define openings as a map of strings to either numbers or strings.
+    projectId: string;
+    projectName: string;
+    startTime: string;
+    volunteerQty: [string]
+    volunteerTypes: [string]
+};
+
+type VolunteerData = {
+    id: string;
+    type: string;
+    name: string;
+};

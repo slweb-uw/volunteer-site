@@ -39,7 +39,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
   });
 
   const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
-  const [events, setEvents] = useState<EventData[]>([]); // list of loaded events
+  const [events, setEvents] = useState<ProjectData[]>([]); // list of loaded events
   const [fetchingEvents, setFetchingEvents] = useState(true);
   const [cursor, setCursor] = useState<QueryDocumentSnapshot>(); // cursor to last document loaded
 
@@ -176,10 +176,10 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
     }
 
     const next = await getDocs(q);
-    const eventsToAdd: EventData[] = [];
+    const eventsToAdd: ProjectData[] = [];
     next.docs.slice(0, 10).forEach((document) => {
-      let eventDoc = document.data() as EventData;
-      eventDoc.id = document.id; // adds event id to the EventData object
+      let eventDoc = document.data() as ProjectData;
+      eventDoc.id = document.id; // adds event id to the ProjectData object
       const volunteersNeeded: string | string[] | undefined =
         eventDoc["Types of Volunteers Needed"];
       if (volunteersNeeded && typeof volunteersNeeded === "string") {

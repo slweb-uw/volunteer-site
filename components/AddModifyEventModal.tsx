@@ -146,7 +146,7 @@ const optinalFields = [
 
 interface AddModifyEventModalProps {
   open: boolean;
-  event?: EventData;
+  event?: ProjectData;
   handleClose: any;
   location: string;
   projectId: string;
