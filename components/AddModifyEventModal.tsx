@@ -41,6 +41,7 @@ import { addDoc, Timestamp, collection, setDoc, doc } from "firebase/firestore";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useAuth } from "auth";
 import { useRouter } from "next/router";
+import { ProjectData } from "new-types";
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -439,7 +440,7 @@ const AddModifyEventModal = ({
         autoHideDuration: 2000,
       });
       setMutating(false);
-      router.reload()
+      router.replace(router.asPath)
       handleClose()
     } catch (err) {
       setMutating(false);
@@ -649,6 +650,7 @@ type ImagePreviewProps = {
   setImage: (e: React.ChangeEvent<HTMLInputElement>) => void;
   deleteImage: () => void;
 };
+
 function ImagePreview({ imageURL, setImage, deleteImage }: ImagePreviewProps) {
   const classes = useStyles();
   return (

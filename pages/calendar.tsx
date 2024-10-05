@@ -1,5 +1,4 @@
 import React, { useMemo } from "react";
-import { NextPage } from "next";
 import Link from "next/link";
 import { Typography, Button, Card, CardActionArea } from "@mui/material";
 import createStyles from "@mui/styles/createStyles";
@@ -9,38 +8,7 @@ import makeStyles from "@mui/styles/makeStyles";
 import { EventData } from "new-types";
 import useEvents from "hooks/useEvents";
 
-interface Props {
-  uid: string;
-  email: string;
-  classes?: any;
-  enqueueSnackbar: (message: string) => void;
-}
-
-const DAYS = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
-
-const months = new Map();
-months.set(0, "January");
-months.set(1, "February");
-months.set(2, "March");
-months.set(3, "April");
-months.set(4, "May");
-months.set(5, "June");
-months.set(6, "July");
-months.set(7, "August");
-months.set(8, "September");
-months.set(9, "October");
-months.set(10, "November");
-months.set(11, "December");
-
-const Page: NextPage<Props> = () => {
+const Page = () => {
   // pass in a function so it only runs once
   const { events, nextMonthEvents, prevMonthEvents, curDate } =
     useEvents("Seattle");

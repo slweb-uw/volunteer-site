@@ -19,10 +19,13 @@ export default function EventsView({
     projectId,
   );
 
+  const styles = useStyles();
+
   return (
     <div>
       <Typography
         variant="h4"
+        className={styles.dateTitle}
         style={{ padding: "1rem 2rem" }}
       >{`${months.get(curDate.getMonth())} ${curDate.getFullYear()}`}</Typography>
 
@@ -130,9 +133,9 @@ function getDaysInMonth(month: number, year: number) {
   return days;
 }
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   dateTitle: {
-    color: theme.palette.primary.main,
+    color: "black",
     fontWeight: 800,
   },
 }));

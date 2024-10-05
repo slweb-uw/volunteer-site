@@ -25,7 +25,8 @@ import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "firebaseClient";
 import { useSnackbar } from "notistack";
 import { LoadingButton } from "@mui/lab";
-import Link from "next/link";
+import { ProjectData } from "new-types";
+import Head from "next/head";
 import { ChevronLeft } from "@mui/icons-material";
 
 const fields = [
@@ -97,6 +98,12 @@ export const getServerSideProps: GetServerSideProps<{
     .doc(event as string)
     .get();
 
+  if (!data.exists) {
+    return {
+      notFound: true,
+    };
+  }
+
   return { props: { event: data.data() as ProjectData } };
 };
 
@@ -139,7 +146,7 @@ const Event = ({
     setDeletingProject(true);
     try {
       await deleteDoc(doc(db, location.toString(), projectId.toString()));
-      router.push(`/${location}`);
+      router.push(`/opportunities/${location}`);
       enqueueSnackbar("Successfully deleted project", {
         variant: "success",
         autoHideDuration: 2000,
@@ -156,14 +163,18 @@ const Event = ({
 
   return (
     <div className={classes.page}>
+      <Head>
+        <title>{eventData.Title}</title>
+        <meta name="description" content={eventData["Project Description"]} />
+        <meta
+          name="og:description"
+          content={eventData["Project Description"]}
+        />
+        <meta property="og:image" content={eventData.imageURL} />
+      </Head>
       {/* EVENT TITLE */}
-
-      <Button
-        LinkComponent={Link}
-        href={`/opportunities/${location.toString()}?from=${projectId}`}
-        startIcon={<ChevronLeft />}
-      >
-        Back
+      <Button onClick={() => router.back()}>
+        <ChevronLeft /> Back
       </Button>
       <Typography variant="h3" style={{ fontWeight: 900, paddingBottom: 50 }}>
         {eventData.Title}
@@ -205,7 +216,7 @@ const Event = ({
             </Button>
           </Box>
           {/* Navigation for events and admin page of each */}
-          <Box sx={{ columns: { xs: 1, md: 2 }, columnGap: 8 }}>
+          <Box sx={{ columns: { xs: 1, md: 1 }, columnGap: 8 }}>
             {fields
               .filter(
                 (name) => eventData[name] != null && eventData[name] != "",

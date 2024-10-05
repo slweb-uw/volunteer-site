@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   doc,
   getDoc,
@@ -22,7 +22,6 @@ import { Location } from "../helpers/locations";
 import { volunteerTypes } from "components/AddModifyEventModal";
 import { useRouter } from "next/router";
 import { useMediaQuery } from "@mui/material";
-import { useSearchParams } from "next/navigation";
 import { ProjectData } from "new-types";
 
 type EventsProps = {
@@ -34,7 +33,6 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
   const router = useRouter();
   const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
   const [events, setEvents] = useState<ProjectData[]>([]); // list of loaded events
-  const searchParams = useSearchParams();
 
   const ORGANIZATION_FILTER_QUERY_KEY = "org";
   const STUDENT_TYPE_FILTER_QUERY_KEY = "type";
@@ -49,16 +47,10 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
     } else {
       delete query[key];
     }
-    router.replace(
-      {
-        pathname: router.pathname,
-        query: query,
-      },
-      undefined,
-      {
-        scroll: false,
-      },
-    );
+    router.push({
+      pathname: router.pathname,
+      query: query,
+    });
   };
 
   const organizationFilter = router.query[ORGANIZATION_FILTER_QUERY_KEY] ?? "";
@@ -171,44 +163,9 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
     setEvents(eventsToAdd);
   }
 
-  // clear from query param whenever done scrolling
-  useEffect(() => {
-    const onScrollEnd = () => {
-      const from = searchParams.get("from");
-      if (!from) return;
-
-      setQueryVar("from", "");
-    };
-
-    addEventListener("scrollend", onScrollEnd);
-
-    return () => {
-      removeEventListener("scrollend", onScrollEnd);
-    };
-  }, []);
-
   useEffect(() => {
     loadEvents();
   }, [organizationFilter, studentTypeFilter, signUpAvailableFilter]);
-
-  // call back to scroll to event the user was previously on
-  const eventsref = useCallback(
-    (node: HTMLDivElement) => {
-      const from = searchParams.get("from");
-      if (!node || !from || !events) return;
-      try {
-        const scrollTo = node.querySelector(`#${from}`);
-        scrollTo?.scrollIntoView();
-      } catch (err) {
-        // clear query params since we dont scroll
-        setQueryVar("from", "");
-        router.replace(`/opportunities/${location}`, undefined, {
-          shallow: true,
-        });
-      }
-    },
-    [events, searchParams, location, router],
-  );
 
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
 
@@ -288,7 +245,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
               fullWidth
               href={`/${location}/calendar`}
             >
-             Events calendar
+              Events calendar
             </Button>
           </Grid>
           <Grid container item xs={12} md={6} alignItems="center" spacing={2}>
@@ -375,7 +332,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
       {/* Button-Modal Module for adding new events */}
 
       {location ? (
-        <div style={{ paddingBottom: "4em" }} ref={eventsref}>
+        <div style={{ paddingBottom: "4em" }}>
           {events.length > 0 ? (
             <Grid container spacing={isMobile ? 2 : 6}>
               {events.map((event) => (

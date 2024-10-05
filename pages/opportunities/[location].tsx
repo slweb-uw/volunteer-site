@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { getAppAnalytics } from "firebaseClient";
 import makeStyles from "@mui/styles/makeStyles";
 import { Typography, Button, Tooltip } from "@mui/material";
-import IconBreadcrumbs from "components/breadcrumbs";
 import LocationSelector from "../../components/locationSelector";
 import { useRouter } from "next/router";
 import ProjectsList from "components/projectsList";
@@ -17,14 +16,11 @@ import { handleHelpButtonClick } from "../../helpers/navigation";
 import { useAuth } from "auth";
 import { logEvent } from "firebase/analytics";
 import AddModifyEventModal from "components/AddModifyEventModal";
-import { useSearchParams } from "next/navigation";
 
 const LocationPage = () => {
   const classes = useStyles();
   const router = useRouter();
   const { isAdmin } = useAuth();
-  const searchParams = useSearchParams();
-  const from = searchParams.get("from");
 
   const [createEventOpen, setCreateEventOpen] = useState(false);
   let location =
@@ -32,24 +28,11 @@ const LocationPage = () => {
       ? router.query.location
       : DEFAULT_LOCATION;
 
-  /*const handleHelpButtonClick = () => {
-    router.push({
-      pathname: '/help',
-      query: { fromLocationPage: true },
-    });
-  };*/
-
   //new logic using helper function
   const handleHelpButtonClickLocation = () => {
     handleHelpButtonClick(router, "fromLocationPage");
   };
-  useEffect(() => {
-    const analytics = getAppAnalytics();
-    logEvent(analytics, "location_page_visit");
-  }, []);
-
-  useEffect(() => {}, [from]);
-
+  
   // Handle last location saving/loading
   useEffect(() => {
     if (!router.isReady) {
@@ -65,6 +48,11 @@ const LocationPage = () => {
     }
   }, [router.isReady]);
 
+  useEffect(() => {
+    const analytics = getAppAnalytics();
+    logEvent(analytics, "location_page_visit");
+  }, []);
+
   return (
     <div className={classes.page}>
       <div
@@ -75,7 +63,6 @@ const LocationPage = () => {
         }}
       >
         <div>
-          <IconBreadcrumbs crumbs={["Opportunities"]} parentURL={undefined} />
           <Typography variant="h3" gutterBottom className={classes.header}>
             OPPORTUNITIES
           </Typography>

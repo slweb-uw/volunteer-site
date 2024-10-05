@@ -279,21 +279,18 @@ const App: React.FC<{}> = () => {
                 style={{ height: "200px", width: "301px" }}
                 alt="Student volunteers"
               ></CardMedia>
-              <CardActionArea className={classes.cardhover}>
+              <CardActionArea
+                className={classes.cardhover}
+                LinkComponent={Link}
+                href="/welcome/studentVolunteers"
+              >
                 <CardContent>
-                  <Link
-                    href="/welcome/studentVolunteers"
-                    className={classes.cardlinks}
-                  >
-                    <Typography className={classes.cardtitle}>
-                      Welcome
-                    </Typography>
-                    <Typography>
-                      <ArrowForwardIos
-                        style={{ fontSize: "1em", color: "#4B2E83" }}
-                      />
-                    </Typography>
-                  </Link>
+                  <Typography className={classes.cardtitle}>Welcome</Typography>
+                  <Typography>
+                    <ArrowForwardIos
+                      style={{ fontSize: "1em", color: "#4B2E83" }}
+                    />
+                  </Typography>
                 </CardContent>
               </CardActionArea>
               <hr
