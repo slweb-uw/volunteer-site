@@ -16,6 +16,9 @@ import VolunteerInfoPopup from "components/VolunteerInfoPopup";
 import SignupEventPopup from "components/SignupEventPopup";
 import VolunteerPopup from "components/VolunteerSignupPopup";
 import { firebaseAdmin } from "firebaseAdmin";
+import { addDoc, collection, deleteField, doc, setDoc, updateDoc } from "firebase/firestore";
+import { db } from "firebaseClient";
+import AuthorizationMessage from "pages/AuthorizationMessage";
 
 const initialGridKeys = [
   "Tips and Reminders",
@@ -143,7 +146,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
           ...doc.data(),
         }));
         const eventDate: string = data.data()?.date.toDate().toString(); // Convert Date object to string
-        return { props: { eventData: { ...data.data(), date: eventDate }, volunteer: volunteerData } };
+        return { props: { eventData: { ...data.data(), date: eventDate }, volunteer: volunteerData, eventID: event } };
     } else {
         // Handle the case where the event does not exist.
         return { notFound: true };
@@ -153,7 +156,6 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   //TODO: Get open slots for volunteer (based on the data contained in the volunteers field of the event, which is actually a collection in the firebase db).
   //TODO: Check if slots are full.
-  //TODO: Signup person for event.
   //TODO: Update slots on event update.
   //TODO: Add event to new personal calander?
 
@@ -181,23 +183,29 @@ const useStyles = makeStyles(() => ({
 const Event = ({
     eventData,
     volunteer,  //For use in lead view, will show who is currently signed up.
+    eventID,
   }: {
     eventData: EventData;
     volunteer: VolunteerData[];
+    eventID: string;
   }) => {
   const classes = useStyles();
   const router = useRouter();
   const { user, isAdmin, isAuthorized, isLead } = useAuth();
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [editedEvent, setEditedEvent] = useState(null);
+//   const [editedEvent, setEditedEvent] = useState(null);
   const [selectedRole, setSelectedRole] = useState("");
   const [editedVolunteer, setEditedVolunteer] = useState(null);
-  const [openVolunteerInfoPopup, setOpenVolunteerInfoPopup] = useState(false);
-  const [volunteerInfo, setVolunteerInfo] = useState(null);
+//   const [openVolunteerInfoPopup, setOpenVolunteerInfoPopup] = useState(false);
+//   const [volunteerInfo, setVolunteerInfo] = useState(null);
   const [openVolunteerPopup, setOpenVolunteerPopup] = useState(false);
-  const [openEventFormPopup, setOpenEventFormPopup] = useState(false);
+//   const [openEventFormPopup, setOpenEventFormPopup] = useState(false);
 
-  const handleOpenVolunteerPopup = (type) => {
+  if (!isAdmin && !isAuthorized && !isLead) {
+    return <AuthorizationMessage user={user} />;
+  }
+  
+  const handleOpenVolunteerPopup = (type: string) => {
     setSelectedRole(type);
     setOpenVolunteerPopup(true);
   };
@@ -208,54 +216,28 @@ const Event = ({
     setEditedVolunteer(null);
     router.push({
       pathname: router.pathname,
-      query: { ...router.query, selectedEventId: selectedEvent?.id },
+      query: { ...router.query},
     });
   };
 
-  const handleEventAction = (action: string, eventData: any) => {
-    // TODO: lets handle edit and delete this would not work any more
-    // because we are not using the generate unique id
-    console.log(eventData)
-    if (action === "add") {
-      addDoc(collection(db, "events"), {
-        ...eventData,
-        projectName: title,
-        projectId: event,
-        // this is for caledar query
-        calendar: `${eventData.date.getFullYear()}-${eventData.date.getMonth()}`,
-        date: Timestamp.fromDate(eventData.date),
-        location: location,
-      }).then(() => setSelectedEvent(eventData));
-    } else if (action === "edit") {
-      //  setDoc(eventRef, eventData).then(() => {
-      // setSelectedEvent(eventData);
-      // });
-    } else if (action === "delete") {
-      // deleteDoc(eventRef)
-    }
-  };
-
-  const handleAddVolunteer = (volunteerData) => {
+  const handleAddVolunteer = (volunteerData: VolunteerData) => {
     if (selectedRole) {
-      const existingRolesOnEvent = selectedEvent.volunteers || {};
+      const existingRolesOnEvent = volunteer || {};
       const hasSignedUpForEvent = Object.keys(existingRolesOnEvent).some(
-        (role) =>
-          role !== selectedRole &&
-          Object.keys(existingRolesOnEvent[role]).some(
             (uid) =>
-              existingRolesOnEvent[role][uid].date === volunteerData.date,
-          ),
-      );
-
+              uid === volunteerData.uid,
+          );
+      console.log("adding new volunteer: ", volunteerData);
       if (hasSignedUpForEvent) {
         alert("You have already signed up for another role on this event.");
       } else {
         const eventRef = doc(
           db,
-          `${location}/${event}/signup/${selectedEvent?.id}`,
+          `events/${eventID}/volunteers`,
+          volunteerData.uid
         );
-        updateDoc(eventRef, {
-          [`volunteers.${selectedRole}.${volunteerData.uid}`]: volunteerData,
+        setDoc(eventRef, {
+          ...volunteerData,
         }).then(() => {
           handleCloseVolunteerPopup();
         });
@@ -263,7 +245,7 @@ const Event = ({
     }
   };
 
-  const handleDeleteVolunteer = (volunteer, mode: String) => {
+  const handleDeleteVolunteer = (volunteerData: VolunteerData, mode: String) => {
     if (selectedRole) {
       let message = "Are you sure you want to withdraw from this role?";
 
@@ -274,32 +256,32 @@ const Event = ({
       const isConfirmed = window.confirm(message);
 
       if (isConfirmed) {
-        const eventId = selectedEvent?.id;
-        const uid = volunteer.uid;
+        const uid = volunteerData.uid;
         const eventRef = doc(
           db,
-          `${location}/${event}/signup/${selectedEvent?.id}`,
+          `events/${eventID}/volunteers`,
+          volunteerData.uid
         );
         updateDoc(eventRef, {
-          [`volunteers.${selectedRole}.${uid}`]: deleteField(),
+          [uid]: deleteField(),
         }).then(() => {
           handleCloseVolunteerPopup();
-          handleCloseVolunteerInfoPopup();
+        //   handleCloseVolunteerInfoPopup();
         });
       }
     }
   };
 
-  const handleOpenVolunteerInfoPopup = (user: any, type: any) => {
-    setVolunteerInfo(user);
-    setSelectedRole(type);
-    setOpenVolunteerInfoPopup(true);
-  };
+//   const handleOpenVolunteerInfoPopup = (user: any, type: any) => {
+//     setVolunteerInfo(user);
+//     setSelectedRole(type);
+//     setOpenVolunteerInfoPopup(true);
+//   };
 
-  const handleCloseVolunteerInfoPopup = () => {
-    setVolunteerInfo(null);
-    setOpenVolunteerInfoPopup(false);
-  };
+//   const handleCloseVolunteerInfoPopup = () => {
+//     setVolunteerInfo(null);
+//     setOpenVolunteerInfoPopup(false);
+//   };
 
   return (
     <div className={classes.page}>
@@ -347,26 +329,26 @@ const Event = ({
             removeTopMargin={true}
           />
           
-          {(eventData?.openings && (eventData?.openings[0].spotsOpen as number > volunteer.length) || isAdmin) && (  //This signup is for the first volunteer position, possible for multiple, just need to duplicate instead.
-                                                                                                                     //Just needs to check types to match how many to which position.
+          {(eventData?.openings && (eventData?.openings[0].spotsOpen as number > volunteer.length) || isAdmin) && (  //This signup is for the first volunteer position, possible for multiple, just need to duplicate for each position.
+                                                                                                                     //Just needs to check types to match to each position.
             <Link href={router.asPath} passHref> 
-            {/* Intended to update the page, but not link elsewhere, while styling as a button link. Might be better way? */}
               <Button
                 color="primary"
                 variant="contained"
                 style={{ marginRight: "1em" }}
-                onClick={() => handleOpenVolunteerPopup("test")}
+                onClick={() => handleOpenVolunteerPopup("test signup")}
               >
                 Sign up
               </Button>
             </Link>
           )}
-          {((eventData?.openings[0].spotsOpen as number < 1) || (eventData?.openings[0].spotsOpen as number <= volunteer.length)) && ( 
+          {( (!isAdmin) && ((eventData?.openings[0].spotsOpen as number < 1) || (eventData?.openings[0].spotsOpen as number <= volunteer.length))) && ( 
             <Link href={router.asPath} passHref>
               <Button
                 color="primary"
                 variant="contained"
                 style={{ marginRight: "1em" }}
+                disabled
               >
                 Sign up unavailable
               </Button>
@@ -419,17 +401,19 @@ const Event = ({
         event={editedEvent}
         handleEventAction={handleEventAction}
       /> */}
-      <VolunteerPopup
-        open={openVolunteerPopup}
-        handleClose={handleCloseVolunteerPopup}
-        email={user?.email}
-        name={user?.displayName}
-        uid={user?.uid}
-        phone={user?.phoneNumber}
-        addVolunteer={handleAddVolunteer}
-        volunteer={editedVolunteer}
-        onDeleteVolunteer={handleDeleteVolunteer}
-      />
+    {user && (
+        <VolunteerPopup
+            open={openVolunteerPopup}
+            handleClose={handleCloseVolunteerPopup}
+            email={user.email}
+            name={user.displayName}
+            uid={user.uid}
+            phone={user.phoneNumber}
+            addVolunteer={handleAddVolunteer}
+            volunteer={editedVolunteer}
+            onDeleteVolunteer={handleDeleteVolunteer}
+        />
+    )}
       {/* <VolunteerInfoPopup
         open={openVolunteerInfoPopup}
         handleClose={handleCloseVolunteerInfoPopup}
