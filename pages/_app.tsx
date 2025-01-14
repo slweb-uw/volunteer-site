@@ -35,6 +35,7 @@ const theme = {
     background: {
       default: "#FFFFFF",
     },
+    grey: { 500: "#E5E5E5"},
     primary: { main: "#4B2E83" },
     secondary: { main: "#85754D" },
   },

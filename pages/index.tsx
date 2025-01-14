@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, PropsWithChildren, ComponentProps } from "react";
 import Image from "next/image";
 import MobileOutReachSrc from "../public/Mobile_Outreach_Clinic_resized.jpg";
 import ServeWithUsSrc from "../public/serve.jpg";
@@ -21,6 +21,15 @@ import { logEvent } from "firebase/analytics";
 import { getAppAnalytics } from "firebaseClient";
 import { ArrowForwardIos } from "@mui/icons-material";
 import HeadlineBar from "components/headlineBar";
+
+const cardStyles = makeStyles((theme) => ({
+  accentLink: {
+    background: theme.palette.primary.main,
+    "& p, & svg": {
+      color: "white",
+    },
+  },
+}));
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -83,7 +92,14 @@ const useStyles = makeStyles(() => ({
     flexDirection: "row",
     justifyContent: "space-between",
     textDecoration: "none",
+    padding: "16px",
     color: "black",
+
+    "&:hover": {
+      opacity: "60%",
+      transition: "all .25s ease",
+      textDecoration: "underline",
+    },
   },
   cardhover: {
     "&:hover": {
@@ -196,326 +212,10 @@ const App: React.FC<{}> = () => {
       }}
     >
       {/** Cover image and header*/}
-      <div className={classes.container}>
-        <div className={classes.background}>
-          <div className={classes.triangletop}></div>
-          <div className={classes.trianglebottom}></div>
-          <div className={classes.text}>
-            <Typography variant="h4" gutterBottom style={{ marginBottom: 0 }}>
-              <pre className={classes.topTitle}>
-                {"SERVICE LEARNING & \nCOMMUNITY ENGAGEMENT"}
-              </pre>
-            </Typography>
-
-            <HeadlineBar color="purple" width={590} height={15}></HeadlineBar>
-
-            <Typography variant="h5" gutterBottom>
-              <pre className={classes.bottomTitle}>
-                {"UW School of Medicine/WWAMI\nUW Health Sciences"}
-              </pre>
-            </Typography>
-
-            <Typography
-              variant="subtitle1"
-              gutterBottom
-              className={classes.description}
-            >
-              Our program supports 50+ student led service projects throughout
-              the region.
-            </Typography>
-            <Link href="/opportunities">
-              {" "}
-              <Button
-                color="primary"
-                variant="contained"
-                className={classes.findOppBtn}
-              >
-                Find Opportunities
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
+      <HeroSection />
 
       {/** Cards */}
-      <div style={{ marginTop: "1em" }}>
-        <div
-          style={{
-            width: "100%",
-            display: "flex",
-            flexWrap: "wrap",
-            justifyContent: "center",
-            columnGap: "5%",
-          }}
-        >
-          {/* Students */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Typography
-              style={{
-                fontSize: "1.5rem",
-                fontWeight: 800,
-                fontFamily: "Encode Sans",
-                textTransform: "uppercase",
-              }}
-            >
-              Students
-            </Typography>
-
-            <HeadlineBar color="gold" width={130} height={10}></HeadlineBar>
-
-            <Card
-              variant="outlined"
-              style={{ borderRadius: 10, margin: "1em", height: "auto" }}
-            >
-              <CardMedia
-                component="img"
-                src="./studentVolunteers.png"
-                style={{ height: "200px", width: "301px" }}
-                alt="Student volunteers"
-              ></CardMedia>
-              <CardActionArea
-                className={classes.cardhover}
-                LinkComponent={Link}
-                href="/welcome/studentVolunteers"
-              >
-                <CardContent>
-                  <Typography className={classes.cardtitle}>Welcome</Typography>
-                  <Typography>
-                    <ArrowForwardIos
-                      style={{ fontSize: "1em", color: "#4B2E83" }}
-                    />
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-              <hr
-                style={{
-                  border: ".2px solid #E5E5E5",
-                  width: "100%",
-                  margin: "0",
-                }}
-              ></hr>
-              <CardActionArea className={classes.cardhover}>
-                <CardContent>
-                  <Link href="/requiredTraining" className={classes.cardlinks}>
-                    <Typography className={classes.cardtitle}>
-                      Onboarding
-                    </Typography>
-                    <Typography>
-                      <ArrowForwardIos
-                        style={{ fontSize: "1em", color: "#4B2E83" }}
-                      />
-                    </Typography>
-                  </Link>
-                </CardContent>
-              </CardActionArea>
-              <hr
-                style={{
-                  border: ".2px solid #E5E5E5",
-                  width: "100%",
-                  margin: "0",
-                }}
-              ></hr>
-              <CardActionArea
-                href="/opportunities"
-                style={{
-                  backgroundColor: "#4B2E83",
-                  color: "#ffffff",
-                  borderTopLeftRadius: 0,
-                  borderTopRightRadius: 0,
-                }}
-                className={classes.cardhover}
-              >
-                <CardContent>
-                  <Link href="/opportunities" className={classes.cardlinks}>
-                    <Typography
-                      className={classes.cardtitle}
-                      style={{ color: "#ffffff" }}
-                    >
-                      Find Opportunities
-                    </Typography>
-                    <Typography>
-                      <ArrowForwardIos
-                        style={{ fontSize: "1em", color: "#ffffff" }}
-                      />
-                    </Typography>
-                  </Link>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </div>
-
-          {/* Volunteer Providers */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Typography
-              style={{
-                fontSize: "1.5rem",
-                fontWeight: 800,
-                fontFamily: "Encode Sans",
-                textTransform: "uppercase",
-              }}
-            >
-              Volunteer Providers
-            </Typography>
-
-            <HeadlineBar color="gold" width={320} height={10}></HeadlineBar>
-
-            <Card
-              variant="outlined"
-              style={{ borderRadius: 10, margin: "1em" }}
-            >
-              <CardMedia
-                component="img"
-                src="./volunteerProviders.jpg"
-                style={{ height: "200px", width: "301px", objectFit: "cover" }}
-                alt="University District Street Medicine volunteers"
-              />
-              <CardActionArea
-                href="/welcome/volunteerProviders"
-                className={classes.cardhover}
-              >
-                <CardContent>
-                  <Link
-                    href="/welcome/volunteerProviders"
-                    className={classes.cardlinks}
-                  >
-                    <Typography className={classes.cardtitle}>
-                      Welcome
-                    </Typography>
-                    <Typography>
-                      <ArrowForwardIos
-                        style={{ fontSize: "1em", color: "#4B2E83" }}
-                      />
-                    </Typography>
-                  </Link>
-                </CardContent>
-              </CardActionArea>
-              <hr
-                style={{
-                  border: ".2px solid #E5E5E5",
-                  width: "100%",
-                  margin: "0",
-                }}
-              ></hr>
-              <CardActionArea className={classes.cardhover}>
-                <CardContent>
-                  <Link href="/onboarding" className={classes.cardlinks}>
-                    <Typography className={classes.cardtitle}>
-                      Onboarding
-                    </Typography>
-                    <Typography>
-                      <ArrowForwardIos
-                        style={{ fontSize: "1em", color: "#4B2E83" }}
-                      />
-                    </Typography>
-                  </Link>
-                </CardContent>
-              </CardActionArea>
-              <hr
-                style={{
-                  border: ".2px solid #E5E5E5",
-                  width: "100%",
-                  margin: "0",
-                }}
-              ></hr>
-              <CardActionArea
-                style={{
-                  backgroundColor: "#4B2E83",
-                  color: "#ffffff",
-                  borderTopLeftRadius: 0,
-                  borderTopRightRadius: 0,
-                }}
-                className={classes.cardhover}
-              >
-                <CardContent>
-                  <Link
-                    href="/opportunities/Alaska?type=Providers"
-                    className={classes.cardlinks}
-                  >
-                    <Typography
-                      className={classes.cardtitle}
-                      style={{ color: "#ffffff" }}
-                    >
-                      Find Opportunities
-                    </Typography>
-                    <Typography>
-                      <ArrowForwardIos
-                        style={{ fontSize: "1em", color: "#ffffff" }}
-                      />
-                    </Typography>
-                  </Link>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </div>
-          {/* Community Partners */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Typography
-              style={{
-                fontSize: "1.5rem",
-                fontWeight: 800,
-                fontFamily: "Encode Sans",
-                textTransform: "uppercase",
-              }}
-            >
-              Community Partners
-            </Typography>
-
-            <HeadlineBar color="gold" width={310} height={10}></HeadlineBar>
-
-            <Card
-              variant="outlined"
-              style={{ borderRadius: 10, margin: "1em" }}
-            >
-              <CardMedia
-                component="img"
-                src="./home3.png"
-                style={{ height: "200px", width: "301px" }}
-                alt="Two hands shaking"
-              ></CardMedia>
-              <hr
-                style={{
-                  border: ".2px solid #E5E5E5",
-                  width: "100%",
-                  margin: "0",
-                }}
-              ></hr>
-              <CardActionArea className={classes.cardhover}>
-                <CardContent>
-                  <Typography className={classes.cardtitle}>
-                    <Link
-                      href="/welcome/communitypartners"
-                      className={classes.cardlinks}
-                    >
-                      Become a Partner
-                      <ArrowForwardIos
-                        style={{ fontSize: "1em", color: "#4B2E83" }}
-                      />
-                    </Link>
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </div>
-        </div>
-      </div>
+      <UserCards />
 
       {/** Mobile Health Outreach Section*/}
       <div
@@ -861,5 +561,217 @@ const App: React.FC<{}> = () => {
     </div>
   );
 };
+
+function HeroSection() {
+  const classes = useStyles();
+  return (
+    <div className={classes.container}>
+      <div className={classes.background}>
+        <div className={classes.triangletop}></div>
+        <div className={classes.trianglebottom}></div>
+        <div className={classes.text}>
+          <Typography variant="h4" gutterBottom style={{ marginBottom: 0 }}>
+            <pre className={classes.topTitle}>
+              {"SERVICE LEARNING & \nCOMMUNITY ENGAGEMENT"}
+            </pre>
+          </Typography>
+
+          <HeadlineBar color="purple" width={590} height={15}></HeadlineBar>
+
+          <Typography variant="h5" gutterBottom>
+            <pre className={classes.bottomTitle}>
+              {"UW School of Medicine/WWAMI\nUW Health Sciences"}
+            </pre>
+          </Typography>
+
+          <Typography
+            variant="subtitle1"
+            gutterBottom
+            className={classes.description}
+          >
+            Our program supports 50+ student led service projects throughout the
+            region.
+          </Typography>
+          <Link href="/opportunities">
+            <Button
+              color="primary"
+              variant="contained"
+              className={classes.findOppBtn}
+            >
+              Find Opportunities
+            </Button>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+type UserCardActionAreaProps = { href: string; title: string } & ComponentProps<
+  typeof CardActionArea
+>;
+function UserCardActionArea({
+  href,
+  title,
+  ...rest
+}: {
+  href: string;
+  title: string;
+}) {
+  const classes = useStyles();
+
+  return (
+    <CardActionArea
+      {...rest}
+      className={`${rest.className} ${classes.cardlinks}`}
+      LinkComponent={Link}
+      href={href}
+    >
+      <Typography className={classes.cardtitle}>{title}</Typography>
+      <Typography>
+        <ArrowForwardIos style={{ fontSize: "1em" }} />
+      </Typography>
+    </CardActionArea>
+  );
+}
+
+type UserCardProps = { cardMediaSrc: string } & PropsWithChildren;
+function UserCard({ cardMediaSrc, children }: UserCardProps) {
+  return (
+    <Card
+      variant="outlined"
+      style={{ borderRadius: 10, margin: "1em", height: "auto" }}
+    >
+      <CardMedia
+        component="img"
+        src={cardMediaSrc}
+        style={{ height: "200px", width: "301px" }}
+        alt="Student volunteers"
+      ></CardMedia>
+      <CardContent style={{ padding: 0 }}>{children}</CardContent>
+    </Card>
+  );
+}
+
+function UserCards() {
+  const classes = useStyles();
+  const cards = cardStyles();
+  return (
+    <div style={{ marginTop: "1em" }}>
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          columnGap: "5%",
+        }}
+      >
+        {/* Students */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Typography
+            style={{
+              fontSize: "1.5rem",
+              fontWeight: 800,
+              fontFamily: "Encode Sans",
+              textTransform: "uppercase",
+            }}
+          >
+            Students
+          </Typography>
+
+          <HeadlineBar color="gold" width={130} height={10}></HeadlineBar>
+
+          <UserCard cardMediaSrc="./studentVolunteers.png">
+            <UserCardActionArea
+              href="/welcome/studentVolunteers"
+              title="Welcome"
+              sx={{ borderBottom: "solid 1px", borderColor: "grey.500" }}
+            />
+            <UserCardActionArea href="/requiredTraining" title="Onboarding" />
+            <UserCardActionArea
+              href="/opportunities"
+              title="Find Opportunities"
+              className={cards.accentLink}
+            />
+          </UserCard>
+
+        </div>
+
+        {/* Volunteer Providers */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Typography
+            style={{
+              fontSize: "1.5rem",
+              fontWeight: 800,
+              fontFamily: "Encode Sans",
+              textTransform: "uppercase",
+            }}
+          >
+            Volunteer Providers
+          </Typography>
+
+          <HeadlineBar color="gold" width={320} height={10}></HeadlineBar>
+
+          <UserCard cardMediaSrc="./volunteerProviders.jpg">
+            <UserCardActionArea
+              href="/welcome/volunteerProviders"
+              title="Welcome"
+              sx={{ borderBottom: "solid 1px", borderColor: "grey.500" }}
+            />
+            <UserCardActionArea href="/requiredTraining" title="Onboarding" />
+            <UserCardActionArea
+              href="/opportunities"
+              title="Find Opportunities"
+              className={cards.accentLink}
+            />
+          </UserCard>
+        </div>
+        {/* Community Partners */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Typography
+            style={{
+              fontSize: "1.5rem",
+              fontWeight: 800,
+              fontFamily: "Encode Sans",
+              textTransform: "uppercase",
+            }}
+          >
+            Community Partners
+          </Typography>
+
+          <HeadlineBar color="gold" width={310} height={10}></HeadlineBar>
+
+
+          <UserCard cardMediaSrc="./home3.png">
+            <UserCardActionArea
+              href="/welcome/communitypartners"
+              title="Become a Partner"
+              sx={{ borderBottom: "solid 1px", borderColor: "grey.500" }}
+            />
+          </UserCard>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default App;
