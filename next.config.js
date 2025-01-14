@@ -10,11 +10,20 @@ const nextConfig = {
     // !! WARN !!
     ignoreBuildErrors: true,
   },
-  eslint:{
+  eslint: {
     ignoreDuringBuilds: true
   },
   images: {
-    domains: ["lh3.googleusercontent.com", "firebasestorage.googleapis.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com"
+      },
+      {
+        protocol: "https",
+        hostname: "firebasestorage.googleapis.com"
+      }
+    ]
   },
   webpack: (config, { isServer }) => {
     // Fixes npm packages that depend on `fs` module
