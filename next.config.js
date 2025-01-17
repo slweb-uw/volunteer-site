@@ -11,33 +11,20 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   eslint: {
-    ignoreDuringBuilds: true
+    ignoreDuringBuilds: true,
   },
   images: {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "lh3.googleusercontent.com"
+        hostname: "lh3.googleusercontent.com",
       },
       {
         protocol: "https",
-        hostname: "firebasestorage.googleapis.com"
-      }
-    ]
-  },
-  webpack: (config, { isServer }) => {
-    // Fixes npm packages that depend on `fs` module
-    if (!isServer) {
-      config.resolve.fallback.fs = false
-    }
-
-    config.module.rules.push({
-      test: /\.svg$/,
-      include: /\.(js|ts)x?$/,
-      use: [{ loader: "@svgr/webpack" }, { loader: "url-loader" }],
-    })
-
-    return config
+        hostname: "firebasestorage.googleapis.com",
+        pathname: "**",
+      },
+    ],
   },
   async rewrites() {
     return [
@@ -47,9 +34,9 @@ const nextConfig = {
       },
     ]
   },
-};
+}
 
 const withAnalyzer = require("@next/bundle-analyzer")()
 
 module.exports =
-  process.env.ANALYZE === 'true' ? withAnalyzer(nextConfig) : nextConfig
+  process.env.ANALYZE === "true" ? withAnalyzer(nextConfig) : nextConfig

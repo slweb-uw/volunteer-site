@@ -1,10 +1,10 @@
-import React, { useEffect, PropsWithChildren, ComponentProps } from "react";
-import Image from "next/image";
-import MobileOutReachSrc from "../public/Mobile_Outreach_Clinic_resized.jpg";
-import ServeWithUsSrc from "../public/serve.jpg";
-import CommunityPartnersSrc from "../public/communityPartners.jpg";
-import ProfileIcon from "public/profile-icon.png";
-import MailIcon from "public/mail-icon.png";
+import React, { useEffect, PropsWithChildren, ComponentProps } from "react"
+import Image from "next/image"
+import MobileOutReachSrc from "../public/Mobile_Outreach_Clinic_resized.jpg"
+import ServeWithUsSrc from "../public/serve.jpg"
+import CommunityPartnersSrc from "../public/communityPartners.jpg"
+import ProfileIcon from "public/profile-icon.png"
+import MailIcon from "public/mail-icon.png"
 import {
   Typography,
   Grid,
@@ -13,14 +13,14 @@ import {
   Card,
   CardContent,
   CardMedia,
-} from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
-import Link from "next/link";
+} from "@mui/material"
+import makeStyles from "@mui/styles/makeStyles"
+import Link from "next/link"
 
-import { logEvent } from "firebase/analytics";
-import { getAppAnalytics } from "firebaseClient";
-import { ArrowForwardIos } from "@mui/icons-material";
-import HeadlineBar from "components/headlineBar";
+import { logEvent } from "firebase/analytics"
+import { getAppAnalytics } from "firebaseClient"
+import { ArrowForwardIos } from "@mui/icons-material"
+import HeadlineBar from "components/headlineBar"
 
 const cardStyles = makeStyles((theme) => ({
   accentLink: {
@@ -29,7 +29,7 @@ const cardStyles = makeStyles((theme) => ({
       color: "white",
     },
   },
-}));
+}))
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -194,15 +194,15 @@ const useStyles = makeStyles(() => ({
       padding: "3em",
     },
   },
-}));
+}))
 
 const App: React.FC<{}> = () => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   useEffect(() => {
-    const analytics = getAppAnalytics();
-    logEvent(analytics, "home_page_visit");
-  }, []);
+    const analytics = getAppAnalytics()
+    logEvent(analytics, "home_page_visit")
+  }, [])
 
   return (
     <div
@@ -559,11 +559,11 @@ const App: React.FC<{}> = () => {
         </Grid>
       </div>
     </div>
-  );
-};
+  )
+}
 
 function HeroSection() {
-  const classes = useStyles();
+  const classes = useStyles()
   return (
     <div className={classes.container}>
       <div className={classes.background}>
@@ -604,26 +604,26 @@ function HeroSection() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-type UserCardActionAreaProps = { href: string; title: string } & ComponentProps<
-  typeof CardActionArea
->;
+type UserCardActionAreaProps = {
+  href: string
+  title: string
+  className: string
+} & Omit<ComponentProps<typeof CardActionArea>, "LinkComponent" | "className">
 function UserCardActionArea({
   href,
   title,
+  className,
   ...rest
-}: {
-  href: string;
-  title: string;
-}) {
-  const classes = useStyles();
+}: UserCardActionAreaProps) {
+  const classes = useStyles()
 
   return (
     <CardActionArea
       {...rest}
-      className={`${rest.className} ${classes.cardlinks}`}
+      className={`${className} ${classes.cardlinks}`}
       LinkComponent={Link}
       href={href}
     >
@@ -632,10 +632,10 @@ function UserCardActionArea({
         <ArrowForwardIos style={{ fontSize: "1em" }} />
       </Typography>
     </CardActionArea>
-  );
+  )
 }
 
-type UserCardProps = { cardMediaSrc: string } & PropsWithChildren;
+type UserCardProps = { cardMediaSrc: string } & PropsWithChildren
 function UserCard({ cardMediaSrc, children }: UserCardProps) {
   return (
     <Card
@@ -650,12 +650,11 @@ function UserCard({ cardMediaSrc, children }: UserCardProps) {
       ></CardMedia>
       <CardContent style={{ padding: 0 }}>{children}</CardContent>
     </Card>
-  );
+  )
 }
 
 function UserCards() {
-  const classes = useStyles();
-  const cards = cardStyles();
+  const cards = cardStyles()
   return (
     <div style={{ marginTop: "1em" }}>
       <div
@@ -701,7 +700,6 @@ function UserCards() {
               className={cards.accentLink}
             />
           </UserCard>
-
         </div>
 
         {/* Volunteer Providers */}
@@ -760,7 +758,6 @@ function UserCards() {
 
           <HeadlineBar color="gold" width={310} height={10}></HeadlineBar>
 
-
           <UserCard cardMediaSrc="./home3.png">
             <UserCardActionArea
               href="/welcome/communitypartners"
@@ -771,7 +768,7 @@ function UserCards() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
