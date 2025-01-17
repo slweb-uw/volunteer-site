@@ -32,7 +32,7 @@ import { db, storage } from "firebaseClient";
 import { LoadingButton } from "@mui/lab";
 import { DialogActions } from "@mui/material";
 import { Guid } from "guid-typescript";
-import EventImage from "components/eventImage";
+import ProjectImage from "components/projectImage";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import RichTextEditor from "components/richTextEditor";
@@ -41,6 +41,7 @@ import { addDoc, Timestamp, collection, setDoc, doc } from "firebase/firestore";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useAuth } from "auth";
 import { useRouter } from "next/router";
+import { ProjectData } from "new-types";
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -146,10 +147,10 @@ const optinalFields = [
 
 interface AddModifyEventModalProps {
   open: boolean;
-  event?: EventData;
+  event?: ProjectData;
   handleClose: any;
   location: string;
-  projectId: string;
+  projectId?: string;
 }
 
 interface ImageSelectorProps {
@@ -431,6 +432,7 @@ const AddModifyEventModal = ({
       if (!event) {
         await addDoc(collection(db, projectLocation), requestData);
       } else {
+        if(!projectId) return
         await setDoc(doc(db, projectLocation, projectId), requestData);
       }
       enqueueSnackbar(`successfully ${action} project ${data.Title}`, {
@@ -438,7 +440,7 @@ const AddModifyEventModal = ({
         autoHideDuration: 2000,
       });
       setMutating(false);
-      router.reload()
+      router.replace(router.asPath)
       handleClose()
     } catch (err) {
       setMutating(false);
@@ -648,6 +650,7 @@ type ImagePreviewProps = {
   setImage: (e: React.ChangeEvent<HTMLInputElement>) => void;
   deleteImage: () => void;
 };
+
 function ImagePreview({ imageURL, setImage, deleteImage }: ImagePreviewProps) {
   const classes = useStyles();
   return (
@@ -680,7 +683,7 @@ function ImagePreview({ imageURL, setImage, deleteImage }: ImagePreviewProps) {
           </Grid>
         </Grid>
         <Grid item sm={4}>
-          <EventImage
+          <ProjectImage
             className={classes.preview}
             imageURL={imageURL}
             eventTitle="Preview Image"

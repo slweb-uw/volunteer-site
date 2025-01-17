@@ -1,10 +1,10 @@
-import { useRouter } from "next/router";
-import { useAuth } from "auth";
-import { useState } from "react";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import Image from "next/image";
-import makeStyles from "@mui/styles/makeStyles";
-import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
+import { useRouter } from "next/router"
+import { useAuth } from "auth"
+import { useState } from "react"
+import { GetServerSideProps, InferGetServerSidePropsType } from "next"
+import Image from "next/image"
+import makeStyles from "@mui/styles/makeStyles"
+import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined"
 
 import {
   Typography,
@@ -13,18 +13,21 @@ import {
   Button,
   SxProps,
   Theme,
-} from "@mui/material";
-import naturalJoin from "../../helpers/naturalJoin";
-import RichTextField from "../../components/richTextField";
-import Box from "@mui/material/Box";
-import NextLink from "next/link";
-import { firebaseAdmin } from "firebaseAdmin";
-import AddModifyEventModal from "components/AddModifyEventModal";
-import { useParams } from "next/navigation";
-import { deleteDoc, doc } from "firebase/firestore";
-import { db } from "firebaseClient";
-import { useSnackbar } from "notistack";
-import { LoadingButton } from "@mui/lab";
+} from "@mui/material"
+import naturalJoin from "../../helpers/naturalJoin"
+import RichTextField from "../../components/richTextField"
+import Box from "@mui/material/Box"
+import NextLink from "next/link"
+import { firebaseAdmin } from "firebaseAdmin"
+import AddModifyEventModal from "components/AddModifyEventModal"
+import { useParams } from "next/navigation"
+import { deleteDoc, doc } from "firebase/firestore"
+import { db } from "firebaseClient"
+import { useSnackbar } from "notistack"
+import { LoadingButton } from "@mui/lab"
+import { ProjectData } from "new-types"
+import Head from "next/head"
+import { ChevronLeft } from "@mui/icons-material"
 
 const fields = [
   "Location",
@@ -37,28 +40,23 @@ const fields = [
   "Tips and Reminders",
   "Provider Information",
   "Protocols",
-] as const;
-
+] as const
 
 type RichEventFieldProps = {
-  name: string;
-  value: string | string[] | undefined;
-  removeTopMargin: boolean;
-  sx?: SxProps<Theme>;
-};
+  name: string
+  value: string | string[] | undefined
+  removeTopMargin: boolean
+  sx?: SxProps<Theme>
+}
 
-const RichEventField: React.FC<RichEventFieldProps> = ({
-  name,
-  value,
-  sx,
-}) => {
-  let data: string | undefined;
+const RichEventField: React.FC<RichEventFieldProps> = ({ name, value, sx }) => {
+  let data: string | undefined
   if (value && Array.isArray(value)) {
-    data = naturalJoin(value);
+    data = naturalJoin(value)
   } else {
-    data = value;
+    data = value
   }
-  if (!data) return null;
+  if (!data) return null
   return (
     <>
       <Box
@@ -73,23 +71,23 @@ const RichEventField: React.FC<RichEventFieldProps> = ({
         <Typography variant="h6" style={{ fontWeight: 600 }}>
           {name}
         </Typography>
-        <RichTextField sx={sx} value={data}/>
+        <RichTextField sx={sx} value={data} />
       </Box>
     </>
-  );
-};
+  )
+}
 
 // fetch event data before rendering
 export const getServerSideProps: GetServerSideProps<{
-  event: EventData;
+  event: ProjectData
 }> = async (ctx) => {
-  const location = ctx.params?.location;
-  const event = ctx.params?.event;
+  const location = ctx.params?.location
+  const event = ctx.params?.event
 
   if (typeof location === "undefined" || typeof event === "undefined") {
     return {
       notFound: true,
-    };
+    }
   }
 
   // safe to to as string here because we already check they are undefined
@@ -98,10 +96,16 @@ export const getServerSideProps: GetServerSideProps<{
     .firestore()
     .collection(location as string)
     .doc(event as string)
-    .get();
+    .get()
 
-  return { props: { event: data.data() as EventData } };
-};
+  if (!data.exists) {
+    return {
+      notFound: true,
+    }
+  }
+
+  return { props: { event: data.data() as ProjectData } }
+}
 
 const useStyles = makeStyles(() => ({
   page: {
@@ -122,44 +126,55 @@ const useStyles = makeStyles(() => ({
     borderRadius: "10px",
     objectFit: "cover",
   },
-}));
+}))
 
 const Event = ({
   event: eventData,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-  const router = useRouter();
-  const { isAdmin } = useAuth();
-  const { location, event: projectId } = useParams();
-  const classes = useStyles();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [deletingProject, setDeletingProject] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter()
+  const { isAdmin } = useAuth()
+  const { location, event: projectId } = useParams()
+  const classes = useStyles()
+  const [modalOpen, setModalOpen] = useState(false)
+  const [deletingProject, setDeletingProject] = useState(false)
+  const { enqueueSnackbar } = useSnackbar()
 
   async function HandleDeleteProject() {
-    if (!window.confirm("Are you sure you want to delete this project?"))
-      return;
+    if (!window.confirm("Are you sure you want to delete this project?")) return
 
-    setDeletingProject(true);
+    setDeletingProject(true)
     try {
-      await deleteDoc(doc(db, location.toString(), projectId.toString()));
-      router.push(`/${location}`);
+      await deleteDoc(doc(db, location.toString(), projectId.toString()))
+      router.push(`/opportunities/${location}`)
       enqueueSnackbar("Successfully deleted project", {
         variant: "success",
         autoHideDuration: 2000,
-      });
-      setDeletingProject(false);
+      })
+      setDeletingProject(false)
     } catch (err) {
-      setDeletingProject(false);
+      setDeletingProject(false)
       enqueueSnackbar("Could not delete project", {
         variant: "error",
         autoHideDuration: 2000,
-      });
+      })
     }
   }
 
   return (
     <div className={classes.page}>
+      <Head>
+        <title>{eventData.Title}</title>
+        <meta name="description" content={eventData["Project Description"]} />
+        <meta
+          name="og:description"
+          content={eventData["Project Description"]}
+        />
+        <meta property="og:image" content={eventData.imageURL} />
+      </Head>
       {/* EVENT TITLE */}
+      <Button onClick={() => router.back()}>
+        <ChevronLeft /> Back
+      </Button>
       <Typography variant="h3" style={{ fontWeight: 900, paddingBottom: 50 }}>
         {eventData.Title}
       </Typography>
@@ -192,18 +207,18 @@ const Event = ({
               startIcon={<CalendarMonthOutlinedIcon />}
               LinkComponent={NextLink}
               fullWidth
-              href={`/${location}/${eventData.id}/calendar`}
+              href={`/${location}/${projectId}/calendar`}
               variant="contained"
               sx={{ display: "flex", gap: "0.5rem" }}
             >
-              Avaliable events
+              Available events
             </Button>
           </Box>
           {/* Navigation for events and admin page of each */}
-          <Box sx={{ columns: { xs: 1, md: 2 }, columnGap: 8 }}>
+          <Box sx={{ columns: { xs: 1, md: 1 }, columnGap: 8 }}>
             {fields
               .filter(
-                (name) => eventData[name] != null && eventData[name] != "",
+                (name) => eventData[name] != null && eventData[name] != ""
               )
               .map((name) => (
                 <RichEventField
@@ -236,33 +251,35 @@ const Event = ({
       ></Divider>
 
       {isAdmin && (
-      <>
-      <Typography component="h3" variant="h4">Admin Options</Typography>
-        <Box sx={{ display: "flex", gap: "1rem", padding: "1rem 0 " }}>
-          <Button onClick={() => setModalOpen(true)} variant="contained">
-            Edit Project
-          </Button>
-          <LoadingButton
-            loading={deletingProject}
-            variant="outlined"
-            color="error"
-            onClick={HandleDeleteProject}
-          >
-            Delete Project
-          </LoadingButton>
+        <>
+          <Typography component="h3" variant="h4">
+            Admin Options
+          </Typography>
+          <Box sx={{ display: "flex", gap: "1rem", padding: "1rem 0 " }}>
+            <Button onClick={() => setModalOpen(true)} variant="contained">
+              Edit Project
+            </Button>
+            <LoadingButton
+              loading={deletingProject}
+              variant="outlined"
+              color="error"
+              onClick={HandleDeleteProject}
+            >
+              Delete Project
+            </LoadingButton>
 
-          <AddModifyEventModal
-            open={modalOpen}
-            event={eventData}
-            location={location?.toString()}
-            projectId={projectId.toString()}
-            handleClose={() => setModalOpen(false)}
-          />
-        </Box>
-      </>
+            <AddModifyEventModal
+              open={modalOpen}
+              event={eventData}
+              location={location?.toString()}
+              projectId={projectId.toString()}
+              handleClose={() => setModalOpen(false)}
+            />
+          </Box>
+        </>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Event;
+export default Event

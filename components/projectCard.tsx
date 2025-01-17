@@ -4,12 +4,13 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import EventImage from "./eventImage";
+import ProjectImage from "./projectImage";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Bubble from "./interprofessionalTag";
 import { CardActionArea } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { ProjectData } from "new-types";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -51,19 +52,15 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-interface Props {
-  event: EventData | CalendarEventData;
+interface EventCardProps {
+  event: ProjectData;
 }
 
 const NotSpecified = <i style={{ color: "gray" }}>Not specified</i>;
 
-const EventCard: React.FC<Props> = (props) => {
+const ProjectCard: React.FC<EventCardProps> = (props) => {
   const classes = useStyles();
   const mobileView = useMediaQuery("(max-width: 600px)");
-  let imageURL = props.event.cardImageURL ?? props.event.imageURL;
-  if (mobileView) {
-    imageURL = props.event.imageURL;
-  }
   const router = useRouter();
   const volunteerTypes = props.event["Types of Volunteers Needed"];
   const eventLink = "/" + router.query.location + "/" + props.event.id;
@@ -75,35 +72,42 @@ const EventCard: React.FC<Props> = (props) => {
     ).length > 1;
 
   return (
-    <Card tabIndex={0} className={classes.root} variant="outlined">
-      <Link className={classes.actions} href={eventLink}>
-        <CardActionArea className={classes.root}>
-          {!mobileView && (
-            <CardMedia>
-              <EventImage
-                className={classes.cover}
-                imageURL={imageURL}
-                eventTitle={props.event.Title}
-              />
-            </CardMedia>
-          )}
-          <CardContent>
-            {props.event?.SignupActive && <Bubble text="Signup Available" />}
-            {isInterprofessional && <Bubble text="Interprofessional" />}
-            <Typography component="h6" variant="h6">
-              <b>{props.event.Title}</b>
-            </Typography>
-            <Typography variant="subtitle1" color="textSecondary" gutterBottom>
-              {props.event.Organization}
-            </Typography>
-            <Typography className={classes.details}>
-              {props.event["Project Description"] ?? NotSpecified}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-      </Link>
+    <Card
+      tabIndex={0}
+      className={classes.root}
+      variant="outlined"
+      id={props.event.id}
+    >
+      <CardActionArea
+        className={` ${classes.root} ${classes.actions}`}
+        LinkComponent={Link}
+        href={eventLink}
+      >
+        {!mobileView && (
+          <CardMedia>
+            <ProjectImage
+              className={classes.cover}
+              imageURL={props.event.imageURL}
+              eventTitle={props.event.Title}
+            />
+          </CardMedia>
+        )}
+        <CardContent>
+          {props.event?.SignupActive && <Bubble text="Signup Available" />}
+          {isInterprofessional && <Bubble text="Interprofessional" />}
+          <Typography component="h6" variant="h6">
+            <b>{props.event.Title}</b>
+          </Typography>
+          <Typography variant="subtitle1" color="textSecondary" gutterBottom>
+            {props.event.Organization}
+          </Typography>
+          <Typography className={classes.details}>
+            {props.event["Project Description"] ?? NotSpecified}
+          </Typography>
+        </CardContent>
+      </CardActionArea>
     </Card>
   );
 };
 
-export default EventCard;
+export default ProjectCard;

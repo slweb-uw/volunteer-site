@@ -3,14 +3,11 @@ import {
   doc,
   getDoc,
   getDocs,
-  limit,
   collection,
   query,
   where,
   orderBy,
-  startAfter,
 } from "firebase/firestore";
-import type { QueryDocumentSnapshot } from "firebase/firestore";
 import { db } from "firebaseClient";
 import { Button, MenuItem, Select, Typography, Switch } from "@mui/material";
 import createStyles from "@mui/styles/createStyles";
@@ -20,12 +17,12 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import Tooltip from "@mui/material/Tooltip";
 import BootstrapInput from "../components/bootstrapInput";
 import Link from "next/link";
-import EventCard from "../components/eventCard";
+import ProjectCard from "../components/projectCard";
 import { Location } from "../helpers/locations";
-import { volunteerTypes } from "components/AddModifyEventModal"
+import { volunteerTypes } from "components/AddModifyEventModal";
 import { useRouter } from "next/router";
 import { useMediaQuery } from "@mui/material";
-import { useInView } from "react-intersection-observer";
+import { ProjectData } from "new-types";
 
 type EventsProps = {
   location: Location;
@@ -34,14 +31,8 @@ type EventsProps = {
 
 const Events: React.FC<EventsProps> = ({ location, classes }) => {
   const router = useRouter();
-  const { ref, inView } = useInView({
-    threshold: 0.1,
-  });
-
   const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
-  const [events, setEvents] = useState<EventData[]>([]); // list of loaded events
-  const [fetchingEvents, setFetchingEvents] = useState(true);
-  const [cursor, setCursor] = useState<QueryDocumentSnapshot>(); // cursor to last document loaded
+  const [events, setEvents] = useState<ProjectData[]>([]); // list of loaded events
 
   const ORGANIZATION_FILTER_QUERY_KEY = "org";
   const STUDENT_TYPE_FILTER_QUERY_KEY = "type";
@@ -56,16 +47,10 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
     } else {
       delete query[key];
     }
-    router.replace(
-      {
-        pathname: router.pathname,
-        query: query,
-      },
-      undefined,
-      {
-        scroll: false,
-      },
-    );
+    router.push({
+      pathname: router.pathname,
+      query: query,
+    });
   };
 
   const organizationFilter = router.query[ORGANIZATION_FILTER_QUERY_KEY] ?? "";
@@ -77,8 +62,6 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
     setQueryVar(STUDENT_TYPE_FILTER_QUERY_KEY, value);
   };
 
-  const [showLoadButton, setShowLoadButton] = useState<boolean>(true);
-  const [adminModalOpen, setAdminModalOpen] = useState<boolean>(false);
   const [sortField, setSortField] = useState<string>("Title");
   const [topMessage, setTopMessage] = useState<any>();
   const [signUpAvailableFilter, setSignUpAvailableFilter] =
@@ -100,8 +83,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
 
   useEffect(() => {
     // Load events
-    console.log("Component mounted or location changed. Loading events...");
-    loadEvents(false);
+    loadEvents();
     const cacheRef = doc(db, "cache", location.toString());
     getDoc(cacheRef).then((doc) =>
       setOrganizations(Object.keys(doc.data() as string[]).sort()),
@@ -109,12 +91,6 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
     // pull organizations for this location from the metadata cache
   }, [location]);
 
-  // load the events as the load more button is in view
-  useEffect(() => {
-    if (inView && !fetchingEvents) {
-      loadEvents(true);
-    }
-  }, [inView]);
   // Adjusts state depending on whether provider view is on
   useEffect(() => {
     const message = isProviderView ? (
@@ -143,8 +119,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
   };
 
   // Append more events from Firestore onto this page from position of cursor
-  async function loadEvents(keepPrev: boolean) {
-    setFetchingEvents(true);
+  async function loadEvents() {
     const order = getOrder(sortField);
 
     // initialize query
@@ -168,17 +143,13 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
       q = query(q, where("SignupActive", "==", true));
     }
 
-    q = query(q, orderBy(sortField, order), limit(11));
+    q = query(q, orderBy(sortField, order));
 
     // if we have a cursor, and we want to keep prev then fetch by cursor
-    if (cursor && keepPrev) {
-      q = query(q, startAfter(cursor));
-    }
-
     const next = await getDocs(q);
-    const eventsToAdd: EventData[] = [];
-    next.docs.slice(0, 10).forEach((document) => {
-      let eventDoc = document.data() as EventData;
+    const eventsToAdd: ProjectData[] = [];
+    next.docs.forEach((document) => {
+      let eventDoc = document.data() as ProjectData;
       eventDoc.id = document.id; // adds event id to the EventData object
       const volunteersNeeded: string | string[] | undefined =
         eventDoc["Types of Volunteers Needed"];
@@ -188,18 +159,12 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
       }
       eventsToAdd.push(eventDoc);
     });
-    setCursor(next.docs[next.docs.length - 2]);
-    if (keepPrev) {
-      setEvents((prevEvents) => [...prevEvents, ...eventsToAdd]);
-    } else {
-      setEvents(eventsToAdd);
-    }
-    setShowLoadButton(next.docs.length > 10);
-    setFetchingEvents(false);
+
+    setEvents(eventsToAdd);
   }
 
   useEffect(() => {
-    loadEvents(false);
+    loadEvents();
   }, [organizationFilter, studentTypeFilter, signUpAvailableFilter]);
 
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
@@ -272,27 +237,17 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
             )}
           </Grid>
           {/* Move the calendar button grid item up by one line */}
-          {location === "Seattle" && (
-            <Grid item xs={12} md={2}>
-              <Link href="/calendar">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  style={{
-                    minWidth: "130px",
-                    borderRadius: 10,
-                    fontFamily: "Encode Sans",
-                    fontWeight: 800,
-                    textAlign: "center",
-                    marginTop: "0.5rem",
-                    //marginLeft: "5rem"
-                  }}
-                >
-                  Calendar
-                </Button>
-              </Link>
-            </Grid>
-          )}
+          <Grid item xs={12} md={2}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              LinkComponent={Link}
+              fullWidth
+              href={`/${location}/calendar`}
+            >
+              Events calendar
+            </Button>
+          </Grid>
           <Grid container item xs={12} md={6} alignItems="center" spacing={2}>
             <Grid container item xs={12} md={6} spacing={1} alignItems="center">
               <Grid item>
@@ -382,7 +337,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
             <Grid container spacing={isMobile ? 2 : 6}>
               {events.map((event) => (
                 <Grid key={event.id} item xs={12} lg={6}>
-                  <EventCard event={event} />
+                  <ProjectCard event={event} />
                 </Grid>
               ))}
             </Grid>
@@ -392,10 +347,6 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
                 <b>No results found.</b>
               </Typography>
             </div>
-          )}
-          {/*when this is in view it loads more projects*/}
-          {showLoadButton && (
-            <div ref={ref}>{fetchingEvents && "loading more events"}</div>
           )}
         </div>
       ) : (

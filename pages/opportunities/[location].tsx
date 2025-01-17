@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { getAppAnalytics } from "firebaseClient";
 import makeStyles from "@mui/styles/makeStyles";
-import { CssBaseline, Typography, Button, Tooltip } from "@mui/material";
-import IconBreadcrumbs from "components/breadcrumbs";
+import { Typography, Button, Tooltip } from "@mui/material";
 import LocationSelector from "../../components/locationSelector";
 import { useRouter } from "next/router";
-import Events from "components/events";
+import ProjectsList from "components/projectsList";
 import HelpIcon from "@mui/icons-material/Help";
 import {
   DEFAULT_LOCATION,
@@ -17,34 +16,23 @@ import { handleHelpButtonClick } from "../../helpers/navigation";
 import { useAuth } from "auth";
 import { logEvent } from "firebase/analytics";
 import AddModifyEventModal from "components/AddModifyEventModal";
-// import AddModifyEventModal from "components/AddModifyEventModal";
 
 const LocationPage = () => {
   const classes = useStyles();
   const router = useRouter();
   const { isAdmin } = useAuth();
+
   const [createEventOpen, setCreateEventOpen] = useState(false);
   let location =
     router.query.location && !Array.isArray(router.query.location)
       ? router.query.location
       : DEFAULT_LOCATION;
 
-  /*const handleHelpButtonClick = () => {
-    router.push({
-      pathname: '/help',
-      query: { fromLocationPage: true },
-    });
-  };*/
-
   //new logic using helper function
   const handleHelpButtonClickLocation = () => {
     handleHelpButtonClick(router, "fromLocationPage");
   };
-  useEffect(() => {
-    const analytics = getAppAnalytics();
-    logEvent(analytics, "location_page_visit");
-  }, []);
-
+  
   // Handle last location saving/loading
   useEffect(() => {
     if (!router.isReady) {
@@ -60,9 +48,13 @@ const LocationPage = () => {
     }
   }, [router.isReady]);
 
+  useEffect(() => {
+    const analytics = getAppAnalytics();
+    logEvent(analytics, "location_page_visit");
+  }, []);
+
   return (
     <div className={classes.page}>
-      <CssBaseline />
       <div
         style={{
           display: "flex",
@@ -71,7 +63,6 @@ const LocationPage = () => {
         }}
       >
         <div>
-          <IconBreadcrumbs crumbs={["Opportunities"]} parentURL={undefined} />
           <Typography variant="h3" gutterBottom className={classes.header}>
             OPPORTUNITIES
           </Typography>
@@ -87,6 +78,7 @@ const LocationPage = () => {
               </Button>
               <AddModifyEventModal
                 open={createEventOpen}
+                location={location}
                 handleClose={() => {
                   setCreateEventOpen(false);
                 }}
@@ -114,12 +106,11 @@ const LocationPage = () => {
         <LocationSelector defaultLocation={DEFAULT_LOCATION} />
       </div>
       {location !== DEFAULT_LOCATION && (
-        <Events location={location as Location} />
+        <ProjectsList location={location as Location} />
       )}
     </div>
   );
 };
-
 
 const useStyles = makeStyles(() => ({
   page: {

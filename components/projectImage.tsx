@@ -9,7 +9,7 @@ interface Props {
   eventTitle: string;
 }
 
-const EventImage: React.FC<Props> = (props) => {
+const ProjectImage: React.FC<Props> = (props) => {
   const [loading, setLoading] = useState(true);
 
   const style = props.style ?? {};
@@ -43,4 +43,4 @@ const EventImage: React.FC<Props> = (props) => {
   );
 };
 
-export default EventImage;
+export default ProjectImage;

@@ -1,15 +1,16 @@
-import firebaseAdmin from "firebase-admin";
-import serviceAccount from "./secret.json";
+import firebaseAdmin from "firebase-admin"
+import { ServiceAccount } from "firebase-admin"
+
+const certification = {
+  privateKey: process.env.FB_PRIVATE_KEY,
+  clientEmail: process.env.FB_CLIENT_EMAIL,
+  projectId: process.env.FB_PROJECT_ID,
+} satisfies ServiceAccount
 
 if (!firebaseAdmin.apps.length) {
   firebaseAdmin.initializeApp({
-    credential: firebaseAdmin.credential.cert({
-      privateKey: serviceAccount.private_key,
-      clientEmail: serviceAccount.client_email,
-      projectId: serviceAccount.project_id,
-    }),
-    databaseURL: "https://sign-up-9453b.firebaseio.com",
-  });
+    credential: firebaseAdmin.credential.cert(certification),
+  })
 }
 
-export { firebaseAdmin };
+export { firebaseAdmin }
