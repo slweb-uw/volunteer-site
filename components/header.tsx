@@ -1,14 +1,21 @@
-import React, { useState } from "react";
-import Hidden from "@mui/material/Hidden";
-import { useAuth } from "auth";
-import BasicMenu from "./basicMenu";
-import SignInPopup from "./SignInPopup";
-import makeStyles from "@mui/styles/makeStyles";
-import { signOut } from "firebase/auth";
-import { auth } from "firebaseClient";
-import Link from "next/link";
+import React, { useState, Dispatch, SetStateAction } from "react"
+import Hidden from "@mui/material/Hidden"
+import { useAuth } from "auth"
+//import BasicMenu from "./basicMenu"
+import SignInPopup from "./SignInPopup"
+import makeStyles from "@mui/styles/makeStyles"
+import { signOut } from "firebase/auth"
+import { auth } from "firebaseClient"
+import Link from "next/link"
 
-const useStyles = makeStyles((theme) => ({
+import Box from "@mui/material/Box"
+import IconButton from "@mui/material/IconButton"
+import Menu from "@mui/icons-material/Menu"
+import SwipeableDrawer from "@mui/material/SwipeableDrawer"
+import List from "@mui/material/List"
+import { Theme } from "@mui/material"
+
+const useStyles = makeStyles((theme: Theme) => ({
   root: {
     backgroundColor: "#4B2E83",
     display: "flex",
@@ -80,114 +87,32 @@ const useStyles = makeStyles((theme) => ({
       margin: "0px",
     },
   },
-}));
+}))
 
-const Divider = () => <span className={useStyles().divider}>/</span>;
+const Divider = () => <span className={useStyles().divider}>/</span>
 
 const Header: React.FC<{}> = () => {
-  const { user, isAdmin, isLead } = useAuth();
-  const [isSignInPopupOpen, setSignInPopupOpen] = useState(false);
+  const [isSignInPopupOpen, setSignInPopupOpen] = useState(false)
   const classes = useStyles()
 
-  const links: React.ReactNode[] = [
-    <Link href="/" className={classes.navtitle} tabIndex={0}>
-      Home
-    </Link>,
-    <Divider />,
-    <Link href="/opportunities" className={classes.navtitle} tabIndex={0}>
-      Opportunities
-    </Link>,
-    <Divider />,
-    <a
-      className={classes.navtitle}
-      href="https://canvas.uw.edu/courses/1693188/pages/training-modules?module_item_id=18595279"
-      target="_blank"
-      tabIndex={0}
-    >
-      Training
-    </a>,
-    //*NOTE: Resources name was changed to Links*/
-    <Divider />,
-    <Link href="/resources" className={classes.navtitle} tabIndex={0}>
-      Links
-    </Link>,
-    <Divider />,
-    <a
-      href="https://canvas.uw.edu/courses/1693188/pages/protocols?module_item_id=18595280"
-      className={classes.navtitle}
-      target="_blank"
-      tabIndex={0}
-    >
-      Protocols
-    </a>,
-    <Divider />,
-    <Link href="/donations" className={classes.navtitle} tabIndex={0}>
-      Donations
-    </Link>,
-    <Divider />,
-    <Link href="/help" className={classes.navtitle} tabIndex={0}>
-      Help
-    </Link>,
-    <Divider />,
-    // sign in and out
-    user ? (
-      <>
-        <a
-          key="sign out"
-          onClick={() => {
-            signOut(auth);
-            setSignInPopupOpen(false);
-          }}
-          className={classes.navtitle}
-          tabIndex={0}
-        >
-          Sign Out
-          {isAdmin && (
-            <>
-              <p style={{ color: "gold", margin: 0, fontSize: "12px" }}>
-                ADMIN
-              </p>
-            </>
-          )}
-          {isLead && (
-            <p style={{ color: "gold", margin: 0, fontSize: "12px" }}>LEAD</p>
-          )}
-        </a>
-      </>
-    ) : (
-      <>
-        <a
-          key="sign in"
-          onClick={() => setSignInPopupOpen(true)}
-          className={classes.navtitle}
-          tabIndex={0}
-        >
-          Sign In
-        </a>
-      </>
-    ),
-  ];
-
   return (
-    <div className={useStyles().root}>
+    <div className={classes.root}>
       <Link href="/" tabIndex={0}>
         <img
           src="/header-logo.png"
           alt="University of Washington School of Medicine logo"
-          className={useStyles().logo}
+          className={classes.logo}
         />
       </Link>
 
       <Hidden only={["lg", "md", "xl"]}>
-        <BasicMenu
-          links={links}
+        <MobileNavMenu
+          links={<NavLinks setSignInPopupOpen={setSignInPopupOpen} />}
         />
       </Hidden>
       <Hidden only={["sm", "xs"]}>
         <div style={{ marginRight: "3em", display: "flex" }}>
-          {links.map((element: React.ReactNode, index) => (
-            <React.Fragment key={index}>{element}</React.Fragment>
-          ))}
+          <NavLinks setSignInPopupOpen={setSignInPopupOpen} />
         </div>
       </Hidden>
       <SignInPopup
@@ -195,7 +120,163 @@ const Header: React.FC<{}> = () => {
         close={() => setSignInPopupOpen(false)}
       />
     </div>
-  );
-};
+  )
+}
 
-export default Header;
+type Anchor = "top"
+
+const MobileNavMenu = ({ links }: { links: React.JSX.Element }) => {
+  const [state, setState] = React.useState({
+    top: false,
+  })
+
+  const toggleDrawer =
+    (anchor: Anchor, open: boolean) =>
+    (event: React.KeyboardEvent | React.MouseEvent) => {
+      if (
+        event &&
+        event.type === "keydown" &&
+        ((event as React.KeyboardEvent).key === "Tab" ||
+          (event as React.KeyboardEvent).key === "Shift")
+      ) {
+        return
+      }
+      setState({ ...state, [anchor]: open })
+    }
+  const list = (anchor: Anchor) => (
+    <Box
+      sx={{ width: "40vw" }}
+      role="presentation"
+      onClick={toggleDrawer(anchor, false)}
+      onKeyDown={toggleDrawer(anchor, false)}
+    >
+      <List
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 4,
+          paddingLeft: "0.5rem",
+        }}
+      >
+        {links}
+      </List>
+    </Box>
+  )
+
+  return (
+    <div
+      style={{
+        marginRight: "2em",
+      }}
+    >
+      {(["top"] as const).map((anchor) => (
+        <React.Fragment key={anchor}>
+          <IconButton
+            style={{ width: "min-content" }}
+            onClick={toggleDrawer(anchor, true)}
+            size="large"
+          >
+            <Menu style={{ color: "white" }} />
+          </IconButton>
+          <SwipeableDrawer
+            anchor={anchor}
+            open={state[anchor]}
+            onClose={toggleDrawer(anchor, false)}
+            onOpen={toggleDrawer(anchor, true)}
+          >
+            {list(anchor)}
+          </SwipeableDrawer>
+        </React.Fragment>
+      ))}
+    </div>
+  )
+}
+
+const NavLinks = ({
+  setSignInPopupOpen,
+}: {
+  setSignInPopupOpen: Dispatch<SetStateAction<boolean>>
+}) => {
+  const classes = useStyles()
+  const { user, isAdmin, isLead } = useAuth()
+  return (
+    <>
+      <Link href="/" className={classes.navtitle} tabIndex={0}>
+        Home
+      </Link>
+      <Divider />
+      <Link href="/opportunities" className={classes.navtitle} tabIndex={0}>
+        Opportunities
+      </Link>
+      <Divider />
+      <a
+        className={classes.navtitle}
+        href="https://canvas.uw.edu/courses/1693188/pages/training-modules?module_item_id=18595279"
+        target="_blank"
+        tabIndex={0}
+      >
+        Training
+      </a>
+      <Divider />
+      <Link href="/resources" className={classes.navtitle} tabIndex={0}>
+        Links
+      </Link>
+      <Divider />
+      <a
+        href="https://canvas.uw.edu/courses/1693188/pages/protocols?module_item_id=18595280"
+        className={classes.navtitle}
+        target="_blank"
+        tabIndex={0}
+      >
+        Protocols
+      </a>
+      <Divider />
+      <Link href="/donations" className={classes.navtitle} tabIndex={0}>
+        Donations
+      </Link>
+      <Divider />
+      <Link href="/help" className={classes.navtitle} tabIndex={0}>
+        Help
+      </Link>
+      <Divider />
+      {user ? (
+        <>
+          <a
+            key="sign out"
+            onClick={() => {
+              signOut(auth)
+              setSignInPopupOpen(false)
+            }}
+            className={classes.navtitle}
+            tabIndex={0}
+          >
+            Sign Out
+            {isAdmin && (
+              <>
+                <p style={{ color: "gold", margin: 0, fontSize: "12px" }}>
+                  ADMIN
+                </p>
+              </>
+            )}
+            {isLead && (
+              <p style={{ color: "gold", margin: 0, fontSize: "12px" }}>LEAD</p>
+            )}
+          </a>
+        </>
+      ) : (
+        <>
+          <a
+            key="sign in"
+            onClick={() => setSignInPopupOpen(true)}
+            className={classes.navtitle}
+            tabIndex={0}
+          >
+            Sign In
+          </a>
+        </>
+      )}
+    </>
+  )
+}
+
+export default Header
