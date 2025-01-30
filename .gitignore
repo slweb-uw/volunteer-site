@@ -27,6 +27,7 @@ package-lock.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+firestore-debug.log
 
 # local env files
 .env.local
@@ -36,4 +37,6 @@ yarn-error.log*
 
 # vercel
 .vercel
-yarn.lock
+
+#firebase
+storage.rules
