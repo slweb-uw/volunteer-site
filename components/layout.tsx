@@ -1,23 +1,23 @@
 // components/Layout.js
-import React, { Component } from "react";
-import Footer from "./footer";
-import Header from "./header";
+import type { PropsWithChildren } from "react"
+import Footer from "./footer"
+import Header from "./header"
 
-class Layout extends Component {
-  render() {
-    const { children } = this.props;
-    return (
-      <div
-        style={{
-          overflow: "hidden",
-        }}
-      >
-        <Header />
-        {children}
-        <Footer />
-      </div>
-    );
-  }
+type LayoutProps = PropsWithChildren
+function Layout({ children }: LayoutProps) {
+  return (
+    <div
+      style={{
+        display: "grid",
+        gridTemplateRows: "auto 1fr auto",
+        minHeight: "100vh",
+      }}
+    >
+      <Header />
+      {children}
+      <Footer />
+    </div>
+  )
 }
 
-export default Layout;
+export default Layout

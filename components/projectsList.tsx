@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react"
-import {
-  doc,
-  getDoc,
-  getDocs,
-  collection,
-  query,
-  where,
-  orderBy,
-} from "firebase/firestore"
+import { getDocs, collection, query, where, orderBy } from "firebase/firestore"
 import { db } from "firebaseClient"
 import { Button, MenuItem, Select, Typography, Switch } from "@mui/material"
 import createStyles from "@mui/styles/createStyles"
@@ -38,7 +30,6 @@ const organizations = [
 
 const Events: React.FC<EventsProps> = ({ location, classes }) => {
   const router = useRouter()
-  //const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
   const [events, setEvents] = useState<ProjectData[]>([]) // list of loaded events
 
   const ORGANIZATION_FILTER_QUERY_KEY = "org"
