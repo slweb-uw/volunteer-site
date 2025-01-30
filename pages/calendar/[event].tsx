@@ -401,8 +401,8 @@ const Event = ({
         <VolunteerPopup
             open={openVolunteerPopup}
             handleClose={handleCloseVolunteerPopup}
-            email={user.email}
-            name={user.displayName}
+            email={user.email ?? ""}
+            name={user.displayName ?? ""}
             uid={user.uid}
             phone={user.phoneNumber}
             addVolunteer={handleAddVolunteer}

@@ -1,24 +1,18 @@
-import React, { useState, useEffect } from "react"
-import makeStyles from "@mui/styles/makeStyles"
+import React, { useState, useEffect } from "react";
+import makeStyles from "@mui/styles/makeStyles";
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   TextField,
   Button,
-  FormControlLabel,
-  Checkbox,
   Typography,
   Select,
   MenuItem,
-} from "@mui/material"
+} from "@mui/material";
 
-<<<<<<< HEAD
-import { volunteerTypes } from "components/createOrModifyProjectModal"
-=======
-import { volunteerTypes } from 'components/AddModifyEventModal';
-import { VolunteerData } from 'new-types';
->>>>>>> 202a0e62f38fa5169b0b994abbe0005ba1bb543f
+import { volunteerTypes } from "./createOrModifyProjectModal";
+import { VolunteerData } from "new-types";
 
 const useStyles = makeStyles({
   title: {
@@ -49,9 +43,19 @@ const useStyles = makeStyles({
     marginTop: "0.5rem",
     marginBottom: "0",
   },
-})
+});
 
-<<<<<<< HEAD
+type VolunteerPopupProps = {
+  open: boolean;
+  handleClose: () => void;
+  email: string;
+  name: string;
+  uid: string;
+  phone: string | null;
+  addVolunteer: (volunter: VolunteerData) => void;
+  onDeleteVolunteer: (volunter: VolunteerData) => void;
+  volunteer: VolunteerData | null
+};
 const VolunteerPopup = ({
   open,
   handleClose,
@@ -62,84 +66,52 @@ const VolunteerPopup = ({
   addVolunteer,
   onDeleteVolunteer,
   volunteer,
-}) => {
-  const classes = useStyles()
-  // const [displayName, setDisplayName] = useState(name as string);
-  const [phoneNumber, setPhoneNumber] = useState(phone || "") //TODO Set default state to phone number if provided
-  const [comments, setComments] = useState("")
-  const [studentDiscipline, setStudentDiscipline] = useState("")
-  const [certified, setCertified] = useState(false)
-  const [formattedPhoneNumber, setFormattedPhoneNumber] = useState("")
-  console.log(volunteer + "test")
+}: VolunteerPopupProps) => {
+  const classes = useStyles();
+  const [displayName, setDisplayName] = useState(name ? name : ""); //TODO Set default state to name
+  const [phoneNumber, setPhoneNumber] = useState(phone ? phone : ""); //TODO Set default state to phone number if provided
+  const [comments, setComments] = useState("");
+  const [studentDiscipline, setStudentDiscipline] = useState("");
+  const [formattedPhoneNumber, setFormattedPhoneNumber] = useState("");
+
   useEffect(() => {
     if (volunteer) {
-      setPhoneNumber(volunteer.phoneNumber || "")
-      setComments(volunteer.comments || "")
-      setStudentDiscipline(volunteer.studentDiscipline || "")
-      setCertified(volunteer.certified || false)
-      setFormattedPhoneNumber(formatPhoneNumber(volunteer.phoneNumber || ""))
-=======
-const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, addVolunteer, onDeleteVolunteer, volunteer }) => {
-    const classes = useStyles();
-    const [displayName, setDisplayName] = useState(name ? name : ''); //TODO Set default state to name
-    const [phoneNumber, setPhoneNumber] = useState(phone ? phone : ''); //TODO Set default state to phone number if provided
-    const [comments, setComments] = useState('');
-    const [studentDiscipline, setStudentDiscipline] = useState('');
-    const [certified, setCertified] = useState(true); //TODO Set default state to false, true only for debugging.
-    const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
-    useEffect(() => {
-      if (volunteer) {
-        setPhoneNumber(volunteer.phoneNumber || '');
-        setComments(volunteer.comments || '');
-        setStudentDiscipline(volunteer.studentDiscipline || '');
-        setCertified(volunteer.certified || false);
-        setFormattedPhoneNumber(formatPhoneNumber(volunteer.phoneNumber || ''));
-      }
-    }, [volunteer]);
-
-    const validatePhoneNumber = (phoneNumber) => {
-      const cleaned = phoneNumber.replace(/\D/g, '');
-      return /^[0-9]{10}$/.test(cleaned);
-    };   
-
-    function formatPhoneNumber(phoneNumber) {
-      const cleaned = phoneNumber.replace(/\D/g, '');
-      const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
-      if (match) {
-          return `(${match[1]}) ${match[2]}-${match[3]}`;
-      }
-      return phoneNumber;
->>>>>>> 202a0e62f38fa5169b0b994abbe0005ba1bb543f
+      setPhoneNumber(volunteer.phoneNumber ?? "");
+      setComments(volunteer.comments || "");
+      setStudentDiscipline(volunteer.studentDiscipline || "");
+      setFormattedPhoneNumber(formatPhoneNumber(volunteer.phoneNumber || ""));
     }
-  }, [volunteer])
+  }, [volunteer]);
 
   const validatePhoneNumber = (phoneNumber) => {
-    const cleaned = phoneNumber.replace(/\D/g, "")
-    return /^[0-9]{10}$/.test(cleaned)
-  }
+    const cleaned = phoneNumber.replace(/\D/g, "");
+    return /^[0-9]{10}$/.test(cleaned);
+  };
 
-<<<<<<< HEAD
   function formatPhoneNumber(phoneNumber) {
-    const cleaned = phoneNumber.replace(/\D/g, "")
-    const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
+    const cleaned = phoneNumber.replace(/\D/g, "");
+    const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
     if (match) {
-      return `(${match[1]}) ${match[2]}-${match[3]}`
+      return `(${match[1]}) ${match[2]}-${match[3]}`;
     }
-    return phoneNumber
+    return phoneNumber;
   }
 
   const handlePhoneNumberChange = (e) => {
-    const rawPhoneNumber = e.target.value
-    const cleanedPhoneNumber = rawPhoneNumber.replace(/\D/g, "")
-    const formattedPhoneNumber = formatPhoneNumber(cleanedPhoneNumber)
-    setFormattedPhoneNumber(formattedPhoneNumber)
-    setPhoneNumber(cleanedPhoneNumber)
-  }
+    const rawPhoneNumber = e.target.value;
+    const cleanedPhoneNumber = rawPhoneNumber.replace(/\D/g, "");
+    const formattedPhoneNumber = formatPhoneNumber(cleanedPhoneNumber);
+    setFormattedPhoneNumber(formattedPhoneNumber);
+    setPhoneNumber(cleanedPhoneNumber);
+  };
 
-  const isPhoneNumberValid = validatePhoneNumber(phoneNumber)
-  const isSubmitDisabled = !(email && name && studentDiscipline && certified)
+  const isSubmitDisabled = !(email && name && studentDiscipline);
 
   const handleSubmit = () => {
+    if (!isSubmitDisabled) return;
+
+    const isPhoneNumberValid = validatePhoneNumber(phoneNumber);
+
     if (isPhoneNumberValid) {
       const volunteerData = {
         uid,
@@ -148,31 +120,13 @@ const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, addVolunte
         phoneNumber,
         studentDiscipline,
         comments,
-=======
-    const isPhoneNumberValid = validatePhoneNumber(phoneNumber);
-    const isSubmitDisabled = !(email && displayName && studentDiscipline && certified);
-    const handleSubmit = () => {
-      if (isPhoneNumberValid) {
-        const volunteerData: VolunteerData = {
-            uid,
-            email,
-            name: displayName,
-            phoneNumber,
-            studentDiscipline,
-            comments
-        };
-        addVolunteer(volunteerData);
-        handleClose();
-      } else {
-          alert('Invalid phone number!');
->>>>>>> 202a0e62f38fa5169b0b994abbe0005ba1bb543f
-      }
-      console.log(volunteerData)
-      handleClose()
+      };
+      addVolunteer(volunteerData);
+      handleClose();
     } else {
-      alert("Invalid phone number!")
+      alert("Invalid phone number!");
     }
-  }
+  };
 
   return (
     <Dialog open={open} onClose={handleClose}>
@@ -212,15 +166,9 @@ const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, addVolunte
         </div>
         <TextField
           label="Full Name *"
-<<<<<<< HEAD
-          value={name}
-          style={{ margin: "0 auto 0.75rem" }}
-          //   onChange={(e) => setDisplayName(e.target.value)}
-=======
           value={displayName}
-          style={{ margin: "0 auto 0.75rem"}}
+          style={{ margin: "0 auto 0.75rem" }}
           onChange={(e) => setDisplayName(e.target.value)}
->>>>>>> 202a0e62f38fa5169b0b994abbe0005ba1bb543f
           fullWidth
           margin="normal"
         />
@@ -232,16 +180,16 @@ const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, addVolunte
           fullWidth
           margin="normal"
           onKeyDown={(e) => {
-            const key = e.key
+            const key = e.key;
             const isValidInput =
-              /\d/.test(key) || key === "Backspace" || key === "Delete"
-            const isMaxLengthReached = formattedPhoneNumber.length >= 10
+              /\d/.test(key) || key === "Backspace" || key === "Delete";
+            const isMaxLengthReached = formattedPhoneNumber.length >= 10;
 
             if (
               !isValidInput ||
               (isMaxLengthReached && key !== "Backspace" && key !== "Delete")
             ) {
-              e.preventDefault()
+              e.preventDefault();
             }
           }}
         />
@@ -256,7 +204,6 @@ const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, addVolunte
         <Typography
           style={{
             marginRight: "15px",
-            fontSize: "small",
             fontSize: "0.9rem",
             marginTop: "0.5rem",
             marginBottom: "0.5rem",
@@ -312,7 +259,7 @@ const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, addVolunte
         </div>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
-export default VolunteerPopup
+export default VolunteerPopup;

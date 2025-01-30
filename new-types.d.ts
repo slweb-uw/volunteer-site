@@ -50,7 +50,7 @@ type VolunteerData = {
   uid: string;
   email: string;
   name: string;
-  phoneNumber: number;
+  phoneNumber: string;
   studentDiscipline: string;
   comments?: string;
 };
