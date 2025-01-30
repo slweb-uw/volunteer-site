@@ -1,8 +1,8 @@
-import React, { ChangeEvent, useState } from "react";
-import { useSnackbar } from "notistack";
-import { Theme } from "@mui/material/styles";
-import withStyles from "@mui/styles/withStyles";
-import CloseIcon from "@mui/icons-material/Close";
+import React, { ChangeEvent, useState } from "react"
+import { useSnackbar } from "notistack"
+import { Theme } from "@mui/material/styles"
+import withStyles from "@mui/styles/withStyles"
+import CloseIcon from "@mui/icons-material/Close"
 import {
   Dialog,
   DialogTitle,
@@ -21,27 +21,27 @@ import {
   Input,
   Button,
   Switch,
-} from "@mui/material";
+} from "@mui/material"
 import {
   ref,
   getDownloadURL,
   uploadBytes,
   deleteObject,
-} from "firebase/storage";
-import { db, storage } from "firebaseClient";
-import { LoadingButton } from "@mui/lab";
-import { DialogActions } from "@mui/material";
-import { Guid } from "guid-typescript";
-import ProjectImage from "components/projectImage";
-import Cropper from "react-cropper";
-import "cropperjs/dist/cropper.css";
-import RichTextEditor from "components/richTextEditor";
-import makeStyles from "@mui/styles/makeStyles";
-import { addDoc, Timestamp, collection, setDoc, doc } from "firebase/firestore";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { useAuth } from "auth";
-import { useRouter } from "next/router";
-import { ProjectData } from "new-types";
+} from "firebase/storage"
+import { db, storage } from "firebaseClient"
+import { LoadingButton } from "@mui/lab"
+import { DialogActions } from "@mui/material"
+import { Guid } from "guid-typescript"
+import ProjectImage from "components/projectImage"
+import Cropper from "react-cropper"
+import "cropperjs/dist/cropper.css"
+import RichTextEditor from "components/richTextEditor"
+import makeStyles from "@mui/styles/makeStyles"
+import { addDoc, Timestamp, collection, setDoc, doc } from "firebase/firestore"
+import { useForm, SubmitHandler } from "react-hook-form"
+import { useAuth } from "auth"
+import { useRouter } from "next/router"
+import { ProjectData } from "new-types"
 
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -71,19 +71,19 @@ const useStyles = makeStyles((theme: Theme) => ({
   modalContent: {
     overflowX: "hidden",
   },
-}));
+}))
 
 export interface DialogTitleProps {
-  id: string;
-  children: React.ReactNode;
-  onClose: () => void;
+  id: string
+  children: React.ReactNode
+  onClose: () => void
 }
 
 // make sure user is admin to access page if not redirect back
 // to opportunities page
 const ModalDialogTitle = (props: DialogTitleProps) => {
-  const { children, onClose, ...other } = props;
-  const classes = useStyles();
+  const { children, onClose, ...other } = props
+  const classes = useStyles()
   return (
     <DialogTitle className={classes.root} {...other}>
       <Typography variant="h6">{children}</Typography>
@@ -99,14 +99,14 @@ const ModalDialogTitle = (props: DialogTitleProps) => {
         </IconButton>
       ) : null}
     </DialogTitle>
-  );
-};
+  )
+}
 
 const ModalDialogContent = withStyles((theme: Theme) => ({
   root: {
     padding: theme.spacing(3),
   },
-}))(DialogContent);
+}))(DialogContent)
 
 export const volunteerTypes = [
   "School of Medicine",
@@ -120,7 +120,7 @@ export const volunteerTypes = [
   "Providers",
   "Undergraduates",
   "Other",
-];
+]
 
 const locations = [
   "Seattle",
@@ -129,7 +129,7 @@ const locations = [
   "Alaska",
   "Wyoming",
   "Idaho",
-];
+]
 
 const optinalFields = [
   "Website Link",
@@ -143,30 +143,30 @@ const optinalFields = [
   "Clinic Schedule",
   "Clinic Flow",
   "Address/Parking/Directions",
-] as const;
+] as const
 
 interface AddModifyEventModalProps {
-  open: boolean;
-  event?: ProjectData;
-  handleClose: any;
-  location: string;
-  projectId?: string;
+  open: boolean
+  project?: ProjectData
+  handleClose: any
+  location: string
+  projectId?: string
 }
 
 interface ImageSelectorProps {
-  setImage: (e: ChangeEvent<HTMLInputElement>) => any;
-  deleteImage: () => any;
-  hasImage: () => boolean;
-  uploadText: string;
-  deleteText: string;
+  setImage: (e: ChangeEvent<HTMLInputElement>) => any
+  deleteImage: () => any
+  hasImage: () => boolean
+  uploadText: string
+  deleteText: string
 }
 
 interface CropModalProps {
-  cropImage: string;
-  open: boolean;
-  saveImage: (blob: Blob) => Promise<void>;
-  aspectRatio: number;
-  handleClose: () => any;
+  cropImage: string
+  open: boolean
+  saveImage: (blob: Blob) => Promise<void>
+  aspectRatio: number
+  handleClose: () => any
 }
 
 enum ModalState {
@@ -176,7 +176,7 @@ enum ModalState {
 }
 
 const ImageSelector = (props: ImageSelectorProps) => {
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null)
 
   return (
     <React.Fragment>
@@ -185,7 +185,7 @@ const ImageSelector = (props: ImageSelectorProps) => {
         type="button"
         color="secondary"
         onClick={() => {
-          fileInputRef.current?.click();
+          fileInputRef.current?.click()
         }}
       >
         {props.uploadText}
@@ -193,13 +193,13 @@ const ImageSelector = (props: ImageSelectorProps) => {
           type="file"
           ref={fileInputRef}
           onChange={(evt) => {
-            props.setImage(evt);
+            props.setImage(evt)
             // Bit of a hack to prevent onChange not firing when re-inputting the same image
             // The issue is that file inputs are uncontrolled, so when the same image is input
             // as before there is no "change". We manually clear the input here since all we
             // need to do is process it, it doesn't need to stay here afterwards.
             if (fileInputRef.current) {
-              fileInputRef.current.value = "";
+              fileInputRef.current.value = ""
             }
           }}
           hidden
@@ -216,32 +216,32 @@ const ImageSelector = (props: ImageSelectorProps) => {
         </Button>
       )}
     </React.Fragment>
-  );
-};
+  )
+}
 
 const CropModal = (props: CropModalProps) => {
-  const cropperRef = React.useRef<HTMLImageElement>(null);
-  const classes = useStyles();
-  const { cropImage, open, aspectRatio, saveImage, handleClose } = props;
+  const cropperRef = React.useRef<HTMLImageElement>(null)
+  const classes = useStyles()
+  const { cropImage, open, aspectRatio, saveImage, handleClose } = props
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   const onCrop = () => {
     // Note: react-cropper does not currently support proper typing
-    const imageElement: any = cropperRef?.current;
-    const cropper: any = imageElement?.cropper;
-    setLoading(true);
+    const imageElement: any = cropperRef?.current
+    const cropper: any = imageElement?.cropper
+    setLoading(true)
     cropper.getCroppedCanvas().toBlob((blob: Blob | null) => {
       if (!blob) {
-        console.error("blob failed");
-        return;
+        console.error("blob failed")
+        return
       }
       saveImage(blob).then(() => {
-        handleClose();
-        setLoading(false);
-      });
-    });
-  };
+        handleClose()
+        setLoading(false)
+      })
+    })
+  }
 
   return (
     <Dialog
@@ -284,131 +284,134 @@ const CropModal = (props: CropModalProps) => {
         </LoadingButton>
       </DialogActions>
     </Dialog>
-  );
-};
+  )
+}
 
 const organizationList = [
   "Advocacy",
   "Clinical",
   "Health Education",
   "Mentorship & Outreach",
-] as const;
+] as const
 
 type FormFields = {
-  Title: string;
-  Organization: string;
-  cardImageURL?: string;
-  SignupActive: boolean;
-  timestamp: Timestamp;
-  "Website Link"?: string;
-  "Contact Information"?: string;
-  "HS Grad Student Information": string;
-  "Project Description": string;
-  "Project Specific Training"?: string;
-  "Provider Information"?: string;
-  "Services Provided"?: string;
-  "Tips and Reminders"?: string;
-  "Clinic Schedule": string;
-  "Clinic Flow": string;
-  "Address/Parking/Directions": string;
-  Protocols: string;
-};
+  Title: string
+  Organization: string
+  cardImageURL?: string
+  SignupActive: boolean
+  timestamp: Timestamp
+  "Website Link"?: string
+  "Contact Information"?: string
+  "HS Grad Student Information": string
+  "Project Description": string
+  "Project Specific Training"?: string
+  "Provider Information"?: string
+  "Services Provided"?: string
+  "Tips and Reminders"?: string
+  "Clinic Schedule": string
+  "Clinic Flow": string
+  "Address/Parking/Directions": string
+  Protocols: string
+}
 
-const AddModifyEventModal = ({
-  event,
+const CreateOrModifyProjectModal = ({
+  project,
   open,
   handleClose,
   projectId,
 }: AddModifyEventModalProps) => {
-  const { isAdmin } = useAuth();
+  const { isAdmin } = useAuth()
   const { register, handleSubmit } = useForm<FormFields>({
     defaultValues: {
-      Title: event?.Title ?? "",
-      Organization: event?.Organization ?? "",
-      cardImageURL: event?.cardImageURL ?? "",
-      SignupActive: event?.SignupActive ?? false,
-      "Website Link": event?.["Website Link"] ?? "",
-      "Contact Information": event?.["Website Link"] ?? "",
+      Title: project?.Title ?? "",
+      Organization: project?.Organization ?? "",
+      cardImageURL: project?.cardImageURL ?? "",
+      SignupActive: project?.SignupActive ?? false,
+      "Website Link": project?.["Website Link"] ?? "",
+      "Contact Information": project?.["Website Link"] ?? "",
       "HS Grad Student Information":
-        event?.["HS Grad Student Information"] ?? "",
-      "Project Description": event?.["Project Description"] ?? "",
-      "Project Specific Training": event?.["Project Description"] ?? "",
-      "Provider Information": event?.["Provider Information"] ?? "",
-      "Services Provided": event?.["Services Provided"] ?? "",
-      "Tips and Reminders": event?.["Tips and Reminders"] ?? "",
-      "Clinic Schedule": event?.["Clinic Schedule"] ?? "",
-      "Clinic Flow": event?.["Clinic Flow"] ?? "",
-      "Address/Parking/Directions": event?.["Address/Parking/Directions"] ?? "",
-      Protocols: event?.Protocols ?? "",
+        project?.["HS Grad Student Information"] ?? "",
+      "Project Description": project?.["Project Description"] ?? "",
+      "Project Specific Training": project?.["Project Specific Training"] ?? "",
+      "Provider Information": project?.["Provider Information"] ?? "",
+      "Services Provided": project?.["Services Provided"] ?? "",
+      "Tips and Reminders": project?.["Tips and Reminders"] ?? "",
+      "Clinic Schedule": project?.["Clinic Schedule"] ?? "",
+      "Clinic Flow": project?.["Clinic Flow"] ?? "",
+      "Address/Parking/Directions":
+        project?.["Address/Parking/Directions"] ?? "",
+      Protocols: project?.Protocols ?? "",
     },
-  });
-  const classes = useStyles();
+  })
+  const classes = useStyles()
   const router = useRouter()
-  const [projectLocation, setProjectLocation] = useState(event?.Location ?? "");
+  const [projectLocation, setProjectLocation] = useState(
+    project?.Location ?? ""
+  )
   const [description, setDescription] = useState<string>(
-    event?.["Project Description"] ?? "",
-  );
+    project?.["Project Description"] ?? ""
+  )
   const [organization, setOrganization] = useState<string>(
-    event?.Organization ?? "",
-  );
+    project?.Organization ?? ""
+  )
   const [volunteersNeeded, setVolunteersNeeded] = useState<string[]>(
-    event?.["Types of Volunteers Needed"] ?? [],
-  );
-  const [imageURL, setImageURL] = useState<string>(event?.imageURL ?? "");
-  const [modalState, setModalState] = useState(ModalState.Main);
-  const [cropImage, setCropImage] = useState<string | undefined>();
+    project?.["Types of Volunteers Needed"] ?? []
+  )
+  const [imageURL, setImageURL] = useState<string>(project?.imageURL ?? "")
+  const [modalState, setModalState] = useState(ModalState.Main)
+  const [cropImage, setCropImage] = useState<string | undefined>()
   const [signupActive, setSignupActive] = useState(
-    event?.SignupActive ?? false,
-  );
-  const { enqueueSnackbar } = useSnackbar();
-  const [isCropperOpen, setIsCropperOpen] = useState(false);
-  const [mutating, setMutating] = useState(false);
+    project?.SignupActive ?? false
+  )
+  const { enqueueSnackbar } = useSnackbar()
+  const [isCropperOpen, setIsCropperOpen] = useState(false)
+  const [mutating, setMutating] = useState(false)
 
   const deleteImage = async (
     url: string | undefined,
-    setter: (v: string) => any,
+    setter: (v: string) => any
   ) => {
     if (url) {
-      const id = url.slice(url.lastIndexOf("/") + 1, url.indexOf("?"));
+      const id = url.slice(url.lastIndexOf("/") + 1, url.indexOf("?"))
 
-      const imageRef = ref(storage, id);
+      const imageRef = ref(storage, id)
 
-      await deleteObject(imageRef);
-      setter("");
+      await deleteObject(imageRef)
+      setter("")
       alert(
-        "Image deleted. Please save the event, or set the image and save the event.",
-      );
+        "Image deleted. Please save the event, or set the image and save the event."
+      )
     }
-  };
+  }
 
   // Selects and uploads image to Firebase Storage and returns the image URL
   const saveImage = async (image: Blob): Promise<string> => {
-    const photoId = Guid.create().toString();
-    const storageRef = ref(storage, photoId);
+    const photoId = Guid.create().toString()
+    const storageRef = ref(storage, photoId)
     // Upload image to firebase storage then get its URL
-    const snapshot = await uploadBytes(storageRef, image);
-    const url = await getDownloadURL(snapshot.ref);
-    return url;
-  };
+    const snapshot = await uploadBytes(storageRef, image)
+    const url = await getDownloadURL(snapshot.ref)
+    return url
+  }
 
   const setImage = (evt: React.FormEvent<HTMLInputElement>) => {
-    const target = evt.target as HTMLInputElement;
-    const imageFile: File = (target.files as FileList)[0];
-    const reader = new FileReader();
-    reader.readAsDataURL(imageFile);
+    const target = evt.target as HTMLInputElement
+    const imageFile: File = (target.files as FileList)[0]
+    const reader = new FileReader()
+    reader.readAsDataURL(imageFile)
     reader.onload = () => {
-      setCropImage(reader.result as string);
-    };
+      setCropImage(reader.result as string)
+    }
     reader.onerror = (error) => {
-      console.error("Image reader error: ", error);
-    };
-    console.log(imageFile);
-  };
+      console.error("Image reader error: ", error)
+    }
+    console.log(imageFile)
+  }
 
   // Updates or create project
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
     // if we dont pass in an event we are creating else we are updating
-    const action = !event ? "created" : "updated";
+    const action = !project ? "created" : "updated"
     // add all the data that react hook-form cant process
     const requestData = {
       Location: projectLocation,
@@ -419,37 +422,37 @@ const AddModifyEventModal = ({
       signupActive: signupActive,
       cardImageURL: imageURL,
       ...data,
-    };
+    }
 
     try {
       // check for permissions
       if (!isAdmin) {
-        enqueueSnackbar("must be admin to edit", { variant: "error" });
-        return;
+        enqueueSnackbar("must be admin to edit", { variant: "error" })
+        return
       }
 
-      setMutating(true);
-      if (!event) {
-        await addDoc(collection(db, projectLocation), requestData);
+      setMutating(true)
+      if (!project) {
+        await addDoc(collection(db, projectLocation), requestData)
       } else {
-        if(!projectId) return
-        await setDoc(doc(db, projectLocation, projectId), requestData);
+        if (!projectId) return
+        await setDoc(doc(db, projectLocation, projectId), requestData)
       }
       enqueueSnackbar(`successfully ${action} project ${data.Title}`, {
         variant: "success",
         autoHideDuration: 2000,
-      });
-      setMutating(false);
+      })
+      setMutating(false)
       router.replace(router.asPath)
       handleClose()
     } catch (err) {
-      setMutating(false);
-      console.log(err);
+      setMutating(false)
+      console.log(err)
       enqueueSnackbar("something went wrong please try again", {
         variant: "error",
-      });
+      })
     }
-  };
+  }
 
   return (
     <Dialog
@@ -460,7 +463,7 @@ const AddModifyEventModal = ({
       maxWidth="lg"
     >
       <ModalDialogTitle id="event-dialog" onClose={handleClose}>
-        <b>{event ? "Modify Event" : "Add Event"}</b>
+        <b>{project ? "Modify Event" : "Add Event"}</b>
       </ModalDialogTitle>
       <DialogContent>
         <form style={{ padding: "1.5rem" }} onSubmit={handleSubmit(onSubmit)}>
@@ -469,13 +472,13 @@ const AddModifyEventModal = ({
               cropImage={cropImage}
               open={isCropperOpen}
               saveImage={async (blob) => {
-                const url = await saveImage(blob);
-                setImageURL(url);
+                const url = await saveImage(blob)
+                setImageURL(url)
               }}
               aspectRatio={modalState == ModalState.CropSquare ? 1 : 23 / 30}
               handleClose={() => {
-                setModalState(ModalState.Main);
-                setIsCropperOpen(false);
+                setModalState(ModalState.Main)
+                setIsCropperOpen(false)
               }}
             />
           )}
@@ -518,7 +521,7 @@ const AddModifyEventModal = ({
                   Detailed Project Description
                 </Typography>
                 <RichTextEditor
-                  initialContent={event?.["Project Description"] ?? ""}
+                  initialContent={project?.["Project Description"] ?? ""}
                   output={(value) => setDescription(value ?? "")}
                   editorOptions={{
                     attributes: {
@@ -556,7 +559,7 @@ const AddModifyEventModal = ({
                     value={organization}
                     label="Organization *"
                     onChange={(e) => {
-                      setOrganization(e.target.value);
+                      setOrganization(e.target.value)
                     }}
                   >
                     {organizationList.map((organization) => (
@@ -579,20 +582,20 @@ const AddModifyEventModal = ({
                       !Array.isArray(volunteersNeeded) ? [] : volunteersNeeded
                     }
                     onChange={(e) => {
-                      const value = e.target.value;
+                      const value = e.target.value
                       setVolunteersNeeded(
                         typeof value === "string"
                           ? value.split(",")
-                          : (value as string[]),
-                      );
+                          : (value as string[])
+                      )
                     }}
                     input={<Input />}
                     renderValue={(selected: any) => (
                       <Box sx={{ display: "flex", flexWrap: "wrap" }}>
                         {typeof selected === "object"
                           ? selected.map((value: string) => (
-                            <Chip key={value} label={value} />
-                          ))
+                              <Chip key={value} label={value} />
+                            ))
                           : []}
                       </Box>
                     )}
@@ -618,7 +621,7 @@ const AddModifyEventModal = ({
                       variant="outlined"
                     />
                   </Grid>
-                );
+                )
               })}
 
               <Grid item sm={12}></Grid>
@@ -626,33 +629,33 @@ const AddModifyEventModal = ({
               <ImagePreview
                 imageURL={imageURL}
                 setImage={(e) => {
-                  setModalState(ModalState.CropSquare);
-                  setImage(e);
-                  setIsCropperOpen(true);
+                  setModalState(ModalState.CropSquare)
+                  setImage(e)
+                  setIsCropperOpen(true)
                 }}
                 deleteImage={() => {
-                  deleteImage(imageURL, setImageURL);
+                  deleteImage(imageURL, setImageURL)
                 }}
               />
             </Grid>
             <LoadingButton variant="contained" type="submit" loading={mutating}>
-              {!event ? "Create Project" : "Update Project"}
+              {!project ? "Create Project" : "Update Project"}
             </LoadingButton>
           </div>
         </form>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
 
 type ImagePreviewProps = {
-  imageURL: string;
-  setImage: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  deleteImage: () => void;
-};
+  imageURL: string
+  setImage: (e: React.ChangeEvent<HTMLInputElement>) => void
+  deleteImage: () => void
+}
 
 function ImagePreview({ imageURL, setImage, deleteImage }: ImagePreviewProps) {
-  const classes = useStyles();
+  const classes = useStyles()
   return (
     <Grid item sm={12}>
       <Grid
@@ -691,6 +694,6 @@ function ImagePreview({ imageURL, setImage, deleteImage }: ImagePreviewProps) {
         </Grid>
       </Grid>
     </Grid>
-  );
+  )
 }
-export default AddModifyEventModal;
+export default CreateOrModifyProjectModal

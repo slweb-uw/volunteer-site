@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react"
 import {
   doc,
   getDoc,
@@ -7,89 +7,96 @@ import {
   query,
   where,
   orderBy,
-} from "firebase/firestore";
-import { db } from "firebaseClient";
-import { Button, MenuItem, Select, Typography, Switch } from "@mui/material";
-import createStyles from "@mui/styles/createStyles";
-import withStyles from "@mui/styles/withStyles";
-import Grid from "@mui/material/Grid";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import Tooltip from "@mui/material/Tooltip";
-import BootstrapInput from "../components/bootstrapInput";
-import Link from "next/link";
-import ProjectCard from "../components/projectCard";
-import { Location } from "../helpers/locations";
-import { volunteerTypes } from "components/AddModifyEventModal";
-import { useRouter } from "next/router";
-import { useMediaQuery } from "@mui/material";
-import { ProjectData } from "new-types";
+} from "firebase/firestore"
+import { db } from "firebaseClient"
+import { Button, MenuItem, Select, Typography, Switch } from "@mui/material"
+import createStyles from "@mui/styles/createStyles"
+import withStyles from "@mui/styles/withStyles"
+import Grid from "@mui/material/Grid"
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined"
+import Tooltip from "@mui/material/Tooltip"
+import BootstrapInput from "../components/bootstrapInput"
+import Link from "next/link"
+import ProjectCard from "../components/projectCard"
+import { Location } from "../helpers/locations"
+import { volunteerTypes } from "components/createOrModifyProjectModal"
+import { useRouter } from "next/router"
+import { useMediaQuery } from "@mui/material"
+import { ProjectData } from "new-types"
 
 type EventsProps = {
-  location: Location;
-  classes?: any;
-};
+  location: Location
+  classes?: any
+}
+
+const organizations = [
+  "Advocacy",
+  "Clinical",
+  "Health & Education",
+  "Mentorship & Outreach",
+]
 
 const Events: React.FC<EventsProps> = ({ location, classes }) => {
-  const router = useRouter();
-  const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
-  const [events, setEvents] = useState<ProjectData[]>([]); // list of loaded events
+  const router = useRouter()
+  //const [organizations, setOrganizations] = useState<string[]>([]); // organizations at this location
+  const [events, setEvents] = useState<ProjectData[]>([]) // list of loaded events
 
-  const ORGANIZATION_FILTER_QUERY_KEY = "org";
-  const STUDENT_TYPE_FILTER_QUERY_KEY = "type";
+  const ORGANIZATION_FILTER_QUERY_KEY = "org"
+  const STUDENT_TYPE_FILTER_QUERY_KEY = "type"
 
   const setQueryVar = (key: string, value: string) => {
     if (!router.isReady) {
-      return;
+      return
     }
-    const query = { ...router.query };
+    const query = { ...router.query }
     if (value) {
-      query[key] = value;
+      query[key] = value
     } else {
-      delete query[key];
+      delete query[key]
     }
     router.push({
       pathname: router.pathname,
       query: query,
-    });
-  };
+    })
+  }
 
-  const organizationFilter = router.query[ORGANIZATION_FILTER_QUERY_KEY] ?? "";
+  const organizationFilter = router.query[ORGANIZATION_FILTER_QUERY_KEY] ?? ""
   const setOrganizationFilter = (value: string) => {
-    setQueryVar(ORGANIZATION_FILTER_QUERY_KEY, value);
-  };
-  const studentTypeFilter = router.query[STUDENT_TYPE_FILTER_QUERY_KEY] ?? "";
+    setQueryVar(ORGANIZATION_FILTER_QUERY_KEY, value)
+  }
+  const studentTypeFilter = router.query[STUDENT_TYPE_FILTER_QUERY_KEY] ?? ""
   const setStudentTypeFilter = (value: string) => {
-    setQueryVar(STUDENT_TYPE_FILTER_QUERY_KEY, value);
-  };
+    setQueryVar(STUDENT_TYPE_FILTER_QUERY_KEY, value)
+  }
 
-  const [sortField, setSortField] = useState<string>("Title");
-  const [topMessage, setTopMessage] = useState<any>();
+  const [sortField, setSortField] = useState<string>("Title")
+  const [topMessage, setTopMessage] = useState<any>()
   const [signUpAvailableFilter, setSignUpAvailableFilter] =
-    useState<boolean>(false);
+    useState<boolean>(false)
 
-  const isProviderView = studentTypeFilter === "Providers";
+  const isProviderView = studentTypeFilter === "Providers"
   const setProviderView = (enabled: boolean) => {
     if (enabled) {
-      setStudentTypeFilter("Providers");
+      setStudentTypeFilter("Providers")
     } else if (isProviderView) {
-      setStudentTypeFilter("");
+      setStudentTypeFilter("")
     }
-  };
+  }
 
   const hndlSignUpAvailableFilter = (enabled: boolean) => {
-    console.log("Sign Up Available Switch Toggled", enabled);
-    setSignUpAvailableFilter(enabled);
-  };
+    console.log("Sign Up Available Switch Toggled", enabled)
+    setSignUpAvailableFilter(enabled)
+  }
 
-  useEffect(() => {
-    // Load events
-    loadEvents();
-    const cacheRef = doc(db, "cache", location.toString());
-    getDoc(cacheRef).then((doc) =>
-      setOrganizations(Object.keys(doc.data() as string[]).sort()),
-    );
-    // pull organizations for this location from the metadata cache
-  }, [location]);
+  // useEffect(() => {
+  //   // Load events
+  //   loadEvents();
+  //   const cacheRef = doc(db, "cache", location.toString());
+  //   getDoc(cacheRef).then((doc) =>
+  //     setOrganizations(Object.keys(doc.data() as string[]).sort()),
+  //   );
+  //   // pull organizations for this location from the metadata cache
+  // }, [location]);
 
   // Adjusts state depending on whether provider view is on
   useEffect(() => {
@@ -109,65 +116,61 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
         project specific training requirements before signing up for an
         opportunity.
       </span>
-    );
+    )
 
-    setTopMessage(message);
-  }, [isProviderView]);
+    setTopMessage(message)
+  }, [isProviderView])
 
   const getOrder = (curSort: string) => {
-    return curSort === "timestamp" ? "desc" : "asc";
-  };
+    return curSort === "timestamp" ? "desc" : "asc"
+  }
 
   // Append more events from Firestore onto this page from position of cursor
   async function loadEvents() {
-    const order = getOrder(sortField);
+    const order = getOrder(sortField)
 
     // initialize query
-    let q: any = collection(db, "/" + location);
+    let q: any = collection(db, "/" + location)
 
     // build up query
     if (organizationFilter) {
-      q = query(q, where("Organization", "==", organizationFilter));
+      q = query(q, where("Organization", "==", organizationFilter))
     }
     if (studentTypeFilter) {
       q = query(
         q,
-        where(
-          "Types of Volunteers Needed",
-          "array-contains",
-          studentTypeFilter,
-        ),
-      );
+        where("Types of Volunteers Needed", "array-contains", studentTypeFilter)
+      )
     }
     if (signUpAvailableFilter) {
-      q = query(q, where("SignupActive", "==", true));
+      q = query(q, where("SignupActive", "==", true))
     }
 
-    q = query(q, orderBy(sortField, order));
+    q = query(q, orderBy(sortField, order))
 
     // if we have a cursor, and we want to keep prev then fetch by cursor
-    const next = await getDocs(q);
-    const eventsToAdd: ProjectData[] = [];
+    const next = await getDocs(q)
+    const eventsToAdd: ProjectData[] = []
     next.docs.forEach((document) => {
-      let eventDoc = document.data() as ProjectData;
-      eventDoc.id = document.id; // adds event id to the EventData object
+      let eventDoc = document.data() as ProjectData
+      eventDoc.id = document.id // adds event id to the EventData object
       const volunteersNeeded: string | string[] | undefined =
-        eventDoc["Types of Volunteers Needed"];
+        eventDoc["Types of Volunteers Needed"]
       if (volunteersNeeded && typeof volunteersNeeded === "string") {
         // If string, then obsolete. Remove data
-        eventDoc["Types of Volunteers Needed"] = [];
+        eventDoc["Types of Volunteers Needed"] = []
       }
-      eventsToAdd.push(eventDoc);
-    });
+      eventsToAdd.push(eventDoc)
+    })
 
-    setEvents(eventsToAdd);
+    setEvents(eventsToAdd)
   }
 
   useEffect(() => {
-    loadEvents();
-  }, [organizationFilter, studentTypeFilter, signUpAvailableFilter]);
+    loadEvents()
+  }, [organizationFilter, studentTypeFilter, signUpAvailableFilter])
 
-  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"))
 
   return (
     <div>
@@ -190,7 +193,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
               aria-labelledby="opportunity-type-filter"
               value={organizationFilter}
               onChange={(e) => {
-                setOrganizationFilter(e.target.value as string);
+                setOrganizationFilter(e.target.value as string)
               }}
               displayEmpty
               className={classes.studentFilter}
@@ -218,7 +221,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
                   value={studentTypeFilter}
                   className={classes.studentFilter}
                   onChange={(e) => {
-                    setStudentTypeFilter(e.target.value as string);
+                    setStudentTypeFilter(e.target.value as string)
                   }}
                   displayEmpty
                   input={<BootstrapInput />}
@@ -357,8 +360,8 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
 const styles = createStyles({
   page: {
@@ -439,7 +442,7 @@ const styles = createStyles({
     marginRight: "1em",
     width: "205px",
   },
-});
+})
 
 //@ts-ignore
-export default withStyles(styles)(Events);
+export default withStyles(styles)(Events)
