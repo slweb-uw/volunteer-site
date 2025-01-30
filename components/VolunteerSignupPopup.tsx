@@ -13,7 +13,12 @@ import {
   MenuItem,
 } from "@mui/material"
 
+<<<<<<< HEAD
 import { volunteerTypes } from "components/createOrModifyProjectModal"
+=======
+import { volunteerTypes } from 'components/AddModifyEventModal';
+import { VolunteerData } from 'new-types';
+>>>>>>> 202a0e62f38fa5169b0b994abbe0005ba1bb543f
 
 const useStyles = makeStyles({
   title: {
@@ -46,6 +51,7 @@ const useStyles = makeStyles({
   },
 })
 
+<<<<<<< HEAD
 const VolunteerPopup = ({
   open,
   handleClose,
@@ -72,6 +78,38 @@ const VolunteerPopup = ({
       setStudentDiscipline(volunteer.studentDiscipline || "")
       setCertified(volunteer.certified || false)
       setFormattedPhoneNumber(formatPhoneNumber(volunteer.phoneNumber || ""))
+=======
+const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, addVolunteer, onDeleteVolunteer, volunteer }) => {
+    const classes = useStyles();
+    const [displayName, setDisplayName] = useState(name ? name : ''); //TODO Set default state to name
+    const [phoneNumber, setPhoneNumber] = useState(phone ? phone : ''); //TODO Set default state to phone number if provided
+    const [comments, setComments] = useState('');
+    const [studentDiscipline, setStudentDiscipline] = useState('');
+    const [certified, setCertified] = useState(true); //TODO Set default state to false, true only for debugging.
+    const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
+    useEffect(() => {
+      if (volunteer) {
+        setPhoneNumber(volunteer.phoneNumber || '');
+        setComments(volunteer.comments || '');
+        setStudentDiscipline(volunteer.studentDiscipline || '');
+        setCertified(volunteer.certified || false);
+        setFormattedPhoneNumber(formatPhoneNumber(volunteer.phoneNumber || ''));
+      }
+    }, [volunteer]);
+
+    const validatePhoneNumber = (phoneNumber) => {
+      const cleaned = phoneNumber.replace(/\D/g, '');
+      return /^[0-9]{10}$/.test(cleaned);
+    };   
+
+    function formatPhoneNumber(phoneNumber) {
+      const cleaned = phoneNumber.replace(/\D/g, '');
+      const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+      if (match) {
+          return `(${match[1]}) ${match[2]}-${match[3]}`;
+      }
+      return phoneNumber;
+>>>>>>> 202a0e62f38fa5169b0b994abbe0005ba1bb543f
     }
   }, [volunteer])
 
@@ -80,6 +118,7 @@ const VolunteerPopup = ({
     return /^[0-9]{10}$/.test(cleaned)
   }
 
+<<<<<<< HEAD
   function formatPhoneNumber(phoneNumber) {
     const cleaned = phoneNumber.replace(/\D/g, "")
     const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
@@ -109,6 +148,24 @@ const VolunteerPopup = ({
         phoneNumber,
         studentDiscipline,
         comments,
+=======
+    const isPhoneNumberValid = validatePhoneNumber(phoneNumber);
+    const isSubmitDisabled = !(email && displayName && studentDiscipline && certified);
+    const handleSubmit = () => {
+      if (isPhoneNumberValid) {
+        const volunteerData: VolunteerData = {
+            uid,
+            email,
+            name: displayName,
+            phoneNumber,
+            studentDiscipline,
+            comments
+        };
+        addVolunteer(volunteerData);
+        handleClose();
+      } else {
+          alert('Invalid phone number!');
+>>>>>>> 202a0e62f38fa5169b0b994abbe0005ba1bb543f
       }
       console.log(volunteerData)
       handleClose()
@@ -155,12 +212,17 @@ const VolunteerPopup = ({
         </div>
         <TextField
           label="Full Name *"
+<<<<<<< HEAD
           value={name}
           style={{ margin: "0 auto 0.75rem" }}
           //   onChange={(e) => setDisplayName(e.target.value)}
+=======
+          value={displayName}
+          style={{ margin: "0 auto 0.75rem"}}
+          onChange={(e) => setDisplayName(e.target.value)}
+>>>>>>> 202a0e62f38fa5169b0b994abbe0005ba1bb543f
           fullWidth
           margin="normal"
-          disabled
         />
         <TextField
           label={<span>Phone Number * (Only viewable by project lead)</span>}
