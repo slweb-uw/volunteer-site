@@ -37,7 +37,6 @@ const fields = [
   "Organization",
   "Contact Information",
   "Website Link",
-  "Address/Parking/Directions",
   "Clinic Flow",
   "Tips and Reminders",
   "Provider Information",
