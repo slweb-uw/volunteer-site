@@ -1,57 +1,57 @@
-import React, { useEffect, useState } from "react";
-import { getAppAnalytics } from "firebaseClient";
-import makeStyles from "@mui/styles/makeStyles";
-import { Typography, Button, Tooltip } from "@mui/material";
-import LocationSelector from "../../components/locationSelector";
-import { useRouter } from "next/router";
-import ProjectsList from "components/projectsList";
-import HelpIcon from "@mui/icons-material/Help";
+import React, { useEffect, useState } from "react"
+import { getAppAnalytics } from "firebaseClient"
+import makeStyles from "@mui/styles/makeStyles"
+import { Typography, Button, Tooltip } from "@mui/material"
+import LocationSelector from "../../components/locationSelector"
+import { useRouter } from "next/router"
+import ProjectsList from "components/projectsList"
+import HelpIcon from "@mui/icons-material/Help"
 import {
   DEFAULT_LOCATION,
   LAST_LOCATION_KEY,
   Location,
   setLocation,
-} from "../../helpers/locations";
-import { handleHelpButtonClick } from "../../helpers/navigation";
-import { useAuth } from "auth";
-import { logEvent } from "firebase/analytics";
-import AddModifyEventModal from "components/AddModifyEventModal";
+} from "../../helpers/locations"
+import { handleHelpButtonClick } from "../../helpers/navigation"
+import { useAuth } from "auth"
+import { logEvent } from "firebase/analytics"
+import CreateOrModifyProjectModal from "components/createOrModifyProjectModal"
 
 const LocationPage = () => {
-  const classes = useStyles();
-  const router = useRouter();
-  const { isAdmin } = useAuth();
+  const classes = useStyles()
+  const router = useRouter()
+  const { isAdmin } = useAuth()
 
-  const [createEventOpen, setCreateEventOpen] = useState(false);
+  const [createEventOpen, setCreateEventOpen] = useState(false)
   let location =
     router.query.location && !Array.isArray(router.query.location)
       ? router.query.location
-      : DEFAULT_LOCATION;
+      : DEFAULT_LOCATION
 
   //new logic using helper function
   const handleHelpButtonClickLocation = () => {
-    handleHelpButtonClick(router, "fromLocationPage");
-  };
-  
+    handleHelpButtonClick(router, "fromLocationPage")
+  }
+
   // Handle last location saving/loading
   useEffect(() => {
     if (!router.isReady) {
-      return;
+      return
     }
-    const lastLocation = window.localStorage.getItem(LAST_LOCATION_KEY);
+    const lastLocation = window.localStorage.getItem(LAST_LOCATION_KEY)
     if (
       lastLocation &&
       lastLocation !== DEFAULT_LOCATION &&
       location === DEFAULT_LOCATION
     ) {
-      setLocation(router, lastLocation as Location);
+      setLocation(router, lastLocation as Location)
     }
-  }, [router.isReady]);
+  }, [router.isReady])
 
   useEffect(() => {
-    const analytics = getAppAnalytics();
-    logEvent(analytics, "location_page_visit");
-  }, []);
+    const analytics = getAppAnalytics()
+    logEvent(analytics, "location_page_visit")
+  }, [])
 
   return (
     <div className={classes.page}>
@@ -76,11 +76,11 @@ const LocationPage = () => {
               >
                 Create Project
               </Button>
-              <AddModifyEventModal
+              <CreateOrModifyProjectModal
                 open={createEventOpen}
                 location={location}
                 handleClose={() => {
-                  setCreateEventOpen(false);
+                  setCreateEventOpen(false)
                 }}
               />
             </>
@@ -109,8 +109,8 @@ const LocationPage = () => {
         <ProjectsList location={location as Location} />
       )}
     </div>
-  );
-};
+  )
+}
 
 const useStyles = makeStyles(() => ({
   page: {
@@ -139,6 +139,6 @@ const useStyles = makeStyles(() => ({
       width: "245px",
     },
   },
-}));
+}))
 
-export default LocationPage;
+export default LocationPage

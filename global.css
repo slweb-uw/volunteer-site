@@ -17,3 +17,7 @@
   src: url(public/fonts/EncodeSansCompressed-600-SemiBold.ttf);
   font-weight: 600;
 }
+
+p {
+  margin: 0;
+}

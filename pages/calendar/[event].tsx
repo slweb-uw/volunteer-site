@@ -245,13 +245,9 @@ const Event = ({
     }
   };
 
-  const handleDeleteVolunteer = (volunteerData: VolunteerData, mode: String) => {
+  const handleDeleteVolunteer = (volunteerData: VolunteerData) => {
     if (selectedRole) {
       let message = "Are you sure you want to withdraw from this role?";
-
-      if (mode === "remove") {
-        message = "Are you sure you want to remove this volunteer?";
-      }
 
       const isConfirmed = window.confirm(message);
 
@@ -405,8 +401,8 @@ const Event = ({
         <VolunteerPopup
             open={openVolunteerPopup}
             handleClose={handleCloseVolunteerPopup}
-            email={user.email}
-            name={user.displayName}
+            email={user.email ?? ""}
+            name={user.displayName ?? ""}
             uid={user.uid}
             phone={user.phoneNumber}
             addVolunteer={handleAddVolunteer}

@@ -19,7 +19,7 @@ import RichTextField from "../../components/richTextField"
 import Box from "@mui/material/Box"
 import NextLink from "next/link"
 import { firebaseAdmin } from "firebaseAdmin"
-import AddModifyEventModal from "components/AddModifyEventModal"
+import CreateOrModifyProjectModal from "components/createOrModifyProjectModal"
 import { useParams } from "next/navigation"
 import { deleteDoc, doc } from "firebase/firestore"
 import { db } from "firebaseClient"
@@ -32,14 +32,16 @@ import { ChevronLeft } from "@mui/icons-material"
 const fields = [
   "Location",
   "Clinic Schedule",
+  "Address/Parking/Directions",
+  "HS Grad Student Information",
   "Organization",
   "Contact Information",
   "Website Link",
-  "Address/Parking/Directions",
   "Clinic Flow",
   "Tips and Reminders",
   "Provider Information",
   "Protocols",
+  "Services Provided",
 ] as const
 
 type RichEventFieldProps = {
@@ -215,7 +217,16 @@ const Event = ({
             </Button>
           </Box>
           {/* Navigation for events and admin page of each */}
-          <Box sx={{ columns: { xs: 1, md: 1 }, columnGap: 8 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            <RichEventField
+              name="Types of Volunteers Needed"
+              value={
+                eventData["Types of Volunteers Needed"]
+                  ? naturalJoin(eventData["Types of Volunteers Needed"])
+                  : undefined
+              }
+              removeTopMargin={true}
+            />
             {fields
               .filter(
                 (name) => eventData[name] != null && eventData[name] != ""
@@ -228,30 +239,20 @@ const Event = ({
                   removeTopMargin={true}
                 />
               ))}
-            <RichEventField
-              name="Types of Volunteers Needed"
-              value={
-                eventData["Types of Volunteers Needed"]
-                  ? naturalJoin(eventData["Types of Volunteers Needed"])
-                  : undefined
-              }
-              removeTopMargin={true}
-            />
           </Box>
         </Grid>
       </Grid>
 
-      <Divider
-        style={{
-          marginBottom: "3em",
-          marginTop: "3em",
-          height: 3,
-          borderRadius: "25px",
-        }}
-      ></Divider>
-
       {isAdmin && (
         <>
+          <Divider
+            style={{
+              marginBottom: "3em",
+              marginTop: "3em",
+              height: 3,
+              borderRadius: "25px",
+            }}
+          ></Divider>
           <Typography component="h3" variant="h4">
             Admin Options
           </Typography>
@@ -268,9 +269,9 @@ const Event = ({
               Delete Project
             </LoadingButton>
 
-            <AddModifyEventModal
+            <CreateOrModifyProjectModal
               open={modalOpen}
-              event={eventData}
+              project={eventData}
               location={location?.toString()}
               projectId={projectId.toString()}
               handleClose={() => setModalOpen(false)}

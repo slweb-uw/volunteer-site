@@ -1,4 +1,4 @@
-import React, { useEffect, PropsWithChildren, ComponentProps } from "react"
+import React, { PropsWithChildren, ComponentProps } from "react"
 import Image from "next/image"
 import MobileOutReachSrc from "../public/Mobile_Outreach_Clinic_resized.jpg"
 import ServeWithUsSrc from "../public/serve.jpg"
@@ -9,17 +9,15 @@ import {
   Typography,
   Grid,
   Button,
-  CardActionArea,
   Card,
   CardContent,
   CardMedia,
+  Box,
 } from "@mui/material"
 import makeStyles from "@mui/styles/makeStyles"
 import Link from "next/link"
 
-import { logEvent } from "firebase/analytics"
-import { getAppAnalytics } from "firebaseClient"
-import { ArrowForwardIos } from "@mui/icons-material"
+import ArrowForwardIos from "@mui/icons-material/ArrowForwardIos"
 import HeadlineBar from "components/headlineBar"
 
 const cardStyles = makeStyles((theme) => ({
@@ -55,7 +53,7 @@ const useStyles = makeStyles(() => ({
     top: 0,
     left: 0,
     width: "50%",
-    height: "100%",
+    height: "0",
     borderTop: "661px solid #FFFFFF95",
     borderRight: "100px solid transparent",
     "@media only screen and (max-width: 430px)": {
@@ -196,368 +194,376 @@ const useStyles = makeStyles(() => ({
   },
 }))
 
-const App: React.FC<{}> = () => {
-  const classes = useStyles()
+export default function App() {
+  return (
+    <>
+      <header>
+        <HeroSection />
+      </header>
+      <main>
+        <UserCards />
+        <MobileOutReach />
+        <ServeWithUs />
+        <AboutUs />
+        <ContactUs />
+      </main>
+    </>
+  )
+}
 
-  useEffect(() => {
-    const analytics = getAppAnalytics()
-    logEvent(analytics, "home_page_visit")
-  }, [])
+function MobileOutReach() {
+  const classes = useStyles()
 
   return (
     <div
+      className={classes.mobile}
       style={{
-        marginLeft: "auto",
-        marginRight: "auto",
+        backgroundColor: "#E8E3D3",
       }}
     >
-      {/** Cover image and header*/}
-      <HeroSection />
-
-      {/** Cards */}
-      <UserCards />
-
-      {/** Mobile Health Outreach Section*/}
-      <div
-        className={useStyles().mobile}
-        style={{
-          backgroundColor: "#E8E3D3",
-        }}
-      >
-        <Grid container spacing="2px">
-          <Grid item xs={12} md={6} lg={6}>
-            <div
-              style={{
-                marginLeft: "auto",
-                marginRight: "auto",
-                width: "90%",
-              }}
-            >
-              <Typography
-                gutterBottom
-                variant="h4"
-                style={{
-                  fontWeight: 700,
-                  paddingBottom: "0",
-                  marginBottom: "0",
-                  fontFamily: "Encode Sans",
-                  fontSize: "1.7rem",
-                  textTransform: "uppercase",
-                }}
-              >
-                Mobile Health Outreach Clinic (Seattle only)
-              </Typography>
-              <Typography
-                style={{ fontFamily: "Open Sans", marginTop: "1rem" }}
-              >
-                In Seattle, UW Health Sciences students are partnering with
-                Harborview Medical Center (HMC) Downtown programs to provide
-                urgent care services to residents of Low Income Housing
-                Institute’s Tiny House Villages. Health sciences students will
-                work on interprofessional teams to respond to community
-                identified health needs while further developing their teamwork
-                and clinical skills.
-              </Typography>
-              <div className={classes.mobileLearnMoreBtn}>
-                <Link href="https://collaborate.uw.edu/student-portal/mobile-health-outreach/">
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    style={{ marginTop: "1rem", alignItems: "center" }}
-                    className={classes.learnMoreBtn}
-                  >
-                    Learn More
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </Grid>
-          <Grid item xs={12} md={6} lg={6}>
-            <div
-              style={{
-                marginLeft: "auto",
-                marginRight: "auto",
-                textAlign: "center",
-              }}
-            >
-              <Image
-                style={{
-                  width: "30em",
-                  maxWidth: "100%",
-                  height: "auto",
-                  borderRadius: "10px",
-                }}
-                //className={useStyles().img}
-                src={MobileOutReachSrc}
-                priority
-                alt="doctor caring for mom with child"
-              />
-            </div>
-          </Grid>
-        </Grid>
-      </div>
-
-      {/** Serve With Us section*/}
-      <div className={useStyles().mobile}>
-        <Grid container spacing={10}>
-          <Grid item xs={12} md={6} lg={4}>
-            <div
-              style={{
-                marginLeft: "auto",
-                marginRight: "auto",
-                textAlign: "center",
-              }}
-            >
-              <Image
-                style={{
-                  width: "30em",
-                  maxWidth: "100%",
-                  height: "auto",
-                  borderRadius: "10px",
-                }}
-                src={ServeWithUsSrc}
-                placeholder="blur"
-                alt="doctor caring for mom with child"
-              />
-            </div>
-          </Grid>
-          <Grid item xs={12} md={6} lg={8}>
-            <div
-              style={{
-                marginLeft: "auto",
-                marginRight: "auto",
-                width: "90%",
-              }}
-            >
-              <Typography
-                gutterBottom
-                variant="h4"
-                style={{
-                  fontWeight: 700,
-                  paddingBottom: "0",
-                  marginBottom: "0",
-                  fontFamily: "Encode Sans",
-                  fontSize: "1.7rem",
-                  textTransform: "uppercase",
-                }}
-              >
-                Serve With Us
-              </Typography>
-              <HeadlineBar color="purple" width={210} height={10}></HeadlineBar>
-              <Typography style={{ fontFamily: "Open Sans" }}>
-                Volunteering with our programs is a wonderful way to practice
-                your skills, make a difference in our community and form
-                meaningful connections. We invite you to explore our
-                opportunities for providers and students alike. We are very
-                flexible and try to make it easy to work around busy schedules.
-                There is no required hourly commitment. Simply sign up when you
-                have the time!
-              </Typography>
-            </div>
-          </Grid>
-        </Grid>
-      </div>
-
-      {/** About Us section*/}
-      <div
-        className={useStyles().mobile}
-        style={{
-          backgroundColor: "#E8E3D3",
-        }}
-      >
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={6} lg={8}>
-            <div
-              style={{
-                marginLeft: "auto",
-                marginRight: "auto",
-              }}
-            >
-              <Typography
-                gutterBottom
-                variant="h4"
-                style={{
-                  fontWeight: 700,
-                  paddingBottom: "0",
-                  marginBottom: "0",
-                  fontFamily: "Encode Sans",
-                  fontSize: "1.7rem",
-                  textTransform: "uppercase",
-                }}
-              >
-                About Us
-              </Typography>
-              <HeadlineBar color="gold" width={130} height={10}></HeadlineBar>
-              <Typography style={{ fontFamily: "Open Sans" }}>
-                Our Service Learning and Community Engagement programs strive to
-                enrich health sciences education by providing our students with
-                opportunities to hone their skills while addressing the health
-                needs of our under-resourced communities. We seek to foster the
-                joy of service in our students who are preparing for lives of
-                civic and social responsibility in an increasingly diverse and
-                complex global society.These goals could not be achieved without
-                strong community partnerships, dedicated supervising providers,
-                and mutual collaboration within our six health sciences schools.
-              </Typography>
-              <br></br>
-              <br></br>
-              <Typography style={{ fontFamily: "Open Sans" }}>
-                Please take a moment to glance through the amazing clinical and
-                mentoring projects that have been developed by our students over
-                the past ten years.
-              </Typography>
-            </div>
-          </Grid>
-          <Grid item xs={12} md={6} lg={4}>
-            <div
-              style={{
-                marginLeft: "auto",
-                marginRight: "auto",
-                textAlign: "center",
-              }}
-            >
-              <Image
-                className={useStyles().img}
-                src={CommunityPartnersSrc}
-                alt="Two students smiling"
-              />
-            </div>
-          </Grid>
-        </Grid>
-      </div>
-
-      {/** Contact section*/}
-      <div className={useStyles().mobile}>
-        <div style={{ textAlign: "center", alignItems: "center" }}>
-          <Typography
-            gutterBottom
-            variant="h4"
+      <Grid container spacing="2px">
+        <Grid item xs={12} md={6} lg={6}>
+          <div
             style={{
-              fontWeight: 700,
-              fontFamily: "Encode Sans",
-              fontSize: "1.7rem",
-              marginBottom: "0",
-              textTransform: "uppercase",
+              marginLeft: "auto",
+              marginRight: "auto",
+              width: "90%",
             }}
           >
-            Contact
-          </Typography>
-          <div style={{ textAlign: "center" }}>
-            <HeadlineBar color="purple" width={130} height={10}></HeadlineBar>
+            <Typography
+              gutterBottom
+              variant="h4"
+              style={{
+                fontWeight: 700,
+                paddingBottom: "0",
+                marginBottom: "0",
+                fontFamily: "Encode Sans",
+                fontSize: "1.7rem",
+                textTransform: "uppercase",
+              }}
+            >
+              Mobile Health Outreach Clinic (Seattle only)
+            </Typography>
+            <Typography style={{ fontFamily: "Open Sans", marginTop: "1rem" }}>
+              In Seattle, UW Health Sciences students are partnering with
+              Harborview Medical Center (HMC) Downtown programs to provide
+              urgent care services to residents of Low Income Housing
+              Institute’s Tiny House Villages. Health sciences students will
+              work on interprofessional teams to respond to community identified
+              health needs while further developing their teamwork and clinical
+              skills.
+            </Typography>
+            <div className={classes.mobileLearnMoreBtn}>
+              <Link href="https://collaborate.uw.edu/student-portal/mobile-health-outreach/">
+                <Button
+                  color="primary"
+                  variant="contained"
+                  sx={{ marginTop: "16px" }}
+                  className={classes.learnMoreBtn}
+                >
+                  Learn More
+                </Button>
+              </Link>
+            </div>
           </div>
-        </div>
-        <Grid
-          item
-          container
-          spacing={6}
-          xs={12}
-          sm={12}
+        </Grid>
+        <Grid item xs={12} md={6} lg={6}>
+          <div
+            style={{
+              marginLeft: "auto",
+              marginRight: "auto",
+              textAlign: "center",
+            }}
+          >
+            <Image
+              style={{
+                width: "30em",
+                maxWidth: "100%",
+                height: "auto",
+                borderRadius: "10px",
+              }}
+              src={MobileOutReachSrc}
+              priority
+              alt="doctor caring for mom with child"
+            />
+          </div>
+        </Grid>
+      </Grid>
+    </div>
+  )
+}
+
+function ServeWithUs() {
+  const classes = useStyles()
+
+  return (
+    <div className={classes.mobile}>
+      <Grid container spacing={10}>
+        <Grid item xs={12} md={6} lg={4}>
+          <div
+            style={{
+              marginLeft: "auto",
+              marginRight: "auto",
+              textAlign: "center",
+            }}
+          >
+            <Image
+              style={{
+                width: "30em",
+                maxWidth: "100%",
+                height: "auto",
+                borderRadius: "10px",
+              }}
+              src={ServeWithUsSrc}
+              priority
+              alt="doctor caring for mom with child"
+            />
+          </div>
+        </Grid>
+        <Grid item xs={12} md={6} lg={8}>
+          <div
+            style={{
+              marginLeft: "auto",
+              marginRight: "auto",
+              width: "90%",
+            }}
+          >
+            <Typography
+              gutterBottom
+              variant="h4"
+              style={{
+                fontWeight: 700,
+                paddingBottom: "0",
+                marginBottom: "0",
+                fontFamily: "Encode Sans",
+                fontSize: "1.7rem",
+                textTransform: "uppercase",
+              }}
+            >
+              Serve With Us
+            </Typography>
+            <HeadlineBar color="purple" width={210} height={10}></HeadlineBar>
+            <Typography style={{ fontFamily: "Open Sans" }}>
+              Volunteering with our programs is a wonderful way to practice your
+              skills, make a difference in our community and form meaningful
+              connections. We invite you to explore our opportunities for
+              providers and students alike. We are very flexible and try to make
+              it easy to work around busy schedules. There is no required hourly
+              commitment. Simply sign up when you have the time!
+            </Typography>
+          </div>
+        </Grid>
+      </Grid>
+    </div>
+  )
+}
+
+function AboutUs() {
+  const classes = useStyles()
+  return (
+    <div
+      className={classes.mobile}
+      style={{
+        backgroundColor: "#E8E3D3",
+      }}
+    >
+      <Grid container spacing={4}>
+        <Grid item xs={12} md={6} lg={8}>
+          <div
+            style={{
+              marginLeft: "auto",
+              marginRight: "auto",
+            }}
+          >
+            <Typography
+              gutterBottom
+              variant="h4"
+              style={{
+                fontWeight: 700,
+                paddingBottom: "0",
+                marginBottom: "0",
+                fontFamily: "Encode Sans",
+                fontSize: "1.7rem",
+                textTransform: "uppercase",
+              }}
+            >
+              About Us
+            </Typography>
+            <HeadlineBar color="gold" width={130} height={10}></HeadlineBar>
+            <Typography style={{ fontFamily: "Open Sans" }}>
+              Our Service Learning and Community Engagement programs strive to
+              enrich health sciences education by providing our students with
+              opportunities to hone their skills while addressing the health
+              needs of our under-resourced communities. We seek to foster the
+              joy of service in our students who are preparing for lives of
+              civic and social responsibility in an increasingly diverse and
+              complex global society.These goals could not be achieved without
+              strong community partnerships, dedicated supervising providers,
+              and mutual collaboration within our six health sciences schools.
+            </Typography>
+            <br></br>
+            <br></br>
+            <Typography style={{ fontFamily: "Open Sans" }}>
+              Please take a moment to glance through the amazing clinical and
+              mentoring projects that have been developed by our students over
+              the past ten years.
+            </Typography>
+          </div>
+        </Grid>
+        <Grid item xs={12} md={6} lg={4}>
+          <div
+            style={{
+              marginLeft: "auto",
+              marginRight: "auto",
+              textAlign: "center",
+            }}
+          >
+            <Image
+              className={classes.img}
+              src={CommunityPartnersSrc}
+              alt="Two students smiling"
+            />
+          </div>
+        </Grid>
+      </Grid>
+    </div>
+  )
+}
+
+function ContactUs() {
+  const classes = useStyles()
+
+  return (
+    <div className={classes.mobile}>
+      <div style={{ textAlign: "center", alignItems: "center" }}>
+        <Typography
+          gutterBottom
+          variant="h4"
           style={{
-            marginTop: "0.5em",
-            marginBottom: "0.5em",
-            display: "flex",
-            justifyContent: "center",
-            alignContent: "center",
+            fontWeight: 700,
+            fontFamily: "Encode Sans",
+            fontSize: "1.7rem",
+            marginBottom: "0",
+            textTransform: "uppercase",
           }}
         >
-          <Grid item>
-            <Grid container direction="column" spacing={1}>
-              <Grid item>
-                <Grid container direction="row" spacing={1}>
-                  <Grid item>
-                    <Image src={ProfileIcon} alt="profile icon" />
-                  </Grid>
-                  <Grid item>
-                    <Typography
-                      style={{
-                        fontSize: "1.2rem",
-                        fontFamily: "Uni Sans Book",
-                      }}
-                    >
-                      Service Learning Team
-                    </Typography>
-                    <Typography
-                      style={{
-                        fontSize: "1.2rem",
-                        fontFamily: "Uni Sans Book",
-                      }}
-                    >
-                      UW School of Medicine
-                    </Typography>
-                  </Grid>
+          Contact
+        </Typography>
+        <div style={{ textAlign: "center" }}>
+          <HeadlineBar color="purple" width={130} height={10}></HeadlineBar>
+        </div>
+      </div>
+      <Grid
+        item
+        container
+        spacing={6}
+        xs={12}
+        sm={12}
+        style={{
+          marginTop: "0.5em",
+          marginBottom: "0.5em",
+          display: "flex",
+          justifyContent: "center",
+          alignContent: "center",
+        }}
+      >
+        <Grid item>
+          <Grid container direction="column" spacing={1}>
+            <Grid item>
+              <Grid container direction="row" spacing={1}>
+                <Grid item>
+                  <Image src={ProfileIcon} alt="profile icon" />
                 </Grid>
-              </Grid>
-              <Grid item>
-                <Grid
-                  container
-                  direction="column"
-                  className={classes.contactContainer}
-                >
-                  <Grid item>
-                    <Typography className={classes.contact}>
-                      <a href="mailto://somserve@uw.edu">somserve@uw.edu</a>
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography className={classes.contact}>
-                      206-685-2009
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography className={classes.contact}>
-                      Health Sciences Building, Suite A-300
-                    </Typography>
-                  </Grid>
+                <Grid item>
+                  <Typography
+                    style={{
+                      fontSize: "1.2rem",
+                      fontFamily: "Uni Sans Book",
+                    }}
+                  >
+                    Service Learning Team
+                  </Typography>
+                  <Typography
+                    style={{
+                      fontSize: "1.2rem",
+                      fontFamily: "Uni Sans Book",
+                    }}
+                  >
+                    UW School of Medicine
+                  </Typography>
                 </Grid>
               </Grid>
             </Grid>
-          </Grid>
-          <Grid item>
-            <Grid container direction="column" spacing={2}>
-              <Grid item>
-                <Grid container direction="row" spacing={2}>
-                  <Grid item>
-                    <Image src={MailIcon} alt="mail icon" />
-                  </Grid>
-                  <Grid item>
-                    <Typography
-                      style={{
-                        fontSize: "1.2rem",
-                        fontFamily: "Uni Sans Book",
-                      }}
-                    >
-                      Mailing Address
-                    </Typography>
-                  </Grid>
+            <Grid item>
+              <Grid
+                container
+                direction="column"
+                className={classes.contactContainer}
+              >
+                <Grid item>
+                  <Typography className={classes.contact}>
+                    <a href="mailto://somserve@uw.edu">somserve@uw.edu</a>
+                  </Typography>
                 </Grid>
-              </Grid>
-              <Grid item>
-                <Grid
-                  container
-                  direction="column"
-                  className={classes.contactContainer}
-                >
-                  <Grid item>
-                    <Typography className={classes.contact}>
-                      1959 NE. Pacific Ave. Suite A-300
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography className={classes.contact}>
-                      Box 356340
-                    </Typography>
-                  </Grid>
-                  <Grid item>
-                    <Typography className={classes.contact}>
-                      Seattle, WA 98195
-                    </Typography>
-                  </Grid>
+                <Grid item>
+                  <Typography className={classes.contact}>
+                    206-685-2009
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <Typography className={classes.contact}>
+                    Health Sciences Building, Suite A-300
+                  </Typography>
                 </Grid>
               </Grid>
             </Grid>
           </Grid>
         </Grid>
-      </div>
+        <Grid item>
+          <Grid container direction="column" spacing={2}>
+            <Grid item>
+              <Grid container direction="row" spacing={2}>
+                <Grid item>
+                  <Image src={MailIcon} alt="mail icon" />
+                </Grid>
+                <Grid item>
+                  <Typography
+                    style={{
+                      fontSize: "1.2rem",
+                      fontFamily: "Uni Sans Book",
+                    }}
+                  >
+                    Mailing Address
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item>
+              <Grid
+                container
+                direction="column"
+                className={classes.contactContainer}
+              >
+                <Grid item>
+                  <Typography className={classes.contact}>
+                    1959 NE. Pacific Ave. Suite A-300
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <Typography className={classes.contact}>
+                    Box 356340
+                  </Typography>
+                </Grid>
+                <Grid item>
+                  <Typography className={classes.contact}>
+                    Seattle, WA 98195
+                  </Typography>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
     </div>
   )
 }
@@ -610,8 +616,8 @@ function HeroSection() {
 type UserCardActionAreaProps = {
   href: string
   title: string
-  className: string
-} & Omit<ComponentProps<typeof CardActionArea>, "LinkComponent" | "className">
+  className?: string
+} & Omit<ComponentProps<typeof Box>, "className">
 function UserCardActionArea({
   href,
   title,
@@ -621,17 +627,14 @@ function UserCardActionArea({
   const classes = useStyles()
 
   return (
-    <CardActionArea
-      {...rest}
-      className={`${className} ${classes.cardlinks}`}
-      LinkComponent={Link}
-      href={href}
-    >
-      <Typography className={classes.cardtitle}>{title}</Typography>
-      <Typography>
-        <ArrowForwardIos style={{ fontSize: "1em" }} />
-      </Typography>
-    </CardActionArea>
+    <Link href={href} style={{ textDecoration: "none", cursor: "pointer" }}>
+      <Box className={`${className} ${classes.cardlinks}`} {...rest}>
+        <Typography className={classes.cardtitle}>{title}</Typography>
+        <Typography>
+          <ArrowForwardIos style={{ fontSize: "1em" }} />
+        </Typography>
+      </Box>
+    </Link>
   )
 }
 
@@ -770,5 +773,3 @@ function UserCards() {
     </div>
   )
 }
-
-export default App
