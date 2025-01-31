@@ -32,7 +32,6 @@ import { ChevronLeft } from "@mui/icons-material"
 const fields = [
   "Location",
   "Clinic Schedule",
-  "Clinic Flow",
   "Address/Parking/Directions",
   "HS Grad Student Information",
   "Organization",
@@ -43,7 +42,6 @@ const fields = [
   "Tips and Reminders",
   "Provider Information",
   "Protocols",
-  "Tips and Reminders",
   "Services Provided",
 ] as const
 
@@ -221,6 +219,15 @@ const Event = ({
           </Box>
           {/* Navigation for events and admin page of each */}
           <Box sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            <RichEventField
+              name="Types of Volunteers Needed"
+              value={
+                eventData["Types of Volunteers Needed"]
+                  ? naturalJoin(eventData["Types of Volunteers Needed"])
+                  : undefined
+              }
+              removeTopMargin={true}
+            />
             {fields
               .filter(
                 (name) => eventData[name] != null && eventData[name] != ""
@@ -233,15 +240,6 @@ const Event = ({
                   removeTopMargin={true}
                 />
               ))}
-            <RichEventField
-              name="Types of Volunteers Needed"
-              value={
-                eventData["Types of Volunteers Needed"]
-                  ? naturalJoin(eventData["Types of Volunteers Needed"])
-                  : undefined
-              }
-              removeTopMargin={true}
-            />
           </Box>
         </Grid>
       </Grid>
