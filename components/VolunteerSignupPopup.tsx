@@ -47,7 +47,7 @@ const useStyles = makeStyles({
     },
 });
 
-const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, addVolunteer, onDeleteVolunteer, volunteer }) => {
+const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, position, addVolunteer, onDeleteVolunteer, volunteer }) => {
     const classes = useStyles();
     const [displayName, setDisplayName] = useState(name ? name : ''); //TODO Set default state to name
     const [phoneNumber, setPhoneNumber] = useState(phone ? phone : ''); //TODO Set default state to phone number if provided
@@ -109,6 +109,7 @@ const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, addVolunte
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle className={classes.title}>Volunteer Information</DialogTitle>
+      <Typography variant="body1" align="center"> Sign up for {position} </Typography>
       <DialogContent>
         <TextField
         label="Email"
