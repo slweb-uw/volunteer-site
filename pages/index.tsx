@@ -21,6 +21,7 @@ import { logEvent } from "firebase/analytics"
 import { getAppAnalytics } from "firebaseClient"
 import { ArrowForwardIos } from "@mui/icons-material"
 import HeadlineBar from "components/headlineBar"
+import Head from "next/head"
 
 const cardStyles = makeStyles((theme) => ({
   accentLink: {
@@ -211,6 +212,10 @@ const App: React.FC<{}> = () => {
         marginRight: "auto",
       }}
     >
+    <Head>
+      <title>Service Learning & Community Engagement | UW School of Medicine</title>
+      <meta name="description" content="Explore volunteer and service learning opportunities for students and providers through the UW School of Medicine." />
+    </Head>
       {/** Cover image and header*/}
       <HeroSection />
 
