@@ -1,10 +1,10 @@
-import React, { useEffect, PropsWithChildren, ComponentProps } from "react"
-import Image from "next/image"
-import MobileOutReachSrc from "../public/Mobile_Outreach_Clinic_resized.jpg"
-import ServeWithUsSrc from "../public/serve.jpg"
-import CommunityPartnersSrc from "../public/communityPartners.jpg"
-import ProfileIcon from "public/profile-icon.png"
-import MailIcon from "public/mail-icon.png"
+import React, { useEffect, PropsWithChildren, ComponentProps } from "react";
+import Image from "next/image";
+import MobileOutReachSrc from "../public/Mobile_Outreach_Clinic_resized.jpg";
+import ServeWithUsSrc from "../public/serve.jpg";
+import CommunityPartnersSrc from "../public/communityPartners.jpg";
+import ProfileIcon from "public/profile-icon.png";
+import MailIcon from "public/mail-icon.png";
 import {
   Typography,
   Grid,
@@ -13,14 +13,14 @@ import {
   Card,
   CardContent,
   CardMedia,
-} from "@mui/material"
-import makeStyles from "@mui/styles/makeStyles"
-import Link from "next/link"
+} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import Link from "next/link";
 
-import { logEvent } from "firebase/analytics"
-import { getAppAnalytics } from "firebaseClient"
-import { ArrowForwardIos } from "@mui/icons-material"
-import HeadlineBar from "components/headlineBar"
+import { logEvent } from "firebase/analytics";
+import { getAppAnalytics } from "firebaseClient";
+import { ArrowForwardIos } from "@mui/icons-material";
+import HeadlineBar from "components/headlineBar";
 
 const cardStyles = makeStyles((theme) => ({
   accentLink: {
@@ -29,7 +29,7 @@ const cardStyles = makeStyles((theme) => ({
       color: "white",
     },
   },
-}))
+}));
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -186,23 +186,23 @@ const useStyles = makeStyles(() => ({
     },
   },
   mobile: {
-    padding: "5em",
+    padding: "10vw",
     verticalAlign: "middle",
-    paddingTop: "1em",
-    paddingBottom: "1em",
+    paddingTop: "2em",
+    paddingBottom: "2em",
     "@media only screen and (max-width: 430px)": {
       padding: "3em",
     },
   },
-}))
+}));
 
 const App: React.FC<{}> = () => {
-  const classes = useStyles()
+  const classes = useStyles();
 
   useEffect(() => {
-    const analytics = getAppAnalytics()
-    logEvent(analytics, "home_page_visit")
-  }, [])
+    const analytics = getAppAnalytics();
+    logEvent(analytics, "home_page_visit");
+  }, []);
 
   return (
     <div
@@ -224,15 +224,16 @@ const App: React.FC<{}> = () => {
           backgroundColor: "#E8E3D3",
         }}
       >
-        <Grid container spacing="2px">
-          <Grid item xs={12} md={6} lg={6}>
-            <div
-              style={{
-                marginLeft: "auto",
-                marginRight: "auto",
-                width: "90%",
-              }}
-            >
+        <Grid
+          container
+          spacing={5}
+          alignItems="center"
+          direction={{ xs: "column", md: "row" }}
+          wrap="nowrap"
+        >
+          {/* Text */}
+          <Grid item xs sx={{ flexGrow: 1, minWidth: "50%" }}>
+            <div>
               <Typography
                 gutterBottom
                 variant="h4"
@@ -272,7 +273,14 @@ const App: React.FC<{}> = () => {
               </div>
             </div>
           </Grid>
-          <Grid item xs={12} md={6} lg={6}>
+
+          {/* Image */}
+          <Grid
+            item
+            sx={{
+              flexShrink: 1,
+            }}
+          >
             <div
               style={{
                 marginLeft: "auto",
@@ -282,12 +290,11 @@ const App: React.FC<{}> = () => {
             >
               <Image
                 style={{
-                  width: "30em",
-                  maxWidth: "100%",
+                  width: "100%",
+                  maxWidth: "30em",
                   height: "auto",
                   borderRadius: "10px",
                 }}
-                //className={useStyles().img}
                 src={MobileOutReachSrc}
                 priority
                 alt="doctor caring for mom with child"
@@ -299,8 +306,20 @@ const App: React.FC<{}> = () => {
 
       {/** Serve With Us section*/}
       <div className={useStyles().mobile}>
-        <Grid container spacing={10}>
-          <Grid item xs={12} md={6} lg={4}>
+        <Grid
+          container
+          spacing={5}
+          alignItems="center"
+          direction={{ xs: "column", md: "row" }}
+          wrap="nowrap"
+        >
+          {/* Image */}
+          <Grid
+            item
+            sx={{
+              flexShrink: 1,
+            }}
+          >
             <div
               style={{
                 marginLeft: "auto",
@@ -310,8 +329,8 @@ const App: React.FC<{}> = () => {
             >
               <Image
                 style={{
-                  width: "30em",
-                  maxWidth: "100%",
+                  width: "100%",
+                  maxWidth: "30em",
                   height: "auto",
                   borderRadius: "10px",
                 }}
@@ -321,12 +340,13 @@ const App: React.FC<{}> = () => {
               />
             </div>
           </Grid>
-          <Grid item xs={12} md={6} lg={8}>
+
+          {/* Text */}
+          <Grid item xs sx={{ flexGrow: 1, minWidth: "60%" }}>
             <div
               style={{
                 marginLeft: "auto",
                 marginRight: "auto",
-                width: "90%",
               }}
             >
               <Typography
@@ -365,8 +385,15 @@ const App: React.FC<{}> = () => {
           backgroundColor: "#E8E3D3",
         }}
       >
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={6} lg={8}>
+        <Grid
+          container
+          spacing={5}
+          alignItems="center"
+          direction={{ xs: "column", md: "row" }}
+          wrap="nowrap"
+        >
+          {/* Text */}
+          <Grid item xs sx={{ flexGrow: 1, minWidth: "50%" }}>
             <div
               style={{
                 marginLeft: "auto",
@@ -408,7 +435,14 @@ const App: React.FC<{}> = () => {
               </Typography>
             </div>
           </Grid>
-          <Grid item xs={12} md={6} lg={4}>
+
+          {/* Image */}
+          <Grid
+            item
+            sx={{
+              flexShrink: 1,
+            }}
+          >
             <div
               style={{
                 marginLeft: "auto",
@@ -417,7 +451,12 @@ const App: React.FC<{}> = () => {
               }}
             >
               <Image
-                className={useStyles().img}
+                style={{
+                  width: "100%",
+                  maxWidth: "30em",
+                  height: "auto",
+                  borderRadius: "10px",
+                }}
                 src={CommunityPartnersSrc}
                 alt="Two students smiling"
               />
@@ -559,11 +598,11 @@ const App: React.FC<{}> = () => {
         </Grid>
       </div>
     </div>
-  )
-}
+  );
+};
 
 function HeroSection() {
-  const classes = useStyles()
+  const classes = useStyles();
   return (
     <div className={classes.container}>
       <div className={classes.background}>
@@ -604,21 +643,21 @@ function HeroSection() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 type UserCardActionAreaProps = {
-  href: string
-  title: string
-  className: string
-} & Omit<ComponentProps<typeof CardActionArea>, "LinkComponent" | "className">
+  href: string;
+  title: string;
+  className: string;
+} & Omit<ComponentProps<typeof CardActionArea>, "LinkComponent" | "className">;
 function UserCardActionArea({
   href,
   title,
   className,
   ...rest
 }: UserCardActionAreaProps) {
-  const classes = useStyles()
+  const classes = useStyles();
 
   return (
     <CardActionArea
@@ -632,10 +671,10 @@ function UserCardActionArea({
         <ArrowForwardIos style={{ fontSize: "1em" }} />
       </Typography>
     </CardActionArea>
-  )
+  );
 }
 
-type UserCardProps = { cardMediaSrc: string } & PropsWithChildren
+type UserCardProps = { cardMediaSrc: string } & PropsWithChildren;
 function UserCard({ cardMediaSrc, children }: UserCardProps) {
   return (
     <Card
@@ -650,13 +689,13 @@ function UserCard({ cardMediaSrc, children }: UserCardProps) {
       ></CardMedia>
       <CardContent style={{ padding: 0 }}>{children}</CardContent>
     </Card>
-  )
+  );
 }
 
 function UserCards() {
-  const cards = cardStyles()
+  const cards = cardStyles();
   return (
-    <div style={{ marginTop: "1em" }}>
+    <div style={{ marginTop: "2em", marginBottom: "2em" }}>
       <div
         style={{
           width: "100%",
@@ -768,7 +807,7 @@ function UserCards() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
