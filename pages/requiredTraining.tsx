@@ -29,6 +29,7 @@ const RequiredTraining: NextPage<Props> = ({ classes }) => {
       </Typography>
       <img
         src={"../goldbar.png"}
+        alt=""
         style={{ width: "205px", height: "10px", marginBottom: "30px" }}
       />
       <Grid container spacing={2}>
@@ -47,7 +48,7 @@ const RequiredTraining: NextPage<Props> = ({ classes }) => {
             central to the mission of our program.  Prior to participation in 
             service learning events, please review the materials below.
             </Typography>
-            <div style={{ listStyleType: "none", paddingTop: "20px" }}>
+            <ul style={{ listStyleType: "none", paddingTop: "20px" }}>
               <li>
               <Typography
                   variant="h6"
@@ -107,7 +108,7 @@ const RequiredTraining: NextPage<Props> = ({ classes }) => {
                   </Link>
                 </Typography>
               </li>
-            </div>
+            </ul>
           </div>
         </Grid>
       </Grid>

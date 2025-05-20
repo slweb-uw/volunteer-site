@@ -31,6 +31,7 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
       </Typography>
       <img
         src={"../goldbar.png"}
+        alt=""
         style={{ width: "550px", height: "10px", marginBottom: "5px" }}
       />
       <div style={{ display: "flex" }}>

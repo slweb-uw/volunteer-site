@@ -29,6 +29,7 @@ const Communitypartners = ({ classes }) => {
       </Typography>
       <img
         src={"../goldbar.png"}
+        alt=""
         style={{ width: "550px", height: "10px", marginBottom: "30px" }}
       />
       <Grid container spacing={2}>

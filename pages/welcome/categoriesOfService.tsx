@@ -31,6 +31,7 @@ const CategoriesOfService: NextPage<Props> = ({ classes }) => {
       </Typography>
       <img
         src={"../goldbar.png"}
+        alt=""
         style={{ width: "380px", height: "10px", marginBottom: "5px" }}
       />
       <Grid container spacing={2}>

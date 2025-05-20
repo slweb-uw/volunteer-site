@@ -29,6 +29,7 @@ const StandardsOfCarePage: NextPage<Props> = ({ classes }) => {
       </Typography>
       <img
         src={"../goldbar.png"}
+        alt=""
         style={{ width: "355px", height: "10px", marginBottom: "30px" }}
       />
       <Grid container spacing={1}>
