@@ -188,7 +188,7 @@ const useStyles = makeStyles(() => ({
   paragraphText: { 
     fontFamily: "Open Sans", 
     marginTop: "1rem",
-    fontSize: "clamp(1rem, 1rem + 0.1vw, 1.5rem)",
+    fontSize: "clamp(0.95rem, 0.95rem + 0.1vw, 1.5rem)",
    },
   mobile: {
     padding: "10vw",
