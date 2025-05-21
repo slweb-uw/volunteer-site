@@ -1,4 +1,5 @@
 import { Timestamp } from "firebase/firestore";
+import { volunteerTypes } from "components/AddModifyEventModal";
 
 type ProjectData = {
   id: string;
@@ -37,7 +38,7 @@ type EventData = {
   eventInformation: string;
   leadEmail: string;
   location: string;
-  openings: { [key: string]: number | string }[]; //TODO: Define openings as a map of strings to either numbers or strings.
+  openings: { [key: string]: number }; //Map of volunteer types to number of openings
   projectId: string;
   projectName: string;
   startTime: string;
@@ -46,7 +47,11 @@ type EventData = {
 };
 
 type VolunteerData = {
-  id: string;
-  type: string;
+  uid: string;
+  email: string;
   name: string;
+  phoneNumber: number;
+  role: string;
+  studentDiscipline: string;
+  comments?: string;
 };
