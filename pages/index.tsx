@@ -1,10 +1,10 @@
-import React, { useEffect, PropsWithChildren, ComponentProps } from "react";
-import Image from "next/image";
-import MobileOutReachSrc from "../public/Mobile_Outreach_Clinic_resized.jpg";
-import ServeWithUsSrc from "../public/serve.jpg";
-import CommunityPartnersSrc from "../public/communityPartners.jpg";
-import ProfileIcon from "public/profile-icon.png";
-import MailIcon from "public/mail-icon.png";
+import React, { useEffect, PropsWithChildren, ComponentProps } from "react"
+import Image from "next/image"
+import MobileOutReachSrc from "../public/Mobile_Outreach_Clinic_resized.jpg"
+import ServeWithUsSrc from "../public/serve.jpg"
+import CommunityPartnersSrc from "../public/communityPartners.jpg"
+import ProfileIcon from "public/profile-icon.png"
+import MailIcon from "public/mail-icon.png"
 import {
   Typography,
   Grid,
@@ -13,14 +13,14 @@ import {
   Card,
   CardContent,
   CardMedia,
-} from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
-import Link from "next/link";
+} from "@mui/material"
+import makeStyles from "@mui/styles/makeStyles"
+import Link from "next/link"
 
-import { logEvent } from "firebase/analytics";
-import { getAppAnalytics } from "firebaseClient";
-import { ArrowForwardIos } from "@mui/icons-material";
-import HeadlineBar from "components/headlineBar";
+import { logEvent } from "firebase/analytics"
+import { getAppAnalytics } from "firebaseClient"
+import { ArrowForwardIos } from "@mui/icons-material"
+import HeadlineBar from "components/headlineBar"
 
 const cardStyles = makeStyles((theme) => ({
   accentLink: {
@@ -29,7 +29,7 @@ const cardStyles = makeStyles((theme) => ({
       color: "white",
     },
   },
-}));
+}))
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -115,7 +115,7 @@ const useStyles = makeStyles(() => ({
     fontFamily: "Open Sans",
   },
   contactContainer: {
-    marginLeft: "3.2em",
+    marginLeft: "4em",
     "@media only screen and (max-width: 480px)": {
       marginLeft: "0",
     },
@@ -185,29 +185,24 @@ const useStyles = makeStyles(() => ({
       fontSize: "16px",
     },
   },
-  paragraphText: { 
-    fontFamily: "Open Sans", 
-    marginTop: "1rem",
-    fontSize: "clamp(0.95rem, 0.95rem + 0.1vw, 1.5rem)",
-   },
   mobile: {
-    padding: "10vw",
+    padding: "5em",
     verticalAlign: "middle",
-    paddingTop: "2em",
-    paddingBottom: "2em",
+    paddingTop: "1em",
+    paddingBottom: "1em",
     "@media only screen and (max-width: 430px)": {
       padding: "3em",
     },
   },
-}));
+}))
 
 const App: React.FC<{}> = () => {
-  const classes = useStyles();
+  const classes = useStyles()
 
   useEffect(() => {
-    const analytics = getAppAnalytics();
-    logEvent(analytics, "home_page_visit");
-  }, []);
+    const analytics = getAppAnalytics()
+    logEvent(analytics, "home_page_visit")
+  }, [])
 
   return (
     <div
@@ -229,16 +224,15 @@ const App: React.FC<{}> = () => {
           backgroundColor: "#E8E3D3",
         }}
       >
-        <Grid
-          container
-          spacing={5}
-          alignItems="center"
-          direction={{ xs: "column", md: "row" }}
-          wrap="nowrap"
-        >
-          {/* Text */}
-          <Grid item xs sx={{ flexGrow: 1, minWidth: "50%" }}>
-            <div>
+        <Grid container spacing="2px">
+          <Grid item xs={12} md={6} lg={6}>
+            <div
+              style={{
+                marginLeft: "auto",
+                marginRight: "auto",
+                width: "90%",
+              }}
+            >
               <Typography
                 gutterBottom
                 variant="h4"
@@ -254,7 +248,7 @@ const App: React.FC<{}> = () => {
                 Mobile Health Outreach Clinic (Seattle only)
               </Typography>
               <Typography
-                className={useStyles().paragraphText}
+                style={{ fontFamily: "Open Sans", marginTop: "1rem" }}
               >
                 In Seattle, UW Health Sciences students are partnering with
                 Harborview Medical Center (HMC) Downtown programs to provide
@@ -278,14 +272,7 @@ const App: React.FC<{}> = () => {
               </div>
             </div>
           </Grid>
-
-          {/* Image */}
-          <Grid
-            item
-            sx={{
-              flexShrink: 1,
-            }}
-          >
+          <Grid item xs={12} md={6} lg={6}>
             <div
               style={{
                 marginLeft: "auto",
@@ -295,11 +282,12 @@ const App: React.FC<{}> = () => {
             >
               <Image
                 style={{
-                  width: "100%",
-                  maxWidth: "30em",
+                  width: "30em",
+                  maxWidth: "100%",
                   height: "auto",
                   borderRadius: "10px",
                 }}
+                //className={useStyles().img}
                 src={MobileOutReachSrc}
                 priority
                 alt="doctor caring for mom with child"
@@ -311,20 +299,8 @@ const App: React.FC<{}> = () => {
 
       {/** Serve With Us section*/}
       <div className={useStyles().mobile}>
-        <Grid
-          container
-          spacing={5}
-          alignItems="center"
-          direction={{ xs: "column", md: "row" }}
-          wrap="nowrap"
-        >
-          {/* Image */}
-          <Grid
-            item
-            sx={{
-              flexShrink: 1,
-            }}
-          >
+        <Grid container spacing={10}>
+          <Grid item xs={12} md={6} lg={4}>
             <div
               style={{
                 marginLeft: "auto",
@@ -334,8 +310,8 @@ const App: React.FC<{}> = () => {
             >
               <Image
                 style={{
-                  width: "100%",
-                  maxWidth: "30em",
+                  width: "30em",
+                  maxWidth: "100%",
                   height: "auto",
                   borderRadius: "10px",
                 }}
@@ -345,13 +321,12 @@ const App: React.FC<{}> = () => {
               />
             </div>
           </Grid>
-
-          {/* Text */}
-          <Grid item xs sx={{ flexGrow: 1, minWidth: "60%" }}>
+          <Grid item xs={12} md={6} lg={8}>
             <div
               style={{
                 marginLeft: "auto",
                 marginRight: "auto",
+                width: "90%",
               }}
             >
               <Typography
@@ -369,7 +344,7 @@ const App: React.FC<{}> = () => {
                 Serve With Us
               </Typography>
               <HeadlineBar color="purple" width={210} height={10}></HeadlineBar>
-              <Typography className={useStyles().paragraphText}>
+              <Typography style={{ fontFamily: "Open Sans" }}>
                 Volunteering with our programs is a wonderful way to practice
                 your skills, make a difference in our community and form
                 meaningful connections. We invite you to explore our
@@ -390,15 +365,8 @@ const App: React.FC<{}> = () => {
           backgroundColor: "#E8E3D3",
         }}
       >
-        <Grid
-          container
-          spacing={5}
-          alignItems="center"
-          direction={{ xs: "column", md: "row" }}
-          wrap="nowrap"
-        >
-          {/* Text */}
-          <Grid item xs sx={{ flexGrow: 1, minWidth: "50%" }}>
+        <Grid container spacing={4}>
+          <Grid item xs={12} md={6} lg={8}>
             <div
               style={{
                 marginLeft: "auto",
@@ -420,7 +388,7 @@ const App: React.FC<{}> = () => {
                 About Us
               </Typography>
               <HeadlineBar color="gold" width={130} height={10}></HeadlineBar>
-              <Typography className={useStyles().paragraphText}>
+              <Typography style={{ fontFamily: "Open Sans" }}>
                 Our Service Learning and Community Engagement programs strive to
                 enrich health sciences education by providing our students with
                 opportunities to hone their skills while addressing the health
@@ -432,21 +400,15 @@ const App: React.FC<{}> = () => {
                 and mutual collaboration within our six health sciences schools.
               </Typography>
               <br></br>
-              <Typography className={useStyles().paragraphText}>
+              <br></br>
+              <Typography style={{ fontFamily: "Open Sans" }}>
                 Please take a moment to glance through the amazing clinical and
                 mentoring projects that have been developed by our students over
                 the past ten years.
               </Typography>
             </div>
           </Grid>
-
-          {/* Image */}
-          <Grid
-            item
-            sx={{
-              flexShrink: 1,
-            }}
-          >
+          <Grid item xs={12} md={6} lg={4}>
             <div
               style={{
                 marginLeft: "auto",
@@ -455,12 +417,7 @@ const App: React.FC<{}> = () => {
               }}
             >
               <Image
-                style={{
-                  width: "100%",
-                  maxWidth: "30em",
-                  height: "auto",
-                  borderRadius: "10px",
-                }}
+                className={useStyles().img}
                 src={CommunityPartnersSrc}
                 alt="Two students smiling"
               />
@@ -493,7 +450,8 @@ const App: React.FC<{}> = () => {
           item
           container
           spacing={6}
-          direction={{ xs: "column", md: "row" }}
+          xs={12}
+          sm={12}
           style={{
             marginTop: "0.5em",
             marginBottom: "0.5em",
@@ -502,17 +460,10 @@ const App: React.FC<{}> = () => {
             alignContent: "center",
           }}
         >
-          {/* Info */}
           <Grid item>
             <Grid container direction="column" spacing={1}>
               <Grid item>
-                <Grid
-                  container
-                  direction="row"
-                  spacing={1}
-                  justifyContent="left"
-                  alignItems="center"
-                >
+                <Grid container direction="row" spacing={1}>
                   <Grid item>
                     <Image src={ProfileIcon} alt="profile icon" />
                   </Grid>
@@ -561,18 +512,10 @@ const App: React.FC<{}> = () => {
               </Grid>
             </Grid>
           </Grid>
-
-          {/* Mailing Address */}
           <Grid item>
-            <Grid container direction="column" spacing={1}>
+            <Grid container direction="column" spacing={2}>
               <Grid item>
-                <Grid
-                  container
-                  direction="row"
-                  spacing={1}
-                  justifyContent="left"
-                  alignItems="center"
-                >
+                <Grid container direction="row" spacing={2}>
                   <Grid item>
                     <Image src={MailIcon} alt="mail icon" />
                   </Grid>
@@ -616,11 +559,11 @@ const App: React.FC<{}> = () => {
         </Grid>
       </div>
     </div>
-  );
-};
+  )
+}
 
 function HeroSection() {
-  const classes = useStyles();
+  const classes = useStyles()
   return (
     <div className={classes.container}>
       <div className={classes.background}>
@@ -661,21 +604,21 @@ function HeroSection() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 type UserCardActionAreaProps = {
-  href: string;
-  title: string;
-  className: string;
-} & Omit<ComponentProps<typeof CardActionArea>, "LinkComponent" | "className">;
+  href: string
+  title: string
+  className: string
+} & Omit<ComponentProps<typeof CardActionArea>, "LinkComponent" | "className">
 function UserCardActionArea({
   href,
   title,
   className,
   ...rest
 }: UserCardActionAreaProps) {
-  const classes = useStyles();
+  const classes = useStyles()
 
   return (
     <CardActionArea
@@ -689,10 +632,10 @@ function UserCardActionArea({
         <ArrowForwardIos style={{ fontSize: "1em" }} />
       </Typography>
     </CardActionArea>
-  );
+  )
 }
 
-type UserCardProps = { cardMediaSrc: string } & PropsWithChildren;
+type UserCardProps = { cardMediaSrc: string } & PropsWithChildren
 function UserCard({ cardMediaSrc, children }: UserCardProps) {
   return (
     <Card
@@ -707,13 +650,13 @@ function UserCard({ cardMediaSrc, children }: UserCardProps) {
       ></CardMedia>
       <CardContent style={{ padding: 0 }}>{children}</CardContent>
     </Card>
-  );
+  )
 }
 
 function UserCards() {
-  const cards = cardStyles();
+  const cards = cardStyles()
   return (
-    <div style={{ marginTop: "2em", marginBottom: "2em" }}>
+    <div style={{ marginTop: "1em" }}>
       <div
         style={{
           width: "100%",
@@ -825,7 +768,7 @@ function UserCards() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
