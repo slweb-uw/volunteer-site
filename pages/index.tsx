@@ -115,7 +115,7 @@ const useStyles = makeStyles(() => ({
     fontFamily: "Open Sans",
   },
   contactContainer: {
-    marginLeft: "4em",
+    marginLeft: "3.2em",
     "@media only screen and (max-width: 480px)": {
       marginLeft: "0",
     },
@@ -185,6 +185,11 @@ const useStyles = makeStyles(() => ({
       fontSize: "16px",
     },
   },
+  paragraphText: { 
+    fontFamily: "Open Sans", 
+    marginTop: "1rem",
+    fontSize: "clamp(1rem, 1rem + 0.1vw, 1.5rem)",
+   },
   mobile: {
     padding: "10vw",
     verticalAlign: "middle",
@@ -249,7 +254,7 @@ const App: React.FC<{}> = () => {
                 Mobile Health Outreach Clinic (Seattle only)
               </Typography>
               <Typography
-                style={{ fontFamily: "Open Sans", marginTop: "1rem" }}
+                className={useStyles().paragraphText}
               >
                 In Seattle, UW Health Sciences students are partnering with
                 Harborview Medical Center (HMC) Downtown programs to provide
@@ -364,7 +369,7 @@ const App: React.FC<{}> = () => {
                 Serve With Us
               </Typography>
               <HeadlineBar color="purple" width={210} height={10}></HeadlineBar>
-              <Typography style={{ fontFamily: "Open Sans" }}>
+              <Typography className={useStyles().paragraphText}>
                 Volunteering with our programs is a wonderful way to practice
                 your skills, make a difference in our community and form
                 meaningful connections. We invite you to explore our
@@ -415,7 +420,7 @@ const App: React.FC<{}> = () => {
                 About Us
               </Typography>
               <HeadlineBar color="gold" width={130} height={10}></HeadlineBar>
-              <Typography style={{ fontFamily: "Open Sans" }}>
+              <Typography className={useStyles().paragraphText}>
                 Our Service Learning and Community Engagement programs strive to
                 enrich health sciences education by providing our students with
                 opportunities to hone their skills while addressing the health
@@ -427,8 +432,7 @@ const App: React.FC<{}> = () => {
                 and mutual collaboration within our six health sciences schools.
               </Typography>
               <br></br>
-              <br></br>
-              <Typography style={{ fontFamily: "Open Sans" }}>
+              <Typography className={useStyles().paragraphText}>
                 Please take a moment to glance through the amazing clinical and
                 mentoring projects that have been developed by our students over
                 the past ten years.
@@ -489,8 +493,7 @@ const App: React.FC<{}> = () => {
           item
           container
           spacing={6}
-          xs={12}
-          sm={12}
+          direction={{ xs: "column", md: "row" }}
           style={{
             marginTop: "0.5em",
             marginBottom: "0.5em",
@@ -499,10 +502,17 @@ const App: React.FC<{}> = () => {
             alignContent: "center",
           }}
         >
+          {/* Info */}
           <Grid item>
             <Grid container direction="column" spacing={1}>
               <Grid item>
-                <Grid container direction="row" spacing={1}>
+                <Grid
+                  container
+                  direction="row"
+                  spacing={1}
+                  justifyContent="left"
+                  alignItems="center"
+                >
                   <Grid item>
                     <Image src={ProfileIcon} alt="profile icon" />
                   </Grid>
@@ -551,10 +561,18 @@ const App: React.FC<{}> = () => {
               </Grid>
             </Grid>
           </Grid>
+
+          {/* Mailing Address */}
           <Grid item>
-            <Grid container direction="column" spacing={2}>
+            <Grid container direction="column" spacing={1}>
               <Grid item>
-                <Grid container direction="row" spacing={2}>
+                <Grid
+                  container
+                  direction="row"
+                  spacing={1}
+                  justifyContent="left"
+                  alignItems="center"
+                >
                   <Grid item>
                     <Image src={MailIcon} alt="mail icon" />
                   </Grid>
