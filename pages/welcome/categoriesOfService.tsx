@@ -3,6 +3,7 @@ import { CssBaseline, Typography, Grid } from "@mui/material";
 import createStyles from '@mui/styles/createStyles';
 import withStyles from '@mui/styles/withStyles';
 import IconBreadcrumbs from "components/breadcrumbs";
+import HeadlineBar from "components/headlineBar";
 
 interface Props {
   classes?: any;
@@ -29,10 +30,7 @@ const CategoriesOfService: NextPage<Props> = ({ classes }) => {
       >
         CATEGORIES OF SERVICE
       </Typography>
-      <img
-        src={"../goldbar.png"}
-        style={{ width: "380px", height: "10px", marginBottom: "5px" }}
-      />
+      <HeadlineBar color="gold" width={380} height={10} marginBottom={5}/>
       <Grid container spacing={2}>
         <Grid item xs={12} md={6} lg={8}>
           <div

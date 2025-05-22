@@ -5,7 +5,8 @@ import { CssBaseline, Typography, Grid, Link } from "@mui/material";
 import createStyles from "@mui/styles/createStyles";
 import withStyles from "@mui/styles/withStyles";
 import IconBreadcrumbs from "components/breadcrumbs";
-import { BorderAllRounded } from "@mui/icons-material";
+import HeadlineBar from "components/headlineBar";
+// import { BorderAllRounded } from "@mui/icons-material";
 
 interface Props {
   classes?: any;
@@ -29,10 +30,7 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
       >
         WELCOME VOLUNTEER PROVIDERS
       </Typography>
-      <img
-        src={"../goldbar.png"}
-        style={{ width: "550px", height: "10px", marginBottom: "5px" }}
-      />
+      <HeadlineBar color="gold" width={550} height={10} marginBottom={5}/>
       <div style={{ display: "flex" }}>
         <div>
           <div

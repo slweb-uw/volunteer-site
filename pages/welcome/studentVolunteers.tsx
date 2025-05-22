@@ -5,7 +5,7 @@ import withStyles from "@mui/styles/withStyles";
 import IconBreadcrumbs from "components/breadcrumbs";
 import Image from "next/image";
 import StudentVolunteersUrl from "public/studentVolunteers.png";
-import Goldbar from "public/goldbar.png";
+import HeadlineBar from "components/headlineBar";
 
 interface Props {
   classes?: any;
@@ -26,13 +26,7 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
       >
         WELCOME STUDENT VOLUNTEERS
       </Typography>
-      <Image
-        src={Goldbar}
-        width={535}
-        height={10}
-        alt="UW gold bar"
-        style={{ marginBottom: "5px" }}
-      />
+      <HeadlineBar color="gold" width={550} height={10} marginBottom={5}/>
       <Grid container spacing={2}>
         <Grid item xs={12} md={6} lg={8}>
           <div

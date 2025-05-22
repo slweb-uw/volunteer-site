@@ -3,6 +3,7 @@ import { CssBaseline, Typography, Grid, Link } from "@mui/material";
 import createStyles from '@mui/styles/createStyles';
 import withStyles from '@mui/styles/withStyles';
 import IconBreadcrumbs from "components/breadcrumbs";
+import HeadlineBar from "components/headlineBar";
 
 interface Props {
   classes?: any;
@@ -27,10 +28,7 @@ const StandardsOfCarePage: NextPage<Props> = ({ classes }) => {
       >
         Expectations and Goals
       </Typography>
-      <img
-        src={"../goldbar.png"}
-        style={{ width: "355px", height: "10px", marginBottom: "30px" }}
-      />
+      <HeadlineBar color="gold" width={355} height={10} marginBottom={20}/>
       <Grid container spacing={1}>
         <Grid item xs={12} md={6} lg={8}>
           <div

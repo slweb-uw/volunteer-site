@@ -1,6 +1,7 @@
 import { CssBaseline, Typography, Grid } from "@mui/material";
 import createStyles from "@mui/styles/createStyles";
 import withStyles from "@mui/styles/withStyles";
+import HeadlineBar from "components/headlineBar";
 import IconBreadcrumbs from "components/breadcrumbs";
 import Link from "next/link";
 import Image from "next/image";
@@ -27,10 +28,7 @@ const Communitypartners = ({ classes }) => {
       >
         WELCOME COMMUNITY PARTNERS
       </Typography>
-      <img
-        src={"../goldbar.png"}
-        style={{ width: "550px", height: "10px", marginBottom: "30px" }}
-      />
+      <HeadlineBar color="gold" width={550} height={10} marginBottom={30}/>
       <Grid container spacing={2}>
         <Grid item xs={12} md={6} lg={4}>
           <div

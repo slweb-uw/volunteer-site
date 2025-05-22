@@ -5,7 +5,8 @@ const HeadlineBar: React.FC<{
   color: string;
   width: number;
   height: number;
-}> = ({ color, width, height }) => {
+  marginBottom: number;
+}> = ({ color, width, height, marginBottom }) => {
   var url = `/${color}bar.png`;
   return (
     <Image
@@ -13,6 +14,8 @@ const HeadlineBar: React.FC<{
       alt={`${color} bar`}
       width={width}
       height={height}
+      style={{ marginBottom: marginBottom || 0 }}
+      role="none"
     />
   );
 };
