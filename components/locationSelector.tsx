@@ -36,6 +36,7 @@ const LocationSelector: React.FC<LocationSelectorProps> = ({
       </Typography>
       <Select
         aria-labelledby="select-location-filter"
+        aria-label="Select a Location"
         value={location}
         onChange={(e) => {
           const location = e.target.value as string;

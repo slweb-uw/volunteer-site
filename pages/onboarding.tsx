@@ -35,7 +35,7 @@ const Onboarding: NextPage<Props> = ({ classes }) => {
         VOLUNTEER PROVIDER ONBOARDING INSTRUCTIONS
       </Typography>
 
-      <HeadlineBar color="gold" width={900} height={10}/>
+      <HeadlineBar color="gold" width={900} height={10} marginBottom={0}/>
 
       <Alert severity="warning" style={{ backgroundColor: "#fef4e5", marginBottom: "2em", marginTop: "2em" }}>
         <AlertTitle>
