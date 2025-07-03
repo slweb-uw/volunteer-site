@@ -131,18 +131,11 @@ const locations = [
   "Idaho",
 ];
 
-const optinalFields = [
+const optinalFields = [ // spelled optional wrong??
   "Website Link",
   "Contact Information",
   "HS Grad Student Information",
-  "Project Description",
-  "Project Specific Training",
-  "Provider Information",
-  "Services Provided",
-  "Tips and Reminders",
   "Clinic Schedule",
-  "Clinic Flow",
-  "Address/Parking/Directions",
 ] as const;
 
 interface AddModifyEventModalProps {
@@ -304,14 +297,7 @@ type FormFields = {
   "Contact Information"?: string;
   "HS Grad Student Information": string;
   "Project Description": string;
-  "Project Specific Training"?: string;
-  "Provider Information"?: string;
-  "Services Provided"?: string;
-  "Tips and Reminders"?: string;
   "Clinic Schedule": string;
-  "Clinic Flow": string;
-  "Address/Parking/Directions": string;
-  Protocols: string;
 };
 
 const AddModifyEventModal = ({
@@ -328,18 +314,11 @@ const AddModifyEventModal = ({
       cardImageURL: event?.cardImageURL ?? "",
       SignupActive: event?.SignupActive ?? false,
       "Website Link": event?.["Website Link"] ?? "",
-      "Contact Information": event?.["Website Link"] ?? "",
+      "Contact Information": event?.["Contact Information"] ?? "",
       "HS Grad Student Information":
         event?.["HS Grad Student Information"] ?? "",
       "Project Description": event?.["Project Description"] ?? "",
-      "Project Specific Training": event?.["Project Description"] ?? "",
-      "Provider Information": event?.["Provider Information"] ?? "",
-      "Services Provided": event?.["Services Provided"] ?? "",
-      "Tips and Reminders": event?.["Tips and Reminders"] ?? "",
       "Clinic Schedule": event?.["Clinic Schedule"] ?? "",
-      "Clinic Flow": event?.["Clinic Flow"] ?? "",
-      "Address/Parking/Directions": event?.["Address/Parking/Directions"] ?? "",
-      Protocols: event?.Protocols ?? "",
     },
   });
   const classes = useStyles();
@@ -525,7 +504,7 @@ const AddModifyEventModal = ({
                       style: "min-height: 250px",
                     },
                   }}
-                  placeholder="Add a detailed project description here. If left empty, the project summary will be used."
+                  placeholder="Add a detailed project description here."
                 />
               </Grid>
 
