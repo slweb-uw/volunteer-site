@@ -9,24 +9,13 @@ type ProjectData = {
   imageURL?: string;
   SignupActive: boolean;
   timestamp: string;
-  StartDate?: string;
-  EndDate?: string;
   Location: string;
-  Order?: string[];
   "Types of Volunteers Needed": string[];
   "Website Link"?: string;
   "Contact Information"?: string;
   "HS Grad Student Information": string;
   "Project Description": string;
-  "Sign-up Link"?: string;
-  "Project Specific Training"?: string;
-  "Provider Information"?: string;
-  "Services Provided"?: string;
-  "Tips and Reminders"?: string;
   "Clinic Schedule": string;
-  "Clinic Flow": string;
-  "Address/Parking/Directions": string;
-  Protocols: string;
 };
 
 //Specific to events per project
@@ -44,6 +33,12 @@ type EventData = {
   startTime: string;
   volunteerQty: [string];
   volunteerTypes: [string];
+  // "Project Specific Training"?: string;
+  // "Services Provided"?: string;
+  // "Tips and Reminders"?: string;
+  // "Address/Parking/Directions": string;
+  //  Protocols: string;
+  // "Clinic Flow": string;
 };
 
 type VolunteerData = {
