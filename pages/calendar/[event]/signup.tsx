@@ -1,22 +1,20 @@
 import { useRouter } from "next/router";
 import { useAuth } from "auth";
 import React, { useState } from "react";
-import { GetServerSideProps} from "next";
+import { GetServerSideProps } from "next";
 import Image from "next/image";
-import IconBreadcrumbs from "../../components/breadcrumbs";
+import IconBreadcrumbs from "../../../components/breadcrumbs";
 import makeStyles from "@mui/styles/makeStyles";
-import { EventData, VolunteerData } from "../../new-types";
+import { EventData, VolunteerData } from "../../../new-types";
 import { CssBaseline, Typography, Divider, Grid, Button } from "@mui/material";
-import naturalJoin from "../../helpers/naturalJoin";
-import RichTextField from "../../components/richTextField";
+import naturalJoin from "../../../helpers/naturalJoin";
+import RichTextField from "../../../components/richTextField";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import Link from "next/link";
-import VolunteerInfoPopup from "components/VolunteerInfoPopup";
-import SignupEventPopup from "components/SignupEventPopup";
 import VolunteerPopup from "components/VolunteerSignupPopup";
 import { firebaseAdmin } from "firebaseAdmin";
-import { addDoc, collection, deleteField, doc, runTransaction, setDoc, updateDoc } from "firebase/firestore";
+import { doc, runTransaction, getDoc, deleteDoc, DocumentData } from "firebase/firestore";
 import { db } from "firebaseClient";
 import AuthorizationMessage from "pages/AuthorizationMessage";
 
@@ -28,7 +26,7 @@ const initialGridKeys = [
   "Provider Information",
 ] as const;
 
-const reservedKeys = [ //most of these not needed?
+const reservedKeys = [
   "Project Description",
   "Details",
   "Clinic Schedule",
@@ -124,37 +122,38 @@ const RichEventField: React.FC<RichEventFieldProps> = ({
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-    const event = ctx.params?.event;
-     // Check that no extra params are passed
-    if (typeof event === "undefined") {
-        return {
-            notFound: true,
-        };
-    }
-    const data = await firebaseAdmin
-      .firestore()
-      .collection("events")
-      .doc(event as string)
-      .get();
-    if (data.exists) {  //Check if event exists.
-        const volunteers = await firebaseAdmin
-              .firestore()
-              .collection(`events/${event as string}/volunteers`)
-              .get();
-        const volunteerData = volunteers.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        const eventDate: string = data.data()?.date.toDate().toString(); // Convert Date object to string
-        return { props: { eventData: { ...data.data(), date: eventDate }, volunteer: volunteerData, eventID: event } };
-    } else {
-        // Handle the case where the event does not exist.
-        return { notFound: true };
-    }
-    
+  const { event } = ctx.params ?? {};
+
+  if (!event || typeof event !== "string") {
+    return {
+      notFound: true,
+    };
+  }
+
+  const eventRef = firebaseAdmin.firestore().collection("events").doc(event);
+  const eventDoc = await eventRef.get();
+
+  if (!eventDoc.exists) {
+    return { notFound: true };
+  }
+
+  const volunteersSnapshot = await eventRef.collection("volunteers").get();
+  const volunteerData = volunteersSnapshot.docs.map((doc) => ({
+    uid: doc.id,
+    ...doc.data(),
+  }));
+  
+  const rawEventData = eventDoc.data() as DocumentData;
+
+  //  Serialize Firestore Timestamps to ISO strings for Next.js props
+  const eventData = {
+    ...rawEventData,
+    // Safely access and convert the date if it exists
+    date: rawEventData.date?.toDate?.().toISOString() || null,
   };
 
-  //TODO: Add event to new personal calander?
+  return { props: { eventData, volunteer: volunteerData, eventID: event } };
+};
 
 const useStyles = makeStyles(() => ({
   page: {
@@ -178,27 +177,37 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Event = ({
-    eventData,
-    volunteer,
-    eventID,
-  }: {
-    eventData: EventData;
-    volunteer: VolunteerData[];
-    eventID: string;
-  }) => {
+  eventData,
+  volunteer,
+  eventID,
+}: {
+  eventData: EventData;
+  volunteer: VolunteerData[];
+  eventID: string;
+}) => {
   const classes = useStyles();
   const router = useRouter();
   const { user, isAdmin, isAuthorized, isLead } = useAuth();
   const [selectedRole, setSelectedRole] = useState("");
-  const [editedVolunteer, setEditedVolunteer] = useState(null);
+  const [editedVolunteer, setEditedVolunteer] = useState<VolunteerData | null>(null);
   const [openVolunteerPopup, setOpenVolunteerPopup] = useState(false);
+
+  const currentUserVolunteerRecord = user ? volunteer.find(v => v.uid === user.uid) : undefined;
 
   if (!isAdmin && !isAuthorized && !isLead) {
     return <AuthorizationMessage user={user} />;
   }
   
   const handleOpenVolunteerPopup = (type: string) => {
-    setSelectedRole(type);
+    // If the user is already registered, open the popup in "edit" mode
+    if (currentUserVolunteerRecord) {
+      setEditedVolunteer(currentUserVolunteerRecord);
+      setSelectedRole(currentUserVolunteerRecord.role);
+    } else {
+      // Otherwise, open in "new signup" mode
+      setEditedVolunteer(null);
+      setSelectedRole(type);
+    }
     setOpenVolunteerPopup(true);
   };
 
@@ -206,79 +215,88 @@ const Event = ({
     setSelectedRole("");
     setOpenVolunteerPopup(false);
     setEditedVolunteer(null);
-    router.push({
-      pathname: router.pathname,
-      query: { ...router.query, },
-    });
+    // Refresh the page data after a change by re-running getServerSideProps
+    router.replace(router.asPath);
   };
 
+  // Updated volunteer signup logic with a Firestore transaction
   const handleAddVolunteer = async (volunteerData: VolunteerData) => {
-    if (selectedRole) {
-      const existingRolesOnEvent = volunteer || {};
-      const hasSignedUpForEvent = (existingRolesOnEvent).some(
-        (user) => user.role === selectedRole && user.uid === volunteerData.uid
-      ); //Notice: Right now, only stops the user from re-signing up for the same role, 
-         //but will allow the number of signups to be decreased arbitrarily if someone spams between roles. This should be clarified.
+    if (!selectedRole || !user) return;
 
-      if (hasSignedUpForEvent) {
-        alert("You have already signed up for this role on this event.");
-      } else {
-        const eventRef = doc(
-          db,
-          `events/${eventID}/volunteers`,
-          volunteerData.uid
-        );
-        const roleRef = doc(db, `events/${eventID}`);
-        try {
-            await runTransaction(db, async (transaction) => {
-                const positionDoc = await transaction.get(roleRef);
-                if (!positionDoc.exists()) {
-                    throw new Error("Position does not exist!");
-                    }
-                const spotsOpen = positionDoc.data().openings[selectedRole];
-                if (spotsOpen < 1) {
-                    throw new Error("No spots left for this position.");
-                }
-                transaction.update(roleRef, {
-                    [`openings.${selectedRole}`]: spotsOpen - 1, 
-                });
+    const eventRef = doc(db, "events", eventID);
+    const volunteerRef = doc(db, `events/${eventID}/volunteers`, user.uid);
 
-                transaction.set(eventRef, { 
-                  ...volunteerData, role: selectedRole,
-                }); 
-            });
-            handleCloseVolunteerPopup();
-        } catch (e: any) {
-          alert(e.message);
+    try {
+      await runTransaction(db, async (transaction) => {
+        const eventDoc = await transaction.get(eventRef);
+        if (!eventDoc.exists()) {
+          throw new Error("Event does not exist!");
         }
-      }
+
+        // Server-side check to see if the user is already signed up for any role
+        const existingVolunteerDoc = await transaction.get(volunteerRef);
+        if (existingVolunteerDoc.exists()) {
+          throw new Error("You are already signed up for a role in this event.");
+        }
+
+        const spotsOpen = eventDoc.data().openings?.[selectedRole];
+        if (spotsOpen === undefined || spotsOpen < 1) {
+          throw new Error("No spots left for this position.");
+        }
+
+        transaction.update(eventRef, {
+          [`openings.${selectedRole}`]: spotsOpen - 1,
+        });
+
+        transaction.set(volunteerRef, {
+          ...volunteerData,
+          role: selectedRole,
+        });
+      });
+      handleCloseVolunteerPopup();
+    } catch (e: any) {
+      alert(`Error: ${e.message}`);
     }
   };
 
-    //TBD: May be used in near future.
-  const handleDeleteVolunteer = (volunteerData: VolunteerData, mode: String) => {
-    if (selectedRole) {
-      let message = "Are you sure you want to withdraw from this role?";
+  // Updated volunteer withdrawal logic to use a transaction
+  const handleDeleteVolunteer = async (volunteerData: VolunteerData, mode: string) => {
+    const message = mode === "remove"
+      ? "Are you sure you want to remove this volunteer?"
+      : "Are you sure you want to withdraw from this role?";
 
-      if (mode === "remove") {
-        message = "Are you sure you want to remove this volunteer?";
-      }
+    if (!window.confirm(message)) {
+      return;
+    }
 
-      const isConfirmed = window.confirm(message);
+    const eventRef = doc(db, "events", eventID);
+    const volunteerRef = doc(db, `events/${eventID}/volunteers`, volunteerData.uid);
 
-      if (isConfirmed) {
-        const uid = volunteerData.uid;
-        const eventRef = doc(
-          db,
-          `events/${eventID}/volunteers`,
-          volunteerData.uid
-        );
-        updateDoc(eventRef, {
-          [uid]: deleteField(),
-        }).then(() => {
-          handleCloseVolunteerPopup();
+    try {
+        await runTransaction(db, async (transaction) => {
+            const volunteerDoc = await transaction.get(volunteerRef);
+            const eventDoc = await transaction.get(eventRef);
+
+            if (!volunteerDoc.exists() || !eventDoc.exists()) {
+                throw new Error("Could not find the necessary event or volunteer data.");
+            }
+            
+            const volunteerRole = volunteerDoc.data().role;
+            const currentOpenings = eventDoc.data().openings?.[volunteerRole];
+
+            // Atomically increment the role's opening count
+            if (typeof currentOpenings === 'number') {
+                transaction.update(eventRef, {
+                    [`openings.${volunteerRole}`]: currentOpenings + 1,
+                });
+            }
+
+            // Atomically delete the volunteer document
+            transaction.delete(volunteerRef);
         });
-      }
+        handleCloseVolunteerPopup();
+    } catch (e: any) {
+        alert(`Error: ${e.message}`);
     }
   };
 
@@ -286,7 +304,7 @@ const Event = ({
     <div className={classes.page}>
       <CssBaseline />
       <IconBreadcrumbs
-        parentURL={"/calendar"}
+        parentURL={`/${eventData?.location}/${eventData?.projectId}/calendar`}
         crumbs={["Calendar", eventData?.projectName]}
       />
       {/* EVENT TITLE */}
@@ -302,23 +320,12 @@ const Event = ({
               value={eventData?.location}
               removeTopMargin={true}
             />
-            {/* Notice: These commented fields are subject to change based on what we want to display on the signup page. */}
-            {/* <RichEventField
-              name="Clinic Schedule"
-              value={eventData["Clinic Schedule"]}
-              removeTopMargin={true}
-            /> */}
           </Stack>
           <RichEventField
             name="Contact Information"
             value={eventData?.leadEmail}
             removeTopMargin={true}
           />
-          {/* <RichEventField
-            name="Website Link"
-            value={eventData["Website Link"]}
-            removeTopMargin={true}
-          /> */}
           <RichEventField
             name="Types of Volunteers Needed"
             value={
@@ -328,28 +335,44 @@ const Event = ({
             }
             removeTopMargin={true}
           />
-          {/* This flexbox is just for spacing out signup buttons, can be replaced with better styling later. */}
           <Grid container spacing={3}>
-          {eventData?.openings && 
-          Object.entries(eventData.openings).map(([volunteerRole, spotsOpen], index) => (
-             <Grid item key={index}>
-            {(spotsOpen > 0 || (isAdmin && false)) && (
-                <Link href={router.asPath} passHref> 
-                <Button color="primary" variant="contained" 
-                style={{ marginRight: "1em" }} 
-                onClick={() => handleOpenVolunteerPopup(volunteerRole)}
+            {/* If user is signed up, show a single "Manage" button */}
+            {currentUserVolunteerRecord ? (
+              <Grid item>
+                <Button
+                  variant="contained"
+                  onClick={() => handleOpenVolunteerPopup(currentUserVolunteerRecord.role)}
                 >
-                Sign up for {volunteerRole} </Button> </Link> )} 
-                {(!(isAdmin && false) && (spotsOpen <= 0)) && ( 
-                    <Link href={router.asPath} passHref> 
-                    <Button color="primary" variant="contained" 
-                    style={{ marginRight: "1em" }} disabled 
+                  Manage my Registration ({currentUserVolunteerRecord.role})
+                </Button>
+              </Grid>
+            ) : (
+              /* Otherwise, show the list of available roles */
+              eventData?.openings &&
+              Object.entries(eventData.openings).map(([volunteerRole, spotsOpen]) => (
+                <Grid item key={volunteerRole}>
+                  {spotsOpen > 0 ? (
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      style={{ marginRight: "1em" }}
+                      onClick={() => handleOpenVolunteerPopup(volunteerRole)}
                     >
-                    Sign up for {volunteerRole} unavailable </Button>
-                    </Link> 
-                )} 
-            </Grid>
-          ))}
+                      Sign up for {volunteerRole}
+                    </Button>
+                  ) : (
+                    <Button
+                      color="primary"
+                      variant="contained"
+                      style={{ marginRight: "1em" }}
+                      disabled
+                    >
+                      {volunteerRole} Full
+                    </Button>
+                  )}
+                </Grid>
+              ))
+            )}
           </Grid>
         </Grid>
       </Grid>
@@ -362,7 +385,7 @@ const Event = ({
           borderRadius: "25px",
         }}
       ></Divider>
-
+      {/* Note: All of this will be replaced with cleaner, proper design */}
       <Box sx={{ columns: { xs: 1, md: 2 }, columnGap: 8 }}>
         <EventField
           name="Project Description"
@@ -379,7 +402,7 @@ const Event = ({
             />
           ))}
         {Object.keys(eventData)
-          .filter((name) => !reservedKeys.includes(name))
+          .filter((name) => !reservedKeys.includes(name as any))
           .filter((name) => eventData[name] != null && eventData[name] != "")
           .filter((name) => name != "SignupActive")
           .map((name) => (
@@ -391,7 +414,7 @@ const Event = ({
             />
           ))}
       </Box>
-    {user && (
+      {user && (
         <VolunteerPopup
             open={openVolunteerPopup}
             handleClose={handleCloseVolunteerPopup}
@@ -404,7 +427,7 @@ const Event = ({
             volunteer={editedVolunteer}
             onDeleteVolunteer={handleDeleteVolunteer}
         />
-    )}
+      )}
     </div>
   );
 };
