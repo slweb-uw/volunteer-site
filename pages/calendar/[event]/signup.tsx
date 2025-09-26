@@ -17,6 +17,7 @@ import { firebaseAdmin } from "firebaseAdmin";
 import { doc, runTransaction, getDoc, deleteDoc, DocumentData } from "firebase/firestore";
 import { db } from "firebaseClient";
 import AuthorizationMessage from "pages/AuthorizationMessage";
+import VolunteerSignupGrid from "../../../components/VolunteerSignupGrid";
 
 const initialGridKeys = [
   "Tips and Reminders",
@@ -192,24 +193,13 @@ const Event = ({
   const [editedVolunteer, setEditedVolunteer] = useState<VolunteerData | null>(null);
   const [openVolunteerPopup, setOpenVolunteerPopup] = useState(false);
 
-  const currentUserVolunteerRecord = user ? volunteer.find(v => v.uid === user.uid) : undefined;
+  const currentUserVolunteerRecord = user
+    ? volunteer.find((v) => v.uid === user.uid)
+    : undefined;
 
   if (!isAdmin && !isAuthorized && !isLead) {
     return <AuthorizationMessage user={user} />;
   }
-  
-  const handleOpenVolunteerPopup = (type: string) => {
-    // If the user is already registered, open the popup in "edit" mode
-    if (currentUserVolunteerRecord) {
-      setEditedVolunteer(currentUserVolunteerRecord);
-      setSelectedRole(currentUserVolunteerRecord.role);
-    } else {
-      // Otherwise, open in "new signup" mode
-      setEditedVolunteer(null);
-      setSelectedRole(type);
-    }
-    setOpenVolunteerPopup(true);
-  };
 
   const handleCloseVolunteerPopup = () => {
     setSelectedRole("");
@@ -257,7 +247,22 @@ const Event = ({
     } catch (e: any) {
       alert(`Error: ${e.message}`);
     }
+  }; 
+  
+  const handleOpenVolunteerPopup = (type: string) => {
+    // If the user is already registered, open the popup in "edit" mode
+    if (currentUserVolunteerRecord) {
+      setEditedVolunteer(currentUserVolunteerRecord);
+      setSelectedRole(currentUserVolunteerRecord.role);
+    } else {
+      // Otherwise, open in "new signup" mode
+      setEditedVolunteer(null);
+      setSelectedRole(type);
+    }
+    setOpenVolunteerPopup(true);
   };
+
+  
 
   // Updated volunteer withdrawal logic to use a transaction
   const handleDeleteVolunteer = async (volunteerData: VolunteerData, mode: string) => {
@@ -335,48 +340,30 @@ const Event = ({
             }
             removeTopMargin={true}
           />
-          <Grid container spacing={3}>
-            {/* If user is signed up, show a single "Manage" button */}
-            {currentUserVolunteerRecord ? (
-              <Grid item>
-                <Button
-                  variant="contained"
-                  onClick={() => handleOpenVolunteerPopup(currentUserVolunteerRecord.role)}
-                >
-                  Manage my Registration ({currentUserVolunteerRecord.role})
-                </Button>
-              </Grid>
-            ) : (
-              /* Otherwise, show the list of available roles */
-              eventData?.openings &&
-              Object.entries(eventData.openings).map(([volunteerRole, spotsOpen]) => (
-                <Grid item key={volunteerRole}>
-                  {spotsOpen > 0 ? (
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      style={{ marginRight: "1em" }}
-                      onClick={() => handleOpenVolunteerPopup(volunteerRole)}
-                    >
-                      Sign up for {volunteerRole}
-                    </Button>
-                  ) : (
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      style={{ marginRight: "1em" }}
-                      disabled
-                    >
-                      {volunteerRole} Full
-                    </Button>
-                  )}
-                </Grid>
-              ))
-            )}
-          </Grid>
         </Grid>
       </Grid>
+      {/* Render the new grid if there are openings defined - NOTE: We need to replace true with a conditional */}
+      {true && (
+        <Box sx={{ my: 4 }}>
+          <VolunteerSignupGrid
+            eventData={eventData}
+            volunteers={volunteer}
+            onSignUp={handleOpenVolunteerPopup}
+          />
+        </Box>
+      )}
 
+      {/* Show a clear "Manage Registration" button if the user is signed up */}
+      {currentUserVolunteerRecord && (
+        <Box sx={{ mt: -2, mb: 4, display: 'flex', justifyContent: 'flex-start' }}>
+            <Button 
+                variant="contained" 
+                onClick={() => handleOpenVolunteerPopup(currentUserVolunteerRecord.role)}
+            >
+                Manage my Registration ({currentUserVolunteerRecord.role})
+            </Button>
+        </Box>
+      )}
       <Divider
         style={{
           marginBottom: "3em",
