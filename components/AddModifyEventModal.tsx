@@ -390,14 +390,14 @@ const AddModifyEventModal = ({
     const action = !event ? "created" : "updated";
     // add all the data that react hook-form cant process
     const requestData = {
+      ...data,
       Location: projectLocation,
-      description: description,
+      "Project Description": description,
       organization: organization,
       "Types of Volunteers Needed": volunteersNeeded,
       imageURL: imageURL,
       signupActive: signupActive,
       cardImageURL: imageURL,
-      ...data,
     };
 
     try {
