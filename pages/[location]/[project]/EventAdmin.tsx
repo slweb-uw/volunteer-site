@@ -11,6 +11,7 @@ import {
   addDoc,
   onSnapshot,
   query,
+  where,
   orderBy,
 } from "firebase/firestore";
 import { useAuth } from "auth";
@@ -103,9 +104,11 @@ const EventAdmin = () => {
 
   // Effect to listen for real-time event updates from Firestore
   useEffect(() => {
-    if (!router.isReady || !location || !project) return;
-    const eventsRef = collection(db, `${location}/${project}/signup`);
-    const q = query(eventsRef, orderBy("date"));
+    // We only need 'project' to find the correct events
+    if (!router.isReady || !project) return;
+
+    const eventsRef = collection(db, "events");
+    const q = query(eventsRef, where("projectId", "==", project), orderBy("date"));
 
     const unsubscribe = onSnapshot(
       q,
@@ -118,8 +121,8 @@ const EventAdmin = () => {
       (error) => console.error("Error fetching events:", error),
     );
 
-    return () => unsubscribe(); // Cleanup listener on unmount
-  }, [router.isReady, location, project]);
+    return () => unsubscribe();
+  }, [router.isReady, project]);
 
   // Memoized hook to filter events based on the 'showPastEvents' switch
   const filteredEvents = useMemo(() => {
@@ -148,32 +151,47 @@ const EventAdmin = () => {
     eventData: Partial<EventData>, // Use Partial<EventData> for flexibility with form data
     eventId?: string,
   ) => {
-    if (!location || !project) return;
-    const collectionPath = `${location}/${project}/signup`;
+    if (!project || !location) return;
+    const collectionPath = "events";
 
     try {
+      if (mode === "delete" && eventId) {
+        const eventRef = doc(db, collectionPath, eventId);
+        await deleteDoc(eventRef);
+        
+        setSelectedEvent(null);
+        alert("Event deleted successfully!");
+        return;
+      }
+      const dateObject = eventData.date;
+      // This check proves to TypeScript that dateObject is a valid Date.
+      if (!(dateObject instanceof Date)) {
+        console.error("Invalid date object received from form:", dateObject);
+        alert("Failed to save event due to an invalid date. Please try again.");
+        return;
+      }
+    
+      // Now it's safe to use Date methods.
+      const calendarString = `${dateObject.getFullYear()}-${dateObject.getMonth()}`; //May change this in the future to offset the months to be readable, but right now we use 0 index for january. etc.
+
+      const dataToSave = {
+        ...eventData,
+        // The openings field should be a map/object passed from our form
+        // Example: { table: 5, healthDesk: 2 }
+        openings: eventData.openings || {},
+        date: Timestamp.fromDate(eventData.date as any),
+        projectId: project,
+        projectName: title,
+        location: location as string,
+        calendar: calendarString,
+      };
       if (mode === "add") {
-        await addDoc(collection(db, collectionPath), {
-          ...eventData,
-          // Ensure date from form is converted to Firestore Timestamp
-          date: Timestamp.fromDate(eventData.date as any),
-        });
+        await addDoc(collection(db, collectionPath), dataToSave);
         alert("Event added successfully!");
       } else if (mode === "edit" && eventId) {
         const eventRef = doc(db, collectionPath, eventId);
-        const dataToUpdate = {
-            ...eventData,
-            date: Timestamp.fromDate(eventData.date as any),
-        };
-        await setDoc(eventRef, dataToUpdate, { merge: true });
+        await setDoc(eventRef, dataToSave, { merge: true });
         alert("Event updated successfully!");
-      } else if (mode === "delete" && eventId) {
-        if (window.confirm("Are you sure you want to delete this event?")) {
-          const eventRef = doc(db, collectionPath, eventId);
-          await deleteDoc(eventRef);
-          setSelectedEvent(null);
-          alert("Event deleted successfully!");
-        }
       }
       setOpenEventFormPopup(false);
     } catch (error) {

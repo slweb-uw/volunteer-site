@@ -30,81 +30,62 @@ const useStyles = makeStyles((theme) => ({
 const SignupEventPopup = ({ open, close, mode, event, handleEventAction }) => {
   const MAX_ROLE_NAME_LENGTH = 30;
   const classes = useStyles();
-  const [date, setDate] = useState("");
+  const [eventDate, setEventDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [volunteerData, setVolunteerData] = useState([]);
+  const [volunteerData, setVolunteerData] = useState([{ type: "", qty: "" }]);
   const [deletedRoles, setDeletedRoles] = useState([]);
   const [leadEmail, setLeadEmail] = useState("");
   const [eventInformation, setEventInformation] = useState("");
-  const [eventData, setEventData] = useState({});
-  const handleDateChange = (event) => setDate(event.target.value);
+  // const [eventData, setEventData] = useState({});
 
   const handleClose = () => {
-    setDate("");
+    setEventDate("");
     setLeadEmail("");
     setEventInformation("");
     setVolunteerData([{ type: "", qty: "" }]);
-    setEventData(null);
     setStartTime("");
     setEndTime("");
+    setDeletedRoles([]);
     close();
   };
 
   useEffect(() => {
     if (mode === "edit" && event) {
-      const utcDate = new Date(event.date.seconds * 1000);
-      const localDate = new Date(
-        utcDate.getTime() - utcDate.getTimezoneOffset() * 60000,
-      );
-      setDate(localDate.toISOString().slice(0, 16));
-      setLeadEmail(event.leadEmail);
-      setEventInformation(event.eventInformation);
-      setVolunteerData(
-        event.volunteerTypes.map((type, index) => ({
+      // Deconstruct date and time from the Firestore Timestamp
+      const localDate = event.date.toDate();
+      setEventDate(localDate.toISOString().split('T')[0]); 
+      setStartTime(event.startTime || "");
+      setEndTime(event.endTime || "");
+      setLeadEmail(event.leadEmail || "");
+      setEventInformation(event.eventInformation || "");
+
+      // Convert the 'openings' map back into an array for the form's state
+      if (event.openings && Object.keys(event.openings).length > 0) {
+        const volunteerArray = Object.entries(event.openings).map(([type, qty]) => ({
           type,
-          qty: event.volunteerQty[index],
-        })),
-      );
+          qty: String(qty),
+        }));
+        setVolunteerData(volunteerArray);
+      } else {
+        setVolunteerData([{ type: "", qty: "" }]);
+      }
     } else {
-      setDate("");
+      // Reset all fields for "add" mode
+      setEventDate("");
+      setStartTime("");
+      setEndTime("");
       setLeadEmail("");
       setEventInformation("");
       setVolunteerData([{ type: "", qty: "" }]);
     }
-  }, [mode, event]);
-
-  useEffect(() => {
-    if (volunteerData.length > 0) {
-      const localDate = new Date(date);
-      const newEventData = {
-        date: localDate,
-        volunteerTypes: volunteerData.map((item) => item.type),
-        volunteerQty: volunteerData.map((item) => item.qty),
-        leadEmail,
-        volunteers: {},
-        eventInformation,
-      };
-      setEventData(newEventData);
-    }
-  }, [date, volunteerData, leadEmail, eventInformation, event]);
-
-  const generateUniqueId = () => {
-    const timestamp = new Date().getTime();
-    const random = Math.random().toString(36).substring(2, 15);
-    return `${timestamp}${random}`;
-  };
+  }, [mode, event, open]);
 
   const handleDelete = () => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this event?",
-    );
-    if (confirmed) {
-      const idToDelete = event.id;
-      const eventDataToDelete = { id: idToDelete };
-      handleEventAction("delete", eventDataToDelete);
+    if (window.confirm("Are you sure you want to delete this event?")) {
+      handleEventAction("delete", {}, event.id); // Pass the ID for deletion
+      handleClose();
     }
-    handleClose();
   };
 
   const handleEventInformationChange = (value) => {
@@ -113,121 +94,113 @@ const SignupEventPopup = ({ open, close, mode, event, handleEventAction }) => {
 
   const handleVolunteerTypeChange = (index, value) => {
     if (value.length <= MAX_ROLE_NAME_LENGTH) {
-      setVolunteerData((prevData) => {
-        const newData = [...prevData];
-        newData[index].type = value;
-        return newData;
-      });
+      const newData = [...volunteerData];
+      newData[index].type = value;
+      setVolunteerData(newData);
     } else {
       alert(`Role name must be ${MAX_ROLE_NAME_LENGTH} characters or fewer.`);
     }
   };
 
   const handleVolunteerQtyChange = (index, value) => {
-    value = value === "" ? "" : Math.max(0, parseInt(value) || 0).toString();
-    setVolunteerData((prevData) => {
-      const newData = [...prevData];
-      newData[index].qty = value;
-      return newData;
-    });
+    const newData = [...volunteerData];
+    // Allow empty string, otherwise parse and ensure it's a non-negative integer
+    newData[index].qty = value === "" ? "" : Math.max(0, parseInt(value) || 0).toString();
+    setVolunteerData(newData);
   };
 
   const handleAddVolunteerField = () => {
-    setVolunteerData((prevData) => [...prevData, { type: "", qty: "" }]);
+    setVolunteerData([...volunteerData, { type: "", qty: "" }]);
   };
 
   const handleDeleteVolunteerField = (index) => {
     if (volunteerData.length > 1) {
-      setVolunteerData((prevData) => prevData.filter((_, i) => i !== index));
-
       const deletedRole = volunteerData[index].type;
-      setDeletedRoles((prevRoles) => [...prevRoles, deletedRole]);
+      if (deletedRole) { // Only track deletion if the role had a name
+        setDeletedRoles(prev => [...prev, deletedRole]);
+      }
+      setVolunteerData(volunteerData.filter((_, i) => i !== index));
     }
   };
 
-  const validateEmail = () => {
+  const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!leadEmail) {
-      alert("Please enter an email address.");
-      return false;
-    }
-    if (!emailRegex.test(leadEmail)) {
-      alert("Please enter a valid email address.");
-      return false;
-    }
-    return true;
+    return emailRegex.test(email);
   };
+
+  // const validateEmail = () => { -- Old, unsure why we tested for lead email. Safe to delete?
+  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   if (!leadEmail) {
+  //     alert("Please enter an email address.");
+  //     return false;
+  //   }
+  //   if (!emailRegex.test(leadEmail)) {
+  //     alert("Please enter a valid email address.");
+  //     return false;
+  //   }
+  //   return true;
+  // };
 
   const handleSubmit = () => {
-    console.log(date)
-    if (!date) {
-      alert("Please select a date.");
+    if (!eventDate || !startTime || !endTime) {
+      alert("Please select a date, start time, and end time.");
       return;
     }
-    const hasEmptyFields = volunteerData.some(
-      (item) => item.type === "" || item.qty === "",
-    );
 
-    const selectedDate = new Date(date);
+    // Combine date and start time to create a full Date object
+    const combinedDateTime = new Date(`${eventDate}T${startTime}`);
     const currentDate = new Date();
-
-    if (selectedDate <= currentDate) {
-      alert("Please select a future date for the event.");
+    if (combinedDateTime <= currentDate) {
+      alert("Please select a future date and time for the event.");
       return;
     }
-
-    if (hasEmptyFields) {
+    
+    if (volunteerData.some((item) => item.type.trim() === "" || item.qty === "")) {
       alert("Please fill in all Volunteer Role and Quantity fields.");
       return;
     }
-
-    const hasInvalidQty = volunteerData.some((item) => parseInt(item.qty) < 1);
-
-    if (hasInvalidQty) {
+    
+    if (volunteerData.some((item) => parseInt(item.qty) < 1)) {
       alert("Volunteer Quantity must be at least 1.");
       return;
     }
 
-    if (!validateEmail()) {
+    if (!leadEmail || !validateEmail(leadEmail)) {
+      alert("Please enter a valid lead email address.");
       return;
     }
 
-    const hasDuplicateRoles = volunteerData.some(
-      (role, index) =>
-        volunteerData.findIndex((item) => item.type === role.type) !== index,
-    );
-
+    const roleNames = volunteerData.map(item => item.type.trim().toLowerCase());
+    const hasDuplicateRoles = new Set(roleNames).size !== roleNames.length;
     if (hasDuplicateRoles) {
       alert("Volunteer roles must have unique names.");
       return;
     }
 
+    // Create the openings map from the volunteerData state
+    const openings = volunteerData.reduce((acc, item) => {
+      if (item.type.trim()) {
+        acc[item.type.trim()] = Number(item.qty);
+      }
+      return acc;
+    }, {});
+    
+    // This is the final data object to be saved to Firestore
+    const finalEventData = {
+      date: combinedDateTime,
+      startTime,
+      endTime,
+      leadEmail,
+      eventInformation,
+      openings,
+    };
+    
     if (mode === "edit") {
-      eventData.id = event.id;
-      eventData.volunteers = event.volunteers;
-
-      deletedRoles.forEach((deletedRole) => {
-        if (eventData.volunteers && deletedRole in eventData.volunteers) {
-          delete eventData.volunteers[deletedRole];
-        }
-      });
-
-      handleEventAction("edit", eventData);
-    } else if (mode === "add") {
-      const localDate = new Date(`${date}T${startTime}Z`)
-      console.log(date, startTime, localDate)
-      const newEventData = {
-        date: localDate,
-        volunteerTypes: volunteerData.map((item) => item.type),
-        volunteerQty: volunteerData.map((item) => item.qty),
-        leadEmail,
-        volunteers: {},
-        eventInformation,
-        startTime: startTime,
-        endTime: endTime
-      };
-      handleEventAction("add", newEventData)
+      handleEventAction("edit", finalEventData, event.id);
+    } else {
+      handleEventAction("add", finalEventData);
     }
+
     handleClose();
   };
 
@@ -261,9 +234,9 @@ const SignupEventPopup = ({ open, close, mode, event, handleEventAction }) => {
         <TextField
           label="Date"
           type="date"
-          value={date}
+          value={eventDate}
           InputLabelProps={{ shrink: true }}
-          onChange={handleDateChange}
+          onChange={(e) => setEventDate(e.target.value)}
           inputProps={{ min: new Date().toISOString().slice(0, 16) }}
           fullWidth
           margin="normal"
