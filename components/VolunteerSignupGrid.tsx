@@ -14,7 +14,7 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
   volunteers,
   onSignUp,
 }) => {
-  const roles = eventData.volunteerTypes || Object.keys(eventData.openings || {});
+  const roles = Object.keys(eventData.openings || {});
 
   const volunteersByRole = volunteers.reduce((acc, volunteer) => {
     const { role } = volunteer;
@@ -56,9 +56,7 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
   return (
     <Box
       sx={{
-        border: '2px solid #4A2E6C', // outer border
-        borderRadius: '4px',
-        overflow: 'hidden',
+        border: 0
       }}
     >
       {/* Grid Header */}
@@ -71,7 +69,7 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
         <Box sx={{ display: { xs: 'none', sm: 'block' } }} />
         <Box
           sx={{
-            backgroundColor: '#4A2E6C',
+            backgroundColor: '#4b2e83',
             color: 'white',
             py: 2,
             px: 2,
@@ -107,13 +105,13 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
             sx={{
               display: 'grid',
               gridTemplateColumns: { xs: '1fr', sm: '250px 1fr' },
-              borderTop: '1px solid #DDCDBE', // inner divider
+              borderTop: '1px solid #ffffff', // inner divider
             }}
           >
             {/* Role Name Cell */}
             <Box
               sx={{
-                backgroundColor: '#7F6A93',
+                backgroundColor: '#9184aa',
                 color: 'white',
                 py: 2,
                 px: 2,
@@ -133,7 +131,7 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
             {/* Volunteer & Button Cell */}
             <Box
               sx={{
-                backgroundColor: '#F5F2EB',
+                backgroundColor: '#ffffff',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'space-between',
@@ -162,7 +160,7 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
                   onClick={() => onSignUp(role)}
                   endIcon={<ArrowForwardIcon />}
                   sx={{
-                    justifyContent: 'flex-end',
+                    justifyContent: 'center',
                     fontWeight: '700',
                     textTransform: 'uppercase',
                     color: isFull ? '#AAA' : '#4A2E6C',
