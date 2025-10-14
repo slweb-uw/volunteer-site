@@ -31,14 +31,14 @@ type EventData = {
   projectId: string;
   projectName: string;
   startTime: string;
-  volunteerQty: [string];
-  volunteerTypes: [string];
-  // "Project Specific Training"?: string;
-  // "Services Provided"?: string;
-  // "Tips and Reminders"?: string;
-  // "Address/Parking/Directions": string;
-  //  Protocols: string;
-  // "Clinic Flow": string;
+  // volunteerQty: [string]; - outdated
+  // volunteerTypes: [string]; - outdated
+  // "Project Specific Training"?: string; - tbd
+  // "Services Provided"?: string; - tbd
+  // "Tips and Reminders"?: string; - tbd
+  // "Address/Parking/Directions": string; - tbd
+  //  Protocols: string; - tbd
+  // "Clinic Flow": string; - tbd
 };
 
 type VolunteerData = {
