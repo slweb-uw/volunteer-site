@@ -313,25 +313,42 @@ const Event = ({
         crumbs={["Calendar", eventData?.projectName]}
       />
       {/* EVENT TITLE */}
-      <Typography variant="h5" style={{ fontWeight: 900, paddingBottom: 50 }}>
+      <div style={{ paddingBottom: "40px"}}>
+        <Typography variant="h5" style={{ fontWeight: 900}}>
         {eventData?.projectName}
-      </Typography>
+        </Typography>
+        {/* TODO: Fix so eventData includes organization
+        {eventData?.Organization && (
+          <Typography>
+            Hosted by {eventData.Organization}
+          </Typography>
+        )} */}
+      </div>
+      
 
       <Grid container spacing={6}>
         <Grid item container direction="column" sm={12} md={6}>
-          <Stack direction="row" spacing={6} sx={{ marginTop: "5%" }}>
-            <RichEventField
-              name="Location"
-              value={eventData?.location}
-              removeTopMargin={true}
-            />
-          </Stack>
           <RichEventField
-            name="Contact Information"
+            name="Event Description"
+            value={eventData?.eventInformation}
+            removeTopMargin={true}
+          />
+          <RichEventField
+            name="Address"
+            value={eventData?.location}
+            removeTopMargin={true}
+          />
+          <RichEventField
+            name="Lead Contact"
             value={eventData?.leadEmail}
             removeTopMargin={true}
           />
           <RichEventField
+            name="Before Signing Up"
+            value={eventData?.leadEmail}
+            removeTopMargin={true}
+          />
+          {/* <RichEventField
             name="Types of Volunteers Needed"
             value={
               eventData?.volunteerTypes
@@ -339,7 +356,7 @@ const Event = ({
                 : undefined
             }
             removeTopMargin={true}
-          />
+          /> */}
         </Grid>
       </Grid>
       {/* Render the new grid if there are openings defined - NOTE: We need to replace true with a conditional */}

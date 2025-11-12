@@ -29,9 +29,9 @@ export default function EventsView({
         style={{ padding: "1rem 2rem" }}
       >{`${months.get(curDate.getMonth())} ${curDate.getFullYear()}`}</Typography>
 
-      <Button onClick={prevMonthEvents}>Back</Button>
+      <Button onClick={prevMonthEvents} style={{ paddingLeft: "2rem" }}>Back</Button>
       <Button onClick={nextMonthEvents}>Next</Button>
-      <CalendarView curDate={curDate} events={events} />
+      <CalendarView curDate={curDate} events={events}/>
     </div>
   );
 }
@@ -43,7 +43,7 @@ function CalendarView({ curDate, events }: { curDate: Date; events: any }) {
     [curDate],
   );
   return (
-    <>
+    <div style={{ padding: "1rem 2rem" }}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)" }}>
         {DAYS.map((day) => (
           <Typography key={day} style={{ padding: 8, fontWeight: 600 }}>
@@ -74,9 +74,9 @@ function CalendarView({ curDate, events }: { curDate: Date; events: any }) {
             }}
           >
             <Typography>{date.getDate()}</Typography>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8}}>
               {getEventsForDate(date, events).map((event) => (
-                <Card key={event.id} style={{ boxShadow: "none" }}>
+                <Card key={event.id} style={{ boxShadow: "none", backgroundColor: "#C5B4E3", padding: "4px"}}>
                   <Link
                     href={`/calendar/${event.id}/signup`}
                     style={{
@@ -85,12 +85,12 @@ function CalendarView({ curDate, events }: { curDate: Date; events: any }) {
                     }}
                   >
                     <CardActionArea>
-                      <Typography style={{ fontWeight: 600 }}>
+                      <Typography variant="subtitle1" style={{ fontWeight: 600 }}>
+                        {event.projectName}
+                      </Typography>
+                      <Typography>
                         <span>{timeToLocaleTime(event.startTime)}</span>-
                         <span>{timeToLocaleTime(event.endTime)}</span>
-                      </Typography>
-                      <Typography variant="subtitle1">
-                        {event.projectName}
                       </Typography>
                     </CardActionArea>
                   </Link>
@@ -100,7 +100,7 @@ function CalendarView({ curDate, events }: { curDate: Date; events: any }) {
           </div>
         ))}
       </div>
-    </>
+    </div>
   );
 }
 
