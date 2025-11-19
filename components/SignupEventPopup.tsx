@@ -244,7 +244,7 @@ const SignupEventPopup = ({ open, close, mode, event, handleEventAction }) => {
 
         <div style={{ display: "flex", gap: 16 }}>
           <TextField
-            label="Star time"
+            label="Start time"
             value={startTime}
             fullWidth
             onChange={(e) => setStartTime(e.target.value)}
