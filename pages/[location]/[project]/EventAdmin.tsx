@@ -18,13 +18,29 @@ import { useAuth } from "auth";
 import { useRouter } from "next/router";
 import {
   Button,
-  Grid,
-  Tooltip,
-  Switch,
   Typography,
+  TextField,
+  InputAdornment,
+  MenuItem,
+  Select,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton
 } from "@mui/material";
+
+// Icons
 import DownloadIcon from "@mui/icons-material/Download";
-import CalendarIcon from "@mui/icons-material/CalendarTodayOutlined";
+import SearchIcon from "@mui/icons-material/Search";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import ContactPageIcon from "@mui/icons-material/Description";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
 import SignupEventPopup from "components/SignupEventPopup";
 import { exportToCSV } from "helpers/csvExport";
@@ -33,44 +49,164 @@ import { EventData } from "new-types";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    fontFamily: "Encode Sans Compressed",
-    minHeight: "70vh",
-    padding: theme.spacing(2),
+    fontFamily: "Encode Sans",
+    minHeight: "80vh",
+    padding: theme.spacing(5, 15),
+    backgroundColor: "#fff",
   },
-  title: {
-    fontWeight: 700,
-    textAlign: "center",
-    marginBottom: theme.spacing(4),
+  headerContainer: {
+    marginBottom: theme.spacing(3),
   },
-  controlsContainer: {
-    display: "flex",
-    justifyContent: "center",
-    gap: theme.spacing(2),
-    marginBottom: theme.spacing(4),
-    flexWrap: "wrap",
-  },
-  eventListContainer: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    gap: theme.spacing(1.5),
-  },
-  eventButton: {
-    textTransform: "none",
-    width: "100%",
-    maxWidth: "500px",
+  orgTitle: {
+    color: "#4C2F83",
+    fontWeight: 900,
+    fontSize: "2rem",
     lineHeight: 1.2,
   },
-  message: {
+  backBtn: {
+    color: "#4B2E83",
+    fontWeight: 700,
+    textTransform: "uppercase",
+    fontSize: "0.85rem",
+    padding: 0,
+    marginBottom: theme.spacing(2),
+    minWidth: "auto",
+    "&:hover": {
+      backgroundColor: "transparent",
+      textDecoration: "underline",
+    },
+    "& .MuiButton-startIcon": {
+      marginRight: "4px",
+    },
+    "& svg": {
+      fontSize: "0.8rem !important",
+    }
+  },
+  subHeaderRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: theme.spacing(3),
+    color: "#666",
+    marginTop: theme.spacing(1),
+    fontSize: "0.9rem",
+    "& div": {
+      display: "flex",
+      alignItems: "center",
+      gap: "4px",
+    },
+    "& svg": {
+      fontSize: "1.1rem",
+    }
+  },
+  sectionTitleRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: theme.spacing(3),
+    marginBottom: theme.spacing(2),
+  },
+  eventsTitle: {
+    color: "#4C2F83",
+    fontWeight: 800,
+    fontSize: "1.5rem",
+  },
+  addButton: {
+    backgroundColor: "#85754D",
+    color: "white",
+    fontWeight: 700,
+    padding: "0px 16px",
+    textTransform: "uppercase",
+    fontSize: "0.8rem",
+    borderRadius: "4px",
+    "&:hover": {
+      backgroundColor: "#6d5635",
+    },
+  },
+  toolbar: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: theme.spacing(1),
+    flexWrap: "wrap",
+    gap: theme.spacing(2),
+  },
+  searchField: {
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "4px",
+      height: "40px",
+      backgroundColor: "#fff",
+    },
+    width: "300px",
+  },
+  filtersContainer: {
+    display: "flex",
+    gap: theme.spacing(2),
+    alignItems: "center",
+  },
+  filterLabel: {
+    fontWeight: 700,
+    marginRight: theme.spacing(1),
+    fontSize: "0.9rem",
+  },
+  filterSelect: {
+    height: "35px",
+    minWidth: "120px",
+    backgroundColor: "#fff",
+    fontSize: "0.85rem",
+    color: "#666",
+    "& .MuiOutlinedInput-notchedOutline": {
+      borderColor: "#ccc",
+    }
+  },
+  // Table Styles
+  tableHeader: {
+    backgroundColor: "#85754D",
+  },
+  tableHeaderCell: {
+    color: "white",
+    fontWeight: 700,
+    padding: "10px 16px",
+    fontSize: "1rem",
+    borderBottom: "1px solid #000",
+    borderRight: "1px solid #fff",
+    "&:last-child": {
+        borderRight: "none",
+    }
+  },
+  tableCell: {
+    fontSize: "0.95rem",
+    color: "#333",
+    borderBottom: "1px solid #eee",
+  },
+  tableRow: {
+    "&:last-child td, &:last-child th": {
+      borderBottom: 0,
+    },
+  },
+  emptyStateBox: {
+    border: "1px solid #8d7046",
+    borderTop: "none",
+    padding: theme.spacing(6),
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    textAlign: "center",
     fontWeight: 600,
-    height: "50vh",
-    gap: theme.spacing(1),
+    color: "#333",
+    backgroundColor: "#fff",
+    borderRadius: "0 0 8px 8px",
   },
+  footerNote: {
+    marginTop: theme.spacing(2),
+    fontSize: "0.9rem",
+    color: "#333",
+  },
+  loadingContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "50vh",
+  }
 }));
-
 
 const EventAdmin = () => {
   const classes = useStyles();
@@ -83,9 +219,11 @@ const EventAdmin = () => {
   const [editedEvent, setEditedEvent] = useState<EventData | null>(null);
   const [openEventFormPopup, setOpenEventFormPopup] = useState(false);
   const [title, setTitle] = useState("");
-  const [showPastEvents, setShowPastEvents] = useState(false);
+  
+  // Search/Filter UI placeholders
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterMonth, setFilterMonth] = useState("Any Month");
 
-  // Effect to fetch the project title
   useEffect(() => {
     if (!router.isReady || !location || !project) return;
     const fetchTitle = async () => {
@@ -104,7 +242,6 @@ const EventAdmin = () => {
 
   // Effect to listen for real-time event updates from Firestore
   useEffect(() => {
-    // We only need 'project' to find the correct events
     if (!router.isReady || !project) return;
 
     const eventsRef = collection(db, "events");
@@ -124,31 +261,32 @@ const EventAdmin = () => {
     return () => unsubscribe();
   }, [router.isReady, project]);
 
-  // Memoized hook to filter events based on the 'showPastEvents' switch
+  // Filter logic
   const filteredEvents = useMemo(() => {
-    if (showPastEvents) {
-      return allEvents;
-    }
+    // Basic date filter: Show upcoming (or all if we wanted to implement the expired events switch again)
     const now = new Date();
-    return allEvents.filter((e) => e.date.toDate() >= now);
-  }, [allEvents, showPastEvents]);
-  
-  // Manage the selected event state when the filtered list changes
-  useEffect(() => {
-    if (selectedEvent && !filteredEvents.some(e => e.id === selectedEvent.id)) {
-      setSelectedEvent(null);
+    let events = allEvents.filter((e) => e.date.toDate() >= now);
+
+    // Apply simple search filter
+    if (searchTerm) {
+        const lowerTerm = searchTerm.toLowerCase();
+        events = events.filter(e => 
+            e.projectName?.toLowerCase().includes(lowerTerm) || 
+            title.toLowerCase().includes(lowerTerm)
+        );
     }
-  }, [filteredEvents, selectedEvent]);
+    
+    return events;
+  }, [allEvents, searchTerm, title]);
 
   const handleOpenEventFormPopup = (mode: "add" | "edit", eventToEdit: EventData | null) => {
     setEditedEvent(eventToEdit);
     setOpenEventFormPopup(true);
   };
 
-  // Main logic for Creating, Updating, and Deleting events in Firestore
   const handleEventAction = async (
     mode: "add" | "edit" | "delete",
-    eventData: Partial<EventData>, // Use Partial<EventData> for flexibility with form data
+    eventData: Partial<EventData>,
     eventId?: string,
   ) => {
     if (!project || !location) return;
@@ -158,40 +296,60 @@ const EventAdmin = () => {
       if (mode === "delete" && eventId) {
         const eventRef = doc(db, collectionPath, eventId);
         await deleteDoc(eventRef);
-        
         setSelectedEvent(null);
-        alert("Event deleted successfully!");
+        // alert("Event deleted successfully!");
         return;
       }
-      const dateObject = eventData.date;
-      // This check proves to TypeScript that dateObject is a valid Date.
-      if (!(dateObject instanceof Date)) {
-        console.error("Invalid date object received from form:", dateObject);
-        alert("Failed to save event due to an invalid date. Please try again.");
+
+      let allEventDates: Date[] = [];
+      if (eventData.dates && Array.isArray(eventData.dates) && eventData.dates.length > 0) {
+        // Ensure they are Date objects
+        allEventDates = eventData.dates.map((d: any) => d.toDate ? d.toDate() : new Date(d));
+      } else if (eventData.date) {
+        // Fallback for single date creation
+        const d = eventData.date instanceof Date ? eventData.date : (eventData.date as any).toDate();
+        allEventDates = [d];
+      } else {
+        alert("Failed to save: No dates selected.");
         return;
       }
-    
-      // Now it's safe to use Date methods.
-      const calendarString = `${dateObject.getFullYear()}-${dateObject.getMonth()}`; //May change this in the future to offset the months to be readable, but right now we use 0 index for january. etc.
+      allEventDates.sort((a, b) => a.getTime() - b.getTime());
+      const primaryDate = allEventDates[0];
+      const calendarString = `${primaryDate.getFullYear()}-${primaryDate.getMonth()}`;
+
+      const flatOpenings = eventData.openings || {};
+      const nestedOpenings: Record<string, any> = {};
+
+      allEventDates.forEach((dateObj) => {
+        const dateKey = dateObj.toISOString().split('T')[0];
+        
+        const firstKey = Object.keys(flatOpenings)[0];
+        if (firstKey && firstKey.startsWith('20')) {
+          nestedOpenings[dateKey] = flatOpenings[dateKey] || {};
+        } else {
+          nestedOpenings[dateKey] = { ...flatOpenings };
+        }
+      });
 
       const dataToSave = {
         ...eventData,
-        // The openings field should be a map/object passed from our form
-        // Example: { table: 5, healthDesk: 2 }
-        openings: eventData.openings || {},
-        date: Timestamp.fromDate(eventData.date as any),
+        // Save the array of Timestamps
+        dates: allEventDates.map(d => Timestamp.fromDate(d)),
+        // Save primary date for compatibility
+        date: Timestamp.fromDate(primaryDate), 
+        // Save the nested openings structure
+        openings: nestedOpenings, 
         projectId: project,
         projectName: title,
         location: location as string,
         calendar: calendarString,
       };
+
       if (mode === "add") {
         await addDoc(collection(db, collectionPath), dataToSave);
-        alert("Event added successfully!");
       } else if (mode === "edit" && eventId) {
         const eventRef = doc(db, collectionPath, eventId);
         await setDoc(eventRef, dataToSave, { merge: true });
-        alert("Event updated successfully!");
       }
       setOpenEventFormPopup(false);
     } catch (error) {
@@ -200,85 +358,207 @@ const EventAdmin = () => {
     }
   };
 
+  // Helper to format Time
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString("en-US", { hour: 'numeric', minute: '2-digit' });
+  };
+
+  const parseTimeStr = (baseDate: Date, timeString?: string) => {
+    if (!timeString) return baseDate; 
+
+    const dateCopy = new Date(baseDate);
+    const [hours, minutes] = timeString.split(':').map(Number); 
+    
+    dateCopy.setHours(hours);
+    dateCopy.setMinutes(minutes);
+    
+    return dateCopy;
+  };
+
+  // Helper to format Date
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString("en-US", { month: 'short', day: 'numeric', year: 'numeric' });
+  };
+
   if (!router.isReady) {
-    return <div className={classes.message}>Loading...</div>;
+    return <div className={classes.loadingContainer}>Loading...</div>;
   }
 
-  // Authorization Check: Only admins and leads can see this page
   if (!isAdmin && !isLead) {
     return <AuthorizationMessage user={user} />;
   }
 
   return (
     <div className={classes.root}>
-      <Typography variant="h4" className={classes.title}>
-        {title || "Event Management"}
-      </Typography>
-
-      <div className={classes.controlsContainer}>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => handleOpenEventFormPopup("add", null)}
-        >
-          Add New Event
-        </Button>
-        <Tooltip title="Toggle past events" arrow>
-            <Button variant="outlined">
-                <Switch
-                    checked={showPastEvents}
-                    onChange={() => setShowPastEvents(!showPastEvents)}
-                    color="primary"
-                />
-                Show Past Events
-            </Button>
-        </Tooltip>
-        {selectedEvent && (
-            <Tooltip title="Download Event Information" arrow>
-                <Button
-                    variant="contained"
-                    onClick={() => exportToCSV(selectedEvent)}
-                    startIcon={<DownloadIcon />}
-                >
-                    Export Selected
-                </Button>
-            </Tooltip>
-        )}
+      <Button 
+        className={classes.backBtn}
+        startIcon={<ArrowBackIosNewIcon />}
+        onClick={() => router.back()}
+      >
+        BACK
+      </Button>
+      {/* HEADER SECTION */}
+      <div className={classes.headerContainer}>
+        <Typography className={classes.orgTitle}>
+          {title} - Add Events
+        </Typography>
+        <div className={classes.subHeaderRow}>
+            <div><LocationOnIcon /> {location}</div>
+            <div><ContactPageIcon /> Contact</div>
+        </div>
       </div>
 
-      {filteredEvents.length === 0 ? (
-        <div className={classes.message}>
-          <CalendarIcon />
-          <Typography>No events to display.</Typography>
+      {/* EVENTS TITLE & ADD BUTTON */}
+      <div className={classes.sectionTitleRow}>
+        <Typography className={classes.eventsTitle}>Events</Typography>
+        <Button
+            className={classes.addButton}
+            onClick={() => handleOpenEventFormPopup("add", null)}
+            startIcon={<span>+</span>}
+        >
+            Add New Event
+        </Button>
+      </div>
+
+      {/* SEARCH & FILTERS TOOLBAR */}
+      <div className={classes.toolbar}>
+        <TextField 
+            placeholder="Search..."
+            variant="outlined"
+            size="small"
+            className={classes.searchField}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <SearchIcon style={{ color: '#ccc' }} />
+                  </InputAdornment>
+                ),
+            }}
+        />
+
+        <div className={classes.filtersContainer}>
+            <span className={classes.filterLabel}>Filters:</span>
+            
+            <Select
+                value={filterMonth}
+                onChange={(e) => setFilterMonth(e.target.value as string)}
+                displayEmpty
+                className={classes.filterSelect}
+                variant="outlined"
+            >
+                <MenuItem value="Any Month">Any Month</MenuItem>
+                <MenuItem value="January">January</MenuItem>
+                <MenuItem value="February">February</MenuItem>
+            </Select>
+
+            <Select
+                value="Any Start Time"
+                displayEmpty
+                className={classes.filterSelect}
+                variant="outlined"
+                disabled
+            >
+                <MenuItem value="Any Start Time">Any Start Time</MenuItem>
+            </Select>
+
+            <Select
+                value="Any End Time"
+                displayEmpty
+                className={classes.filterSelect}
+                variant="outlined"
+                disabled
+            >
+                <MenuItem value="Any End Time">Any End Time</MenuItem>
+            </Select>
         </div>
-      ) : (
-        <Grid container spacing={2} justifyContent="center">
-            <Grid item xs={12} md={8} lg={6} className={classes.eventListContainer}>
-                {filteredEvents.map((ev) => (
-                    <Button
-                        key={ev.id}
-                        className={classes.eventButton}
-                        variant={selectedEvent?.id === ev.id ? "contained" : "outlined"}
-                        color="primary"
-                        onClick={() => {
-                            setSelectedEvent(ev);
-                            handleOpenEventFormPopup("edit", ev)
-                        }}
-                    >
-                    {/* ev.date is a Firestore Timestamp */}
-                    {ev.date.toDate().toLocaleDateString("en-US", {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: 'numeric',
-                        minute: '2-digit'
-                    })}
-                    </Button>
-                ))}
-            </Grid>
-        </Grid>
+      </div>
+
+      {/* DATA TABLE */}
+      <TableContainer component={Paper} elevation={0} sx={{ 
+        border: "1px solid #85754D",
+        borderRadius: filteredEvents.length > 0 ? "8px" : "8px 8px 0 0", 
+        overflow: 'hidden'
+    }}>
+        <Table>
+            <TableHead>
+                <TableRow className={classes.tableHeader}>
+                    <TableCell className={classes.tableHeaderCell}>Event Name</TableCell>
+                    <TableCell className={classes.tableHeaderCell}>Start Date</TableCell>
+                    <TableCell className={classes.tableHeaderCell}>Start Time</TableCell>
+                    <TableCell className={classes.tableHeaderCell}>End Time</TableCell>
+                    <TableCell className={classes.tableHeaderCell} align="right">Options</TableCell>
+                </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredEvents.map((ev) => {
+              const eventDate = ev.date.toDate();
+              
+              const startTime = parseTimeStr(eventDate, ev.startTime);
+              const endTime = parseTimeStr(eventDate, ev.endTime);
+
+              return (
+                <TableRow key={ev.id} hover className={classes.tableRow}>
+                    <TableCell className={classes.tableCell} style={{ fontWeight: 600 }}>
+                        {ev.name || title || "Event Name"}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                        {formatDate(eventDate)}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                        {formatTime(startTime)}
+                    </TableCell>
+                    
+                    <TableCell className={classes.tableCell}>
+                        {formatTime(endTime)}
+                    </TableCell>
+                        <TableCell className={classes.tableCell} align="right">
+                            <IconButton 
+                                size="small" 
+                                onClick={() => exportToCSV(ev)}
+                                title="Export"
+                            >
+                                <DownloadIcon fontSize="small" />
+                            </IconButton>
+                            <IconButton 
+                                size="small" 
+                                onClick={() => handleOpenEventFormPopup("edit", ev)}
+                                title="Edit"
+                            >
+                                <EditIcon fontSize="small" />
+                            </IconButton>
+                            <IconButton 
+                                size="small" 
+                                onClick={() => {
+                                    if(window.confirm("Are you sure you want to delete this event?")) {
+                                        handleEventAction("delete", {}, ev.id)
+                                    }
+                                }}
+                                title="Delete"
+                                color="error"
+                            >
+                                <DeleteIcon fontSize="small" />
+                            </IconButton>
+                        </TableCell>
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+        </Table>
+      </TableContainer>
+
+      {/* EMPTY STATE */}
+      {filteredEvents.length === 0 && (
+          <div className={classes.emptyStateBox}>
+              No events have been created yet. Click on “Add New Event” to create an event.
+          </div>
       )}
+
+      {/* FOOTER NOTE (This is currently not accurate information, but was in figma design doc) */}
+      <Typography className={classes.footerNote}>
+        Note: All sign-ups are closed 2 days before the event.
+      </Typography>
 
       <SignupEventPopup
         open={openEventFormPopup}

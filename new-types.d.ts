@@ -21,28 +21,30 @@ type ProjectData = {
 //Specific to events per project
 type EventData = {
   id: string;
+  name: string;
   calendar: string;
   date: Timestamp;
-  endTime: string;
+  dates: Timestamp[];
   eventInformation: string;
+  requiredTraining: string;
   leadEmail: string;
-  location: string;
-  openings: { [key: string]: number }; //Map of volunteer types to number of openings
+  location: string; // Used for calendar, address is for directions.
+  address: string;
+  openings: { 
+    [dateIsoString: string]: { 
+      [role: string]: number 
+    } 
+  };
+  volunteerTypes?: string[]; // list of all roles
   projectId: string;
   projectName: string;
   startTime: string;
-  // volunteerQty: [string]; - outdated
-  // volunteerTypes: [string]; - outdated
-  // "Project Specific Training"?: string; - tbd
-  // "Services Provided"?: string; - tbd
-  // "Tips and Reminders"?: string; - tbd
-  // "Address/Parking/Directions": string; - tbd
-  //  Protocols: string; - tbd
-  // "Clinic Flow": string; - tbd
+  endTime: string;
 };
 
 type VolunteerData = {
   uid: string;
+  date?: string;
   email: string;
   name: string;
   phoneNumber: number;
