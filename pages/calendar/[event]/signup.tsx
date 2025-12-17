@@ -162,11 +162,11 @@ const Event = ({
   }
 
   const handleCloseVolunteerPopup = () => {
+    setOpenVolunteerPopup(false);
     setSelectedRole("");
     setSelectedDateSignup("");
-    setOpenVolunteerPopup(false);
     setEditedVolunteer(null);
-    router.replace(router.asPath);
+    router.replace(router.asPath, undefined, { scroll: false });
   };
 
   const handleAddVolunteer = async (volunteerData: VolunteerData) => {
