@@ -179,7 +179,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
             <Typography className={classes.header}>
               <ResourceLink
                 className={classes.links}
-                href="https://nursing.uw.edu/community/"
+                href="https://students.nursing.uw.edu/student-success/community-belonging/sigs/"
               >
                 Service Learning Page
               </ResourceLink>{" "}
@@ -201,7 +201,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
             <Typography className={classes.header}>
               <ResourceLink
                 className={classes.links}
-                href="https://collaborate.uw.edu/in-the-community/"
+                href="https://collaborate.uw.edu/"
               >
                 Center for Health Sciences Interprofessional Education
               </ResourceLink>{" "}
