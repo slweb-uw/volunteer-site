@@ -572,7 +572,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
             </Typography>
             <Typography>
               <ResourceLink
-                href="http://www.refugeeconnectionsspokane.org/store/c1/Featured_Products.html"
+                href="https://www.ricspokane.org/"
                 className={classes.resource}
               >
                 Refugee Connections
