@@ -36,14 +36,14 @@ const useStyles = makeStyles({
     },
     buttonContainer: {
         display: 'flex',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         marginTop: "0.5rem"
     },
     selectContainer: {
       display: 'flex',
       alignItems: 'center',
       marginTop: "0.5rem",
-      marginBottom: "0"
+      marginBottom: "0.5rem"
     },
 });
 
@@ -60,7 +60,10 @@ const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, position, 
         setPhoneNumber(volunteer.phoneNumber || '');
         setComments(volunteer.comments || '');
         setStudentDiscipline(volunteer.studentDiscipline || '');
-        setCertified(volunteer.certified || false);
+        // setCertified(volunteer.certified || false);
+        setCertified(true); 
+        // TODO there's a bug that doesn't let you re-sign up after withdrawing - pretty sure it has to do with certified, 
+        // since it's fixed when certified is always set to true.
         setFormattedPhoneNumber(formatPhoneNumber(volunteer.phoneNumber || ''));
       }
     }, [volunteer]);
@@ -102,7 +105,7 @@ const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, position, 
         addVolunteer(volunteerData);
         handleClose();
       } else {
-          alert('Invalid phone number!');
+        alert('Invalid phone number!');
       }
     };
 
@@ -121,7 +124,7 @@ const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, position, 
         />
         <div className={classes.selectContainer}>
           <Typography style={{ marginRight: '15px' }}>
-            Student Discipline <span style={{color: "red"}}>*</span>
+            Student Discipline <span>*</span>
           </Typography>
           <Select
             value={studentDiscipline}
@@ -183,18 +186,27 @@ const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, position, 
         </Typography>
         <div className={classes.buttonContainer}>
             {volunteer ? (
-            <>
-              <Button variant="outlined" onClick={() => onDeleteVolunteer(volunteer)} style={{marginRight: "1rem", color: "gray"}}>
+            <div style = {{display: "flex", gap: "1rem", justifyContent: "flex-start"}}>
+              <Button variant="contained" color="secondary" onClick={handleClose}>
+                Cancel
+              </Button>
+              <Button variant="outlined" onClick={() => onDeleteVolunteer(volunteer)} style={{color: "gray"}}>
                 Withdraw
               </Button>
               <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isSubmitDisabled}>
-              Save
+                Save
               </Button>
-            </>
+            </div>
             ):(
-              <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isSubmitDisabled}>
-                Signup
-              </Button>
+              <div style = {{display: "flex", gap: "1rem", justifyContent: "flex-start"}}>
+                <Button variant="contained" color="secondary" onClick={handleClose}>
+                  Cancel
+                </Button>
+                <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isSubmitDisabled}>
+                  Signup
+                </Button>
+              </div>
+              
             )}
         </div>
       </DialogContent>
