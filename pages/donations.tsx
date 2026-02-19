@@ -54,7 +54,7 @@ const Donations: NextPage<Props> = ({ classes }) => {
               variant="contained"
               color="secondary"
               target="_blank"
-              href="https://www.acceleratemed.org/give/?source=servmd"
+              href="https://give.uwmedicine.org/give/?source=FND-133589"
               style={{
                 marginTop: "2rem",
                 marginBottom: "2rem",
