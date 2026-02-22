@@ -315,7 +315,6 @@ const EventAdmin = () => {
       }
       allEventDates.sort((a, b) => a.getTime() - b.getTime());
       const primaryDate = allEventDates[0];
-      // const calendarString = `${primaryDate.getFullYear()}-${primaryDate.getMonth()}`;
       let calendarArr: String[] = [];
       const flatOpenings = eventData.openings || {};
       const nestedOpenings: Record<string, any> = {};

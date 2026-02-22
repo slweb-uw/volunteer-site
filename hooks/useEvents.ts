@@ -20,11 +20,6 @@ export default function useEvents(location: string, projectId?: string) {
       let q = query(
         eventsRef,
         where("location", "==", location),
-        // where(
-        //   "calendar",
-        //   "==",
-        //   `${curDate.getFullYear()}-${curDate.getMonth()}`,
-        // ),
         where(
           "calendar",
           "array-contains",
@@ -47,9 +42,6 @@ export default function useEvents(location: string, projectId?: string) {
         } as EventData),
       );
       setEvents(data);
-      console.log(data);
-      console.log(q);
-      console.log(curDate);
     };
     fetchData();
   }, [curDate, location, projectId]);
