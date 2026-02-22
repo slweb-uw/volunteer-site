@@ -315,14 +315,19 @@ const EventAdmin = () => {
       }
       allEventDates.sort((a, b) => a.getTime() - b.getTime());
       const primaryDate = allEventDates[0];
-      const calendarString = `${primaryDate.getFullYear()}-${primaryDate.getMonth()}`;
-
+      // const calendarString = `${primaryDate.getFullYear()}-${primaryDate.getMonth()}`;
+      let calendarArr: String[] = [];
       const flatOpenings = eventData.openings || {};
       const nestedOpenings: Record<string, any> = {};
 
       allEventDates.forEach((dateObj) => {
-        const dateKey = dateObj.toISOString().split('T')[0];
+        // add all months of the event to our calendar array
+        const calendarString = `${dateObj.getFullYear()}-${dateObj.getMonth()}`;
+        if (calendarArr.indexOf(calendarString) == -1) {
+          calendarArr.push(calendarString);
+        }
         
+        const dateKey = dateObj.toISOString().split('T')[0];
         const firstKey = Object.keys(flatOpenings)[0];
         if (firstKey && firstKey.startsWith('20')) {
           nestedOpenings[dateKey] = flatOpenings[dateKey] || {};
@@ -342,7 +347,7 @@ const EventAdmin = () => {
         projectId: project,
         projectName: title,
         location: location as string,
-        calendar: calendarString,
+        calendar: calendarArr,
       };
 
       if (mode === "add") {
