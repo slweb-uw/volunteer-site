@@ -134,7 +134,7 @@ export default function EventsView({
 
       {/* Main Title */}
       <Typography variant="h1" className={styles.mainTitle}>
-        {projectName ? `${projectName} - Calendar` : "Loading..."}
+        {projectName ? `${projectName} - Calendar` : `${location} - Calendar`}
       </Typography>
 
       {/* Address & Contact */}
