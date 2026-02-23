@@ -43,7 +43,7 @@ const RichEventField: React.FC<RichEventFieldProps> = ({
         style={{
           pageBreakInside: "avoid",
           breakInside: "avoid-column",
-          marginBottom: "5%",
+          marginBottom: "3%",
         }}
       >
         <Typography variant="h6" style={{ fontWeight: 600 }}>
@@ -94,7 +94,7 @@ const useStyles = makeStyles(() => ({
     marginLeft: "auto",
     marginRight: "auto",
     maxWidth: 1500,
-    marginBottom: 300,
+    marginBottom: 100,
     width: "90%",
     paddingTop: "2em",
     paddingBottom: "5em",
@@ -272,7 +272,7 @@ const Event = ({
   return (
     <div className={classes.page}>
       <CssBaseline />
-      <Box sx={{ mb: 2 }}>
+      <Box sx={{ mb: 3 }}>
         <Button 
             onClick={() => router.back()}
             startIcon={<ArrowBackIosNewIcon sx={{ fontSize: '1.2rem !important' }} />}
@@ -308,7 +308,7 @@ const Event = ({
       </Box>
       
 
-      <Box sx={{ mb: 5, maxWidth: '800px' }}>
+      <Box sx={{ mb: 1, maxWidth: '800px' }}>
           <RichEventField
             name="Event Description"
             value={eventData?.eventInformation}

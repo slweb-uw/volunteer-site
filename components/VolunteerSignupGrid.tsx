@@ -10,6 +10,11 @@ interface VolunteerSignupGridProps {
   onSignUp: (role: string, date: string) => void;
   relevantDates: string[];
   targetDay: Number;
+};
+
+type rolesAndCapacity = {
+  role: string;
+  spots: Number;
 }
 
 const parseTimeStr = (baseDate: Date, timeString?: string) => {
@@ -53,8 +58,7 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
   }
   // volunteerTypes are not used anymore?
   const allRolesSet = new Set<string>(eventData.volunteerTypes || []);
-  console.log(allRolesSet);
-  
+
   relevantDates.forEach(dateStr => {
     const dateKey = dateStr.split('T')[0];
     if (eventData.openings?.[dateKey]) {
@@ -170,7 +174,7 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
 
               let buttonText = 'BE THE FIRST!';
               if (isFull) buttonText = 'FULL';
-              else if (cellVolunteers.length > 0) buttonText = 'JOIN';
+              else if (cellVolunteers.length > 0) buttonText = `JOIN : ${spotsOpen} spot(s) left`;
 
               return (
                 <Box
