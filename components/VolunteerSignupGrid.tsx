@@ -2,12 +2,14 @@ import React from 'react';
 import { Box, Typography, Button, Divider } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { EventData, VolunteerData } from '../new-types';
+import { useEffect } from "react";
 
 interface VolunteerSignupGridProps {
   eventData: EventData;
   volunteers: VolunteerData[];
   onSignUp: (role: string, date: string) => void;
   relevantDates: string[];
+  targetDay: Number;
 }
 
 const parseTimeStr = (baseDate: Date, timeString?: string) => {
@@ -43,8 +45,13 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
   volunteers,
   onSignUp,
   relevantDates,
+  targetDay
 }) => {
-  const allRolesSet = new Set<string>(eventData.volunteerTypes || []);
+  const scrollToTarget = () => {
+    const element = document.getElementById(`${targetDay}`);
+    element?.scrollIntoView({ behavior: "smooth", block: "end", inline: "center" });
+  }
+    const allRolesSet = new Set<string>(eventData.volunteerTypes || []);
   
   relevantDates.forEach(dateStr => {
     const dateKey = dateStr.split('T')[0];
@@ -74,6 +81,10 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
     divider: '#85754D',
   };
 
+  useEffect(() => {
+    scrollToTarget();
+  }, []);
+
   return (
     <Box sx={{ 
         width: '100%', 
@@ -101,8 +112,9 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
         }} />
 
         {/* Date Headers */}
-        {relevantDates.map((dateStr) => (
+        {relevantDates.map((dateStr, i) => (
           <Box
+            id={`${i}`}
             key={dateStr}
             sx={{
               bgcolor: COLORS.headerBg,
