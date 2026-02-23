@@ -51,7 +51,9 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
     const element = document.getElementById(`${targetDay}`);
     element?.scrollIntoView({ behavior: "smooth", block: "end", inline: "center" });
   }
-    const allRolesSet = new Set<string>(eventData.volunteerTypes || []);
+  // volunteerTypes are not used anymore?
+  const allRolesSet = new Set<string>(eventData.volunteerTypes || []);
+  console.log(allRolesSet);
   
   relevantDates.forEach(dateStr => {
     const dateKey = dateStr.split('T')[0];
@@ -59,7 +61,7 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
       Object.keys(eventData.openings[dateKey]).forEach(r => allRolesSet.add(r));
     }
   });
-  const roles = Array.from(allRolesSet);
+  const roles = Array.from(allRolesSet).sort();
 
   const getVolunteersForCell = (role: string, dateStr: string) => {
     const targetDateKey = dateStr.split('T')[0];
