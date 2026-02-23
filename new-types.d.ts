@@ -22,7 +22,7 @@ type ProjectData = {
 type EventData = {
   id: string;
   name: string;
-  calendar: string;
+  calendar: string[];
   date: Timestamp;
   dates: Timestamp[];
   eventInformation: string;

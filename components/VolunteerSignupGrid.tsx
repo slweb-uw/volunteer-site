@@ -2,12 +2,19 @@ import React from 'react';
 import { Box, Typography, Button, Divider } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { EventData, VolunteerData } from '../new-types';
+import { useEffect } from "react";
 
 interface VolunteerSignupGridProps {
   eventData: EventData;
   volunteers: VolunteerData[];
   onSignUp: (role: string, date: string) => void;
   relevantDates: string[];
+  targetDay: Number;
+};
+
+type rolesAndCapacity = {
+  role: string;
+  spots: Number;
 }
 
 const parseTimeStr = (baseDate: Date, timeString?: string) => {
@@ -43,16 +50,22 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
   volunteers,
   onSignUp,
   relevantDates,
+  targetDay
 }) => {
+  const scrollToTarget = () => {
+    const element = document.getElementById(`${targetDay}`);
+    element?.scrollIntoView({ behavior: "smooth", block: "end", inline: "center" });
+  }
+  // volunteerTypes are not used anymore?
   const allRolesSet = new Set<string>(eventData.volunteerTypes || []);
-  
+
   relevantDates.forEach(dateStr => {
     const dateKey = dateStr.split('T')[0];
     if (eventData.openings?.[dateKey]) {
       Object.keys(eventData.openings[dateKey]).forEach(r => allRolesSet.add(r));
     }
   });
-  const roles = Array.from(allRolesSet);
+  const roles = Array.from(allRolesSet).sort();
 
   const getVolunteersForCell = (role: string, dateStr: string) => {
     const targetDateKey = dateStr.split('T')[0];
@@ -73,6 +86,10 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
     border: '#E8E3D3',
     divider: '#85754D',
   };
+
+  useEffect(() => {
+    scrollToTarget();
+  }, []);
 
   return (
     <Box sx={{ 
@@ -101,8 +118,9 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
         }} />
 
         {/* Date Headers */}
-        {relevantDates.map((dateStr) => (
+        {relevantDates.map((dateStr, i) => (
           <Box
+            id={`${i}`}
             key={dateStr}
             sx={{
               bgcolor: COLORS.headerBg,
@@ -156,7 +174,7 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
 
               let buttonText = 'BE THE FIRST!';
               if (isFull) buttonText = 'FULL';
-              else if (cellVolunteers.length > 0) buttonText = 'JOIN';
+              else if (cellVolunteers.length > 0) buttonText = `JOIN : ${spotsOpen} spot(s) left`;
 
               return (
                 <Box

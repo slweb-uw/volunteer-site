@@ -22,7 +22,7 @@ export default function useEvents(location: string, projectId?: string) {
         where("location", "==", location),
         where(
           "calendar",
-          "==",
+          "array-contains",
           `${curDate.getFullYear()}-${curDate.getMonth()}`,
         ),
       );

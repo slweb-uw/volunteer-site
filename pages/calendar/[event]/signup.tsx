@@ -43,7 +43,7 @@ const RichEventField: React.FC<RichEventFieldProps> = ({
         style={{
           pageBreakInside: "avoid",
           breakInside: "avoid-column",
-          marginBottom: "5%",
+          marginBottom: "3%",
         }}
       >
         <Typography variant="h6" style={{ fontWeight: 600 }}>
@@ -94,7 +94,7 @@ const useStyles = makeStyles(() => ({
     marginLeft: "auto",
     marginRight: "auto",
     maxWidth: 1500,
-    marginBottom: 300,
+    marginBottom: 100,
     width: "90%",
     paddingTop: "2em",
     paddingBottom: "5em",
@@ -122,7 +122,7 @@ const Event = ({
   const classes = useStyles();
   const router = useRouter();
   const { date: queryDate } = router.query;
-  const relevantDates = React.useMemo(() => {
+  const datesInfo = React.useMemo(() => {
     if (!eventData.dates || eventData.dates.length === 0) {
       return eventData.date ? [eventData.date.toString()] : [];
     }
@@ -131,16 +131,8 @@ const Event = ({
     const targetQuery = typeof queryDate === 'string' ? queryDate : sortedDates[0];
     const targetDay = new Date(targetQuery).toISOString().split('T')[0];
     const targetIndex = sortedDates.findIndex(d => new Date(d).toISOString().split('T')[0] === targetDay);
-    if (targetIndex === -1) {
-        // If date not found, default to first 5
-        return sortedDates.slice(0, 5);
-    }
-
-    // Slice the array: 2 before, current, 2 after
-    const start = Math.max(0, targetIndex - 2);
-    const end = Math.min(sortedDates.length, targetIndex + 3);
-    
-    return sortedDates.slice(start, end);
+    // return all dates and target index if it exists, otherwise default to first date
+    return [sortedDates, targetIndex == -1 ? 0 : targetIndex];
   }, [eventData.dates, eventData.date, queryDate]);
   const { user, isAdmin, isAuthorized, isLead } = useAuth();
   const [selectedRole, setSelectedRole] = useState("");
@@ -280,7 +272,7 @@ const Event = ({
   return (
     <div className={classes.page}>
       <CssBaseline />
-      <Box sx={{ mb: 2 }}>
+      <Box sx={{ mb: 3 }}>
         <Button 
             onClick={() => router.back()}
             startIcon={<ArrowBackIosNewIcon sx={{ fontSize: '1.2rem !important' }} />}
@@ -316,7 +308,7 @@ const Event = ({
       </Box>
       
 
-      <Box sx={{ mb: 5, maxWidth: '800px' }}>
+      <Box sx={{ mb: 1, maxWidth: '800px' }}>
           <RichEventField
             name="Event Description"
             value={eventData?.eventInformation}
@@ -338,13 +330,14 @@ const Event = ({
             removeTopMargin={true}
           />
       </Box>
-      {relevantDates.length > 0 && (
+      {datesInfo.length > 0 && (
         <Box sx={{ mt: 4, mb: 8 }}>
           <VolunteerSignupGrid
             eventData={eventData}
             volunteers={volunteer}
             onSignUp={handleOpenVolunteerPopup}
-            relevantDates={relevantDates as string[]} 
+            relevantDates={datesInfo[0] as string[]}
+            targetDay={datesInfo[1]}
           />
         </Box>
       )}
