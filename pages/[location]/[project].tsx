@@ -73,14 +73,14 @@ const RichEventField: React.FC<RichEventFieldProps> = ({ name, value, sx }) => {
   )
 }
 
-// fetch event data before rendering
+// fetch project data before rendering
 export const getServerSideProps: GetServerSideProps<{
-  event: ProjectData
+  project: ProjectData
 }> = async (ctx) => {
   const location = ctx.params?.location
-  const event = ctx.params?.event
+  const project = ctx.params?.project
 
-  if (typeof location === "undefined" || typeof event === "undefined") {
+  if (typeof location === "undefined" || typeof project === "undefined") {
     return {
       notFound: true,
     }
@@ -91,7 +91,7 @@ export const getServerSideProps: GetServerSideProps<{
   const data = await firebaseAdmin
     .firestore()
     .collection(location as string)
-    .doc(event as string)
+    .doc(project as string)
     .get()
 
   if (!data.exists) {
@@ -100,7 +100,7 @@ export const getServerSideProps: GetServerSideProps<{
     }
   }
 
-  return { props: { event: data.data() as ProjectData } }
+  return { props: { project: data.data() as ProjectData } }
 }
 
 const useStyles = makeStyles(() => ({
@@ -125,11 +125,11 @@ const useStyles = makeStyles(() => ({
 }))
 
 const Event = ({
-  event: eventData,
+  project: projectData,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter()
   const { isAdmin } = useAuth()
-  const { location, event: projectId } = useParams()
+  const { location, project: projectId } = useParams()
   const classes = useStyles()
   const [modalOpen, setModalOpen] = useState(false)
   const [deletingProject, setDeletingProject] = useState(false)
@@ -159,20 +159,20 @@ const Event = ({
   return (
     <div className={classes.page}>
       <Head>
-        <title>{eventData.Title}</title>
-        <meta name="description" content={eventData["Project Description"]} />
+        <title>{projectData.Title}</title>
+        <meta name="description" content={projectData["Project Description"]} />
         <meta
           name="og:description"
-          content={eventData["Project Description"]}
+          content={projectData["Project Description"]}
         />
-        <meta property="og:image" content={eventData.imageURL} />
+        <meta property="og:image" content={projectData.imageURL} />
       </Head>
       {/* EVENT TITLE */}
       <Button onClick={() => router.back()}>
         <ChevronLeft /> Back
       </Button>
       <Typography variant="h3" style={{ fontWeight: 900, paddingBottom: 50 }}>
-        {eventData.Title}
+        {projectData.Title}
       </Typography>
 
       <Grid container spacing={6}>
@@ -181,14 +181,14 @@ const Event = ({
             className={classes.detailsImage}
             width={500}
             height={500}
-            src={eventData?.imageURL ? eventData?.imageURL : "/beigeSquare.png"}
-            alt={eventData.Title}
+            src={projectData?.imageURL ? projectData?.imageURL : "/beigeSquare.png"}
+            alt={projectData.Title}
           />
         </Grid>
         <Grid item container direction="column" sm={12} md={6} gap={2}>
           <RichEventField
             name="Project Description"
-            value={eventData["Project Description"]}
+            value={projectData["Project Description"]}
             removeTopMargin={true}
             sx={{ lineHeight: "1.75rem" }}
           />
@@ -214,21 +214,21 @@ const Event = ({
           <Box sx={{ columns: { xs: 1, md: 1 }, columnGap: 8 }}>
             {fields
               .filter(
-                (name) => eventData[name] != null && eventData[name] != ""
+                (name) => projectData[name] != null && projectData[name] != ""
               )
               .map((name) => (
                 <RichEventField
                   key={name}
                   name={name}
-                  value={eventData[name]}
+                  value={projectData[name]}
                   removeTopMargin={true}
                 />
               ))}
             <RichEventField
               name="Types of Volunteers Needed"
               value={
-                eventData["Types of Volunteers Needed"]
-                  ? naturalJoin(eventData["Types of Volunteers Needed"])
+                projectData["Types of Volunteers Needed"]
+                  ? naturalJoin(projectData["Types of Volunteers Needed"])
                   : undefined
               }
               removeTopMargin={true}
@@ -255,6 +255,11 @@ const Event = ({
             <Button onClick={() => setModalOpen(true)} variant="contained">
               Edit Project
             </Button>
+            <NextLink href={`${router.asPath}/EventAdmin`} passHref>
+              <Button variant="contained" color="secondary">
+                Manage Events
+              </Button>
+            </NextLink>
             <LoadingButton
               loading={deletingProject}
               variant="outlined"
@@ -266,7 +271,7 @@ const Event = ({
 
             <AddModifyEventModal
               open={modalOpen}
-              event={eventData}
+              event={projectData}
               location={location?.toString()}
               projectId={projectId.toString()}
               handleClose={() => setModalOpen(false)}
