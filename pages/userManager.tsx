@@ -158,7 +158,7 @@ const AdminPage = () => {
 
   useEffect(() => {
     loadUserType("Admins", setAdmins);
-    loadUserType("Volunteer", setVolunteers);
+    loadUserType("Volunteers", setVolunteers);
     loadUserType("Leads", setLeads);
   }, []);
 
@@ -204,9 +204,16 @@ const AdminPage = () => {
     getDocs(query(usersRef, where("email", "==", userEmail)))
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          deleteDoc(doc)
+          deleteDoc(doc.ref)
         });
         console.log("User removed successfully!");
+        if (activeSection === "Admins") {
+          setAdmins((prev) => prev.filter((user) => user.email !== userEmail));
+        } else if (activeSection === "Volunteers") {
+          setVolunteers((prev) => prev.filter((user) => user.email !== userEmail));
+        } else if (activeSection === "Leads") {
+          setLeads((prev) => prev.filter((user) => user.email !== userEmail));
+        }
       })
       .catch((error) => {
         console.error("Error removing user: ", error);
@@ -337,12 +344,12 @@ const AdminPage = () => {
         onClose={() => setConfirmationOpen(false)}
       >
         <DialogTitle>
-          Delete {activeSection === "admins" ? "admin" : "volunteer"}?
+          Delete {activeSection === "Admins" ? "admin" : "volunteer"}?
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
             Are you sure you want to remove the{" "}
-            {activeSection === "admins" ? "admin" : "volunteer"} with email:{" "}
+            {activeSection === "Admins" ? "admin" : "volunteer"} with email:{" "}
             {selectedUser}?
           </DialogContentText>
         </DialogContent>
