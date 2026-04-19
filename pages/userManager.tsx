@@ -8,7 +8,8 @@ import {
   where,
   query,
   getDoc,
-  deleteDoc
+  deleteDoc,
+  onSnapshot
 } from "firebase/firestore";
 import { useAuth } from "auth";
 import makeStyles from "@mui/styles/makeStyles";
@@ -157,9 +158,26 @@ const AdminPage = () => {
   };
 
   useEffect(() => {
-    loadUserType("Admins", setAdmins);
-    loadUserType("Volunteers", setVolunteers);
-    loadUserType("Leads", setLeads);
+    const unsubAdmins = onSnapshot(collection(db, "Admins"), (snapshot) => {
+      const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setAdmins(data);
+    });
+
+    const unsubVolunteers = onSnapshot(collection(db, "Volunteers"), (snapshot) => {
+      const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setVolunteers(data);
+    });
+
+    const unsubLeads = onSnapshot(collection(db, "Leads"), (snapshot) => {
+      const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setLeads(data);
+    });
+
+    return () => {
+      unsubAdmins();
+      unsubVolunteers();
+      unsubLeads();
+    };
   }, []);
 
   const addUser = (e) => {
@@ -200,20 +218,13 @@ const AdminPage = () => {
   };
 
   const removeUser = (userEmail) => {
-    const usersRef = collection(db, activeSection)
+    const usersRef = collection(db, activeSection);
     getDocs(query(usersRef, where("email", "==", userEmail)))
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          deleteDoc(doc.ref)
+          deleteDoc(doc.ref);
         });
         console.log("User removed successfully!");
-        if (activeSection === "Admins") {
-          setAdmins((prev) => prev.filter((user) => user.email !== userEmail));
-        } else if (activeSection === "Volunteers") {
-          setVolunteers((prev) => prev.filter((user) => user.email !== userEmail));
-        } else if (activeSection === "Leads") {
-          setLeads((prev) => prev.filter((user) => user.email !== userEmail));
-        }
       })
       .catch((error) => {
         console.error("Error removing user: ", error);
