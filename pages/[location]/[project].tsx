@@ -128,7 +128,7 @@ const Event = ({
   project: projectData,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   const router = useRouter()
-  const { isAdmin } = useAuth()
+  const { isAdmin, isLead } = useAuth()
   const { location, project: projectId } = useParams()
   const classes = useStyles()
   const [modalOpen, setModalOpen] = useState(false)
@@ -246,36 +246,48 @@ const Event = ({
         }}
       ></Divider>
 
-      {isAdmin && (
+      {(isAdmin || isLead) && (
         <>
           <Typography component="h3" variant="h4">
-            Admin Options
+            {isAdmin ? "Admin Options" : "Management Options"}
           </Typography>
           <Box sx={{ display: "flex", gap: "1rem", padding: "1rem 0 " }}>
-            <Button onClick={() => setModalOpen(true)} variant="contained">
-              Edit Project
-            </Button>
+            
+            {/* Admins Only: Edit Project */}
+            {isAdmin && (
+              <Button onClick={() => setModalOpen(true)} variant="contained">
+                Edit Project
+              </Button>
+            )}
+
+            {/* Admins & Leads: Manage Events */}
             <NextLink href={`${router.asPath}/EventAdmin`} passHref>
               <Button variant="contained" color="secondary">
                 Manage Events
               </Button>
             </NextLink>
-            <LoadingButton
-              loading={deletingProject}
-              variant="outlined"
-              color="error"
-              onClick={HandleDeleteProject}
-            >
-              Delete Project
-            </LoadingButton>
 
-            <AddModifyEventModal
-              open={modalOpen}
-              event={projectData}
-              location={location?.toString()}
-              projectId={projectId.toString()}
-              handleClose={() => setModalOpen(false)}
-            />
+            {/* Admins Only: Delete Project */}
+            {isAdmin && (
+              <LoadingButton
+                loading={deletingProject}
+                variant="outlined"
+                color="error"
+                onClick={HandleDeleteProject}
+              >
+                Delete Project
+              </LoadingButton>
+            )}
+
+            {isAdmin && (
+              <AddModifyEventModal
+                open={modalOpen}
+                event={projectData}
+                location={location?.toString()}
+                projectId={projectId.toString()}
+                handleClose={() => setModalOpen(false)}
+              />
+            )}
           </Box>
         </>
       )}

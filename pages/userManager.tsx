@@ -8,7 +8,8 @@ import {
   where,
   query,
   getDoc,
-  deleteDoc
+  deleteDoc,
+  onSnapshot
 } from "firebase/firestore";
 import { useAuth } from "auth";
 import makeStyles from "@mui/styles/makeStyles";
@@ -157,9 +158,26 @@ const AdminPage = () => {
   };
 
   useEffect(() => {
-    loadUserType("Admins", setAdmins);
-    loadUserType("Volunteer", setVolunteers);
-    loadUserType("Leads", setLeads);
+    const unsubAdmins = onSnapshot(collection(db, "Admins"), (snapshot) => {
+      const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setAdmins(data);
+    });
+
+    const unsubVolunteers = onSnapshot(collection(db, "Volunteers"), (snapshot) => {
+      const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setVolunteers(data);
+    });
+
+    const unsubLeads = onSnapshot(collection(db, "Leads"), (snapshot) => {
+      const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setLeads(data);
+    });
+
+    return () => {
+      unsubAdmins();
+      unsubVolunteers();
+      unsubLeads();
+    };
   }, []);
 
   const addUser = (e) => {
@@ -200,11 +218,11 @@ const AdminPage = () => {
   };
 
   const removeUser = (userEmail) => {
-    const usersRef = collection(db, activeSection)
+    const usersRef = collection(db, activeSection);
     getDocs(query(usersRef, where("email", "==", userEmail)))
       .then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-          deleteDoc(doc)
+          deleteDoc(doc.ref);
         });
         console.log("User removed successfully!");
       })
@@ -337,12 +355,12 @@ const AdminPage = () => {
         onClose={() => setConfirmationOpen(false)}
       >
         <DialogTitle>
-          Delete {activeSection === "admins" ? "admin" : "volunteer"}?
+          Delete {activeSection === "Admins" ? "admin" : "volunteer"}?
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
             Are you sure you want to remove the{" "}
-            {activeSection === "admins" ? "admin" : "volunteer"} with email:{" "}
+            {activeSection === "Admins" ? "admin" : "volunteer"} with email:{" "}
             {selectedUser}?
           </DialogContentText>
         </DialogContent>
