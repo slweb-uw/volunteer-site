@@ -1,4 +1,5 @@
 import React from "react";
+import RichTextField from "./richTextField";
 import makeStyles from "@mui/styles/makeStyles";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -101,9 +102,15 @@ const ProjectCard: React.FC<EventCardProps> = (props) => {
           <Typography variant="subtitle1" color="textSecondary" gutterBottom>
             {props.event.Organization}
           </Typography>
-          <Typography className={classes.details}>
-            {props.event["Project Description"] ?? NotSpecified}
-          </Typography>
+          {props.event["Project Description"] ? (
+            <RichTextField
+              value={props.event["Project Description"]}
+            />
+          ) : (
+            <Typography className={classes.details}>
+              {NotSpecified}
+            </Typography>
+          )}
         </CardContent>
       </CardActionArea>
     </Card>
