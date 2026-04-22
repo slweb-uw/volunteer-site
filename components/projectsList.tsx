@@ -85,9 +85,11 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
     // Load events
     loadEvents();
     const cacheRef = doc(db, "cache", location.toString());
-    getDoc(cacheRef).then((doc) =>
-      setOrganizations(Object.keys(doc.data() as string[]).sort()),
-    );
+    getDoc(cacheRef).then((doc) => {
+      if (doc.data()) {
+        setOrganizations(Object.keys(doc.data() as string[]).sort());
+      }
+    });
     // pull organizations for this location from the metadata cache
   }, [location]);
 

@@ -102,7 +102,11 @@ const ProjectCard: React.FC<EventCardProps> = (props) => {
             {props.event.Organization}
           </Typography>
           <Typography className={classes.details}>
-            {props.event["Project Description"] ?? NotSpecified}
+            {props.event["Project Description"]
+              ? props.event["Project Description"]
+                  .replace(/<\/?p>/gi, "")
+                  .trim()
+              : NotSpecified}
           </Typography>
         </CardContent>
       </CardActionArea>

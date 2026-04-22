@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { CssBaseline, Typography, Grid, Link } from "@mui/material";
-import createStyles from '@mui/styles/createStyles';
-import withStyles from '@mui/styles/withStyles';
+import createStyles from "@mui/styles/createStyles";
+import withStyles from "@mui/styles/withStyles";
 import IconBreadcrumbs from "components/breadcrumbs";
 
 interface Props {
@@ -43,10 +43,10 @@ const StandardsOfCarePage: NextPage<Props> = ({ classes }) => {
             }}
           >
             <Typography style={{ fontSize: 16, fontFamily: "Open Sans" }}>
-              Service learning offers students the opportunity to improve their facility
-              in working with historically vulnerable and stigmatized communities. As such,
-              it is important to make yourself aware of the following for each category of
-              service:
+              Service learning students the opportunity to improve their
+              facility in working with historically vulnerable and stigmatized
+              communities. As such, it is important to make yourself aware of
+              the following for each category of service:
             </Typography>
             <div style={{ paddingTop: "20px" }}>
               <Typography
@@ -62,22 +62,22 @@ const StandardsOfCarePage: NextPage<Props> = ({ classes }) => {
               </Typography>
               <ul style={{ listStyleType: "disc" }}>
                 <li>
-                  Learn how environmental, institutional, political, and economic factors
-                  create barriers to better health.
+                  Learn how environmental, institutional, political, and
+                  economic factors create barriers to better health.
                 </li>
                 <li>
-                  Understand the significance of grounding service in ongoing assessments
-                  of community-identified needs.
+                  Understand the significance of grounding service in ongoing
+                  assessments of community-identified needs.
                 </li>
                 <li>
-                  Recognize that impact may not always be obvious or immediate. It
-                  takes time and patience to develop trust with communities that have
-                  experienced historical trauma. Consider this work an opportunity to
-                  increase clinical and cultural humility.
+                  Recognize that impact may not always be obvious or immediate.
+                  It takes time and patience to develop trust with communities
+                  that have experienced historical trauma. Consider this work an
+                  opportunity to increase clinical and cultural humility.
                 </li>
                 <li>
-                Remember that the main goal of clinical service learning is to connect 
-                patients with sustainable, high-quality care.
+                  Remember that the main goal of clinical service learning is to
+                  connect patients with sustainable, high-quality care.
                 </li>
                 <li>
                   Appreciate the richness and strengths of partner communities.
@@ -96,21 +96,24 @@ const StandardsOfCarePage: NextPage<Props> = ({ classes }) => {
               </Typography>
               <ul style={{ listStyleType: "disc" }}>
                 <li>
-                  Expand your understanding of the many systemic barriers that 
-                  underrepresented students must overcome to achieve their health 
-                  professional goals. 
+                  Expand your understanding of the many systemic barriers that
+                  underrepresented students must overcome to achieve their
+                  health professional goals.
                 </li>
                 <li>
-                  Develop teaching and communication skills by sharing your expertise 
-                  in interviewing, networking, and navigating application processes.
+                  Develop teaching and communication skills by sharing your
+                  expertise in interviewing, networking, and navigating
+                  application processes.
                 </li>
                 <li>
-                  Provide inspiration and role-modeling to young people who might not 
-                  have other connections to the health professional world.
+                  Provide inspiration and role-modeling to young people who
+                  might not have other connections to the health professional
+                  world.
                 </li>
                 <li>
-                Gain experience in career-long mentorship skills considerate
-                 of ethics of working with minors, boundary setting and reciprocity.
+                  Gain experience in career-long mentorship skills considerate
+                  of ethics of working with minors, boundary setting and
+                  reciprocity.
                 </li>
               </ul>
               <Typography
@@ -126,26 +129,28 @@ const StandardsOfCarePage: NextPage<Props> = ({ classes }) => {
               </Typography>
               <ul style={{ listStyleType: "disc" }}>
                 <li>
-                  Learn to address social determinants of health on a large scale through
-                  political, social, or institutional interventions.
+                  Learn to address social determinants of health on a large
+                  scale through political, social, or institutional
+                  interventions.
                 </li>
                 <li>
-                  Appreciate the impact that physicians in training can have on systems 
-                  changes.
+                  Appreciate the impact that physicians in training can have on
+                  systems changes.
                 </li>
                 <li>
-                  Understand that the validity of perspectives is solidified by personal 
-                  experiences and background.
+                  Understand that the validity of perspectives is solidified by
+                  personal experiences and background.
                 </li>
                 <li>
-                  Learn to identify people who are falling through the cracks and to think
-                  upstream to improve outcomes.
+                  Learn to identify people who are falling through the cracks
+                  and to think upstream to improve outcomes.
                 </li>
               </ul>
               <Typography style={{ fontSize: 16, fontFamily: "Open sans" }}>
-                Remember that early exposure to service work will help shape your 
-                professional identity and increase the likelihood that you will continue to do 
-                community service work as a licensed provider!
+                Remember that early exposure to service work will help shape
+                your professional identity and increase the likelihood that you
+                will continue to do community service work as a licensed
+                provider!
               </Typography>
             </div>
           </div>
