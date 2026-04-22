@@ -271,7 +271,7 @@ const EventAdmin = () => {
     if (searchTerm) {
         const lowerTerm = searchTerm.toLowerCase();
         events = events.filter(e => 
-            e.projectName?.toLowerCase().includes(lowerTerm) || 
+            e.name?.toLowerCase().includes(lowerTerm) || 
             title.toLowerCase().includes(lowerTerm)
         );
     }
