@@ -11,6 +11,7 @@ import { CardActionArea } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ProjectData } from "new-types";
+import RichTextField from "./richTextField"
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -102,7 +103,10 @@ const ProjectCard: React.FC<EventCardProps> = (props) => {
             {props.event.Organization}
           </Typography>
           <Typography className={classes.details}>
-            {props.event["Project Description"] ?? NotSpecified}
+            <RichTextField 
+              sx={{marginTop: "-1em"}} 
+              value={props.event["Project Description"] ?? NotSpecified} 
+            />
           </Typography>
         </CardContent>
       </CardActionArea>
