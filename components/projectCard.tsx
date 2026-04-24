@@ -102,15 +102,12 @@ const ProjectCard: React.FC<EventCardProps> = (props) => {
           <Typography variant="subtitle1" color="textSecondary" gutterBottom>
             {props.event.Organization}
           </Typography>
-          {props.event["Project Description"] ? (
-            <RichTextField
-              value={props.event["Project Description"]}
+          <Typography className={classes.details}>
+            <RichTextField 
+              sx={{marginTop: "-1em"}} 
+              value={props.event["Project Description"] ?? NotSpecified} 
             />
-          ) : (
-            <Typography className={classes.details}>
-              {NotSpecified}
-            </Typography>
-          )}
+          </Typography>
         </CardContent>
       </CardActionArea>
     </Card>
