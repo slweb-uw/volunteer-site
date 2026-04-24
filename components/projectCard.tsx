@@ -12,7 +12,6 @@ import { CardActionArea } from "@mui/material";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ProjectData } from "new-types";
-import RichTextField from "./richTextField"
 
 const useStyles = makeStyles(() => ({
   root: {
