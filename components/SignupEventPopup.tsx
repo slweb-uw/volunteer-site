@@ -277,7 +277,7 @@ const SignupEventPopup = ({ open, close, mode, event, handleEventAction }) => {
   };
 
   // Submit Handler
-  const handleSubmit = () => {
+const handleSubmit = () => {
     if (!eventName) { alert("Please enter an Event Name"); return; }
     if (selectedDates.length === 0) { alert("Please select at least one date"); return; }
     if (!startTime || !endTime) { alert("Please enter Start and End times"); return; }
@@ -286,7 +286,30 @@ const SignupEventPopup = ({ open, close, mode, event, handleEventAction }) => {
         alert("Please add at least one volunteer type.");
         return;
     }
+    if (endTime <= startTime) {
+      alert("End time must be after start time");
+      return;
+    }
 
+    const now = new Date();
+    const startToday = new Date();
+    startToday.setHours(0, 0, 0, 0);
+    // checking that each event date selected by user is after current day.
+    for (const date of selectedDates) {
+      const daySelected = new Date(date);
+
+      if (daySelected < startToday) {
+        alert("You can't select a day before today for an event");
+        return;
+      }
+      const startDateTime = new Date(`${date}T${startTime}`);
+      if (daySelected.getTime() === startToday.getTime() && startDateTime <= now) {
+        alert("Start time must be in the future");
+        return;
+      }
+    }      
+
+    
     // Prepare Openings Map
     const openings = volunteerData.reduce((acc, item) => {
         acc[item.type] = item.qty;

@@ -393,7 +393,7 @@ const AddModifyEventModal = ({
       ...data,
       Location: projectLocation,
       "Project Description": description,
-      organization: organization,
+      Organization: organization,
       "Types of Volunteers Needed": volunteersNeeded,
       imageURL: imageURL,
       signupActive: signupActive,
