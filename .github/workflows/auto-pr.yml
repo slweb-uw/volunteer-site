@@ -1,0 +1,35 @@
+name: Auto-Create PR to Main
+
+# Trigger this workflow whenever pushes are made to the development branch
+on:
+  push:
+    branches:
+      - development 
+
+# Give permission to create pull requests
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check for existing PR and Create
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_EXISTS=$(gh pr list --base main --head development --json number --jq 'length')
+          
+          if [ "$PR_EXISTS" -eq "0" ]; then
+            gh pr create \
+              --base main \
+              --head development \
+              --title "Merge from development into main" \
+              --body "This PR was automatically generated because new commits were pushed to the \`development\` branch. Please review and approve."
+          else
+            echo "A pull request already exists."
+          fi
