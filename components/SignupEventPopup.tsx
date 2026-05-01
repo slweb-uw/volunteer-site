@@ -175,7 +175,7 @@ const SignupEventPopup = ({ open, close, mode, event, handleEventAction }) => {
   const [newRoleName, setNewRoleName] = useState("");
 
   useEffect(() => {
-    if (mode === "edit" && event) {
+    if (event && (mode === "edit" || mode === "add")) {
       setEventName(event.name || "");
       setLeadEmail(event.leadEmail || "");
       setLocation(event.address || "");
@@ -189,9 +189,13 @@ const SignupEventPopup = ({ open, close, mode, event, handleEventAction }) => {
          // Convert timestamps to YYYY-MM-DD strings
          const formattedDates = event.dates.map((d: { toDate: () => { (): any; new(): any; toISOString: { (): string; new(): any; }; }; }) => d.toDate().toISOString().split('T')[0]);
          setSelectedDates(formattedDates);
+        if (formattedDates[0]) {
+          setCurrentDateView(new Date(`${formattedDates[0]}T12:00:00`));
+        }
       } else if (event.date) {
          const singleDate = event.date.toDate().toISOString().split('T')[0];
          setSelectedDates([singleDate]);
+        setCurrentDateView(new Date(`${singleDate}T12:00:00`));
       }
 
       // Handling Volunteers
@@ -212,6 +216,8 @@ const SignupEventPopup = ({ open, close, mode, event, handleEventAction }) => {
         setVolunteerData([]);
       }
 
+      setNewRoleName("");
+
     } else {
       // RESET for Add Mode
       setEventName("");
@@ -224,6 +230,7 @@ const SignupEventPopup = ({ open, close, mode, event, handleEventAction }) => {
       setSelectedDates([]);
       setVolunteerData([]);
       setNewRoleName("");
+      setCurrentDateView(new Date());
     }
   }, [mode, event, open]);
 

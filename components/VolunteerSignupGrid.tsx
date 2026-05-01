@@ -76,6 +76,16 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
     );
   };
 
+  const isPastDate = (dateStr: string) => {
+    const compareDate = new Date(dateStr);
+    compareDate.setHours(0, 0, 0, 0);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return compareDate < today;
+  };
+
   // Color Constants
   const COLORS = {
     headerBg: '#4B2E83',
@@ -171,9 +181,11 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
               const cellVolunteers = getVolunteersForCell(role, dateStr);
               const spotsOpen = eventData.openings?.[dateKey]?.[role] ?? 0;
               const isFull = spotsOpen <= 0;
+              const pastEvent = isPastDate(dateStr);
 
               let buttonText = 'BE THE FIRST!';
-              if (isFull) buttonText = 'FULL';
+              if (pastEvent) buttonText = 'PAST EVENT';
+              else if (isFull) buttonText = 'FULL';
               else if (cellVolunteers.length > 0) buttonText = `JOIN : ${spotsOpen} spot(s) left`;
 
               return (
@@ -186,7 +198,7 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
                     flexDirection: 'column',
                     justifyContent: 'space-between',
                     minHeight: '110px',
-                    bgcolor: 'white'
+                      bgcolor: pastEvent ? '#fafafa' : 'white'
                   }}
                 >
                   {/* Volunteer List Area */}
@@ -216,21 +228,21 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
                   {/* Action Button Area */}
                   <Button
                     fullWidth
-                    disabled={isFull}
+                    disabled={isFull || pastEvent}
                     onClick={() => onSignUp(role, dateStr)}
-                    endIcon={!isFull && <ArrowForwardIcon fontSize="small" />}
+                    endIcon={!isFull && !pastEvent && <ArrowForwardIcon fontSize="small" />}
                     sx={{
                       borderRadius: '20px',
                       py: 0.5,
-                      bgcolor: isFull ? '#f5f5f5' : COLORS.btnBg,
-                      color: isFull ? '#aaa' : COLORS.btnText,
+                      bgcolor: (isFull || pastEvent) ? '#f5f5f5' : COLORS.btnBg,
+                      color: (isFull || pastEvent) ? '#aaa' : COLORS.btnText,
                       fontWeight: 700,
                       fontSize: '0.75rem',
                       letterSpacing: '1px',
-                      border: `1px solid ${isFull ? '#eee' : COLORS.btnBorder}`,
+                      border: `1px solid ${(isFull || pastEvent) ? '#eee' : COLORS.btnBorder}`,
                       boxShadow: 'none',
                      '&:hover': {
-                        bgcolor: isFull ? '#f5f5f5' : '#e0d4c0',
+                        bgcolor: (isFull || pastEvent) ? '#f5f5f5' : '#e0d4c0',
                         boxShadow: 'none',
                       },
                     }}
