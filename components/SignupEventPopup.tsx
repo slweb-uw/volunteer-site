@@ -175,7 +175,7 @@ const SignupEventPopup = ({ open, close, mode, event, handleEventAction }) => {
   const [newRoleName, setNewRoleName] = useState("");
 
   useEffect(() => {
-    if (mode === "edit" && event) {
+    if (event && (mode === "edit" || mode === "add")) {
       setEventName(event.name || "");
       setLeadEmail(event.leadEmail || "");
       setLocation(event.address || "");
@@ -189,9 +189,13 @@ const SignupEventPopup = ({ open, close, mode, event, handleEventAction }) => {
          // Convert timestamps to YYYY-MM-DD strings
          const formattedDates = event.dates.map((d: { toDate: () => { (): any; new(): any; toISOString: { (): string; new(): any; }; }; }) => d.toDate().toISOString().split('T')[0]);
          setSelectedDates(formattedDates);
+        if (formattedDates[0]) {
+          setCurrentDateView(new Date(`${formattedDates[0]}T12:00:00`));
+        }
       } else if (event.date) {
          const singleDate = event.date.toDate().toISOString().split('T')[0];
          setSelectedDates([singleDate]);
+        setCurrentDateView(new Date(`${singleDate}T12:00:00`));
       }
 
       // Handling Volunteers
@@ -212,6 +216,8 @@ const SignupEventPopup = ({ open, close, mode, event, handleEventAction }) => {
         setVolunteerData([]);
       }
 
+      setNewRoleName("");
+
     } else {
       // RESET for Add Mode
       setEventName("");
@@ -224,6 +230,7 @@ const SignupEventPopup = ({ open, close, mode, event, handleEventAction }) => {
       setSelectedDates([]);
       setVolunteerData([]);
       setNewRoleName("");
+      setCurrentDateView(new Date());
     }
   }, [mode, event, open]);
 
@@ -277,7 +284,7 @@ const SignupEventPopup = ({ open, close, mode, event, handleEventAction }) => {
   };
 
   // Submit Handler
-const handleSubmit = () => {
+ const handleSubmit = () => {
     if (!eventName) { alert("Please enter an Event Name"); return; }
     if (selectedDates.length === 0) { alert("Please select at least one date"); return; }
     if (!startTime || !endTime) { alert("Please enter Start and End times"); return; }
@@ -286,30 +293,7 @@ const handleSubmit = () => {
         alert("Please add at least one volunteer type.");
         return;
     }
-    if (endTime <= startTime) {
-      alert("End time must be after start time");
-      return;
-    }
 
-    const now = new Date();
-    const startToday = new Date();
-    startToday.setHours(0, 0, 0, 0);
-    // checking that each event date selected by user is after current day.
-    for (const date of selectedDates) {
-      const daySelected = new Date(date);
-
-      if (daySelected < startToday) {
-        alert("You can't select a day before today for an event");
-        return;
-      }
-      const startDateTime = new Date(`${date}T${startTime}`);
-      if (daySelected.getTime() === startToday.getTime() && startDateTime <= now) {
-        alert("Start time must be in the future");
-        return;
-      }
-    }      
-
-    
     // Prepare Openings Map
     const openings = volunteerData.reduce((acc, item) => {
         acc[item.type] = item.qty;
