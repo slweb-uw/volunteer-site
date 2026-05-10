@@ -5,6 +5,7 @@ import {
   collection,
   doc,
   getDoc,
+  getDocs,
   setDoc,
   Timestamp,
   deleteDoc,
@@ -45,7 +46,7 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import SignupEventPopup from "components/SignupEventPopup";
 import { exportToCSV } from "helpers/csvExport";
 import AuthorizationMessage from "pages/AuthorizationMessage";
-import { EventData } from "new-types";
+import { EventData, VolunteerData } from "new-types";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -215,7 +216,6 @@ const EventAdmin = () => {
   const { user, isAdmin, isLead } = useAuth();
 
   const [allEvents, setAllEvents] = useState<EventData[]>([]);
-  const [selectedEvent, setSelectedEvent] = useState<EventData | null>(null);
   const [editedEvent, setEditedEvent] = useState<EventData | null>(null);
   const [openEventFormPopup, setOpenEventFormPopup] = useState(false);
   const [title, setTitle] = useState("");
@@ -279,6 +279,29 @@ const EventAdmin = () => {
     return events;
   }, [allEvents, searchTerm, title]);
 
+  const fetchVolunteerData = async (eventToExport: EventData) => {
+    if (!eventToExport) return;
+    try {
+      const volunteerRef = collection(db, `events/${eventToExport.id}/volunteers`)
+      const volunteersSnapshot = await getDocs(volunteerRef);
+      const volunteerData = volunteersSnapshot.docs.map((doc) => ({
+        uid: doc.id,
+        ...doc.data(),
+      }));
+
+      return volunteerData as VolunteerData[];
+
+    } catch (error) {
+      console.error("Error fetching volunteer data:", error);
+      return undefined;
+    }
+  };
+
+  const handleExportCSV = async (eventToExport: EventData) => {
+    const volunteers = await fetchVolunteerData(eventToExport);
+    exportToCSV(volunteers? volunteers : []);
+  };
+
   const handleOpenEventFormPopup = (mode: "add" | "edit", eventToEdit: EventData | null) => {
     setEditedEvent(eventToEdit);
     setOpenEventFormPopup(true);
@@ -296,7 +319,6 @@ const EventAdmin = () => {
       if (mode === "delete" && eventId) {
         const eventRef = doc(db, collectionPath, eventId);
         await deleteDoc(eventRef);
-        setSelectedEvent(null);
         // alert("Event deleted successfully!");
         return;
       }
@@ -520,7 +542,7 @@ const EventAdmin = () => {
                         <TableCell className={classes.tableCell} align="right">
                             <IconButton 
                                 size="small" 
-                                onClick={() => exportToCSV(ev)}
+                                onClick={() => handleExportCSV(ev)}
                                 title="Export"
                             >
                                 <DownloadIcon fontSize="small" />

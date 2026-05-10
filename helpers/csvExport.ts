@@ -1,31 +1,27 @@
 import Papa from 'papaparse';
+import { VolunteerData } from "new-types";
 
-export const exportToCSV = (event: any) => {
-  if(event == null) return;
+export const exportToCSV = (volunteers: VolunteerData[]) => {
+  if(volunteers == null) return;
+  const csvData: { Date: string; Role: string; Name: string; Email: any; Phone: any; Discipline: any; Comments: any; }[] = [];
+  if (volunteers) {
+    volunteers.forEach((volunteer: any) => {
+      const formattedPhoneNumber = volunteer.phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
 
-  const csvData: { Role: any; Name: string; Email: any; Phone: any; Discipline: any; Comments: any; }[] = [];
+      const volunteerRow = {
+        Date: volunteer.date.split('T')[0],
+        Role: volunteer.role,
+        Name: volunteer.name,
+        Email: volunteer.email,
+        Phone: formattedPhoneNumber,
+        Discipline: volunteer.studentDiscipline,
+        Comments: volunteer.comments
+      };
+      
+      csvData.push(volunteerRow);
 
-    if (event.volunteerTypes && event.volunteers) {
-      event.volunteerTypes.forEach((type: any) => {
-        const volunteersOfType = event.volunteers[type] ? Object.values(event.volunteers[type]) : [];
-
-        volunteersOfType.forEach((volunteer: any) => {
-          const formattedPhoneNumber = volunteer.phoneNumber.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
-
-          const volunteerRow = {
-            Role: type,
-            Name: `${volunteer.firstName} ${volunteer.lastName}`,
-            Email: volunteer.email,
-            Phone: formattedPhoneNumber,
-            Discipline: volunteer.studentDiscipline,
-            Comments: volunteer.comments
-          };
-
-          csvData.push(volunteerRow);
-
-        });
-      });
-    }
+    });
+  }
 
   const csvContent = Papa.unparse(csvData);
 
