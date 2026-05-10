@@ -177,6 +177,17 @@ function CalendarView({ curDate, events }: { curDate: Date; events: any }) {
     () => getDaysInMonth(curDate.getMonth(), curDate.getFullYear()),
     [curDate],
   );
+
+  const isPastDay = (date: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const compareDate = new Date(date);
+    compareDate.setHours(0, 0, 0, 0);
+
+    return compareDate < today;
+  };
+
   return (
     <div style={{ padding: "1rem 2rem" }}>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)" }}>
@@ -210,27 +221,54 @@ function CalendarView({ curDate, events }: { curDate: Date; events: any }) {
           >
             <Typography>{date.getDate()}</Typography>
             <div style={{ display: "flex", flexDirection: "column", gap: 8}}>
-              {getEventsForDate(date, events).map((event) => (
-                <Card key={`${event.id}-${date.toISOString()}`} style={{ boxShadow: "none", backgroundColor: "#C5B4E3", padding: "4px"}}>
-                  <Link
-                    href={`/calendar/${event.id}/signup?date=${date.toISOString()}`}
+              {getEventsForDate(date, events).map((event) => {
+                const pastEvent = isPastDay(date);
+
+                return (
+                  <Card
+                    key={`${event.id}-${date.toISOString()}`}
                     style={{
-                      textDecoration: "none",
-                      color: "black",
+                      boxShadow: "none",
+                      backgroundColor: pastEvent ? "#e5e5e5" : "#C5B4E3",
+                      padding: "4px",
+                      opacity: pastEvent ? 0.7 : 1,
                     }}
                   >
-                    <CardActionArea>
-                      <Typography variant="subtitle1" style={{ fontWeight: 600 }}>
-                        {event.name}
-                      </Typography>
-                      <Typography>
-                        <span>{timeToLocaleTime(event.startTime)}</span>-
-                        <span>{timeToLocaleTime(event.endTime)}</span>
-                      </Typography>
-                    </CardActionArea>
-                  </Link>
-                </Card>
-              ))}
+                    {pastEvent ? (
+                      <CardActionArea disabled sx={{ cursor: "not-allowed", px: 1, py: 0.5 }}>
+                        <Typography variant="subtitle1" style={{ fontWeight: 600, color: "#666" }}>
+                          {event.name}
+                        </Typography>
+                        <Typography style={{ color: "#666" }}>
+                          <span>{timeToLocaleTime(event.startTime)}</span>-
+                          <span>{timeToLocaleTime(event.endTime)}</span>
+                        </Typography>
+                        <Typography variant="caption" style={{ color: "#666", fontWeight: 700 }}>
+                          Past event
+                        </Typography>
+                      </CardActionArea>
+                    ) : (
+                      <Link
+                        href={`/calendar/${event.id}/signup?date=${date.toISOString()}`}
+                        style={{
+                          textDecoration: "none",
+                          color: "black",
+                        }}
+                      >
+                        <CardActionArea>
+                          <Typography variant="subtitle1" style={{ fontWeight: 600 }}>
+                            {event.name}
+                          </Typography>
+                          <Typography>
+                            <span>{timeToLocaleTime(event.startTime)}</span>-
+                            <span>{timeToLocaleTime(event.endTime)}</span>
+                          </Typography>
+                        </CardActionArea>
+                      </Link>
+                    )}
+                  </Card>
+                );
+              })}
             </div>
           </div>
         ))}

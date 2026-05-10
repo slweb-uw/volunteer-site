@@ -31,7 +31,7 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton
+  IconButton,
 } from "@mui/material";
 
 // Icons
@@ -40,6 +40,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import ContactPageIcon from "@mui/icons-material/Description";
 import EditIcon from "@mui/icons-material/Edit";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
@@ -143,6 +144,29 @@ const useStyles = makeStyles((theme) => ({
     gap: theme.spacing(2),
     alignItems: "center",
   },
+  viewToggleContainer: {
+    display: "flex",
+    gap: theme.spacing(1),
+    marginBottom: theme.spacing(2),
+  },
+  viewToggleButton: {
+    minWidth: "auto",
+    padding: "6px 14px",
+    borderRadius: "999px",
+    textTransform: "none",
+    fontWeight: 700,
+  },
+  viewToggleButtonActive: {
+    backgroundColor: "#4C2F83",
+    color: "white",
+    "&:hover": {
+      backgroundColor: "#3f276d",
+    },
+  },
+  viewToggleButtonInactive: {
+    backgroundColor: "#f3f0ea",
+    color: "#4C2F83",
+  },
   filterLabel: {
     fontWeight: 700,
     marginRight: theme.spacing(1),
@@ -218,11 +242,40 @@ const EventAdmin = () => {
   const [allEvents, setAllEvents] = useState<EventData[]>([]);
   const [editedEvent, setEditedEvent] = useState<EventData | null>(null);
   const [openEventFormPopup, setOpenEventFormPopup] = useState(false);
+  const [popupMode, setPopupMode] = useState<"add" | "edit">("add");
   const [title, setTitle] = useState("");
   
   // Search/Filter UI placeholders
   const [searchTerm, setSearchTerm] = useState("");
   const [filterMonth, setFilterMonth] = useState("Any Month");
+  const [eventView, setEventView] = useState<"active" | "past">("active");
+
+  const getEventEndDate = (event: EventData) => {
+    const eventDates = Array.isArray(event.dates) && event.dates.length > 0
+      ? event.dates.map((timestamp: Timestamp) => timestamp.toDate())
+      : event.date
+        ? [event.date.toDate()]
+        : [];
+
+    if (eventDates.length === 0) return null;
+
+    return eventDates.reduce((latest, date) => (
+      date.getTime() > latest.getTime() ? date : latest
+    ));
+  };
+
+  const isPastEvent = (event: EventData) => {
+    const endDate = getEventEndDate(event);
+    if (!endDate) return false;
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const eventDay = new Date(endDate);
+    eventDay.setHours(0, 0, 0, 0);
+
+    return eventDay < today;
+  };
 
   useEffect(() => {
     if (!router.isReady || !location || !project) return;
@@ -263,21 +316,22 @@ const EventAdmin = () => {
 
   // Filter logic
   const filteredEvents = useMemo(() => {
-    // Basic date filter: Show upcoming (or all if we wanted to implement the expired events switch again)
-    const now = new Date();
-    let events = allEvents.filter((e) => e.date.toDate() >= now);
+    let events = allEvents.filter((event) =>
+      eventView === "past" ? isPastEvent(event) : !isPastEvent(event),
+    );
 
     // Apply simple search filter
     if (searchTerm) {
         const lowerTerm = searchTerm.toLowerCase();
         events = events.filter(e => 
             e.name?.toLowerCase().includes(lowerTerm) || 
+            e.projectName?.toLowerCase().includes(lowerTerm) ||
             title.toLowerCase().includes(lowerTerm)
         );
     }
     
     return events;
-  }, [allEvents, searchTerm, title]);
+  }, [allEvents, eventView, searchTerm, title]);
 
   const fetchVolunteerData = async (eventToExport: EventData) => {
     if (!eventToExport) return;
@@ -303,7 +357,14 @@ const EventAdmin = () => {
   };
 
   const handleOpenEventFormPopup = (mode: "add" | "edit", eventToEdit: EventData | null) => {
+    setPopupMode(mode);
     setEditedEvent(eventToEdit);
+    setOpenEventFormPopup(true);
+  };
+
+  const handleDuplicateEvent = (eventToDuplicate: EventData) => {
+    setPopupMode("add");
+    setEditedEvent(eventToDuplicate);
     setOpenEventFormPopup(true);
   };
 
@@ -446,6 +507,21 @@ const EventAdmin = () => {
         </Button>
       </div>
 
+      <div className={classes.viewToggleContainer}>
+        <Button
+          className={`${classes.viewToggleButton} ${eventView === "active" ? classes.viewToggleButtonActive : classes.viewToggleButtonInactive}`}
+          onClick={() => setEventView("active")}
+        >
+          Active Events
+        </Button>
+        <Button
+          className={`${classes.viewToggleButton} ${eventView === "past" ? classes.viewToggleButtonActive : classes.viewToggleButtonInactive}`}
+          onClick={() => setEventView("past")}
+        >
+          Past Events
+        </Button>
+      </div>
+
       {/* SEARCH & FILTERS TOOLBAR */}
       <div className={classes.toolbar}>
         <TextField 
@@ -554,6 +630,13 @@ const EventAdmin = () => {
                             >
                                 <EditIcon fontSize="small" />
                             </IconButton>
+                                <IconButton 
+                                  size="small" 
+                                  onClick={() => handleDuplicateEvent(ev)}
+                                  title="Duplicate"
+                                >
+                                  <ContentCopyIcon fontSize="small" />
+                                </IconButton>
                             <IconButton 
                                 size="small" 
                                 onClick={() => {
@@ -589,7 +672,7 @@ const EventAdmin = () => {
       <SignupEventPopup
         open={openEventFormPopup}
         close={() => setOpenEventFormPopup(false)}
-        mode={editedEvent ? "edit" : "add"}
+        mode={popupMode}
         event={editedEvent}
         handleEventAction={handleEventAction}
       />
