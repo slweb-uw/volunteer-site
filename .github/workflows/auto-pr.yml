@@ -30,6 +30,7 @@ jobs:
               --head development \
               --title "Merge from development into main" \
               --body "This PR was automatically generated because new commits were pushed to the \`development\` branch. Please review and approve."
+              || echo "No commits between main and development to create a PR. Skipping."
           else
             echo "A pull request already exists."
           fi
