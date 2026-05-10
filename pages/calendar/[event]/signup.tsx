@@ -337,7 +337,7 @@ const Event = ({
             volunteers={volunteer}
             onSignUp={handleOpenVolunteerPopup}
             relevantDates={datesInfo[0] as string[]}
-            targetDay={datesInfo[1]}
+            targetDay={datesInfo.length > 1 ? datesInfo[1] : datesInfo[0]}
           />
         </Box>
       )}

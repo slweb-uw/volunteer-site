@@ -9,13 +9,8 @@ interface VolunteerSignupGridProps {
   volunteers: VolunteerData[];
   onSignUp: (role: string, date: string) => void;
   relevantDates: string[];
-  targetDay: Number;
+  targetDay: number | string | string[];
 };
-
-type rolesAndCapacity = {
-  role: string;
-  spots: Number;
-}
 
 const parseTimeStr = (baseDate: Date, timeString?: string) => {
   if (!timeString) return baseDate;
