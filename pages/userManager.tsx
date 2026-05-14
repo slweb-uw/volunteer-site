@@ -265,7 +265,7 @@ const AdminPage = () => {
         >
           <TableCell className={classes.listItemText}>{user.email}</TableCell>
           <TableCell>
-            {/* {user.timestamp && user.timestamp.toDate().toLocaleString()} */}
+            {user.timestamp && user.timestamp.toDate().toLocaleString()}
           </TableCell>
           <TableCell align="right">
             <IconButton
