@@ -1,16 +1,16 @@
 import React from "react";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 
 const useStyles = makeStyles((theme) => ({
   bubble: {
-    border: "2px solid #4b2e83", 
-    borderRadius: '15px',
-    display: 'inline-block', 
-    padding: '5px 10px', 
-    fontWeight: 'bold', 
+    border: "2px solid #4b2e83",
+    borderRadius: "15px",
+    display: "inline-block",
+    padding: "5px 10px",
+    fontWeight: "bold",
     color: "#4b2e83",
     fontSize: "12px",
-    marginRight: "0.5rem"
+    marginRight: "0.5rem",
   },
 }));
 
