@@ -14,7 +14,7 @@ import { doc, runTransaction, DocumentData } from "firebase/firestore";
 import { db } from "firebaseClient";
 import AuthorizationMessage from "pages/AuthorizationMessage";
 import VolunteerSignupGrid from "../../../components/VolunteerSignupGrid";
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
 type RichEventFieldProps = {
   name: string;
@@ -76,7 +76,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     uid: doc.id,
     ...doc.data(),
   }));
-  
+
   const rawEventData = eventDoc.data() as DocumentData;
 
   const eventData = {
@@ -108,6 +108,12 @@ const useStyles = makeStyles(() => ({
     borderRadius: "10px",
     objectFit: "cover",
   },
+  loadingContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "50vh",
+  },
 }));
 
 const Event = ({
@@ -127,29 +133,40 @@ const Event = ({
       return eventData.date ? [eventData.date.toString()] : [];
     }
     const dateStrings = eventData.dates as unknown as string[];
-    const sortedDates = [...dateStrings].sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-    const targetQuery = typeof queryDate === 'string' ? queryDate : sortedDates[0];
-    const targetDay = new Date(targetQuery).toISOString().split('T')[0];
-    const targetIndex = sortedDates.findIndex(d => new Date(d).toISOString().split('T')[0] === targetDay);
+    const sortedDates = [...dateStrings].sort(
+      (a, b) => new Date(a).getTime() - new Date(b).getTime(),
+    );
+    const targetQuery =
+      typeof queryDate === "string" ? queryDate : sortedDates[0];
+    const targetDay = new Date(targetQuery).toISOString().split("T")[0];
+    const targetIndex = sortedDates.findIndex(
+      (d) => new Date(d).toISOString().split("T")[0] === targetDay,
+    );
     // return all dates and target index if it exists, otherwise default to first date
     return [sortedDates, targetIndex == -1 ? 0 : targetIndex];
   }, [eventData.dates, eventData.date, queryDate]);
-  const { user, isAdmin, isAuthorized, isLead } = useAuth();
+  const { user, isAdmin, isAuthorized, isLead, isLoading } = useAuth();
   const [selectedRole, setSelectedRole] = useState("");
   const [selectedDateSignup, setSelectedDateSignup] = useState("");
-  const [editedVolunteer, setEditedVolunteer] = useState<VolunteerData | null>(null);
+  const [editedVolunteer, setEditedVolunteer] = useState<VolunteerData | null>(
+    null,
+  );
   const [openVolunteerPopup, setOpenVolunteerPopup] = useState(false);
 
   const getCurrentUserRecordForDate = (date: string) => {
     if (!user) return undefined;
-    return volunteer.find(v => 
-      v.uid === user.uid && 
-      v.date && 
-      v.date.split('T')[0] === date.split('T')[0]
+    return volunteer.find(
+      (v) =>
+        v.uid === user.uid &&
+        v.date &&
+        v.date.split("T")[0] === date.split("T")[0],
     );
   };
 
-  if (!isAdmin && !isAuthorized && !isLead) {
+  if (isLoading) {
+    return <div className={classes.loadingContainer}>Loading...</div>;
+  }
+  if (isLoading == false && !isAdmin && !isAuthorized && !isLead) {
     return <AuthorizationMessage user={user} />;
   }
 
@@ -165,7 +182,7 @@ const Event = ({
     if (!selectedRole || !user || !selectedDateSignup) return;
 
     const eventRef = doc(db, "events", eventID);
-    const dateKey = new Date(selectedDateSignup).toISOString().split('T')[0];
+    const dateKey = new Date(selectedDateSignup).toISOString().split("T")[0];
     // COMPOSITE KEY: uid + date ensures uniqueness per day, but allows multiple days
     const docId = `${user.uid}_${dateKey}`;
     const volunteerRef = doc(db, `events/${eventID}/volunteers`, docId);
@@ -173,7 +190,7 @@ const Event = ({
       await runTransaction(db, async (transaction) => {
         const eventDoc = await transaction.get(eventRef);
         if (!eventDoc.exists()) throw new Error("Event does not exist!");
-        
+
         const existingVolunteerDoc = await transaction.get(volunteerRef);
         if (existingVolunteerDoc.exists()) {
           throw new Error("You are already signed up for this date.");
@@ -184,7 +201,7 @@ const Event = ({
         const spotsOpen = eventData.openings?.[dateKey]?.[selectedRole];
 
         if (spotsOpen === undefined) {
-           throw new Error("This role is not available for this date.");
+          throw new Error("This role is not available for this date.");
         }
         if (spotsOpen < 1) {
           throw new Error("No spots left for this position.");
@@ -207,10 +224,10 @@ const Event = ({
       alert(`Error: ${e.message}`);
     }
   };
-  
+
   const handleOpenVolunteerPopup = (type: string, date: string) => {
     setSelectedDateSignup(date); // Capture the date context
-    
+
     // check if they are already registered for THIS date
     const recordForDate = getCurrentUserRecordForDate(date);
 
@@ -224,46 +241,50 @@ const Event = ({
     setOpenVolunteerPopup(true);
   };
 
-  
-
-  const handleDeleteVolunteer = async (volunteerData: VolunteerData, mode: string) => {
+  const handleDeleteVolunteer = async (
+    volunteerData: VolunteerData,
+    mode: string,
+  ) => {
     if (!volunteerData.date) {
-        alert("Error: Missing date information for this record.");
-        return;
+      alert("Error: Missing date information for this record.");
+      return;
     }
 
-    const message = mode === "remove"
-      ? "Are you sure you want to remove this volunteer?"
-      : "Are you sure you want to withdraw from this role?";
+    const message =
+      mode === "remove"
+        ? "Are you sure you want to remove this volunteer?"
+        : "Are you sure you want to withdraw from this role?";
 
     if (!window.confirm(message)) return;
 
     const eventRef = doc(db, "events", eventID);
-    const dateKey = new Date(volunteerData.date).toISOString().split('T')[0];
+    const dateKey = new Date(volunteerData.date).toISOString().split("T")[0];
     // Reconstruct Composite Key
     const docId = `${volunteerData.uid}_${dateKey}`;
     const volunteerRef = doc(db, `events/${eventID}/volunteers`, docId);
 
     try {
-        await runTransaction(db, async (transaction) => {
-            const volunteerDoc = await transaction.get(volunteerRef);
-            const eventDoc = await transaction.get(eventRef);
+      await runTransaction(db, async (transaction) => {
+        const volunteerDoc = await transaction.get(volunteerRef);
+        const eventDoc = await transaction.get(eventRef);
 
-            if (!volunteerDoc.exists() || !eventDoc.exists()) throw new Error("Error finding data.");
-            
-            const volunteerRole = volunteerDoc.data().role;
-            
-            const currentOpenings = eventDoc.data().openings?.[dateKey]?.[volunteerRole];
+        if (!volunteerDoc.exists() || !eventDoc.exists())
+          throw new Error("Error finding data.");
 
-            if (typeof currentOpenings === 'number') {
-                transaction.update(eventRef, {
-                    [`openings.${dateKey}.${volunteerRole}`]: currentOpenings + 1,
-                });
-            }
+        const volunteerRole = volunteerDoc.data().role;
 
-            transaction.delete(volunteerRef);
-        });
-        handleCloseVolunteerPopup();
+        const currentOpenings =
+          eventDoc.data().openings?.[dateKey]?.[volunteerRole];
+
+        if (typeof currentOpenings === "number") {
+          transaction.update(eventRef, {
+            [`openings.${dateKey}.${volunteerRole}`]: currentOpenings + 1,
+          });
+        }
+
+        transaction.delete(volunteerRef);
+      });
+      handleCloseVolunteerPopup();
     } catch (e: any) {
       alert(`Error: ${e.message}`);
     }
@@ -273,62 +294,69 @@ const Event = ({
     <div className={classes.page}>
       <CssBaseline />
       <Box sx={{ mb: 3 }}>
-        <Button 
-            onClick={() => router.back()}
-            startIcon={<ArrowBackIosNewIcon sx={{ fontSize: '1.2rem !important' }} />}
-            sx={{ 
-                color: '#4b2e83', 
-                fontWeight: 700, 
-                textTransform: 'uppercase', 
-                fontSize: '1.2rem',
-                paddingLeft: 0,
-                '&:hover': { backgroundColor: 'transparent', textDecoration: 'underline' }
-            }}
+        <Button
+          onClick={() => router.back()}
+          startIcon={
+            <ArrowBackIosNewIcon sx={{ fontSize: "1.2rem !important" }} />
+          }
+          sx={{
+            color: "#4b2e83",
+            fontWeight: 700,
+            textTransform: "uppercase",
+            fontSize: "1.2rem",
+            paddingLeft: 0,
+            "&:hover": {
+              backgroundColor: "transparent",
+              textDecoration: "underline",
+            },
+          }}
         >
-            Back
+          Back
         </Button>
       </Box>
       {/* EVENT TITLE */}
       <Box sx={{ mb: 4 }}>
-        <Typography 
-            variant="h4" 
-            component="h1"
-            style={{ 
-                fontWeight: 900, 
-                color: '#4C2F83', 
-                marginBottom: '4px',
-                fontFamily: 'Encode Sans, sans-serif'
-            }}
+        <Typography
+          variant="h4"
+          component="h1"
+          style={{
+            fontWeight: 900,
+            color: "#4C2F83",
+            marginBottom: "4px",
+            fontFamily: "Encode Sans, sans-serif",
+          }}
         >
           {eventData?.name} - Sign Up
         </Typography>
-        <Typography variant="body1" style={{ color: '#000', fontSize: '1rem' }}>
-            Hosted by <span style={{ textDecoration: 'underline' }}>{eventData.projectName}</span>
+        <Typography variant="body1" style={{ color: "#000", fontSize: "1rem" }}>
+          Hosted by{" "}
+          <span style={{ textDecoration: "underline" }}>
+            {eventData.projectName}
+          </span>
         </Typography>
       </Box>
-      
 
-      <Box sx={{ mb: 1, maxWidth: '800px' }}>
-          <RichEventField
-            name="Event Description"
-            value={eventData?.eventInformation}
-            removeTopMargin={true}
-          />
-          <RichEventField
-            name="Address"
-            value={eventData?.address}
-            removeTopMargin={true}
-          />
-          <RichEventField
-            name="Lead Contact"
-            value={eventData?.leadEmail}
-            removeTopMargin={true}
-          />
-          <RichEventField
-            name="Before Signing Up"
-            value={eventData?.requiredTraining}
-            removeTopMargin={true}
-          />
+      <Box sx={{ mb: 1, maxWidth: "800px" }}>
+        <RichEventField
+          name="Event Description"
+          value={eventData?.eventInformation}
+          removeTopMargin={true}
+        />
+        <RichEventField
+          name="Address"
+          value={eventData?.address}
+          removeTopMargin={true}
+        />
+        <RichEventField
+          name="Lead Contact"
+          value={eventData?.leadEmail}
+          removeTopMargin={true}
+        />
+        <RichEventField
+          name="Before Signing Up"
+          value={eventData?.requiredTraining}
+          removeTopMargin={true}
+        />
       </Box>
       {datesInfo.length > 0 && (
         <Box sx={{ mt: 4, mb: 8 }}>
@@ -363,16 +391,16 @@ const Event = ({
       ></Divider>
       {user && (
         <VolunteerPopup
-            open={openVolunteerPopup}
-            handleClose={handleCloseVolunteerPopup}
-            email={user.email}
-            name={user.displayName}
-            uid={user.uid}
-            phone={user.phoneNumber}
-            position={selectedRole}
-            addVolunteer={handleAddVolunteer}
-            volunteer={editedVolunteer}
-            onDeleteVolunteer={handleDeleteVolunteer}
+          open={openVolunteerPopup}
+          handleClose={handleCloseVolunteerPopup}
+          email={user.email}
+          name={user.displayName}
+          uid={user.uid}
+          phone={user.phoneNumber}
+          position={selectedRole}
+          addVolunteer={handleAddVolunteer}
+          volunteer={editedVolunteer}
+          onDeleteVolunteer={handleDeleteVolunteer}
         />
       )}
     </div>

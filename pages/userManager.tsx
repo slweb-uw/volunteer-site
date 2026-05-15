@@ -9,7 +9,7 @@ import {
   query,
   getDoc,
   deleteDoc,
-  onSnapshot
+  onSnapshot,
 } from "firebase/firestore";
 import { useAuth } from "auth";
 import makeStyles from "@mui/styles/makeStyles";
@@ -112,6 +112,12 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     position: "absolute",
   },
+  loadingContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "50vh",
+  },
 }));
 
 const label: any = {
@@ -122,7 +128,7 @@ const label: any = {
 
 const AdminPage = () => {
   const classes = useStyles();
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, isLoading } = useAuth();
   const [admins, setAdmins] = useState([]);
   const [volunteers, setVolunteers] = useState([]);
   const [leads, setLeads] = useState([]);
@@ -150,7 +156,7 @@ const AdminPage = () => {
   const loadUserType = async (userType, setState) => {
     const userTypeRef = collection(db, userType);
     const snapshot = await getDocs(userTypeRef);
-    const data = [] 
+    const data = [];
     snapshot.forEach((doc) => {
       data.push({ id: doc.id, ...doc.data() });
     });
@@ -163,10 +169,16 @@ const AdminPage = () => {
       setAdmins(data);
     });
 
-    const unsubVolunteers = onSnapshot(collection(db, "Volunteers"), (snapshot) => {
-      const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      setVolunteers(data);
-    });
+    const unsubVolunteers = onSnapshot(
+      collection(db, "Volunteers"),
+      (snapshot) => {
+        const data = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setVolunteers(data);
+      },
+    );
 
     const unsubLeads = onSnapshot(collection(db, "Leads"), (snapshot) => {
       const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
@@ -208,7 +220,8 @@ const AdminPage = () => {
     addDoc(collection(db, activeSection), {
       email: newUserEmail,
       timestamp: serverTimestamp(),
-    }).then(() => {
+    })
+      .then(() => {
         console.log("User added successfully!");
         setNewUserEmail("");
       })
@@ -231,7 +244,10 @@ const AdminPage = () => {
       });
   };
 
-  if (!user || !isAdmin) {
+  if (isLoading) {
+    return <div className={classes.loadingContainer}>Loading...</div>;
+  }
+  if (isLoading == false && (!user || !isAdmin)) {
     return <AuthorizationMessage user={user} />;
   }
 
