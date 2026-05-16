@@ -2,7 +2,16 @@ import { firebaseAdmin } from "firebaseAdmin";
 import { useAuth } from "auth";
 import React, { useState } from "react";
 import { GetServerSideProps } from "next";
+import {VolunteerData} from "new-types"
 
+type Attendee = VolunteerData & {
+    docId: string;
+};
+
+type ViewingAttendeesPageProps = {
+    attendees: Attendee[];
+    eventName: string;
+}
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const { event } = ctx.params ?? {};
@@ -26,8 +35,19 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         ...doc.data(),
     }));
 
-    return { props: { eventName: eventDoc.data()?.name ?? "Event", 
-        attendees
-    } };
+    return { 
+        props: { eventName: eventDoc.data()?.name ?? "Event", 
+        attendees,
+        } 
+    };
+};
+const ViewingAttendeesPage = ({ eventName, attendees }: ViewingAttendeesPageProps) => {
+    return (
+        <main>
+            <h1>{eventName} Attendees</h1>
+            <pre> {JSON.stringify(attendees, null, 2)}</pre>
+        </main>
+    );
+};
+export default ViewingAttendeesPage;
 
-}
