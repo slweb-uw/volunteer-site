@@ -623,12 +623,23 @@ const EventAdmin = () => {
                             >
                                 <DownloadIcon fontSize="small" />
                             </IconButton>
+
+                          <IconButton
+                            size = "small"
+                            onClick={() => router.push('/calendar/${ev.id}/attendees')}
+                            title = "view attendees"
+                          >
+                            <ContactPageIcon fontSize="small" />
+                
+                        </IconButton>
                             <IconButton 
                                 size="small" 
                                 onClick={() => handleOpenEventFormPopup("edit", ev)}
                                 title="Edit"
                             >
                                 <EditIcon fontSize="small" />
+
+    
                             </IconButton>
                                 <IconButton 
                                   size="small" 
