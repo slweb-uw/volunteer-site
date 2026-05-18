@@ -626,8 +626,14 @@ const EventAdmin = () => {
 
                           <IconButton
                             size = "small"
-                            onClick={() => router.push('/calendar/${ev.id}/attendees')}
+                            onClick={() => 
+                              router.push({
+                                pathname: `/calendar/[event]/attendees`, 
+                                query: {event: ev.id}, 
+                              })
+                            }
                             title = "view attendees"
+                          
                           >
                             <ContactPageIcon fontSize="small" />
                 
