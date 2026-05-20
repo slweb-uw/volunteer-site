@@ -40,3 +40,4 @@ yarn.lock
 
 #firebase info
 sign-up-9453b-firebase-adminsdk-ahys9-1b56bc2534.json
+*.tsbuildinfo
