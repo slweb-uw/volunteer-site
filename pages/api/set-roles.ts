@@ -23,16 +23,21 @@ export default async function handler(
   } catch (error) {
     return res.status(401).json({ error: "Invalid token" });
   }
-  const { uid, role } = req.body;
-  // check if uid is non-null and role is valid value
-  if (!uid || typeof uid != "string") {
-    return res.status(400).json({ error: "Invalid uid" });
+  const { email, role } = req.body;
+  // check if email is non-null and role is valid value
+  if (!email || typeof email != "string") {
+    return res.status(400).json({ error: "Invalid email" });
   }
   if (!["admin", "lead", "volunteer"].includes(role)) {
     return res.status(400).json({ error: "Invalid role" });
   }
-
-  await firebaseAdmin.auth().setCustomUserClaims(uid, { role });
+  // validate email actually exists in Firebase
+  try {
+    const userRecord = await firebaseAdmin.auth().getUserByEmail(email);
+    await firebaseAdmin.auth().setCustomUserClaims(userRecord.uid, { role });
+  } catch (error) {
+    return res.status(404).json({ error: "No account found for this email" });
+  }
 
   return res.status(200).json({ success: true });
 }
