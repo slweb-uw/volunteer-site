@@ -33,7 +33,9 @@ export default async function handler(
   }
   // validate email actually exists in Firebase
   try {
+    // throws an error if user not found by email
     const userRecord = await firebaseAdmin.auth().getUserByEmail(email);
+
     await firebaseAdmin.auth().setCustomUserClaims(userRecord.uid, { role });
   } catch (error) {
     return res.status(404).json({ error: "No account found for this email" });
