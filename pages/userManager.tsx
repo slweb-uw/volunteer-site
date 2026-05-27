@@ -252,7 +252,21 @@ const AdminPage = () => {
       });
   };
 
-  const removeUser = (userEmail) => {
+  const removeUser = async (userEmail) => {
+    const token = await auth.currentUser?.getIdToken();
+    const res = await fetch("/api/set-roles", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ email: userEmail, role: null }),
+    });
+
+    if (!res.ok) {
+      console.error("Failed to remove claim");
+      return;
+    }
     const usersRef = collection(db, activeSection);
     getDocs(query(usersRef, where("email", "==", userEmail)))
       .then((querySnapshot) => {
