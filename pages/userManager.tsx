@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { db } from "firebaseClient";
+import { db, auth } from "firebaseClient";
 import {
   addDoc,
   collection,
@@ -192,7 +192,7 @@ const AdminPage = () => {
     };
   }, []);
 
-  const addUser = (e) => {
+  const addUser = async (e) => {
     e.preventDefault();
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     setExistentEmail(false);
@@ -203,9 +203,11 @@ const AdminPage = () => {
       return;
     }
 
-    var existentEmail;
+    let existentEmail;
     if (activeSection === "Admins") {
       existentEmail = admins.find((admin) => admin.email === newUserEmail);
+    } else if (activeSection == "Leads") {
+      existentEmail = leads.find((lead) => lead.email === newUserEmail);
     } else {
       existentEmail = volunteers.find(
         (volunteer) => volunteer.email === newUserEmail,
@@ -216,7 +218,27 @@ const AdminPage = () => {
       setNewUserEmail("");
       return;
     }
+    const roleMap = { Admins: "admin", Leads: "lead", Volunteers: "volunteer" };
+    const token = await auth.currentUser?.getIdToken();
+    // query endpoint to check if email that we are changing role of exists + set custom claims if it does
+    const res = await fetch("/api/set-roles", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        email: newUserEmail,
+        role: roleMap[activeSection],
+      }),
+    });
 
+    if (!res.ok) {
+      const { error } = await res.json();
+      console.error(error);
+      return;
+    }
+    // add to collection to display who has which role
     addDoc(collection(db, activeSection), {
       email: newUserEmail,
       timestamp: serverTimestamp(),
