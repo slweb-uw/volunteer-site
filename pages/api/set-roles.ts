@@ -8,7 +8,7 @@ export default async function handler(
   if (req.method != "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
-  // only admins allowed to set roles (TODO: make a script to set custom claims for pre-existing users)
+  // only admins allowed to set roles
   const token = req.headers.authorization?.split("Bearer ")[1];
   // no token = not authenticated
   if (!token) {
@@ -28,7 +28,7 @@ export default async function handler(
   if (!email || typeof email != "string") {
     return res.status(400).json({ error: "Invalid email" });
   }
-  if (!["admin", "lead", "volunteer"].includes(role)) {
+  if (role != null && !["admin", "lead", "volunteer"].includes(role)) {
     return res.status(400).json({ error: "Invalid role" });
   }
   // validate email actually exists in Firebase
