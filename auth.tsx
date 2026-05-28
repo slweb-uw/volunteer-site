@@ -60,7 +60,11 @@ export function AuthProvider({ children }: any) {
           setIsAuthorized(true);
         } else if (role === "volunteer") {
           setIsAuthorized(true);
+        } else {
+          // regular student
+          setIsAuthorized(true);
         }
+
         const token = await user.getIdToken();
         setUser(user);
         nookies.set(undefined, "token", token, {});
