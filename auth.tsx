@@ -51,7 +51,6 @@ export function AuthProvider({ children }: any) {
         // fetch user custom claim integrated within JWT token
         const authToken = await user.getIdTokenResult();
         const role = authToken.claims.role; // 'admin' || 'lead' || 'volunteer' || undefined (aka student)
-
         if (role === "admin") {
           setIsAdmin(true);
           setIsAuthorized(true);
@@ -60,9 +59,11 @@ export function AuthProvider({ children }: any) {
           setIsAuthorized(true);
         } else if (role === "volunteer") {
           setIsAuthorized(true);
-        } else {
-          // regular student
+        } else if (user.email?.endsWith("@uw.edu")) {
           setIsAuthorized(true);
+        } else {
+          // non-uw account that isn't authorized
+          setIsAuthorized(false);
         }
 
         const token = await user.getIdToken();
