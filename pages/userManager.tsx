@@ -32,6 +32,7 @@ import {
 } from "@mui/material";
 import HelpIcon from "@mui/icons-material/HelpOutline";
 import AuthorizationMessage from "./AuthorizationMessage";
+import { useSnackbar } from "notistack";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -127,6 +128,8 @@ const label: any = {
 };
 
 const AdminPage = () => {
+  //snackbar notification
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const { user, isAdmin, isLoading } = useAuth();
   const [admins, setAdmins] = useState([]);
@@ -235,21 +238,30 @@ const AdminPage = () => {
 
     if (!res.ok) {
       const { error } = await res.json();
-      console.error(error);
+      enqueueSnackbar(`Error Adding User: ${error}`, {
+        variant: "error",
+        autoHideDuration: 3000,
+      });
       return;
     }
     // add to collection to display who has which role
-    addDoc(collection(db, activeSection), {
-      email: newUserEmail,
-      timestamp: serverTimestamp(),
-    })
-      .then(() => {
-        console.log("User added successfully!");
-        setNewUserEmail("");
-      })
-      .catch((error) => {
-        console.error("Error adding user", error);
+    try {
+      await addDoc(collection(db, activeSection), {
+        email: newUserEmail,
+        timestamp: serverTimestamp(),
       });
+      setNewUserEmail("");
+      enqueueSnackbar("User successfully added", {
+        variant: "success",
+        autoHideDuration: 3000,
+      });
+    } catch (error) {
+      console.error("Error adding user", error);
+      enqueueSnackbar("Error adding user to directory", {
+        variant: "error",
+        autoHideDuration: 3000,
+      });
+    }
   };
 
   const removeUser = async (userEmail) => {
@@ -264,20 +276,30 @@ const AdminPage = () => {
     });
 
     if (!res.ok) {
-      console.error("Failed to remove claim");
+      const { error } = await res.json();
+      enqueueSnackbar(`Error Removing User: ${error}`, {
+        variant: "error",
+        autoHideDuration: 3000,
+      });
       return;
     }
     const usersRef = collection(db, activeSection);
-    getDocs(query(usersRef, where("email", "==", userEmail)))
-      .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          deleteDoc(doc.ref);
-        });
-        console.log("User removed successfully!");
-      })
-      .catch((error) => {
-        console.error("Error removing user: ", error);
+    try {
+      const querySnapshot = await getDocs(
+        query(usersRef, where("email", "==", userEmail)),
+      );
+      await Promise.all(querySnapshot.docs.map((doc) => deleteDoc(doc.ref)));
+      enqueueSnackbar("User removed successfully", {
+        variant: "success",
+        autoHideDuration: 3000,
       });
+    } catch (error) {
+      console.error("Error removing user: ", error);
+      enqueueSnackbar("Error removing user from directory", {
+        variant: "error",
+        autoHideDuration: 3000,
+      });
+    }
   };
 
   if (isLoading) {
