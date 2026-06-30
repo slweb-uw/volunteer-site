@@ -26,21 +26,9 @@ import {
   mergeAttributes,
 } from "@tiptap/react";
 // TipTap Extensions
-import Document from "@tiptap/extension-document";
-import Paragraph from "@tiptap/extension-paragraph";
-import Text from "@tiptap/extension-text";
-import HardBreak from "@tiptap/extension-hard-break";
-import OrderedList from "@tiptap/extension-ordered-list";
-import BulletList from "@tiptap/extension-bullet-list";
-import ListItem from "@tiptap/extension-list-item";
-import Bold from "@tiptap/extension-bold";
-import Italic from "@tiptap/extension-italic";
-import Strike from "@tiptap/extension-strike";
+import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
-import GapCursor from "@tiptap/extension-gapcursor";
-import DropCursor from "@tiptap/extension-dropcursor";
-import History from "@tiptap/extension-history";
 import Placeholder from "@tiptap/extension-placeholder";
 import Link from "@tiptap/extension-link";
 
@@ -100,7 +88,7 @@ const FormatTools: React.FC<ToolProps> = ({ editor }) => {
       aria-label="text formatting"
       size="small"
       value={formats}
-      onChange={(event, newFormats: string[]) => {
+      onChange={(_event, newFormats: string[]) => {
         setFormats(newFormats);
       }}
     >
@@ -139,7 +127,7 @@ const AlignmentTools: React.FC<ToolProps> = ({ editor }) => {
       size="small"
       value={editor.getAttributes("paragraph")?.textAlign}
       exclusive
-      onChange={(event, newFormat: string | null) => {
+      onChange={(_event, newFormat: string | null) => {
         if (newFormat) {
           setFormat(newFormat);
         }
@@ -190,7 +178,7 @@ const ListTools: React.FC<ToolProps> = ({ editor }) => {
       size="small"
       value={activeFormat}
       exclusive
-      onChange={(event, newFormat: string | null) => {
+      onChange={(_event, newFormat: string | null) => {
         if (!newFormat || checkFormats.includes(newFormat)) {
           setFormat(newFormat ?? activeFormat);
         }
@@ -459,23 +447,19 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
 
   const editor = useEditor({
     extensions: [
-      Document,
-      Paragraph,
-      Text,
-      HardBreak,
-      OrderedList,
-      BulletList,
-      ListItem,
-      Bold,
-      Italic,
-      Strike,
+      StarterKit.configure({
+        // Disable extras StarterKit bundles that this editor intentionally omits,
+        // so behavior matches the previous explicit extension list.
+        heading: false,
+        codeBlock: false,
+        blockquote: false,
+        horizontalRule: false,
+        code: false,
+      }),
       Underline,
       TextAlign.configure({
         types: ["paragraph"],
       }),
-      GapCursor,
-      DropCursor,
-      History,
       Placeholder.configure({ placeholder }),
       Link.configure({
         openOnClick: false,
