@@ -29,10 +29,10 @@ type EventData = {
   leadEmail: string;
   location: string; // Used for calendar, address is for directions.
   address: string;
-  openings: { 
-    [dateIsoString: string]: { 
-      [role: string]: number 
-    } 
+  openings: {
+    [dateIsoString: string]: {
+      [role: string]: number;
+    };
   };
   volunteerTypes?: string[]; // list of all roles
   projectId: string;
@@ -46,7 +46,7 @@ type VolunteerData = {
   date?: string;
   email: string;
   name: string;
-  phoneNumber: number;
+  phoneNumber: string;
   role: string;
   studentDiscipline: string;
   comments?: string;

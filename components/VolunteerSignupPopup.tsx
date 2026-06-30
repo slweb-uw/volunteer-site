@@ -56,6 +56,17 @@ const VolunteerPopup = ({
   addVolunteer,
   onDeleteVolunteer,
   volunteer,
+}: {
+  open: boolean;
+  handleClose: () => void;
+  email: string | null;
+  name: string | null;
+  uid: string;
+  phone: string | null;
+  position: string;
+  addVolunteer: (volunteerData: VolunteerData) => void;
+  onDeleteVolunteer: (volunteerData: VolunteerData, mode: string) => void;
+  volunteer: VolunteerData | null;
 }) => {
   const classes = useStyles();
   const [displayName, setDisplayName] = useState(name ? name : ""); //TODO Set default state to name
@@ -77,12 +88,12 @@ const VolunteerPopup = ({
     }
   }, [volunteer]);
 
-  const validatePhoneNumber = (phoneNumber) => {
+  const validatePhoneNumber = (phoneNumber: string) => {
     const cleaned = phoneNumber.replace(/\D/g, "");
     return /^[0-9]{10}$/.test(cleaned);
   };
 
-  function formatPhoneNumber(phoneNumber) {
+  function formatPhoneNumber(phoneNumber: string) {
     const cleaned = phoneNumber.replace(/\D/g, "");
     const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
     if (match) {
@@ -91,7 +102,7 @@ const VolunteerPopup = ({
     return phoneNumber;
   }
 
-  const handlePhoneNumberChange = (e) => {
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawPhoneNumber = e.target.value;
     const cleanedPhoneNumber = rawPhoneNumber.replace(/\D/g, "");
     const formattedPhoneNumber = formatPhoneNumber(cleanedPhoneNumber);
@@ -107,6 +118,9 @@ const VolunteerPopup = ({
     certified
   );
   const handleSubmit = () => {
+    if (!email) {
+      return;
+    }
     if (isPhoneNumberValid) {
       const volunteerData: VolunteerData = {
         uid,
@@ -114,6 +128,7 @@ const VolunteerPopup = ({
         name: displayName,
         phoneNumber,
         studentDiscipline,
+        role: position,
         comments,
       };
       addVolunteer(volunteerData);
@@ -203,7 +218,6 @@ const VolunteerPopup = ({
         <Typography
           style={{
             marginRight: "15px",
-            fontSize: "small",
             fontSize: "0.9rem",
             marginTop: "0.5rem",
             marginBottom: "0.5rem",
@@ -245,7 +259,7 @@ const VolunteerPopup = ({
               </Button>
               <Button
                 variant="outlined"
-                onClick={() => onDeleteVolunteer(volunteer)}
+                onClick={() => onDeleteVolunteer(volunteer, "remove")}
                 style={{ color: "gray" }}
               >
                 Withdraw
