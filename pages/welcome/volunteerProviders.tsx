@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import Image from "next/image";
 import VolunteerProvideersUrl from "public/volunteerProviders.jpg";
-import { CssBaseline, Typography, Grid, Link } from "@mui/material";
+import { CssBaseline, Typography, Link } from "@mui/material";
 import createStyles from "@mui/styles/createStyles";
 import withStyles from "@mui/styles/withStyles";
 import IconBreadcrumbs from "components/breadcrumbs";

@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import { CssBaseline, Typography, Select, MenuItem, Grid, Button } from "@mui/material";
+import { Typography, Grid, Button } from "@mui/material";
 import Image from "next/image";
 import FootCareUrl from "public/Foot Care 2.jpg"
 import createStyles from '@mui/styles/createStyles';

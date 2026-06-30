@@ -1,6 +1,6 @@
 //*NOTE: Resources is renamed as Links on the Website /*
 import { NextPage } from "next";
-import { CssBaseline, Typography, Select, MenuItem, Grid, Button, Link, Divider } from "@mui/material";
+import { Typography } from "@mui/material";
 import createStyles from '@mui/styles/createStyles';
 import withStyles from '@mui/styles/withStyles';
 import React, { useState } from "react";
@@ -8,13 +8,11 @@ import React, { useState } from "react";
 import MuiAccordion from "@mui/material/Accordion";
 import MuiAccordionSummary from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import ArrowDropDownCircleOutlinedIcon from '@mui/icons-material/ArrowDropDownCircleOutlined';
 
 import ResourceLink from "../components/resourceLink";
 import IconBreadcrumbs from "../components/breadcrumbs";
 import HeadlineBar from "components/headlineBar";
-import { ExpandMore } from "@mui/icons-material";
 
 interface Props {
   classes?: any;

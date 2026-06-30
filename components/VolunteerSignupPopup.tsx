@@ -1,129 +1,146 @@
-import React, { useState, useEffect } from 'react';
-import makeStyles from '@mui/styles/makeStyles';
+import React, { useState, useEffect } from "react";
+import makeStyles from "@mui/styles/makeStyles";
 import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    TextField,
-    Button,
-    FormControlLabel,
-    Checkbox,
-    Typography,
-    Select,
-    MenuItem
-  } from '@mui/material';
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  Button,
+  Typography,
+  Select,
+  MenuItem,
+} from "@mui/material";
 
-import { volunteerTypes } from 'components/AddModifyEventModal';
-import { VolunteerData } from 'new-types';
+import { volunteerTypes } from "components/AddModifyEventModal";
+import { VolunteerData } from "new-types";
 
 const useStyles = makeStyles({
-    title: {
-        textAlign: 'center',
+  title: {
+    textAlign: "center",
+  },
+  emailLabel: {
+    "& .MuiInput-underline:before": {
+      borderBottomStyle: "solid",
     },
-    emailLabel: {
-        '& .MuiInput-underline:before': {
-          borderBottomStyle: 'solid',
-        },
-        '& .MuiInput-underline:hover:before': {
-          borderBottomStyle: 'solid',
-        },
-        '& .MuiInput-underline:after': {
-          borderBottomStyle: 'solid',
-        },
-        '& .Mui-disabled .MuiInput-underline:before': {
-          borderBottomStyle: 'solid',
-        },
+    "& .MuiInput-underline:hover:before": {
+      borderBottomStyle: "solid",
     },
-    buttonContainer: {
-        display: 'flex',
-        justifyContent: 'flex-start',
-        marginTop: "0.5rem"
+    "& .MuiInput-underline:after": {
+      borderBottomStyle: "solid",
     },
-    selectContainer: {
-      display: 'flex',
-      alignItems: 'center',
-      marginTop: "0.5rem",
-      marginBottom: "0.5rem"
+    "& .Mui-disabled .MuiInput-underline:before": {
+      borderBottomStyle: "solid",
     },
+  },
+  buttonContainer: {
+    display: "flex",
+    justifyContent: "flex-start",
+    marginTop: "0.5rem",
+  },
+  selectContainer: {
+    display: "flex",
+    alignItems: "center",
+    marginTop: "0.5rem",
+    marginBottom: "0.5rem",
+  },
 });
 
-const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, position, addVolunteer, onDeleteVolunteer, volunteer }) => {
-    const classes = useStyles();
-    const [displayName, setDisplayName] = useState(name ? name : ''); //TODO Set default state to name
-    const [phoneNumber, setPhoneNumber] = useState(phone ? phone : ''); //TODO Set default state to phone number if provided
-    const [comments, setComments] = useState('');
-    const [studentDiscipline, setStudentDiscipline] = useState('');
-    const [certified, setCertified] = useState(true); //TODO Set default state to false, true only for debugging.
-    const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
-    useEffect(() => {
-      if (volunteer) {
-        setPhoneNumber(volunteer.phoneNumber || '');
-        setComments(volunteer.comments || '');
-        setStudentDiscipline(volunteer.studentDiscipline || '');
-        // setCertified(volunteer.certified || false);
-        setCertified(true); 
-        // TODO there's a bug that doesn't let you re-sign up after withdrawing - pretty sure it has to do with certified, 
-        // since it's fixed when certified is always set to true.
-        setFormattedPhoneNumber(formatPhoneNumber(volunteer.phoneNumber || ''));
-      }
-    }, [volunteer]);
-
-    const validatePhoneNumber = (phoneNumber) => {
-      const cleaned = phoneNumber.replace(/\D/g, '');
-      return /^[0-9]{10}$/.test(cleaned);
-    };   
-
-    function formatPhoneNumber(phoneNumber) {
-      const cleaned = phoneNumber.replace(/\D/g, '');
-      const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
-      if (match) {
-          return `(${match[1]}) ${match[2]}-${match[3]}`;
-      }
-      return phoneNumber;
+const VolunteerPopup = ({
+  open,
+  handleClose,
+  email,
+  name,
+  uid,
+  phone,
+  position,
+  addVolunteer,
+  onDeleteVolunteer,
+  volunteer,
+}) => {
+  const classes = useStyles();
+  const [displayName, setDisplayName] = useState(name ? name : ""); //TODO Set default state to name
+  const [phoneNumber, setPhoneNumber] = useState(phone ? phone : ""); //TODO Set default state to phone number if provided
+  const [comments, setComments] = useState("");
+  const [studentDiscipline, setStudentDiscipline] = useState("");
+  const [certified, setCertified] = useState(true); //TODO Set default state to false, true only for debugging.
+  const [formattedPhoneNumber, setFormattedPhoneNumber] = useState("");
+  useEffect(() => {
+    if (volunteer) {
+      setPhoneNumber(volunteer.phoneNumber || "");
+      setComments(volunteer.comments || "");
+      setStudentDiscipline(volunteer.studentDiscipline || "");
+      // setCertified(volunteer.certified || false);
+      setCertified(true);
+      // TODO there's a bug that doesn't let you re-sign up after withdrawing - pretty sure it has to do with certified,
+      // since it's fixed when certified is always set to true.
+      setFormattedPhoneNumber(formatPhoneNumber(volunteer.phoneNumber || ""));
     }
+  }, [volunteer]);
 
-    const handlePhoneNumberChange = (e) => {
-      const rawPhoneNumber = e.target.value;
-      const cleanedPhoneNumber = rawPhoneNumber.replace(/\D/g, '');
-      const formattedPhoneNumber = formatPhoneNumber(cleanedPhoneNumber);
-      setFormattedPhoneNumber(formattedPhoneNumber);
-      setPhoneNumber(cleanedPhoneNumber);
-    };
+  const validatePhoneNumber = (phoneNumber) => {
+    const cleaned = phoneNumber.replace(/\D/g, "");
+    return /^[0-9]{10}$/.test(cleaned);
+  };
 
-    const isPhoneNumberValid = validatePhoneNumber(phoneNumber);
-    const isSubmitDisabled = !(email && displayName && studentDiscipline && certified);
-    const handleSubmit = () => {
-      if (isPhoneNumberValid) {
-        const volunteerData: VolunteerData = {
-            uid,
-            email,
-            name: displayName,
-            phoneNumber,
-            studentDiscipline,
-            comments
-        };
-        addVolunteer(volunteerData);
-        handleClose();
-      } else {
-        alert('Invalid phone number!');
-      }
-    };
+  function formatPhoneNumber(phoneNumber) {
+    const cleaned = phoneNumber.replace(/\D/g, "");
+    const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
+    if (match) {
+      return `(${match[1]}) ${match[2]}-${match[3]}`;
+    }
+    return phoneNumber;
+  }
+
+  const handlePhoneNumberChange = (e) => {
+    const rawPhoneNumber = e.target.value;
+    const cleanedPhoneNumber = rawPhoneNumber.replace(/\D/g, "");
+    const formattedPhoneNumber = formatPhoneNumber(cleanedPhoneNumber);
+    setFormattedPhoneNumber(formattedPhoneNumber);
+    setPhoneNumber(cleanedPhoneNumber);
+  };
+
+  const isPhoneNumberValid = validatePhoneNumber(phoneNumber);
+  const isSubmitDisabled = !(
+    email &&
+    displayName &&
+    studentDiscipline &&
+    certified
+  );
+  const handleSubmit = () => {
+    if (isPhoneNumberValid) {
+      const volunteerData: VolunteerData = {
+        uid,
+        email,
+        name: displayName,
+        phoneNumber,
+        studentDiscipline,
+        comments,
+      };
+      addVolunteer(volunteerData);
+      handleClose();
+    } else {
+      alert("Invalid phone number!");
+    }
+  };
 
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle className={classes.title}>Volunteer Information</DialogTitle>
-      <Typography variant="body1" align="center"> Sign up for {position} </Typography>
+      <Typography variant="body1" align="center">
+        {" "}
+        Sign up for {position}{" "}
+      </Typography>
       <DialogContent>
         <TextField
-        label="Email"
-        value={email}
-        className={classes.emailLabel}
-        fullWidth
-        margin="normal"
-        disabled
+          label="Email"
+          value={email}
+          className={classes.emailLabel}
+          fullWidth
+          margin="normal"
+          disabled
         />
         <div className={classes.selectContainer}>
-          <Typography style={{ marginRight: '15px' }}>
+          <Typography style={{ marginRight: "15px" }}>
             Student Discipline <span>*</span>
           </Typography>
           <Select
@@ -131,83 +148,142 @@ const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, position, 
             onChange={(e) => setStudentDiscipline(e.target.value)}
           >
             {volunteerTypes.map((studentType, index) => (
-              <MenuItem key={index} value={studentType}>{studentType}</MenuItem>
+              <MenuItem key={index} value={studentType}>
+                {studentType}
+              </MenuItem>
             ))}
           </Select>
           {!studentDiscipline && (
-            <Typography variant="caption" color="error" style={{ marginLeft: '10px' }}>
-                Please select your student discipline
+            <Typography
+              variant="caption"
+              color="error"
+              style={{ marginLeft: "10px" }}
+            >
+              Please select your student discipline
             </Typography>
           )}
         </div>
         <TextField
           label="Full Name *"
           value={displayName}
-          style={{ margin: "0 auto 0.75rem"}}
+          style={{ margin: "0 auto 0.75rem" }}
           onChange={(e) => setDisplayName(e.target.value)}
           fullWidth
           margin="normal"
         />
         <TextField
-          label={(
-            <span>
-            Phone Number * (Only viewable by project lead)
-            </span>
-          )}
-          style={{ margin: "0 auto 0.75rem"}}
+          label={<span>Phone Number * (Only viewable by project lead)</span>}
+          style={{ margin: "0 auto 0.75rem" }}
           value={formattedPhoneNumber}
           onChange={handlePhoneNumberChange}
           fullWidth
           margin="normal"
           onKeyDown={(e) => {
             const key = e.key;
-            const isValidInput = /\d/.test(key) || key === 'Backspace' || key === 'Delete';
+            const isValidInput =
+              /\d/.test(key) || key === "Backspace" || key === "Delete";
             const isMaxLengthReached = formattedPhoneNumber.length >= 10;
-        
-            if (!isValidInput || (isMaxLengthReached && key !== 'Backspace' && key !== 'Delete')) {
-                e.preventDefault();
+
+            if (
+              !isValidInput ||
+              (isMaxLengthReached && key !== "Backspace" && key !== "Delete")
+            ) {
+              e.preventDefault();
             }
           }}
         />
         <TextField
           label="Comments "
           value={comments}
-          style={{ margin: "0 auto 0.75rem"}}
+          style={{ margin: "0 auto 0.75rem" }}
           onChange={(e) => setComments(e.target.value)}
           fullWidth
           margin="normal"
         />
-        <Typography style={{ marginRight: '15px', fontSize: 'small', fontSize: "0.9rem", marginTop: "0.5rem", marginBottom: "0.5rem"}}>
-           Click <a href="https://canvas.uw.edu/courses/1693188/modules" target='blank'>here</a> to learn more
-           about the service learning training and protocols.
+        <Typography
+          style={{
+            marginRight: "15px",
+            fontSize: "small",
+            fontSize: "0.9rem",
+            marginTop: "0.5rem",
+            marginBottom: "0.5rem",
+          }}
+        >
+          Click{" "}
+          <a
+            href="https://canvas.uw.edu/courses/1693188/modules"
+            target="blank"
+          >
+            here
+          </a>{" "}
+          to learn more about the service learning training and protocols.
         </Typography>
-        <Typography style={{ marginRight: '15px', fontStyle: 'italic', fontSize: "0.7rem" }}>
+        <Typography
+          style={{
+            marginRight: "15px",
+            fontStyle: "italic",
+            fontSize: "0.7rem",
+          }}
+        >
           (*) Required fields
         </Typography>
         <div className={classes.buttonContainer}>
-            {volunteer ? (
-            <div style = {{display: "flex", gap: "1rem", justifyContent: "flex-start"}}>
-              <Button variant="contained" color="secondary" onClick={handleClose}>
+          {volunteer ? (
+            <div
+              style={{
+                display: "flex",
+                gap: "1rem",
+                justifyContent: "flex-start",
+              }}
+            >
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleClose}
+              >
                 Cancel
               </Button>
-              <Button variant="outlined" onClick={() => onDeleteVolunteer(volunteer)} style={{color: "gray"}}>
+              <Button
+                variant="outlined"
+                onClick={() => onDeleteVolunteer(volunteer)}
+                style={{ color: "gray" }}
+              >
                 Withdraw
               </Button>
-              <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isSubmitDisabled}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={isSubmitDisabled}
+              >
                 Save
               </Button>
             </div>
-            ):(
-              <div style = {{display: "flex", gap: "1rem", justifyContent: "flex-start"}}>
-                <Button variant="contained" color="secondary" onClick={handleClose}>
-                  Cancel
-                </Button>
-                <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isSubmitDisabled}>
-                  Signup
-                </Button>
-              </div>
-              
-            )}
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                gap: "1rem",
+                justifyContent: "flex-start",
+              }}
+            >
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleClose}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={isSubmitDisabled}
+              >
+                Signup
+              </Button>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>

@@ -1,5 +1,4 @@
 import { Timestamp } from "firebase/firestore";
-import { volunteerTypes } from "components/AddModifyEventModal";
 
 type ProjectData = {
   id: string;

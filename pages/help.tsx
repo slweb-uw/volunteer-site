@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import { useRouter } from 'next/router';
-import { CssBaseline, Typography, Select, MenuItem, Grid, Button, Link, Divider } from "@mui/material";
+import { Typography } from "@mui/material";
 import createStyles from '@mui/styles/createStyles';
 import withStyles from '@mui/styles/withStyles';
 import React, {
@@ -13,10 +13,8 @@ import MuiAccordionSummary from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import ArrowDropDownCircleOutlinedIcon from '@mui/icons-material/ArrowDropDownCircleOutlined';
 
-import ResourceLink from "../components/resourceLink";
 import IconBreadcrumbs from "../components/breadcrumbs";
 import HeadlineBar from "components/headlineBar";
-import { ExpandMore } from "@mui/icons-material";
 
 interface Props {
   classes?: any;

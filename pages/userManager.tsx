@@ -7,7 +7,6 @@ import {
   serverTimestamp,
   where,
   query,
-  getDoc,
   deleteDoc,
   onSnapshot,
 } from "firebase/firestore";

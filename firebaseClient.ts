@@ -1,4 +1,4 @@
-import { initializeApp, getApps, FirebaseOptions } from "firebase/app";
+import { initializeApp, FirebaseOptions } from "firebase/app";
 import {
   getAuth,
   setPersistence,
