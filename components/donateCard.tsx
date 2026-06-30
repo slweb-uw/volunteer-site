@@ -1,11 +1,11 @@
-import makeStyles from "@mui/styles/makeStyles"
-import Card from "@mui/material/Card"
-import CardContent from "@mui/material/CardContent"
-import CardMedia from "@mui/material/CardMedia"
-import Typography from "@mui/material/Typography"
-import Button from "@mui/material/Button"
+import makeStyles from "@mui/styles/makeStyles";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     cursor: "pointer",
     display: "flex",
@@ -29,17 +29,17 @@ const useStyles = makeStyles((theme) => ({
       display: "none",
     },
   },
-}))
+}));
 
 interface Props {
-  title: string
-  description: string
-  donate: string
-  img: string
+  title: string;
+  description: string;
+  donate: string;
+  img: string;
 }
 
 const DonateCard: React.FC<Props> = (props) => {
-  const classes = useStyles()
+  const classes = useStyles();
 
   return (
     <Card
@@ -86,7 +86,7 @@ const DonateCard: React.FC<Props> = (props) => {
         </CardContent>
       </div>
     </Card>
-  )
-}
+  );
+};
 
-export default DonateCard
+export default DonateCard;

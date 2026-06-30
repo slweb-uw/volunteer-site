@@ -1,16 +1,21 @@
 import useEvents from "hooks/useEvents";
 import { useEffect, useMemo, useState } from "react";
-import { Button, Typography, Card, CardActionArea, IconButton } from "@mui/material";
-import createStyles from "@mui/styles/createStyles";
+import {
+  Button,
+  Typography,
+  Card,
+  CardActionArea,
+  IconButton,
+} from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import type { EventData } from "new-types";
 import Link from "next/link";
 
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import router from "next/router";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "firebaseClient";
@@ -37,7 +42,7 @@ const useStyles = makeStyles(() => ({
     },
     "& svg": {
       fontSize: "0.8rem !important",
-    }
+    },
   },
   mainTitle: {
     color: "#4b2e83",
@@ -61,7 +66,7 @@ const useStyles = makeStyles(() => ({
     "& svg": {
       color: "#666",
       fontSize: "1.2rem",
-    }
+    },
   },
   monthNavContainer: {
     display: "flex",
@@ -78,10 +83,10 @@ const useStyles = makeStyles(() => ({
     color: "#4b2e83",
     padding: 0,
     "& svg": {
-        fontSize: "2rem",
-        fontWeight: "bold"
-    }
-  }
+      fontSize: "2rem",
+      fontWeight: "bold",
+    },
+  },
 }));
 
 export default function EventsView({
@@ -124,7 +129,7 @@ export default function EventsView({
 
   return (
     <div className={styles.pageContainer}>
-      <Button 
+      <Button
         className={styles.backBtn}
         startIcon={<ArrowBackIosNewIcon />}
         onClick={() => router.back()}
@@ -140,34 +145,32 @@ export default function EventsView({
       {/* Address & Contact */}
       <div className={styles.metaRow}>
         <div className={styles.metaItem}>
-            <LocationOnOutlinedIcon />
-            <Typography variant="body1">
-              {projectAddress}
-            </Typography>
+          <LocationOnOutlinedIcon />
+          <Typography variant="body1">{projectAddress}</Typography>
         </div>
         <div className={styles.metaItem}>
-            <DescriptionOutlinedIcon />
-            <Typography variant="body1">Contact</Typography>
+          <DescriptionOutlinedIcon />
+          <Typography variant="body1">Contact</Typography>
         </div>
       </div>
 
       {/* Month Navigation*/}
       <div className={styles.monthNavContainer}>
         <IconButton onClick={prevMonthEvents} className={styles.navIconBtn}>
-            <ChevronLeftIcon />
+          <ChevronLeftIcon />
         </IconButton>
-        
+
         <Typography variant="h4" className={styles.dateTitle}>
-            {`${months.get(curDate.getMonth())} ${curDate.getFullYear()}`}
+          {`${months.get(curDate.getMonth())} ${curDate.getFullYear()}`}
         </Typography>
 
         <IconButton onClick={nextMonthEvents} className={styles.navIconBtn}>
-            <ChevronRightIcon />
+          <ChevronRightIcon />
         </IconButton>
       </div>
 
       {/* Calendar Grid */}
-      <CalendarView curDate={curDate} events={events}/>
+      <CalendarView curDate={curDate} events={events} />
     </div>
   );
 }
@@ -220,7 +223,7 @@ function CalendarView({ curDate, events }: { curDate: Date; events: any }) {
             }}
           >
             <Typography>{date.getDate()}</Typography>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8}}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {getEventsForDate(date, events).map((event) => {
                 const pastEvent = isPastDay(date);
 
@@ -235,15 +238,24 @@ function CalendarView({ curDate, events }: { curDate: Date; events: any }) {
                     }}
                   >
                     {pastEvent ? (
-                      <CardActionArea disabled sx={{ cursor: "not-allowed", px: 1, py: 0.5 }}>
-                        <Typography variant="subtitle1" style={{ fontWeight: 600, color: "#666" }}>
+                      <CardActionArea
+                        disabled
+                        sx={{ cursor: "not-allowed", px: 1, py: 0.5 }}
+                      >
+                        <Typography
+                          variant="subtitle1"
+                          style={{ fontWeight: 600, color: "#666" }}
+                        >
                           {event.name}
                         </Typography>
                         <Typography style={{ color: "#666" }}>
                           <span>{timeToLocaleTime(event.startTime)}</span>-
                           <span>{timeToLocaleTime(event.endTime)}</span>
                         </Typography>
-                        <Typography variant="caption" style={{ color: "#666", fontWeight: 700 }}>
+                        <Typography
+                          variant="caption"
+                          style={{ color: "#666", fontWeight: 700 }}
+                        >
                           Past event
                         </Typography>
                       </CardActionArea>
@@ -256,7 +268,10 @@ function CalendarView({ curDate, events }: { curDate: Date; events: any }) {
                         }}
                       >
                         <CardActionArea>
-                          <Typography variant="subtitle1" style={{ fontWeight: 600 }}>
+                          <Typography
+                            variant="subtitle1"
+                            style={{ fontWeight: 600 }}
+                          >
                             {event.name}
                           </Typography>
                           <Typography>
@@ -277,21 +292,22 @@ function CalendarView({ curDate, events }: { curDate: Date; events: any }) {
   );
 }
 
-
 function getEventsForDate(date: Date, events: EventData[]) {
   return events.filter((event) => {
     // Helper to check if two JS Dates are the same Day/Month/Year
-    const isSameDay = (d1: Date, d2: Date) => 
-        d1.getDate() === d2.getDate() && 
-        d1.getMonth() === d2.getMonth() && 
-        d1.getFullYear() === d2.getFullYear();
+    const isSameDay = (d1: Date, d2: Date) =>
+      d1.getDate() === d2.getDate() &&
+      d1.getMonth() === d2.getMonth() &&
+      d1.getFullYear() === d2.getFullYear();
 
     if (event.date && isSameDay(event.date.toDate(), date)) return true;
 
     if (event.dates && Array.isArray(event.dates)) {
-        return event.dates.some((timestamp: any) => isSameDay(timestamp.toDate(), date));
+      return event.dates.some((timestamp: any) =>
+        isSameDay(timestamp.toDate(), date),
+      );
     }
-    
+
     return false;
   });
 }
@@ -339,29 +355,3 @@ months.set(8, "September");
 months.set(9, "October");
 months.set(10, "November");
 months.set(11, "December");
-
-const styles = createStyles({
-  calendar: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    maxHeight: "100%",
-    width: "95%",
-    marginLeft: "auto",
-    marginRight: "auto",
-    marginBottom: "2rem",
-    marginTop: "1.5rem",
-  },
-  backBtn: {
-    width: "100px",
-    marginTop: "1.5rem",
-    marginLeft: "2.5vw",
-    fontFamily: "Encode Sans",
-    fontWeight: 800,
-    borderRadius: 10,
-    "&:hover": {
-      color: "#B7A57A",
-      transition: ".25s",
-    },
-  },
-});

@@ -145,24 +145,9 @@ const AdminPage = () => {
   const [sortOrder, setSortOrder] = useState("asc");
   const [sortedColumn, setSortedColumn] = useState("email");
 
-  const [totalAdmins, setTotalAdmins] = useState(0);
-  const [totalVolunteers, setTotalVolunteers] = useState(0);
-  const [totalLeads, setTotalLeads] = useState(0);
-
   const handleSort = (column) => {
     setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
     setSortedColumn(column);
-  };
-
-  // Loads Admins
-  const loadUserType = async (userType, setState) => {
-    const userTypeRef = collection(db, userType);
-    const snapshot = await getDocs(userTypeRef);
-    const data = [];
-    snapshot.forEach((doc) => {
-      data.push({ id: doc.id, ...doc.data() });
-    });
-    setState(data);
   };
 
   useEffect(() => {

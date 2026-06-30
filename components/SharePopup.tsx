@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, TextField, Button, Snackbar } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import React, { useState } from "react";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  Button,
+  Snackbar,
+} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 
-const useStyles = makeStyles((theme) => ({
-    title: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
+const useStyles = makeStyles(() => ({
+  title: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 }));
 
 const SharePopup = ({ onClose, link }) => {
@@ -16,18 +23,19 @@ const SharePopup = ({ onClose, link }) => {
 
   const copyToClipboard = () => {
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(link)
+      navigator.clipboard
+        .writeText(link)
         .then(() => {
           setIsSnackbarOpen(true);
         })
         .catch((error) => {
-          console.error('Unable to copy to clipboard', error);
+          console.error("Unable to copy to clipboard", error);
         });
     }
   };
 
-  const handleSnackbarClose = (event, reason) => {
-    if (reason === 'clickaway') {
+  const handleSnackbarClose = (_event, reason) => {
+    if (reason === "clickaway") {
       return;
     }
     setIsSnackbarOpen(false);
@@ -45,12 +53,13 @@ const SharePopup = ({ onClose, link }) => {
             readOnly: true,
           }}
         />
-        <Button 
-        onClick={copyToClipboard} 
-        color="primary" 
-        variant="contained" 
-        fullWidth
-        style={{marginTop: "1rem", marginBottom: "1rem"}}>
+        <Button
+          onClick={copyToClipboard}
+          color="primary"
+          variant="contained"
+          fullWidth
+          style={{ marginTop: "1rem", marginBottom: "1rem" }}
+        >
           Copy to Clipboard
         </Button>
         <Snackbar
@@ -58,7 +67,7 @@ const SharePopup = ({ onClose, link }) => {
           autoHideDuration={2000}
           onClose={handleSnackbarClose}
           message="Link copied to clipboard"
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         />
       </DialogContent>
     </Dialog>

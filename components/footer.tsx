@@ -4,9 +4,9 @@ import makeStyles from "@mui/styles/makeStyles";
 import { useAuth } from "auth";
 import Link from "next/link";
 import Image from "next/image";
-import LogoUrl from "public/uw-text-logo.png"
+import LogoUrl from "public/uw-text-logo.png";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   logo: {
     width: "25rem",
     height: "auto",
@@ -47,7 +47,7 @@ const Footer: React.FC<{}> = () => {
         className={useStyles().logo}
       />
       <Typography className={useStyles().text} gutterBottom>
-        Contact us: (206) 685-2009 or {" "}
+        Contact us: (206) 685-2009 or{" "}
         <a href="mailto://clarkel@uw.edu" className={useStyles().text}>
           somserve@uw.edu
         </a>

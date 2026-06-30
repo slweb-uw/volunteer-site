@@ -9,7 +9,7 @@ interface Props {
   classes?: any;
 }
 
-const Communitypartners = ({ classes }) => {
+const Communitypartners = ({ classes }: Props) => {
   return (
     <div className={classes.page}>
       <CssBaseline />

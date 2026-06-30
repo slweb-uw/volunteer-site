@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import makeStyles from '@mui/styles/makeStyles';
 import SignInPopup from 'components/SignInPopup';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     fontFamily: 'Encode Sans Compressed, sans-serif',
     maxWidth: 800,

@@ -62,7 +62,7 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
     setQueryVar(STUDENT_TYPE_FILTER_QUERY_KEY, value);
   };
 
-  const [sortField, setSortField] = useState<string>("Title");
+  const [sortField] = useState<string>("Title");
   const [topMessage, setTopMessage] = useState<any>();
   const [signUpAvailableFilter, setSignUpAvailableFilter] =
     useState<boolean>(false);
