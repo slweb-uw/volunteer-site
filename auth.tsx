@@ -7,16 +7,12 @@ const AuthContext = createContext<{
   user: User | null;
   isAdmin: boolean;
   isAuthorized: boolean;
-  admins: any;
-  leads: any;
   isLead: boolean;
   isLoading: boolean;
 }>({
   user: null,
   isAdmin: false,
   isAuthorized: false,
-  admins: null,
-  leads: null,
   isLead: false,
   isLoading: true,
 });
@@ -26,9 +22,6 @@ export function AuthProvider({ children }: any) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLead, setIsLead] = useState(false);
   const [isAuthorized, setIsAuthorized] = useState(false);
-  const [admins, setAdmins] = useState([]);
-  const [leads, setLeads] = useState([]);
-  const [authorizedUsers, setAuthorizedUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -87,7 +80,7 @@ export function AuthProvider({ children }: any) {
 
   return (
     <AuthContext.Provider
-      value={{ user, isAdmin, isAuthorized, admins, leads, isLead, isLoading }}
+      value={{ user, isAdmin, isAuthorized, isLead, isLoading }}
     >
       {children}
     </AuthContext.Provider>
