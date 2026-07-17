@@ -15,6 +15,7 @@ import { db } from "firebaseClient";
 import AuthorizationMessage from "pages/AuthorizationMessage";
 import VolunteerSignupGrid from "../../../components/VolunteerSignupGrid";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { useSnackbar } from "notistack";
 
 type RichEventFieldProps = {
   name: string;
@@ -125,6 +126,8 @@ const Event = ({
   volunteer: VolunteerData[];
   eventID: string;
 }) => {
+  //snackbar notification
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const router = useRouter();
   const { date: queryDate } = router.query;
@@ -220,8 +223,15 @@ const Event = ({
         });
       });
       handleCloseVolunteerPopup();
+      enqueueSnackbar("Signup successfully created", {
+        variant: "success",
+        autoHideDuration: 3000,
+      });
     } catch (e: any) {
-      alert(`Error: ${e.message}`);
+      enqueueSnackbar(`Signup failed: ${e.message}`, {
+        variant: "error",
+        autoHideDuration: 3000,
+      });
     }
   };
 
@@ -246,7 +256,10 @@ const Event = ({
     mode: string,
   ) => {
     if (!volunteerData.date) {
-      alert("Error: Missing date information for this record.");
+      enqueueSnackbar(
+        "Deletion failed: Missing date information for this record",
+        { variant: "error", autoHideDuration: 3000 },
+      );
       return;
     }
 
@@ -285,8 +298,15 @@ const Event = ({
         transaction.delete(volunteerRef);
       });
       handleCloseVolunteerPopup();
+      enqueueSnackbar("Signup successfully removed", {
+        variant: "success",
+        autoHideDuration: 3000,
+      });
     } catch (e: any) {
-      alert(`Error: ${e.message}`);
+      enqueueSnackbar(`Deletion failed: ${e.message}`, {
+        variant: "error",
+        autoHideDuration: 3000,
+      });
     }
   };
 

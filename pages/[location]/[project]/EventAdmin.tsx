@@ -33,6 +33,7 @@ import {
   Paper,
   IconButton,
 } from "@mui/material";
+import { useSnackbar } from "notistack";
 
 // Icons
 import DownloadIcon from "@mui/icons-material/Download";
@@ -42,7 +43,7 @@ import ContactPageIcon from "@mui/icons-material/Description";
 import EditIcon from "@mui/icons-material/Edit";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteIcon from "@mui/icons-material/Delete";
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
 import SignupEventPopup from "components/SignupEventPopup";
 import { exportToCSV } from "helpers/csvExport";
@@ -82,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
     },
     "& svg": {
       fontSize: "0.8rem !important",
-    }
+    },
   },
   subHeaderRow: {
     display: "flex",
@@ -98,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
     },
     "& svg": {
       fontSize: "1.1rem",
-    }
+    },
   },
   sectionTitleRow: {
     display: "flex",
@@ -180,7 +181,7 @@ const useStyles = makeStyles((theme) => ({
     color: "#666",
     "& .MuiOutlinedInput-notchedOutline": {
       borderColor: "#ccc",
-    }
+    },
   },
   // Table Styles
   tableHeader: {
@@ -194,8 +195,8 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: "1px solid #000",
     borderRight: "1px solid #fff",
     "&:last-child": {
-        borderRight: "none",
-    }
+      borderRight: "none",
+    },
   },
   tableCell: {
     fontSize: "0.95rem",
@@ -230,7 +231,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     height: "50vh",
-  }
+  },
 }));
 
 const EventAdmin = () => {
@@ -244,24 +245,28 @@ const EventAdmin = () => {
   const [openEventFormPopup, setOpenEventFormPopup] = useState(false);
   const [popupMode, setPopupMode] = useState<"add" | "edit">("add");
   const [title, setTitle] = useState("");
-  
+
   // Search/Filter UI placeholders
   const [searchTerm, setSearchTerm] = useState("");
   const [filterMonth, setFilterMonth] = useState("Any Month");
   const [eventView, setEventView] = useState<"active" | "past">("active");
 
+  // Snackbar notification
+  const { enqueueSnackbar } = useSnackbar();
+
   const getEventEndDate = (event: EventData) => {
-    const eventDates = Array.isArray(event.dates) && event.dates.length > 0
-      ? event.dates.map((timestamp: Timestamp) => timestamp.toDate())
-      : event.date
-        ? [event.date.toDate()]
-        : [];
+    const eventDates =
+      Array.isArray(event.dates) && event.dates.length > 0
+        ? event.dates.map((timestamp: Timestamp) => timestamp.toDate())
+        : event.date
+          ? [event.date.toDate()]
+          : [];
 
     if (eventDates.length === 0) return null;
 
-    return eventDates.reduce((latest, date) => (
-      date.getTime() > latest.getTime() ? date : latest
-    ));
+    return eventDates.reduce((latest, date) =>
+      date.getTime() > latest.getTime() ? date : latest,
+    );
   };
 
   const isPastEvent = (event: EventData) => {
@@ -298,13 +303,17 @@ const EventAdmin = () => {
     if (!router.isReady || !project) return;
 
     const eventsRef = collection(db, "events");
-    const q = query(eventsRef, where("projectId", "==", project), orderBy("date"));
+    const q = query(
+      eventsRef,
+      where("projectId", "==", project),
+      orderBy("date"),
+    );
 
     const unsubscribe = onSnapshot(
       q,
       (querySnapshot) => {
         const data = querySnapshot.docs.map(
-          (doc) => ({ id: doc.id, ...doc.data() } as EventData),
+          (doc) => ({ id: doc.id, ...doc.data() }) as EventData,
         );
         setAllEvents(data);
       },
@@ -322,21 +331,25 @@ const EventAdmin = () => {
 
     // Apply simple search filter
     if (searchTerm) {
-        const lowerTerm = searchTerm.toLowerCase();
-        events = events.filter(e => 
-            e.name?.toLowerCase().includes(lowerTerm) || 
-            e.projectName?.toLowerCase().includes(lowerTerm) ||
-            title.toLowerCase().includes(lowerTerm)
-        );
+      const lowerTerm = searchTerm.toLowerCase();
+      events = events.filter(
+        (e) =>
+          e.name?.toLowerCase().includes(lowerTerm) ||
+          e.projectName?.toLowerCase().includes(lowerTerm) ||
+          title.toLowerCase().includes(lowerTerm),
+      );
     }
-    
+
     return events;
   }, [allEvents, eventView, searchTerm, title]);
 
   const fetchVolunteerData = async (eventToExport: EventData) => {
     if (!eventToExport) return;
     try {
-      const volunteerRef = collection(db, `events/${eventToExport.id}/volunteers`)
+      const volunteerRef = collection(
+        db,
+        `events/${eventToExport.id}/volunteers`,
+      );
       const volunteersSnapshot = await getDocs(volunteerRef);
       const volunteerData = volunteersSnapshot.docs.map((doc) => ({
         uid: doc.id,
@@ -344,7 +357,6 @@ const EventAdmin = () => {
       }));
 
       return volunteerData as VolunteerData[];
-
     } catch (error) {
       console.error("Error fetching volunteer data:", error);
       return undefined;
@@ -353,10 +365,13 @@ const EventAdmin = () => {
 
   const handleExportCSV = async (eventToExport: EventData) => {
     const volunteers = await fetchVolunteerData(eventToExport);
-    exportToCSV(volunteers? volunteers : []);
+    exportToCSV(volunteers ? volunteers : []);
   };
 
-  const handleOpenEventFormPopup = (mode: "add" | "edit", eventToEdit: EventData | null) => {
+  const handleOpenEventFormPopup = (
+    mode: "add" | "edit",
+    eventToEdit: EventData | null,
+  ) => {
     setPopupMode(mode);
     setEditedEvent(eventToEdit);
     setOpenEventFormPopup(true);
@@ -380,20 +395,35 @@ const EventAdmin = () => {
       if (mode === "delete" && eventId) {
         const eventRef = doc(db, collectionPath, eventId);
         await deleteDoc(eventRef);
-        // alert("Event deleted successfully!");
+        enqueueSnackbar("Event successfully deleted", {
+          variant: "success",
+          autoHideDuration: 3000,
+        });
         return;
       }
 
       let allEventDates: Date[] = [];
-      if (eventData.dates && Array.isArray(eventData.dates) && eventData.dates.length > 0) {
+      if (
+        eventData.dates &&
+        Array.isArray(eventData.dates) &&
+        eventData.dates.length > 0
+      ) {
         // Ensure they are Date objects
-        allEventDates = eventData.dates.map((d: any) => d.toDate ? d.toDate() : new Date(d));
+        allEventDates = eventData.dates.map((d: any) =>
+          d.toDate ? d.toDate() : new Date(d),
+        );
       } else if (eventData.date) {
         // Fallback for single date creation
-        const d = eventData.date instanceof Date ? eventData.date : (eventData.date as any).toDate();
+        const d =
+          eventData.date instanceof Date
+            ? eventData.date
+            : (eventData.date as any).toDate();
         allEventDates = [d];
       } else {
-        alert("Failed to save: No dates selected.");
+        enqueueSnackbar("Failed to save: No dates selected", {
+          variant: "error",
+          autoHideDuration: 3000,
+        });
         return;
       }
       allEventDates.sort((a, b) => a.getTime() - b.getTime());
@@ -408,10 +438,10 @@ const EventAdmin = () => {
         if (calendarArr.indexOf(calendarString) == -1) {
           calendarArr.push(calendarString);
         }
-        
-        const dateKey = dateObj.toISOString().split('T')[0];
+
+        const dateKey = dateObj.toISOString().split("T")[0];
         const firstKey = Object.keys(flatOpenings)[0];
-        if (firstKey && firstKey.startsWith('20')) {
+        if (firstKey && firstKey.startsWith("20")) {
           nestedOpenings[dateKey] = flatOpenings[dateKey] || {};
         } else {
           nestedOpenings[dateKey] = { ...flatOpenings };
@@ -421,11 +451,11 @@ const EventAdmin = () => {
       const dataToSave = {
         ...eventData,
         // Save the array of Timestamps
-        dates: allEventDates.map(d => Timestamp.fromDate(d)),
+        dates: allEventDates.map((d) => Timestamp.fromDate(d)),
         // Save primary date for compatibility
-        date: Timestamp.fromDate(primaryDate), 
+        date: Timestamp.fromDate(primaryDate),
         // Save the nested openings structure
-        openings: nestedOpenings, 
+        openings: nestedOpenings,
         projectId: project,
         projectName: title,
         location: location as string,
@@ -434,37 +464,55 @@ const EventAdmin = () => {
 
       if (mode === "add") {
         await addDoc(collection(db, collectionPath), dataToSave);
+        enqueueSnackbar("Event successfully created", {
+          variant: "success",
+          autoHideDuration: 3000,
+        });
       } else if (mode === "edit" && eventId) {
         const eventRef = doc(db, collectionPath, eventId);
         await setDoc(eventRef, dataToSave, { merge: true });
+        enqueueSnackbar("Event successfully updated", {
+          variant: "success",
+          autoHideDuration: 3000,
+        });
       }
       setOpenEventFormPopup(false);
     } catch (error) {
       console.error(`Error ${mode}ing event:`, error);
-      alert(`Failed to ${mode} event. Please try again.`);
+      enqueueSnackbar("Error handling event", {
+        variant: "error",
+        autoHideDuration: 3000,
+      });
     }
   };
 
   // Helper to format Time
   const formatTime = (date: Date) => {
-    return date.toLocaleTimeString("en-US", { hour: 'numeric', minute: '2-digit' });
+    return date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+    });
   };
 
   const parseTimeStr = (baseDate: Date, timeString?: string) => {
-    if (!timeString) return baseDate; 
+    if (!timeString) return baseDate;
 
     const dateCopy = new Date(baseDate);
-    const [hours, minutes] = timeString.split(':').map(Number); 
-    
+    const [hours, minutes] = timeString.split(":").map(Number);
+
     dateCopy.setHours(hours);
     dateCopy.setMinutes(minutes);
-    
+
     return dateCopy;
   };
 
   // Helper to format Date
   const formatDate = (date: Date) => {
-    return date.toLocaleDateString("en-US", { month: 'short', day: 'numeric', year: 'numeric' });
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
   };
 
   if (!router.isReady) {
@@ -477,7 +525,7 @@ const EventAdmin = () => {
 
   return (
     <div className={classes.root}>
-      <Button 
+      <Button
         className={classes.backBtn}
         startIcon={<ArrowBackIosNewIcon />}
         onClick={() => router.back()}
@@ -490,8 +538,12 @@ const EventAdmin = () => {
           {title} - Add Events
         </Typography>
         <div className={classes.subHeaderRow}>
-            <div><LocationOnIcon /> {location}</div>
-            <div><ContactPageIcon /> Contact</div>
+          <div>
+            <LocationOnIcon /> {location}
+          </div>
+          <div>
+            <ContactPageIcon /> Contact
+          </div>
         </div>
       </div>
 
@@ -499,11 +551,11 @@ const EventAdmin = () => {
       <div className={classes.sectionTitleRow}>
         <Typography className={classes.eventsTitle}>Events</Typography>
         <Button
-            className={classes.addButton}
-            onClick={() => handleOpenEventFormPopup("add", null)}
-            startIcon={<span>+</span>}
+          className={classes.addButton}
+          onClick={() => handleOpenEventFormPopup("add", null)}
+          startIcon={<span>+</span>}
         >
-            Add New Event
+          Add New Event
         </Button>
       </div>
 
@@ -524,144 +576,166 @@ const EventAdmin = () => {
 
       {/* SEARCH & FILTERS TOOLBAR */}
       <div className={classes.toolbar}>
-        <TextField 
-            placeholder="Search..."
-            variant="outlined"
-            size="small"
-            className={classes.searchField}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <SearchIcon style={{ color: '#ccc' }} />
-                  </InputAdornment>
-                ),
-            }}
+        <TextField
+          placeholder="Search..."
+          variant="outlined"
+          size="small"
+          className={classes.searchField}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <SearchIcon style={{ color: "#ccc" }} />
+              </InputAdornment>
+            ),
+          }}
         />
 
         <div className={classes.filtersContainer}>
-            <span className={classes.filterLabel}>Filters:</span>
-            
-            <Select
-                value={filterMonth}
-                onChange={(e) => setFilterMonth(e.target.value as string)}
-                displayEmpty
-                className={classes.filterSelect}
-                variant="outlined"
-            >
-                <MenuItem value="Any Month">Any Month</MenuItem>
-                <MenuItem value="January">January</MenuItem>
-                <MenuItem value="February">February</MenuItem>
-            </Select>
+          <span className={classes.filterLabel}>Filters:</span>
 
-            <Select
-                value="Any Start Time"
-                displayEmpty
-                className={classes.filterSelect}
-                variant="outlined"
-                disabled
-            >
-                <MenuItem value="Any Start Time">Any Start Time</MenuItem>
-            </Select>
+          <Select
+            value={filterMonth}
+            onChange={(e) => setFilterMonth(e.target.value as string)}
+            displayEmpty
+            className={classes.filterSelect}
+            variant="outlined"
+          >
+            <MenuItem value="Any Month">Any Month</MenuItem>
+            <MenuItem value="January">January</MenuItem>
+            <MenuItem value="February">February</MenuItem>
+          </Select>
 
-            <Select
-                value="Any End Time"
-                displayEmpty
-                className={classes.filterSelect}
-                variant="outlined"
-                disabled
-            >
-                <MenuItem value="Any End Time">Any End Time</MenuItem>
-            </Select>
+          <Select
+            value="Any Start Time"
+            displayEmpty
+            className={classes.filterSelect}
+            variant="outlined"
+            disabled
+          >
+            <MenuItem value="Any Start Time">Any Start Time</MenuItem>
+          </Select>
+
+          <Select
+            value="Any End Time"
+            displayEmpty
+            className={classes.filterSelect}
+            variant="outlined"
+            disabled
+          >
+            <MenuItem value="Any End Time">Any End Time</MenuItem>
+          </Select>
         </div>
       </div>
 
       {/* DATA TABLE */}
-      <TableContainer component={Paper} elevation={0} sx={{ 
-        border: "1px solid #85754D",
-        borderRadius: filteredEvents.length > 0 ? "8px" : "8px 8px 0 0", 
-        overflow: 'hidden'
-    }}>
+      <TableContainer
+        component={Paper}
+        elevation={0}
+        sx={{
+          border: "1px solid #85754D",
+          borderRadius: filteredEvents.length > 0 ? "8px" : "8px 8px 0 0",
+          overflow: "hidden",
+        }}
+      >
         <Table>
-            <TableHead>
-                <TableRow className={classes.tableHeader}>
-                    <TableCell className={classes.tableHeaderCell}>Event Name</TableCell>
-                    <TableCell className={classes.tableHeaderCell}>Start Date</TableCell>
-                    <TableCell className={classes.tableHeaderCell}>Start Time</TableCell>
-                    <TableCell className={classes.tableHeaderCell}>End Time</TableCell>
-                    <TableCell className={classes.tableHeaderCell} align="right">Options</TableCell>
-                </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredEvents.map((ev) => {
+          <TableHead>
+            <TableRow className={classes.tableHeader}>
+              <TableCell className={classes.tableHeaderCell}>
+                Event Name
+              </TableCell>
+              <TableCell className={classes.tableHeaderCell}>
+                Start Date
+              </TableCell>
+              <TableCell className={classes.tableHeaderCell}>
+                Start Time
+              </TableCell>
+              <TableCell className={classes.tableHeaderCell}>
+                End Time
+              </TableCell>
+              <TableCell className={classes.tableHeaderCell} align="right">
+                Options
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredEvents.map((ev) => {
               const eventDate = ev.date.toDate();
-              
+
               const startTime = parseTimeStr(eventDate, ev.startTime);
               const endTime = parseTimeStr(eventDate, ev.endTime);
 
               return (
                 <TableRow key={ev.id} hover className={classes.tableRow}>
-                    <TableCell className={classes.tableCell} style={{ fontWeight: 600 }}>
-                        {ev.name || title || "Event Name"}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                        {formatDate(eventDate)}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                        {formatTime(startTime)}
-                    </TableCell>
-                    
-                    <TableCell className={classes.tableCell}>
-                        {formatTime(endTime)}
-                    </TableCell>
-                        <TableCell className={classes.tableCell} align="right">
-                            <IconButton 
-                                size="small" 
-                                onClick={() => handleExportCSV(ev)}
-                                title="Export"
-                            >
-                                <DownloadIcon fontSize="small" />
-                            </IconButton>
-                            <IconButton 
-                                size="small" 
-                                onClick={() => handleOpenEventFormPopup("edit", ev)}
-                                title="Edit"
-                            >
-                                <EditIcon fontSize="small" />
-                            </IconButton>
-                                <IconButton 
-                                  size="small" 
-                                  onClick={() => handleDuplicateEvent(ev)}
-                                  title="Duplicate"
-                                >
-                                  <ContentCopyIcon fontSize="small" />
-                                </IconButton>
-                            <IconButton 
-                                size="small" 
-                                onClick={() => {
-                                    if(window.confirm("Are you sure you want to delete this event?")) {
-                                        handleEventAction("delete", {}, ev.id)
-                                    }
-                                }}
-                                title="Delete"
-                                color="error"
-                            >
-                                <DeleteIcon fontSize="small" />
-                            </IconButton>
-                        </TableCell>
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
+                  <TableCell
+                    className={classes.tableCell}
+                    style={{ fontWeight: 600 }}
+                  >
+                    {ev.name || title || "Event Name"}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {formatDate(eventDate)}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {formatTime(startTime)}
+                  </TableCell>
+
+                  <TableCell className={classes.tableCell}>
+                    {formatTime(endTime)}
+                  </TableCell>
+                  <TableCell className={classes.tableCell} align="right">
+                    <IconButton
+                      size="small"
+                      onClick={() => handleExportCSV(ev)}
+                      title="Export"
+                    >
+                      <DownloadIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton
+                      size="small"
+                      onClick={() => handleOpenEventFormPopup("edit", ev)}
+                      title="Edit"
+                    >
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton
+                      size="small"
+                      onClick={() => handleDuplicateEvent(ev)}
+                      title="Duplicate"
+                    >
+                      <ContentCopyIcon fontSize="small" />
+                    </IconButton>
+                    <IconButton
+                      size="small"
+                      onClick={() => {
+                        if (
+                          window.confirm(
+                            "Are you sure you want to delete this event?",
+                          )
+                        ) {
+                          handleEventAction("delete", {}, ev.id);
+                        }
+                      }}
+                      title="Delete"
+                      color="error"
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
         </Table>
       </TableContainer>
 
       {/* EMPTY STATE */}
       {filteredEvents.length === 0 && (
-          <div className={classes.emptyStateBox}>
-              No events have been created yet. Click on “Add New Event” to create an event.
-          </div>
+        <div className={classes.emptyStateBox}>
+          No events have been created yet. Click on “Add New Event” to create an
+          event.
+        </div>
       )}
 
       {/* FOOTER NOTE (This is currently not accurate information, but was in figma design doc) */}
