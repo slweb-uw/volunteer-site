@@ -251,10 +251,13 @@ const AdminPage = () => {
         timestamp: serverTimestamp(),
       });
       setNewUserEmail("");
-      enqueueSnackbar("User successfully added", {
-        variant: "success",
-        autoHideDuration: 3000,
-      });
+      enqueueSnackbar(
+        "User added — notify them their role has changed. It may take up to an hour to apply, or they can sign out and back in to apply it immediately.",
+        {
+          variant: "success",
+          autoHideDuration: 6000,
+        },
+      );
     } catch (error) {
       console.error("Error adding user", error);
       enqueueSnackbar("Error adding user to directory", {
