@@ -32,6 +32,7 @@ import {
   TableRow,
   Paper,
   IconButton,
+  Tooltip,
 } from "@mui/material";
 import { useSnackbar } from "notistack";
 
@@ -612,19 +613,8 @@ const EventAdmin = () => {
             displayEmpty
             className={classes.filterSelect}
             variant="outlined"
-            disabled
           >
             <MenuItem value="Any Start Time">Any Start Time</MenuItem>
-          </Select>
-
-          <Select
-            value="Any End Time"
-            displayEmpty
-            className={classes.filterSelect}
-            variant="outlined"
-            disabled
-          >
-            <MenuItem value="Any End Time">Any End Time</MenuItem>
           </Select>
         </div>
       </div>
@@ -676,6 +666,24 @@ const EventAdmin = () => {
                   </TableCell>
                   <TableCell className={classes.tableCell}>
                     {formatDate(eventDate)}
+                    {ev.dates?.length > 1 && (
+                      <Tooltip
+                        title={ev.dates
+                          .map((t) => formatDate(t.toDate()))
+                          .join(", ")}
+                      >
+                        <span
+                          style={{
+                            color: "#666",
+                            cursor: "help",
+                            display: "flex",
+                            marginLeft: 10,
+                          }}
+                        >
+                          +{ev.dates.length - 1} more
+                        </span>
+                      </Tooltip>
+                    )}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
                     {formatTime(startTime)}
