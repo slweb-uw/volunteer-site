@@ -235,6 +235,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const MONTH_NAMES = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
+
+const TIME_OPTIONS = Array.from({ length: 24 }, (_, hour) => {
+  const value = `${String(hour).padStart(2, "0")}:00`;
+  const label = new Date(2000, 0, 1, hour).toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+  });
+  return { value, label };
+});
+
 const EventAdmin = () => {
   const classes = useStyles();
   const router = useRouter();
@@ -250,6 +264,8 @@ const EventAdmin = () => {
   // Search/Filter UI placeholders
   const [searchTerm, setSearchTerm] = useState("");
   const [filterMonth, setFilterMonth] = useState("Any Month");
+  const [filterStartTime, setFilterStartTime] = useState("");
+  const [filterEndTime, setFilterEndTime] = useState("");
   const [eventView, setEventView] = useState<"active" | "past">("active");
 
   // Snackbar notification
@@ -341,8 +357,50 @@ const EventAdmin = () => {
       );
     }
 
+    // Apply month filter
+    if (filterMonth !== "Any Month") {
+      const monthIndex = MONTH_NAMES.indexOf(filterMonth);
+      events = events.filter((e) => {
+        const matchesPrimary = e.date.toDate().getMonth() === monthIndex;
+        const matchesAny =
+          Array.isArray(e.dates) &&
+          e.dates.some((d) => d.toDate().getMonth() === monthIndex);
+        return matchesPrimary || matchesAny;
+      });
+    }
+
+    // Apply start/end time filters
+    if (filterStartTime) {
+      events = events.filter((e) => e.startTime >= filterStartTime);
+    }
+    if (filterEndTime) {
+      events = events.filter((e) => e.endTime <= filterEndTime);
+    }
+
     return events;
-  }, [allEvents, eventView, searchTerm, title]);
+  }, [
+    allEvents,
+    eventView,
+    searchTerm,
+    title,
+    filterMonth,
+    filterStartTime,
+    filterEndTime,
+  ]);
+
+  const handleFilterStartTimeChange = (value: string) => {
+    setFilterStartTime(value);
+    if (value && filterEndTime && filterEndTime <= value) {
+      setFilterEndTime("");
+    }
+  };
+
+  const handleFilterEndTimeChange = (value: string) => {
+    setFilterEndTime(value);
+    if (value && filterStartTime && filterStartTime >= value) {
+      setFilterStartTime("");
+    }
+  };
 
   const fetchVolunteerData = async (eventToExport: EventData) => {
     if (!eventToExport) return;
@@ -604,17 +662,49 @@ const EventAdmin = () => {
             variant="outlined"
           >
             <MenuItem value="Any Month">Any Month</MenuItem>
-            <MenuItem value="January">January</MenuItem>
-            <MenuItem value="February">February</MenuItem>
+            {MONTH_NAMES.map((month) => (
+              <MenuItem key={month} value={month}>
+                {month}
+              </MenuItem>
+            ))}
           </Select>
 
           <Select
-            value="Any Start Time"
+            value={filterStartTime}
+            onChange={(e) => handleFilterStartTimeChange(e.target.value as string)}
             displayEmpty
             className={classes.filterSelect}
             variant="outlined"
           >
-            <MenuItem value="Any Start Time">Any Start Time</MenuItem>
+            <MenuItem value="">Any Start Time</MenuItem>
+            {TIME_OPTIONS.map((opt) => (
+              <MenuItem
+                key={opt.value}
+                value={opt.value}
+                disabled={!!filterEndTime && opt.value >= filterEndTime}
+              >
+                {opt.label}
+              </MenuItem>
+            ))}
+          </Select>
+
+          <Select
+            value={filterEndTime}
+            onChange={(e) => handleFilterEndTimeChange(e.target.value as string)}
+            displayEmpty
+            className={classes.filterSelect}
+            variant="outlined"
+          >
+            <MenuItem value="">Any End Time</MenuItem>
+            {TIME_OPTIONS.map((opt) => (
+              <MenuItem
+                key={opt.value}
+                value={opt.value}
+                disabled={!!filterStartTime && opt.value <= filterStartTime}
+              >
+                {opt.label}
+              </MenuItem>
+            ))}
           </Select>
         </div>
       </div>
