@@ -36,3 +36,7 @@ yarn-error.log*
 
 #firebase info
 sign-up-9453b-firebase-adminsdk-ahys9-1b56bc2534.json
+
+# firebase emulator
+.firebase/
+*-debug.log
