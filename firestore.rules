@@ -1,0 +1,80 @@
+rules_version = '2';
+
+  service cloud.firestore {
+    match /databases/{database}/documents {
+    	// helper functions
+      function isAdmin() {
+        return request.auth.token.role == "admin";
+      }
+      function isLead() {
+        return request.auth.token.role == "lead";
+      }
+      function isSignedIn() {
+      	return request.auth != null;
+      }
+
+      // Programs permissions
+      match /Alaska/{docId} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+      match /Idaho/{docId} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+      match /Montana/{docId} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+      match /Seattle/{docId} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+      match /Spokane/{docId} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+      match /Wyoming/{docId} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
+    	
+      // events permissions
+      match /events/{eventId} {
+      	allow read: if true;
+        allow create, delete: if isAdmin() || isLead();
+        allow update: if isAdmin() || isLead() || (isSignedIn() &&
+        	request.resource.data.diff(resource.data).affectedKeys().hasOnly(["openings"]) &&
+          request.resource.data.openings >= 0);
+        
+        // volunteers subcollection permissions
+        match /volunteers/{volunteerId} {
+        	allow read: if isSignedIn();
+          allow write: if isAdmin() || isLead() || (isSignedIn() &&
+          	volunteerId.matches(request.auth.uid + "_.*"));
+        }
+      }
+      
+      // Admins permission
+      match /Admins/{adminId} {
+      	allow read: if isAdmin();
+        allow write: if isAdmin();
+      }
+      // Leads permission
+      match /Leads/{leadId} {
+      	allow read: if isAdmin();
+        allow write: if isAdmin();
+      }
+      // Volunteers aka non-uw admins permissions
+      match /Volunteers/{VolunteersId} {
+      	allow read: if isAdmin();
+        allow write: if isAdmin();
+      }
+      
+      // caches permissions
+      match /cache/{docId} {
+    		allow read: if true;
+    		allow write: if false;
+      }
+    }
+  }
