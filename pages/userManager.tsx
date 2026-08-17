@@ -233,6 +233,7 @@ const AdminPage = () => {
       body: JSON.stringify({
         email: newUserEmail,
         role: roleMap[activeSection],
+        authorizd: true
       }),
     });
 
@@ -290,7 +291,7 @@ const AdminPage = () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ email: userEmail, role: null }),
+      body: JSON.stringify({ email: userEmail, role: null, authorized: false }),
     });
 
     if (!res.ok) {

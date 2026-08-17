@@ -65,8 +65,8 @@ export function AuthProvider({ children }: any) {
               },
             });
             if (res.ok) {
-              const { role: reconciledRole } = await res.json();
-              if (reconciledRole) {
+              const { role: reconciledRole, authorized: isAuthorized } = await res.json();
+              if (reconciledRole || isAuthorized) {
                 // claim was just set server-side — force a fresh token to see it
                 const freshToken = await user.getIdTokenResult(true);
                 role = freshToken.claims.role;
@@ -76,7 +76,7 @@ export function AuthProvider({ children }: any) {
             console.error("Error reconciling role:", error);
           }
         }
-        console.log(role);
+
         if (role === "admin") {
           setIsAdmin(true);
           setIsAuthorized(true);
@@ -85,7 +85,7 @@ export function AuthProvider({ children }: any) {
           setIsAuthorized(true);
         } else if (role === "volunteer") {
           setIsAuthorized(true);
-        } else if (user.email?.endsWith("@uw.edu")) {
+        } else if (user.email?.toLowerCase().endsWith("@uw.edu")) {
           setIsAuthorized(true);
         } else {
           // non-uw account that isn't authorized

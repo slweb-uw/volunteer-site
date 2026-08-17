@@ -56,5 +56,5 @@ export default async function handler(
     await firebaseAdmin.auth().setCustomUserClaims(decoded.uid, {role: null, authorized})
   }
 
-  return res.status(200).json({ role: null });
+  return res.status(200).json({ role: null, authorized });
 }
