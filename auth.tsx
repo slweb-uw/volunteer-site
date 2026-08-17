@@ -54,7 +54,7 @@ export function AuthProvider({ children }: any) {
 
         // no role on the token yet — check if one was pre-assigned by email
         // before this account existed, and apply it if so
-        if (!role) {
+        if (authToken.claims.authorized === undefined) {
           try {
             const idToken = await user.getIdToken();
             const res = await fetch("/api/reconcile-role", {
@@ -65,12 +65,8 @@ export function AuthProvider({ children }: any) {
               },
             });
             if (res.ok) {
-              const { role: reconciledRole, authorized: isAuthorized } = await res.json();
-              if (reconciledRole || isAuthorized) {
-                // claim was just set server-side — force a fresh token to see it
-                const freshToken = await user.getIdTokenResult(true);
-                role = freshToken.claims.role;
-              }
+              const freshToken = await user.getIdTokenResult(true);
+              role = freshToken.claims.role;
             }
           } catch (error) {
             console.error("Error reconciling role:", error);
