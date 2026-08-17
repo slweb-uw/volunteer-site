@@ -29,10 +29,6 @@ export default async function handler(
     return res.status(401).json({ error: "Invalid token" });
   }
 
-  // already has a role claim, nothing to reconcile
-  if (decoded.role) {
-    return res.status(200).json({ role: decoded.role });
-  }
 
   if (!decoded.email) {
     return res.status(200).json({ role: null });
@@ -40,6 +36,7 @@ export default async function handler(
 
   const db = firebaseAdmin.firestore();
 
+  let authorized: boolean = false;
   for (const [collectionName, role] of Object.entries(ROLE_COLLECTIONS)) {
     const snapshot = await db
       .collection(collectionName)
@@ -47,9 +44,16 @@ export default async function handler(
       .limit(1)
       .get();
     if (!snapshot.empty) {
-      await firebaseAdmin.auth().setCustomUserClaims(decoded.uid, { role });
+      authorized = true;
+      await firebaseAdmin.auth().setCustomUserClaims(decoded.uid, { role, authorized });
       return res.status(200).json({ role });
     }
+  }
+  if (decoded.email && decoded.email.toLowerCase().endsWith("@uw.edu")) {
+    authorized = true;
+    await firebaseAdmin.auth().setCustomUserClaims(decoded.uid, {role: null, authorized})
+  } else {
+    await firebaseAdmin.auth().setCustomUserClaims(decoded.uid, {role: null, authorized})
   }
 
   return res.status(200).json({ role: null });
