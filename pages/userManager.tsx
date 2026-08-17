@@ -233,6 +233,7 @@ const AdminPage = () => {
       body: JSON.stringify({
         email: newUserEmail,
         role: roleMap[activeSection],
+        authorized: true
       }),
     });
 
@@ -290,10 +291,10 @@ const AdminPage = () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ email: userEmail, role: null }),
+      body: JSON.stringify({ email: userEmail, role: null, authorized: false }),
     });
 
-    if (!res.ok) {
+    if (!res.ok && res.status !== 404) {
       const { error } = await res.json();
       enqueueSnackbar(`Error Removing User: ${error}`, {
         variant: "error",
@@ -307,10 +308,17 @@ const AdminPage = () => {
         query(usersRef, where("email", "==", userEmail)),
       );
       await Promise.all(querySnapshot.docs.map((doc) => deleteDoc(doc.ref)));
-      enqueueSnackbar("User removed successfully", {
-        variant: "success",
-        autoHideDuration: 3000,
-      });
+      if (res.status === 404) {
+        enqueueSnackbar("User role removed successfully (Note: an account hasn't been created with this email)", {
+          variant: "success",
+          autoHideDuration: 3000,
+        });
+      }else {
+        enqueueSnackbar("User removed successfully", {
+          variant: "success",
+          autoHideDuration: 3000,
+        });
+      }
     } catch (error) {
       console.error("Error removing user: ", error);
       enqueueSnackbar("Error removing user from directory", {
