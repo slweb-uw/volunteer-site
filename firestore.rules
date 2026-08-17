@@ -53,8 +53,17 @@ rules_version = '2';
           allow write: if isAdmin() || isLead() || (isSignedIn() &&
           	volunteerId.matches(request.auth.uid + "_.*"));
         }
+         
+        // slots subcollection permissions
+      	match /slots/{slotId} {
+        	allow read: if isSignedIn();
+          allow create, delete: if isLead() || isAdmin();
+          allow update: if isLead() || isAdmin() || (request.auth != null
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['remaining'])
+          && request.resource.data.remaining >= 0
+          && request.resource.data.remaining <= resource.data.capacity);
+       	}
       }
-      
       // Admins permission
       match /Admins/{adminId} {
       	allow read: if isAdmin();
