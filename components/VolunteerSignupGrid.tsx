@@ -8,6 +8,7 @@ interface VolunteerSignupGridProps {
   eventData: EventData;
   volunteers: VolunteerData[];
   onSignUp: (role: string, date: string) => void;
+  currentUserId?: string;
   relevantDates: string[];
   targetDay: number | string | string[];
 };
@@ -44,6 +45,7 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
   eventData,
   volunteers,
   onSignUp,
+  currentUserId,
   relevantDates,
   targetDay
 }) => {
@@ -177,9 +179,12 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
               const spotsOpen = eventData.openings?.[dateKey]?.[role] ?? 0;
               const isFull = spotsOpen <= 0;
               const pastEvent = isPastDate(dateStr);
+              const isCurrentUserSignedUp = cellVolunteers.some((v) => v.uid === currentUserId);
+              const isDisabled = pastEvent || (isFull && !isCurrentUserSignedUp);
 
               let buttonText = 'BE THE FIRST!';
               if (pastEvent) buttonText = 'PAST EVENT';
+              else if (isCurrentUserSignedUp) buttonText = 'EDIT MY SIGNUP';
               else if (isFull) buttonText = 'FULL';
               else if (cellVolunteers.length > 0) buttonText = `JOIN : ${spotsOpen} spot(s) left`;
 
@@ -223,21 +228,21 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
                   {/* Action Button Area */}
                   <Button
                     fullWidth
-                    disabled={isFull || pastEvent}
+                    disabled={isDisabled}
                     onClick={() => onSignUp(role, dateStr)}
-                    endIcon={!isFull && !pastEvent && <ArrowForwardIcon fontSize="small" />}
+                    endIcon={!isDisabled && <ArrowForwardIcon fontSize="small" />}
                     sx={{
                       borderRadius: '20px',
                       py: 0.5,
-                      bgcolor: (isFull || pastEvent) ? '#f5f5f5' : COLORS.btnBg,
-                      color: (isFull || pastEvent) ? '#aaa' : COLORS.btnText,
+                      bgcolor: isDisabled ? '#f5f5f5' : COLORS.btnBg,
+                      color: isDisabled ? '#aaa' : COLORS.btnText,
                       fontWeight: 700,
                       fontSize: '0.75rem',
                       letterSpacing: '1px',
-                      border: `1px solid ${(isFull || pastEvent) ? '#eee' : COLORS.btnBorder}`,
+                      border: `1px solid ${isDisabled ? '#eee' : COLORS.btnBorder}`,
                       boxShadow: 'none',
                      '&:hover': {
-                        bgcolor: (isFull || pastEvent) ? '#f5f5f5' : '#e0d4c0',
+                        bgcolor: isDisabled ? '#f5f5f5' : '#e0d4c0',
                         boxShadow: 'none',
                       },
                     }}
