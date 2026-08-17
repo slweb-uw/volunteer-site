@@ -1,89 +1,118 @@
 rules_version = '2';
 
-  service cloud.firestore {
-    match /databases/{database}/documents {
-    	// helper functions
-      function isAdmin() {
-        return request.auth.token.role == "admin";
-      }
-      function isLead() {
-        return request.auth.token.role == "lead";
-      }
-      function isSignedIn() {
-      	return request.auth != null;
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // helper functions
+    //
+    // Claims are read with get(key, default) rather than dot access: a user who
+    // has never been through /api/reconcile-role has no `role` or `authorized`
+    // key at all, and a bare lookup on a missing key is an evaluation error that
+    // denies the whole rule -- including the branches that should still pass.
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.get("role", "") == "admin";
+    }
+    function isLead() {
+      return isSignedIn() && request.auth.token.get("role", "") == "lead";
+    }
+    function isStaff() {
+      return isAdmin() || isLead();
+    }
+    // A UW account, or anyone an admin has granted a role. Set server-side by
+    // /api/set-roles and /api/reconcile-role; never derived from the client.
+    function isAuthorized() {
+      return isSignedIn() && request.auth.token.get("authorized", false) == true;
+    }
+
+    // Programs permissions -- public, these are the opportunity listings
+    match /Alaska/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /Idaho/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /Montana/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /Seattle/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /Spokane/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /Wyoming/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // events permissions
+    match /events/{eventId} {
+      // Public: the calendar and opportunity pages are browsable signed out.
+      allow read: if true;
+      // The signup counter moved to the slots subcollection, so nothing on the
+      // event document itself is volunteer-writable any more.
+      allow create, update, delete: if isStaff();
+
+      // volunteers subcollection permissions
+      match /volunteers/{volunteerId} {
+        allow read: if isAuthorized();
+        // Document id is `${uid}_${YYYY-MM-DD}` -- one signup per person per
+        // day. The id check is what stops a volunteer touching anyone else's
+        // record; the uid check stops the payload disagreeing with the id.
+        allow create, update: if isStaff() || (isAuthorized()
+          && volunteerId.matches(request.auth.uid + "_.*")
+          && request.resource.data.uid == request.auth.uid);
+        allow delete: if isStaff() || (isAuthorized()
+          && volunteerId.matches(request.auth.uid + "_.*"));
       }
 
-      // Programs permissions
-      match /Alaska/{docId} {
-        allow read: if true;
-        allow write: if isAdmin();
-      }
-      match /Idaho/{docId} {
-        allow read: if true;
-        allow write: if isAdmin();
-      }
-      match /Montana/{docId} {
-        allow read: if true;
-        allow write: if isAdmin();
-      }
-      match /Seattle/{docId} {
-        allow read: if true;
-        allow write: if isAdmin();
-      }
-      match /Spokane/{docId} {
-        allow read: if true;
-        allow write: if isAdmin();
-      }
-      match /Wyoming/{docId} {
-        allow read: if true;
-        allow write: if isAdmin();
-      }
-    	
-      // events permissions
-      match /events/{eventId} {
-      	allow read: if true;
-        allow create, delete: if isAdmin() || isLead();
-        allow update: if isAdmin() || isLead() || (isSignedIn() &&
-        	request.resource.data.diff(resource.data).affectedKeys().hasOnly(["openings"]) &&
-          request.resource.data.openings >= 0);
-        
-        // volunteers subcollection permissions
-        match /volunteers/{volunteerId} {
-        	allow read: if isSignedIn();
-          allow write: if isAdmin() || isLead() || (isSignedIn() &&
-          	volunteerId.matches(request.auth.uid + "_.*"));
-        }
-         
-        // slots subcollection permissions
-      	match /slots/{slotId} {
-        	allow read: if isSignedIn();
-          allow create, delete: if isLead() || isAdmin();
-          allow update: if isLead() || isAdmin() || (request.auth != null
-          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['remaining'])
+      // slots subcollection permissions
+      match /slots/{slotId} {
+        allow read: if isAuthorized();
+        allow create, delete: if isStaff();
+        // Signup and withdrawal move `remaining` by one, in a transaction that
+        // also writes the volunteer document. Rules are evaluated per document
+        // and cannot bind the two together, so this bounds the damage instead:
+        // capacity is untouchable, the count stays inside [0, capacity], and it
+        // can only ever step by one. A volunteer can still desync the counter
+        // from the roster by one; they cannot invent or destroy a slot.
+        allow update: if isStaff() || (isAuthorized()
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["remaining"])
+          && request.resource.data.remaining is int
           && request.resource.data.remaining >= 0
-          && request.resource.data.remaining <= resource.data.capacity);
-       	}
-      }
-      // Admins permission
-      match /Admins/{adminId} {
-      	allow read: if isAdmin();
-        allow write: if isAdmin();
-      }
-      // Leads permission
-      match /Leads/{leadId} {
-      	allow read: if isAdmin();
-        allow write: if isAdmin();
-      }
-      // Volunteers aka non-uw admins permissions
-      match /Volunteers/{VolunteersId} {
-      	allow read: if isAdmin();
-        allow write: if isAdmin();
-      }
-      
-      // caches permissions
-      match /cache/{docId} {
-    		allow read: if true;
-    		allow write: if false;
+          && request.resource.data.remaining <= resource.data.capacity
+          && (request.resource.data.remaining == resource.data.remaining + 1
+              || request.resource.data.remaining == resource.data.remaining - 1));
       }
     }
+
+    // Admins permission
+    match /Admins/{adminId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    // Leads permission
+    match /Leads/{leadId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+    // Volunteers aka non-uw volunteers granted access by an admin
+    match /Volunteers/{volunteerId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // caches permissions
+    match /cache/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
   }
+}
