@@ -24,6 +24,9 @@ export default async function handler(
     return res.status(401).json({ error: "Invalid token" });
   }
   const { email, role, authorized } = req.body;
+  if (typeof authorized != "boolean") {
+    return res.status(400).json({error: "Invalid authorized flag"})
+  }
   // check if email is non-null and role is valid value
   if (!email || typeof email != "string") {
     return res.status(400).json({ error: "Invalid email" });
