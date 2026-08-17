@@ -23,7 +23,10 @@ export default async function handler(
   } catch (error) {
     return res.status(401).json({ error: "Invalid token" });
   }
-  const { email, role } = req.body;
+  const { email, role, authorized } = req.body;
+  if (typeof authorized != "boolean") {
+    return res.status(400).json({error: "Invalid authorized flag"})
+  }
   // check if email is non-null and role is valid value
   if (!email || typeof email != "string") {
     return res.status(400).json({ error: "Invalid email" });
@@ -36,7 +39,7 @@ export default async function handler(
     // throws an error if user not found by email
     const userRecord = await firebaseAdmin.auth().getUserByEmail(email);
 
-    await firebaseAdmin.auth().setCustomUserClaims(userRecord.uid, { role });
+    await firebaseAdmin.auth().setCustomUserClaims(userRecord.uid, { role, authorized });
   } catch (error) {
     return res.status(404).json({ error: "No account found for this email" });
   }

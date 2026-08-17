@@ -233,16 +233,30 @@ const AdminPage = () => {
       body: JSON.stringify({
         email: newUserEmail,
         role: roleMap[activeSection],
+        authorized: true
       }),
     });
 
+    let accountExists = true;
     if (!res.ok) {
       const { error } = await res.json();
-      enqueueSnackbar(`Error Adding User: ${error}`, {
-        variant: "error",
-        autoHideDuration: 3000,
-      });
-      return;
+      if (res.status === 404) {
+        // no account yet — still queue the role, it'll apply once they sign up
+        accountExists = false;
+        enqueueSnackbar(
+          "No account found for this email yet — the role will be applied automatically once they sign up.",
+          {
+            variant: "warning",
+            autoHideDuration: 5000,
+          },
+        );
+      } else {
+        enqueueSnackbar(`Error Adding User: ${error}`, {
+          variant: "error",
+          autoHideDuration: 3000,
+        });
+        return;
+      }
     }
     // add to collection to display who has which role
     try {
@@ -251,13 +265,15 @@ const AdminPage = () => {
         timestamp: serverTimestamp(),
       });
       setNewUserEmail("");
-      enqueueSnackbar(
-        "User added — notify them their role has changed. It may take up to an hour to apply, or they can sign out and back in to apply it immediately.",
-        {
-          variant: "success",
-          autoHideDuration: 6000,
-        },
-      );
+      if (accountExists) {
+        enqueueSnackbar(
+          "User added — notify them their role has changed. It may take up to an hour to apply, or they can sign out and back in to apply it immediately.",
+          {
+            variant: "success",
+            autoHideDuration: 6000,
+          },
+        );
+      }
     } catch (error) {
       console.error("Error adding user", error);
       enqueueSnackbar("Error adding user to directory", {
@@ -275,10 +291,10 @@ const AdminPage = () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ email: userEmail, role: null }),
+      body: JSON.stringify({ email: userEmail, role: null, authorized: false }),
     });
 
-    if (!res.ok) {
+    if (!res.ok && res.status !== 404) {
       const { error } = await res.json();
       enqueueSnackbar(`Error Removing User: ${error}`, {
         variant: "error",
@@ -292,10 +308,17 @@ const AdminPage = () => {
         query(usersRef, where("email", "==", userEmail)),
       );
       await Promise.all(querySnapshot.docs.map((doc) => deleteDoc(doc.ref)));
-      enqueueSnackbar("User removed successfully", {
-        variant: "success",
-        autoHideDuration: 3000,
-      });
+      if (res.status === 404) {
+        enqueueSnackbar("User role removed successfully (Note: an account hasn't been created with this email)", {
+          variant: "success",
+          autoHideDuration: 3000,
+        });
+      }else {
+        enqueueSnackbar("User removed successfully", {
+          variant: "success",
+          autoHideDuration: 3000,
+        });
+      }
     } catch (error) {
       console.error("Error removing user: ", error);
       enqueueSnackbar("Error removing user from directory", {

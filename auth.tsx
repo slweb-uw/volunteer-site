@@ -50,7 +50,29 @@ export function AuthProvider({ children }: any) {
       try {
         // fetch user custom claim integrated within JWT token
         const authToken = await user.getIdTokenResult();
-        const role = authToken.claims.role; // 'admin' || 'lead' || 'volunteer' || undefined (aka student)
+        let role = authToken.claims.role; // 'admin' || 'lead' || 'volunteer' || undefined (aka student)
+
+        // no role on the token yet — check if one was pre-assigned by email
+        // before this account existed, and apply it if so
+        if (authToken.claims.authorized === undefined) {
+          try {
+            const idToken = await user.getIdToken();
+            const res = await fetch("/api/reconcile-role", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${idToken}`,
+              },
+            });
+            if (res.ok) {
+              const freshToken = await user.getIdTokenResult(true);
+              role = freshToken.claims.role;
+            }
+          } catch (error) {
+            console.error("Error reconciling role:", error);
+          }
+        }
+
         if (role === "admin") {
           setIsAdmin(true);
           setIsAuthorized(true);
@@ -59,7 +81,7 @@ export function AuthProvider({ children }: any) {
           setIsAuthorized(true);
         } else if (role === "volunteer") {
           setIsAuthorized(true);
-        } else if (user.email?.endsWith("@uw.edu")) {
+        } else if (user.email?.toLowerCase().endsWith("@uw.edu")) {
           setIsAuthorized(true);
         } else {
           // non-uw account that isn't authorized

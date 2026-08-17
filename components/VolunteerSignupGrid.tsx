@@ -1,13 +1,15 @@
 import React from 'react';
 import { Box, Typography, Button, Divider } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { EventData, VolunteerData } from '../new-types';
+import { EventData, SlotData, VolunteerData } from '../new-types';
 import { useEffect } from "react";
 
 interface VolunteerSignupGridProps {
   eventData: EventData;
+  slots: SlotData[];
   volunteers: VolunteerData[];
   onSignUp: (role: string, date: string) => void;
+  currentUserId?: string;
   relevantDates: string[];
   targetDay: number | string | string[];
 };
@@ -42,8 +44,10 @@ const formatHeaderDate = (dateString: string, startTimeStr?: string, endTimeStr?
 
 const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
   eventData,
+  slots,
   volunteers,
   onSignUp,
+  currentUserId,
   relevantDates,
   targetDay
 }) => {
@@ -51,14 +55,17 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
     const element = document.getElementById(`${targetDay}`);
     element?.scrollIntoView({ behavior: "smooth", block: "end", inline: "center" });
   }
-  // volunteerTypes are not used anymore?
-  const allRolesSet = new Set<string>(eventData.volunteerTypes || []);
 
+  // Roles and counts both come from the slot documents, so the grid can never
+  // disagree with what the signup transaction will actually find.
+  const slotsByKey = new Map(slots.map(s => [`${s.date}__${s.role}`, s]));
+
+  const allRolesSet = new Set<string>();
   relevantDates.forEach(dateStr => {
     const dateKey = dateStr.split('T')[0];
-    if (eventData.openings?.[dateKey]) {
-      Object.keys(eventData.openings[dateKey]).forEach(r => allRolesSet.add(r));
-    }
+    slots
+      .filter(s => s.date === dateKey)
+      .forEach(s => allRolesSet.add(s.role));
   });
   const roles = Array.from(allRolesSet).sort();
 
@@ -174,12 +181,15 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
             {relevantDates.map((dateStr) => {
               const dateKey = dateStr.split('T')[0];
               const cellVolunteers = getVolunteersForCell(role, dateStr);
-              const spotsOpen = eventData.openings?.[dateKey]?.[role] ?? 0;
+              const spotsOpen = slotsByKey.get(`${dateKey}__${role}`)?.remaining ?? 0;
               const isFull = spotsOpen <= 0;
               const pastEvent = isPastDate(dateStr);
+              const isCurrentUserSignedUp = cellVolunteers.some((v) => v.uid === currentUserId);
+              const isDisabled = pastEvent || (isFull && !isCurrentUserSignedUp);
 
               let buttonText = 'BE THE FIRST!';
               if (pastEvent) buttonText = 'PAST EVENT';
+              else if (isCurrentUserSignedUp) buttonText = 'EDIT MY SIGNUP';
               else if (isFull) buttonText = 'FULL';
               else if (cellVolunteers.length > 0) buttonText = `JOIN : ${spotsOpen} spot(s) left`;
 
@@ -223,21 +233,21 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
                   {/* Action Button Area */}
                   <Button
                     fullWidth
-                    disabled={isFull || pastEvent}
+                    disabled={isDisabled}
                     onClick={() => onSignUp(role, dateStr)}
-                    endIcon={!isFull && !pastEvent && <ArrowForwardIcon fontSize="small" />}
+                    endIcon={!isDisabled && <ArrowForwardIcon fontSize="small" />}
                     sx={{
                       borderRadius: '20px',
                       py: 0.5,
-                      bgcolor: (isFull || pastEvent) ? '#f5f5f5' : COLORS.btnBg,
-                      color: (isFull || pastEvent) ? '#aaa' : COLORS.btnText,
+                      bgcolor: isDisabled ? '#f5f5f5' : COLORS.btnBg,
+                      color: isDisabled ? '#aaa' : COLORS.btnText,
                       fontWeight: 700,
                       fontSize: '0.75rem',
                       letterSpacing: '1px',
-                      border: `1px solid ${(isFull || pastEvent) ? '#eee' : COLORS.btnBorder}`,
+                      border: `1px solid ${isDisabled ? '#eee' : COLORS.btnBorder}`,
                       boxShadow: 'none',
                      '&:hover': {
-                        bgcolor: (isFull || pastEvent) ? '#f5f5f5' : '#e0d4c0',
+                        bgcolor: isDisabled ? '#f5f5f5' : '#e0d4c0',
                         boxShadow: 'none',
                       },
                     }}

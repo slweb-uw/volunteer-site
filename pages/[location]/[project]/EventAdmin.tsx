@@ -8,13 +8,14 @@ import {
   getDocs,
   setDoc,
   Timestamp,
-  deleteDoc,
   addDoc,
   onSnapshot,
   query,
   where,
   orderBy,
+  writeBatch,
 } from "firebase/firestore";
+import { slotId, dateKeyOf } from "helpers/slots";
 import { useAuth } from "auth";
 import { useRouter } from "next/router";
 import {
@@ -32,6 +33,7 @@ import {
   TableRow,
   Paper,
   IconButton,
+  Tooltip,
 } from "@mui/material";
 import { useSnackbar } from "notistack";
 
@@ -48,7 +50,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import SignupEventPopup from "components/SignupEventPopup";
 import { exportToCSV } from "helpers/csvExport";
 import AuthorizationMessage from "pages/AuthorizationMessage";
-import { EventData, VolunteerData } from "new-types";
+import { EventData, SlotData, VolunteerData } from "new-types";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -234,6 +236,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const MONTH_NAMES = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
+
+const TIME_OPTIONS = Array.from({ length: 24 }, (_, hour) => {
+  const value = `${String(hour).padStart(2, "0")}:00`;
+  const label = new Date(2000, 0, 1, hour).toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+  });
+  return { value, label };
+});
+
 const EventAdmin = () => {
   const classes = useStyles();
   const router = useRouter();
@@ -242,6 +258,7 @@ const EventAdmin = () => {
 
   const [allEvents, setAllEvents] = useState<EventData[]>([]);
   const [editedEvent, setEditedEvent] = useState<EventData | null>(null);
+  const [editedEventSlots, setEditedEventSlots] = useState<SlotData[]>([]);
   const [openEventFormPopup, setOpenEventFormPopup] = useState(false);
   const [popupMode, setPopupMode] = useState<"add" | "edit">("add");
   const [title, setTitle] = useState("");
@@ -249,6 +266,8 @@ const EventAdmin = () => {
   // Search/Filter UI placeholders
   const [searchTerm, setSearchTerm] = useState("");
   const [filterMonth, setFilterMonth] = useState("Any Month");
+  const [filterStartTime, setFilterStartTime] = useState("");
+  const [filterEndTime, setFilterEndTime] = useState("");
   const [eventView, setEventView] = useState<"active" | "past">("active");
 
   // Snackbar notification
@@ -340,8 +359,50 @@ const EventAdmin = () => {
       );
     }
 
+    // Apply month filter
+    if (filterMonth !== "Any Month") {
+      const monthIndex = MONTH_NAMES.indexOf(filterMonth);
+      events = events.filter((e) => {
+        const matchesPrimary = e.date.toDate().getMonth() === monthIndex;
+        const matchesAny =
+          Array.isArray(e.dates) &&
+          e.dates.some((d) => d.toDate().getMonth() === monthIndex);
+        return matchesPrimary || matchesAny;
+      });
+    }
+
+    // Apply start/end time filters
+    if (filterStartTime) {
+      events = events.filter((e) => e.startTime >= filterStartTime);
+    }
+    if (filterEndTime) {
+      events = events.filter((e) => e.endTime <= filterEndTime);
+    }
+
     return events;
-  }, [allEvents, eventView, searchTerm, title]);
+  }, [
+    allEvents,
+    eventView,
+    searchTerm,
+    title,
+    filterMonth,
+    filterStartTime,
+    filterEndTime,
+  ]);
+
+  const handleFilterStartTimeChange = (value: string) => {
+    setFilterStartTime(value);
+    if (value && filterEndTime && filterEndTime <= value) {
+      setFilterEndTime("");
+    }
+  };
+
+  const handleFilterEndTimeChange = (value: string) => {
+    setFilterEndTime(value);
+    if (value && filterStartTime && filterStartTime >= value) {
+      setFilterStartTime("");
+    }
+  };
 
   const fetchVolunteerData = async (eventToExport: EventData) => {
     if (!eventToExport) return;
@@ -368,24 +429,94 @@ const EventAdmin = () => {
     exportToCSV(volunteers ? volunteers : []);
   };
 
-  const handleOpenEventFormPopup = (
+  // The form edits role capacities, which now live on slot documents rather
+  // than on the event itself, so they have to be fetched alongside the event.
+  const loadSlotsFor = async (eventId?: string) => {
+    if (!eventId) {
+      setEditedEventSlots([]);
+      return;
+    }
+    try {
+      const snap = await getDocs(collection(db, "events", eventId, "slots"));
+      setEditedEventSlots(snap.docs.map((d) => d.data() as SlotData));
+    } catch (error) {
+      console.error("Error fetching slots:", error);
+      setEditedEventSlots([]);
+    }
+  };
+
+  const handleOpenEventFormPopup = async (
     mode: "add" | "edit",
     eventToEdit: EventData | null,
   ) => {
     setPopupMode(mode);
     setEditedEvent(eventToEdit);
+    await loadSlotsFor(eventToEdit?.id);
     setOpenEventFormPopup(true);
   };
 
-  const handleDuplicateEvent = (eventToDuplicate: EventData) => {
+  const handleDuplicateEvent = async (eventToDuplicate: EventData) => {
     setPopupMode("add");
     setEditedEvent(eventToDuplicate);
+    // Duplication reuses the edit form's load path, so the source event's
+    // capacities have to come along with it.
+    await loadSlotsFor(eventToDuplicate.id);
     setOpenEventFormPopup(true);
+  };
+
+  /**
+   * Reconcile events/{id}/slots against the event's dates and role capacities.
+   * Existing slots keep their `remaining` count so editing an event never
+   * discards signups; slots for removed dates or roles are deleted.
+   */
+  const syncSlots = async (
+    eventId: string,
+    dates: Date[],
+    roles: { role: string; capacity: number }[],
+  ) => {
+    const slotsRef = collection(db, "events", eventId, "slots");
+    const existing = await getDocs(slotsRef);
+    const existingById = new Map(existing.docs.map((d) => [d.id, d.data()]));
+
+    const batch = writeBatch(db);
+    const wanted = new Set<string>();
+
+    dates.forEach((dateObj) => {
+      const date = dateKeyOf(dateObj);
+      roles.forEach(({ role, capacity }) => {
+        const id = slotId(date, role);
+        wanted.add(id);
+        const prev = existingById.get(id);
+        if (prev) {
+          // Preserve signups by carrying the taken count across a capacity change.
+          const taken = Math.max(0, (prev.capacity ?? 0) - (prev.remaining ?? 0));
+          batch.update(doc(slotsRef, id), {
+            capacity,
+            remaining: Math.max(0, capacity - taken),
+          });
+        } else {
+          batch.set(doc(slotsRef, id), {
+            date,
+            role,
+            capacity,
+            remaining: capacity,
+          });
+        }
+      });
+    });
+
+    existing.docs.forEach((d) => {
+      if (!wanted.has(d.id)) batch.delete(d.ref);
+    });
+
+    await batch.commit();
   };
 
   const handleEventAction = async (
     mode: "add" | "edit" | "delete",
-    eventData: Partial<EventData>,
+    eventData: Partial<EventData> & {
+      roles?: { role: string; capacity: number }[];
+    },
     eventId?: string,
   ) => {
     if (!project || !location) return;
@@ -393,14 +524,25 @@ const EventAdmin = () => {
 
     try {
       if (mode === "delete" && eventId) {
-        const eventRef = doc(db, collectionPath, eventId);
-        await deleteDoc(eventRef);
+        // Firestore does not cascade. Without this, every slot and volunteer
+        // document survives its parent, unreachable but still stored.
+        const batch = writeBatch(db);
+        for (const sub of ["slots", "volunteers"]) {
+          const subSnap = await getDocs(
+            collection(db, collectionPath, eventId, sub),
+          );
+          subSnap.forEach((d) => batch.delete(d.ref));
+        }
+        batch.delete(doc(db, collectionPath, eventId));
+        await batch.commit();
         enqueueSnackbar("Event successfully deleted", {
           variant: "success",
           autoHideDuration: 3000,
         });
         return;
       }
+
+      const { roles = [], ...eventFields } = eventData;
 
       let allEventDates: Date[] = [];
       if (
@@ -429,8 +571,6 @@ const EventAdmin = () => {
       allEventDates.sort((a, b) => a.getTime() - b.getTime());
       const primaryDate = allEventDates[0];
       let calendarArr: String[] = [];
-      const flatOpenings = eventData.openings || {};
-      const nestedOpenings: Record<string, any> = {};
 
       allEventDates.forEach((dateObj) => {
         // add all months of the event to our calendar array
@@ -438,32 +578,30 @@ const EventAdmin = () => {
         if (calendarArr.indexOf(calendarString) == -1) {
           calendarArr.push(calendarString);
         }
-
-        const dateKey = dateObj.toISOString().split("T")[0];
-        const firstKey = Object.keys(flatOpenings)[0];
-        if (firstKey && firstKey.startsWith("20")) {
-          nestedOpenings[dateKey] = flatOpenings[dateKey] || {};
-        } else {
-          nestedOpenings[dateKey] = { ...flatOpenings };
-        }
       });
 
       const dataToSave = {
-        ...eventData,
+        ...eventFields,
         // Save the array of Timestamps
         dates: allEventDates.map((d) => Timestamp.fromDate(d)),
         // Save primary date for compatibility
         date: Timestamp.fromDate(primaryDate),
-        // Save the nested openings structure
-        openings: nestedOpenings,
+        // Counts live on slot documents; this stays as a denormalized role list.
+        volunteerTypes: roles.map((r) => r.role),
         projectId: project,
         projectName: title,
         location: location as string,
         calendar: calendarArr,
       };
 
+      let savedEventId = eventId;
+
       if (mode === "add") {
-        await addDoc(collection(db, collectionPath), dataToSave);
+        const created = await addDoc(
+          collection(db, collectionPath),
+          dataToSave,
+        );
+        savedEventId = created.id;
         enqueueSnackbar("Event successfully created", {
           variant: "success",
           autoHideDuration: 3000,
@@ -475,6 +613,10 @@ const EventAdmin = () => {
           variant: "success",
           autoHideDuration: 3000,
         });
+      }
+
+      if (savedEventId) {
+        await syncSlots(savedEventId, allEventDates, roles);
       }
       setOpenEventFormPopup(false);
     } catch (error) {
@@ -603,28 +745,49 @@ const EventAdmin = () => {
             variant="outlined"
           >
             <MenuItem value="Any Month">Any Month</MenuItem>
-            <MenuItem value="January">January</MenuItem>
-            <MenuItem value="February">February</MenuItem>
+            {MONTH_NAMES.map((month) => (
+              <MenuItem key={month} value={month}>
+                {month}
+              </MenuItem>
+            ))}
           </Select>
 
           <Select
-            value="Any Start Time"
+            value={filterStartTime}
+            onChange={(e) => handleFilterStartTimeChange(e.target.value as string)}
             displayEmpty
             className={classes.filterSelect}
             variant="outlined"
-            disabled
           >
-            <MenuItem value="Any Start Time">Any Start Time</MenuItem>
+            <MenuItem value="">Any Start Time</MenuItem>
+            {TIME_OPTIONS.map((opt) => (
+              <MenuItem
+                key={opt.value}
+                value={opt.value}
+                disabled={!!filterEndTime && opt.value >= filterEndTime}
+              >
+                {opt.label}
+              </MenuItem>
+            ))}
           </Select>
 
           <Select
-            value="Any End Time"
+            value={filterEndTime}
+            onChange={(e) => handleFilterEndTimeChange(e.target.value as string)}
             displayEmpty
             className={classes.filterSelect}
             variant="outlined"
-            disabled
           >
-            <MenuItem value="Any End Time">Any End Time</MenuItem>
+            <MenuItem value="">Any End Time</MenuItem>
+            {TIME_OPTIONS.map((opt) => (
+              <MenuItem
+                key={opt.value}
+                value={opt.value}
+                disabled={!!filterStartTime && opt.value <= filterStartTime}
+              >
+                {opt.label}
+              </MenuItem>
+            ))}
           </Select>
         </div>
       </div>
@@ -676,6 +839,24 @@ const EventAdmin = () => {
                   </TableCell>
                   <TableCell className={classes.tableCell}>
                     {formatDate(eventDate)}
+                    {ev.dates?.length > 1 && (
+                      <Tooltip
+                        title={ev.dates
+                          .map((t) => formatDate(t.toDate()))
+                          .join(", ")}
+                      >
+                        <span
+                          style={{
+                            color: "#666",
+                            cursor: "help",
+                            display: "flex",
+                            marginLeft: 10,
+                          }}
+                        >
+                          +{ev.dates.length - 1} more
+                        </span>
+                      </Tooltip>
+                    )}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
                     {formatTime(startTime)}
@@ -748,6 +929,7 @@ const EventAdmin = () => {
         close={() => setOpenEventFormPopup(false)}
         mode={popupMode}
         event={editedEvent}
+        slots={editedEventSlots}
         handleEventAction={handleEventAction}
       />
     </div>
