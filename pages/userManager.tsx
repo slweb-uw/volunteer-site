@@ -236,13 +236,26 @@ const AdminPage = () => {
       }),
     });
 
+    let accountExists = true;
     if (!res.ok) {
       const { error } = await res.json();
-      enqueueSnackbar(`Error Adding User: ${error}`, {
-        variant: "error",
-        autoHideDuration: 3000,
-      });
-      return;
+      if (res.status === 404) {
+        // no account yet — still queue the role, it'll apply once they sign up
+        accountExists = false;
+        enqueueSnackbar(
+          "No account found for this email yet — the role will be applied automatically once they sign up.",
+          {
+            variant: "warning",
+            autoHideDuration: 5000,
+          },
+        );
+      } else {
+        enqueueSnackbar(`Error Adding User: ${error}`, {
+          variant: "error",
+          autoHideDuration: 3000,
+        });
+        return;
+      }
     }
     // add to collection to display who has which role
     try {
@@ -251,13 +264,15 @@ const AdminPage = () => {
         timestamp: serverTimestamp(),
       });
       setNewUserEmail("");
-      enqueueSnackbar(
-        "User added — notify them their role has changed. It may take up to an hour to apply, or they can sign out and back in to apply it immediately.",
-        {
-          variant: "success",
-          autoHideDuration: 6000,
-        },
-      );
+      if (accountExists) {
+        enqueueSnackbar(
+          "User added — notify them their role has changed. It may take up to an hour to apply, or they can sign out and back in to apply it immediately.",
+          {
+            variant: "success",
+            autoHideDuration: 6000,
+          },
+        );
+      }
     } catch (error) {
       console.error("Error adding user", error);
       enqueueSnackbar("Error adding user to directory", {
