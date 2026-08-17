@@ -1,0 +1,7 @@
+{
+    "projects": {
+        "default": "slweb-dev",
+        "dev": "slweb-dev",
+        "prod": "<prod-project-id>"
+    }
+}
