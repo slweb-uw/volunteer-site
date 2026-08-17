@@ -8,13 +8,14 @@ import {
   getDocs,
   setDoc,
   Timestamp,
-  deleteDoc,
   addDoc,
   onSnapshot,
   query,
   where,
   orderBy,
+  writeBatch,
 } from "firebase/firestore";
+import { slotId, dateKeyOf } from "helpers/slots";
 import { useAuth } from "auth";
 import { useRouter } from "next/router";
 import {
@@ -48,7 +49,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import SignupEventPopup from "components/SignupEventPopup";
 import { exportToCSV } from "helpers/csvExport";
 import AuthorizationMessage from "pages/AuthorizationMessage";
-import { EventData, VolunteerData } from "new-types";
+import { EventData, SlotData, VolunteerData } from "new-types";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -242,6 +243,7 @@ const EventAdmin = () => {
 
   const [allEvents, setAllEvents] = useState<EventData[]>([]);
   const [editedEvent, setEditedEvent] = useState<EventData | null>(null);
+  const [editedEventSlots, setEditedEventSlots] = useState<SlotData[]>([]);
   const [openEventFormPopup, setOpenEventFormPopup] = useState(false);
   const [popupMode, setPopupMode] = useState<"add" | "edit">("add");
   const [title, setTitle] = useState("");
@@ -368,24 +370,94 @@ const EventAdmin = () => {
     exportToCSV(volunteers ? volunteers : []);
   };
 
-  const handleOpenEventFormPopup = (
+  // The form edits role capacities, which now live on slot documents rather
+  // than on the event itself, so they have to be fetched alongside the event.
+  const loadSlotsFor = async (eventId?: string) => {
+    if (!eventId) {
+      setEditedEventSlots([]);
+      return;
+    }
+    try {
+      const snap = await getDocs(collection(db, "events", eventId, "slots"));
+      setEditedEventSlots(snap.docs.map((d) => d.data() as SlotData));
+    } catch (error) {
+      console.error("Error fetching slots:", error);
+      setEditedEventSlots([]);
+    }
+  };
+
+  const handleOpenEventFormPopup = async (
     mode: "add" | "edit",
     eventToEdit: EventData | null,
   ) => {
     setPopupMode(mode);
     setEditedEvent(eventToEdit);
+    await loadSlotsFor(eventToEdit?.id);
     setOpenEventFormPopup(true);
   };
 
-  const handleDuplicateEvent = (eventToDuplicate: EventData) => {
+  const handleDuplicateEvent = async (eventToDuplicate: EventData) => {
     setPopupMode("add");
     setEditedEvent(eventToDuplicate);
+    // Duplication reuses the edit form's load path, so the source event's
+    // capacities have to come along with it.
+    await loadSlotsFor(eventToDuplicate.id);
     setOpenEventFormPopup(true);
+  };
+
+  /**
+   * Reconcile events/{id}/slots against the event's dates and role capacities.
+   * Existing slots keep their `remaining` count so editing an event never
+   * discards signups; slots for removed dates or roles are deleted.
+   */
+  const syncSlots = async (
+    eventId: string,
+    dates: Date[],
+    roles: { role: string; capacity: number }[],
+  ) => {
+    const slotsRef = collection(db, "events", eventId, "slots");
+    const existing = await getDocs(slotsRef);
+    const existingById = new Map(existing.docs.map((d) => [d.id, d.data()]));
+
+    const batch = writeBatch(db);
+    const wanted = new Set<string>();
+
+    dates.forEach((dateObj) => {
+      const date = dateKeyOf(dateObj);
+      roles.forEach(({ role, capacity }) => {
+        const id = slotId(date, role);
+        wanted.add(id);
+        const prev = existingById.get(id);
+        if (prev) {
+          // Preserve signups by carrying the taken count across a capacity change.
+          const taken = Math.max(0, (prev.capacity ?? 0) - (prev.remaining ?? 0));
+          batch.update(doc(slotsRef, id), {
+            capacity,
+            remaining: Math.max(0, capacity - taken),
+          });
+        } else {
+          batch.set(doc(slotsRef, id), {
+            date,
+            role,
+            capacity,
+            remaining: capacity,
+          });
+        }
+      });
+    });
+
+    existing.docs.forEach((d) => {
+      if (!wanted.has(d.id)) batch.delete(d.ref);
+    });
+
+    await batch.commit();
   };
 
   const handleEventAction = async (
     mode: "add" | "edit" | "delete",
-    eventData: Partial<EventData>,
+    eventData: Partial<EventData> & {
+      roles?: { role: string; capacity: number }[];
+    },
     eventId?: string,
   ) => {
     if (!project || !location) return;
@@ -393,14 +465,25 @@ const EventAdmin = () => {
 
     try {
       if (mode === "delete" && eventId) {
-        const eventRef = doc(db, collectionPath, eventId);
-        await deleteDoc(eventRef);
+        // Firestore does not cascade. Without this, every slot and volunteer
+        // document survives its parent, unreachable but still stored.
+        const batch = writeBatch(db);
+        for (const sub of ["slots", "volunteers"]) {
+          const subSnap = await getDocs(
+            collection(db, collectionPath, eventId, sub),
+          );
+          subSnap.forEach((d) => batch.delete(d.ref));
+        }
+        batch.delete(doc(db, collectionPath, eventId));
+        await batch.commit();
         enqueueSnackbar("Event successfully deleted", {
           variant: "success",
           autoHideDuration: 3000,
         });
         return;
       }
+
+      const { roles = [], ...eventFields } = eventData;
 
       let allEventDates: Date[] = [];
       if (
@@ -429,8 +512,6 @@ const EventAdmin = () => {
       allEventDates.sort((a, b) => a.getTime() - b.getTime());
       const primaryDate = allEventDates[0];
       let calendarArr: String[] = [];
-      const flatOpenings = eventData.openings || {};
-      const nestedOpenings: Record<string, any> = {};
 
       allEventDates.forEach((dateObj) => {
         // add all months of the event to our calendar array
@@ -438,32 +519,30 @@ const EventAdmin = () => {
         if (calendarArr.indexOf(calendarString) == -1) {
           calendarArr.push(calendarString);
         }
-
-        const dateKey = dateObj.toISOString().split("T")[0];
-        const firstKey = Object.keys(flatOpenings)[0];
-        if (firstKey && firstKey.startsWith("20")) {
-          nestedOpenings[dateKey] = flatOpenings[dateKey] || {};
-        } else {
-          nestedOpenings[dateKey] = { ...flatOpenings };
-        }
       });
 
       const dataToSave = {
-        ...eventData,
+        ...eventFields,
         // Save the array of Timestamps
         dates: allEventDates.map((d) => Timestamp.fromDate(d)),
         // Save primary date for compatibility
         date: Timestamp.fromDate(primaryDate),
-        // Save the nested openings structure
-        openings: nestedOpenings,
+        // Counts live on slot documents; this stays as a denormalized role list.
+        volunteerTypes: roles.map((r) => r.role),
         projectId: project,
         projectName: title,
         location: location as string,
         calendar: calendarArr,
       };
 
+      let savedEventId = eventId;
+
       if (mode === "add") {
-        await addDoc(collection(db, collectionPath), dataToSave);
+        const created = await addDoc(
+          collection(db, collectionPath),
+          dataToSave,
+        );
+        savedEventId = created.id;
         enqueueSnackbar("Event successfully created", {
           variant: "success",
           autoHideDuration: 3000,
@@ -475,6 +554,10 @@ const EventAdmin = () => {
           variant: "success",
           autoHideDuration: 3000,
         });
+      }
+
+      if (savedEventId) {
+        await syncSlots(savedEventId, allEventDates, roles);
       }
       setOpenEventFormPopup(false);
     } catch (error) {
@@ -748,6 +831,7 @@ const EventAdmin = () => {
         close={() => setOpenEventFormPopup(false)}
         mode={popupMode}
         event={editedEvent}
+        slots={editedEventSlots}
         handleEventAction={handleEventAction}
       />
     </div>

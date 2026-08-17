@@ -3,7 +3,8 @@ import { useAuth } from "auth";
 import React, { useState } from "react";
 import { GetServerSideProps } from "next";
 import makeStyles from "@mui/styles/makeStyles";
-import { EventData, VolunteerData } from "../../../new-types";
+import { EventData, SlotData, VolunteerData } from "../../../new-types";
+import { slotId, dateKeyOf } from "helpers/slots";
 import { CssBaseline, Typography, Divider, Button } from "@mui/material";
 import naturalJoin from "../../../helpers/naturalJoin";
 import RichTextField from "../../../components/richTextField";
@@ -78,6 +79,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     ...doc.data(),
   }));
 
+  const slotsSnapshot = await eventRef.collection("slots").get();
+  const slotData = slotsSnapshot.docs.map((doc) => doc.data() as SlotData);
+
   const rawEventData = eventDoc.data() as DocumentData;
 
   const eventData = {
@@ -86,7 +90,14 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     dates: rawEventData.dates?.map((d: any) => d.toDate().toISOString()) || [],
   };
 
-  return { props: { eventData, volunteer: volunteerData, eventID: event } };
+  return {
+    props: {
+      eventData,
+      volunteer: volunteerData,
+      slots: slotData,
+      eventID: event,
+    },
+  };
 };
 
 const useStyles = makeStyles(() => ({
@@ -120,10 +131,12 @@ const useStyles = makeStyles(() => ({
 const Event = ({
   eventData,
   volunteer,
+  slots,
   eventID,
 }: {
   eventData: EventData;
   volunteer: VolunteerData[];
+  slots: SlotData[];
   eventID: string;
 }) => {
   //snackbar notification
@@ -184,36 +197,34 @@ const Event = ({
   const handleAddVolunteer = async (volunteerData: VolunteerData) => {
     if (!selectedRole || !user || !selectedDateSignup) return;
 
-    const eventRef = doc(db, "events", eventID);
-    const dateKey = new Date(selectedDateSignup).toISOString().split("T")[0];
+    const dateKey = dateKeyOf(selectedDateSignup);
     // COMPOSITE KEY: uid + date ensures uniqueness per day, but allows multiple days
     const docId = `${user.uid}_${dateKey}`;
     const volunteerRef = doc(db, `events/${eventID}/volunteers`, docId);
+    const slotRef = doc(
+      db,
+      `events/${eventID}/slots`,
+      slotId(dateKey, selectedRole),
+    );
     try {
       await runTransaction(db, async (transaction) => {
-        const eventDoc = await transaction.get(eventRef);
-        if (!eventDoc.exists()) throw new Error("Event does not exist!");
+        // All reads must precede all writes inside a transaction.
+        const slotDoc = await transaction.get(slotRef);
+        if (!slotDoc.exists()) {
+          throw new Error("This role is not available for this date.");
+        }
 
         const existingVolunteerDoc = await transaction.get(volunteerRef);
         if (existingVolunteerDoc.exists()) {
           throw new Error("You are already signed up for this date.");
         }
 
-        // READ from nested date path
-        const eventData = eventDoc.data();
-        const spotsOpen = eventData.openings?.[dateKey]?.[selectedRole];
-
-        if (spotsOpen === undefined) {
-          throw new Error("This role is not available for this date.");
-        }
-        if (spotsOpen < 1) {
+        const { remaining } = slotDoc.data() as SlotData;
+        if (remaining < 1) {
           throw new Error("No spots left for this position.");
         }
 
-        // This creates/updates "openings -> YYYY-MM-DD -> Role"
-        transaction.update(eventRef, {
-          [`openings.${dateKey}.${selectedRole}`]: spotsOpen - 1,
-        });
+        transaction.update(slotRef, { remaining: remaining - 1 });
 
         transaction.set(volunteerRef, {
           ...volunteerData,
@@ -270,8 +281,7 @@ const Event = ({
 
     if (!window.confirm(message)) return;
 
-    const eventRef = doc(db, "events", eventID);
-    const dateKey = new Date(volunteerData.date).toISOString().split("T")[0];
+    const dateKey = dateKeyOf(volunteerData.date);
     // Reconstruct Composite Key
     const docId = `${volunteerData.uid}_${dateKey}`;
     const volunteerRef = doc(db, `events/${eventID}/volunteers`, docId);
@@ -279,22 +289,32 @@ const Event = ({
     try {
       await runTransaction(db, async (transaction) => {
         const volunteerDoc = await transaction.get(volunteerRef);
-        const eventDoc = await transaction.get(eventRef);
-
-        if (!volunteerDoc.exists() || !eventDoc.exists())
-          throw new Error("Error finding data.");
+        if (!volunteerDoc.exists()) throw new Error("Error finding data.");
 
         const volunteerRole = volunteerDoc.data().role;
+        const slotRef = doc(
+          db,
+          `events/${eventID}/slots`,
+          slotId(dateKey, volunteerRole),
+        );
+        const slotDoc = await transaction.get(slotRef);
 
-        const currentOpenings =
-          eventDoc.data().openings?.[dateKey]?.[volunteerRole];
-
-        if (typeof currentOpenings === "number") {
-          transaction.update(eventRef, {
-            [`openings.${dateKey}.${volunteerRole}`]: currentOpenings + 1,
-          });
+        // The old code skipped the increment when the count was missing but
+        // deleted the record anyway, silently destroying a spot. Refuse instead.
+        if (!slotDoc.exists()) {
+          throw new Error(
+            "Could not find the slot for this signup. Nothing was changed.",
+          );
         }
 
+        const { remaining, capacity } = slotDoc.data() as SlotData;
+        if (remaining >= capacity) {
+          throw new Error(
+            "This slot already shows every spot open. Nothing was changed.",
+          );
+        }
+
+        transaction.update(slotRef, { remaining: remaining + 1 });
         transaction.delete(volunteerRef);
       });
       handleCloseVolunteerPopup();
@@ -382,6 +402,7 @@ const Event = ({
         <Box sx={{ mt: 4, mb: 8 }}>
           <VolunteerSignupGrid
             eventData={eventData}
+            slots={slots}
             volunteers={volunteer}
             onSignUp={handleOpenVolunteerPopup}
             relevantDates={datesInfo[0] as string[]}

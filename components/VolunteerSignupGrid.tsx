@@ -1,11 +1,12 @@
 import React from 'react';
 import { Box, Typography, Button, Divider } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { EventData, VolunteerData } from '../new-types';
+import { EventData, SlotData, VolunteerData } from '../new-types';
 import { useEffect } from "react";
 
 interface VolunteerSignupGridProps {
   eventData: EventData;
+  slots: SlotData[];
   volunteers: VolunteerData[];
   onSignUp: (role: string, date: string) => void;
   relevantDates: string[];
@@ -42,6 +43,7 @@ const formatHeaderDate = (dateString: string, startTimeStr?: string, endTimeStr?
 
 const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
   eventData,
+  slots,
   volunteers,
   onSignUp,
   relevantDates,
@@ -51,14 +53,17 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
     const element = document.getElementById(`${targetDay}`);
     element?.scrollIntoView({ behavior: "smooth", block: "end", inline: "center" });
   }
-  // volunteerTypes are not used anymore?
-  const allRolesSet = new Set<string>(eventData.volunteerTypes || []);
 
+  // Roles and counts both come from the slot documents, so the grid can never
+  // disagree with what the signup transaction will actually find.
+  const slotsByKey = new Map(slots.map(s => [`${s.date}__${s.role}`, s]));
+
+  const allRolesSet = new Set<string>();
   relevantDates.forEach(dateStr => {
     const dateKey = dateStr.split('T')[0];
-    if (eventData.openings?.[dateKey]) {
-      Object.keys(eventData.openings[dateKey]).forEach(r => allRolesSet.add(r));
-    }
+    slots
+      .filter(s => s.date === dateKey)
+      .forEach(s => allRolesSet.add(s.role));
   });
   const roles = Array.from(allRolesSet).sort();
 
@@ -174,7 +179,7 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
             {relevantDates.map((dateStr) => {
               const dateKey = dateStr.split('T')[0];
               const cellVolunteers = getVolunteersForCell(role, dateStr);
-              const spotsOpen = eventData.openings?.[dateKey]?.[role] ?? 0;
+              const spotsOpen = slotsByKey.get(`${dateKey}__${role}`)?.remaining ?? 0;
               const isFull = spotsOpen <= 0;
               const pastEvent = isPastDate(dateStr);
 
