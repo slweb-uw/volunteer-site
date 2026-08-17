@@ -50,7 +50,33 @@ export function AuthProvider({ children }: any) {
       try {
         // fetch user custom claim integrated within JWT token
         const authToken = await user.getIdTokenResult();
-        const role = authToken.claims.role; // 'admin' || 'lead' || 'volunteer' || undefined (aka student)
+        let role = authToken.claims.role; // 'admin' || 'lead' || 'volunteer' || undefined (aka student)
+
+        // no role on the token yet — check if one was pre-assigned by email
+        // before this account existed, and apply it if so
+        if (!role) {
+          try {
+            const idToken = await user.getIdToken();
+            const res = await fetch("/api/reconcile-role", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${idToken}`,
+              },
+            });
+            if (res.ok) {
+              const { role: reconciledRole } = await res.json();
+              if (reconciledRole) {
+                // claim was just set server-side — force a fresh token to see it
+                const freshToken = await user.getIdTokenResult(true);
+                role = freshToken.claims.role;
+              }
+            }
+          } catch (error) {
+            console.error("Error reconciling role:", error);
+          }
+        }
+        console.log(role);
         if (role === "admin") {
           setIsAdmin(true);
           setIsAuthorized(true);

@@ -405,6 +405,7 @@ const Event = ({
             slots={slots}
             volunteers={volunteer}
             onSignUp={handleOpenVolunteerPopup}
+            currentUserId={user?.uid}
             relevantDates={datesInfo[0] as string[]}
             targetDay={datesInfo.length > 1 ? datesInfo[1] : datesInfo[0]}
           />
