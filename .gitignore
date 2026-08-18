@@ -39,3 +39,7 @@ sign-up-9453b-firebase-adminsdk-ahys9-1b56bc2534.json
 
 # TypeScript
 tsconfig.tsbuildinfo
+
+# firebase emulator
+.firebase/
+*-debug.log
