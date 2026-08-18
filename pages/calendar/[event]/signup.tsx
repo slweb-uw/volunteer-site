@@ -11,7 +11,7 @@ import RichTextField from "../../../components/richTextField";
 import Box from "@mui/material/Box";
 import VolunteerPopup from "components/VolunteerSignupPopup";
 import { firebaseAdmin } from "firebaseAdmin";
-import { doc, runTransaction, DocumentData } from "firebase/firestore";
+import { doc, runTransaction, updateDoc, DocumentData } from "firebase/firestore";
 import { db } from "firebaseClient";
 import AuthorizationMessage from "pages/AuthorizationMessage";
 import VolunteerSignupGrid from "../../../components/VolunteerSignupGrid";
@@ -246,6 +246,46 @@ const Event = ({
     }
   };
 
+  // Editing a signup rewrites only the volunteer's own details, so it never
+  // moves the slot counter and does not need a transaction. Role and date stay
+  // out of the payload on purpose: they are what slotId() is derived from, and
+  // changing them here would leave the count stranded on the old slot.
+  const handleUpdateVolunteer = async (volunteerData: VolunteerData) => {
+    if (!editedVolunteer?.date) return;
+
+    // Rebuilt from the record, not from the clicked cell -- the two disagree
+    // when the popup is opened from a different role's cell on a day the user
+    // is already signed up for.
+    const docId = `${editedVolunteer.uid}_${dateKeyOf(editedVolunteer.date)}`;
+    const volunteerRef = doc(db, `events/${eventID}/volunteers`, docId);
+
+    try {
+      // updateDoc rather than setDoc(merge): if the record was withdrawn in
+      // another tab this fails, where a merge would recreate it without the
+      // matching slot decrement.
+      await updateDoc(volunteerRef, {
+        name: volunteerData.name,
+        phoneNumber: volunteerData.phoneNumber,
+        studentDiscipline: volunteerData.studentDiscipline,
+        comments: volunteerData.comments ?? "",
+      });
+      handleCloseVolunteerPopup();
+      enqueueSnackbar("Signup successfully updated", {
+        variant: "success",
+        autoHideDuration: 3000,
+      });
+    } catch (e: any) {
+      const message =
+        e?.code === "not-found"
+          ? "This signup no longer exists -- it may have been withdrawn already."
+          : e.message;
+      enqueueSnackbar(`Update failed: ${message}`, {
+        variant: "error",
+        autoHideDuration: 3000,
+      });
+    }
+  };
+
   const handleOpenVolunteerPopup = (type: string, date: string) => {
     setSelectedDateSignup(date); // Capture the date context
 
@@ -441,6 +481,7 @@ const Event = ({
           phone={user.phoneNumber}
           position={selectedRole}
           addVolunteer={handleAddVolunteer}
+          updateVolunteer={handleUpdateVolunteer}
           volunteer={editedVolunteer}
           onDeleteVolunteer={handleDeleteVolunteer}
         />
