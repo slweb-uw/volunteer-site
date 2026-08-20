@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { firebaseAdmin } from "../../firebaseAdmin";
+import { notifyAdminsOfPendingAuthorization } from "../../helpers/notifyAdmins";
 
 // Collections an admin can pre-assign a role to by email, before that
 // person has an account. Checked in priority order.
@@ -49,12 +50,16 @@ export default async function handler(
       return res.status(200).json({ role });
     }
   }
-  if (decoded.email && decoded.email.toLowerCase().endsWith("@uw.edu")) {
+  if (decoded.email.toLowerCase().endsWith("@uw.edu")) {
     authorized = true;
-    await firebaseAdmin.auth().setCustomUserClaims(decoded.uid, {role: null, authorized})
   } else {
-    await firebaseAdmin.auth().setCustomUserClaims(decoded.uid, {role: null, authorized})
+    try {
+      await notifyAdminsOfPendingAuthorization(decoded.email);
+    } catch (error) {
+      console.error("Error notifying admins of pending authorization:", error);
+    }
   }
+  await firebaseAdmin.auth().setCustomUserClaims(decoded.uid, { role: null, authorized });
 
   return res.status(200).json({ role: null, authorized });
 }
