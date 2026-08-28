@@ -34,6 +34,19 @@ export default async function handler(
     return res.status(200).json({ role: null });
   }
 
+  // Every claim below is derived from the email address, so ownership of that
+  // address has to be proven before any of it is trusted. Federated providers
+  // assert this for us; password accounts only clear it once the user clicks
+  // the verification link.
+  //
+  // This deliberately returns before setCustomUserClaims. Leaving `authorized`
+  // undefined is what makes the client retry reconcile on the next sign-in --
+  // writing `false` here would satisfy the caller's `=== undefined` check and
+  // strand the user permanently, even after they verify.
+  if (!decoded.email_verified) {
+    return res.status(403).json({ error: "Email not verified" });
+  }
+
   const db = firebaseAdmin.firestore();
 
   let authorized: boolean = false;

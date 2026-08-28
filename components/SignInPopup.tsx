@@ -144,17 +144,28 @@ function LoginContent({
     password: "",
   });
   const [loginError, setLoginError] = useState<string | null>();
+  const [needsVerification, setNeedsVerification] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
   async function handleSignInWithEmail(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoginError(null);
+    setNeedsVerification(false);
     try {
-      await signInWithEmailAndPassword(
+      const credential = await signInWithEmailAndPassword(
         auth,
         formState.email,
         formState.password,
       );
+
+      // The password is right but the address is unproven, so the server will
+      // refuse to grant claims. Say that rather than "successfully logged in",
+      // which would leave them signed in with no access and no explanation.
+      if (!credential.user.emailVerified) {
+        setNeedsVerification(true);
+        return;
+      }
+
       enqueueSnackbar(`Successfully logged in ${formState.email}`, {
         autoHideDuration: 3000,
         variant: "success",
@@ -165,9 +176,29 @@ function LoginContent({
     }
   }
 
+  // sign-in above leaves the unverified user as currentUser, which is what
+  // lets us re-send without asking for the password again
+  async function handleResendVerification() {
+    const user = auth.currentUser;
+    if (!user) return;
+    try {
+      await sendEmailVerification(user);
+      enqueueSnackbar(`Verification email sent to ${user.email}`, {
+        autoHideDuration: 5000,
+        variant: "success",
+      });
+    } catch (err) {
+      enqueueSnackbar("Could not send the email, try again in a few minutes", {
+        autoHideDuration: 5000,
+        variant: "error",
+      });
+    }
+  }
+
   // clear errors when changing input values
   useEffect(() => {
     if (loginError) setLoginError(null);
+    if (needsVerification) setNeedsVerification(false);
   }, [formState]);
 
   return (
@@ -176,6 +207,22 @@ function LoginContent({
         {/* <span style={{ color: "red" }}>{errorMessage}</span> */}
         {loginError && (
           <Typography style={{ color: "red" }}>{loginError}</Typography>
+        )}
+        {needsVerification && (
+          <>
+            <Typography style={{ color: "red" }}>
+              Verify your email before signing in. We sent a link to{" "}
+              {formState.email}.
+            </Typography>
+            <Button
+              variant="text"
+              type="button"
+              onClick={handleResendVerification}
+              sx={{ fontSize: "0.7rem", padding: 0 }}
+            >
+              Resend verification email
+            </Button>
+          </>
         )}
       </div>
       <form onSubmit={handleSignInWithEmail} className={classes.form}>
@@ -299,10 +346,10 @@ function SignupContent({
       ]);
 
       enqueueSnackbar(
-        `Successfully registered ${user.user.email}, check email for verification`,
+        `Account created. Verify ${user.user.email} using the link we just sent -- you cannot sign in until you do.`,
         {
-          autoHideDuration: 3000,
-          variant: "success",
+          autoHideDuration: 8000,
+          variant: "info",
         },
       );
       close();

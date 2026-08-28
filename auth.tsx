@@ -100,6 +100,33 @@ export function AuthProvider({ children }: any) {
     };
   }, []);
 
+  // A user who verifies in their mail client comes back to a tab still holding
+  // the token it was issued before verification -- email_verified lives inside
+  // the JWT, so clicking the link does nothing to invalidate it. Re-check on
+  // focus and force a fresh token, which trips onIdTokenChanged above and
+  // re-runs reconcile now that the server will accept it.
+  useEffect(() => {
+    const refreshIfNowVerified = async () => {
+      const user = getAuth().currentUser;
+      if (!user || user.emailVerified) return;
+
+      try {
+        await user.reload();
+        if (user.emailVerified) {
+          await user.getIdToken(true);
+        }
+      } catch (error) {
+        console.error("Error refreshing verification status:", error);
+      }
+    };
+
+    window.addEventListener("focus", refreshIfNowVerified);
+
+    return () => {
+      window.removeEventListener("focus", refreshIfNowVerified);
+    };
+  }, []);
+
   return (
     <AuthContext.Provider
       value={{ user, isAdmin, isAuthorized, admins, leads, isLead, isLoading }}
