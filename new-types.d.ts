@@ -30,16 +30,20 @@ type EventData = {
   leadEmail: string;
   location: string; // Used for calendar, address is for directions.
   address: string;
-  openings: { 
-    [dateIsoString: string]: { 
-      [role: string]: number 
-    } 
-  };
   volunteerTypes?: string[]; // list of all roles
   projectId: string;
   projectName: string;
   startTime: string;
   endTime: string;
+};
+
+// One signup counter, stored at events/{eventId}/slots/{date}__{role}.
+// capacity is admin-set; remaining is moved only by signup and withdrawal.
+type SlotData = {
+  date: string; // "YYYY-MM-DD"
+  role: string;
+  capacity: number;
+  remaining: number;
 };
 
 type VolunteerData = {

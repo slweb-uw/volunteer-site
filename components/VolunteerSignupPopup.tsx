@@ -190,7 +190,7 @@ const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, position, 
               <Button variant="contained" color="secondary" onClick={handleClose}>
                 Cancel
               </Button>
-              <Button variant="outlined" onClick={() => onDeleteVolunteer(volunteer)} style={{color: "gray"}}>
+              <Button variant="outlined" onClick={() => onDeleteVolunteer(volunteer)} style={{color: "#c62828", borderColor: "#c62828"}}>
                 Withdraw
               </Button>
               <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isSubmitDisabled}>

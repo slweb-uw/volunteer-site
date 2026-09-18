@@ -7,6 +7,7 @@ import makeStyles from "@mui/styles/makeStyles";
 import { signOut } from "firebase/auth";
 import { auth } from "firebaseClient";
 import Link from "next/link";
+import { useSnackbar } from "notistack";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -87,7 +88,23 @@ const Divider = () => <span className={useStyles().divider}>/</span>;
 const Header: React.FC<{}> = () => {
   const { user, isAdmin, isLead } = useAuth();
   const [isSignInPopupOpen, setSignInPopupOpen] = useState(false);
-  const classes = useStyles()
+  const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      enqueueSnackbar("Sign out successful", {
+        variant: "success",
+        autoHideDuration: 3000,
+      });
+    } catch (error) {
+      enqueueSnackbar("Sign out failed, please try again", {
+        variant: "error",
+        autoHideDuration: 3000,
+      });
+    }
+  };
 
   const links: React.ReactNode[] = [
     <Link href="/" className={classes.navtitle} tabIndex={0}>
@@ -134,10 +151,7 @@ const Header: React.FC<{}> = () => {
       <>
         <a
           key="sign out"
-          onClick={() => {
-            signOut(auth);
-            setSignInPopupOpen(false);
-          }}
+          onClick={handleSignOut}
           className={classes.navtitle}
           tabIndex={0}
         >
@@ -179,9 +193,7 @@ const Header: React.FC<{}> = () => {
       </Link>
 
       <Hidden only={["lg", "md", "xl"]}>
-        <BasicMenu
-          links={links}
-        />
+        <BasicMenu links={links} />
       </Hidden>
       <Hidden only={["sm", "xs"]}>
         <div style={{ marginRight: "3em", display: "flex" }}>

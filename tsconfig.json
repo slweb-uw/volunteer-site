@@ -19,6 +19,7 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "skipLibCheck": true,
+    "types": ["jest"],
     "baseUrl": ".",
     "incremental": true
   },

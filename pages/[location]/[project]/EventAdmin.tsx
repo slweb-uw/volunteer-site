@@ -8,13 +8,14 @@ import {
   getDocs,
   setDoc,
   Timestamp,
-  deleteDoc,
   addDoc,
   onSnapshot,
   query,
   where,
   orderBy,
+  writeBatch,
 } from "firebase/firestore";
+import { slotId, dateKeyOf } from "helpers/slots";
 import { useAuth } from "auth";
 import { useRouter } from "next/router";
 import {
@@ -32,7 +33,9 @@ import {
   TableRow,
   Paper,
   IconButton,
+  Tooltip,
 } from "@mui/material";
+import { useSnackbar } from "notistack";
 
 // Icons
 import DownloadIcon from "@mui/icons-material/Download";
@@ -42,12 +45,12 @@ import ContactPageIcon from "@mui/icons-material/Description";
 import EditIcon from "@mui/icons-material/Edit";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteIcon from "@mui/icons-material/Delete";
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
 import SignupEventPopup from "components/SignupEventPopup";
 import { exportToCSV } from "helpers/csvExport";
 import AuthorizationMessage from "pages/AuthorizationMessage";
-import { EventData, VolunteerData } from "new-types";
+import { EventData, SlotData, VolunteerData } from "new-types";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -82,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
     },
     "& svg": {
       fontSize: "0.8rem !important",
-    }
+    },
   },
   subHeaderRow: {
     display: "flex",
@@ -98,7 +101,7 @@ const useStyles = makeStyles((theme) => ({
     },
     "& svg": {
       fontSize: "1.1rem",
-    }
+    },
   },
   sectionTitleRow: {
     display: "flex",
@@ -180,7 +183,7 @@ const useStyles = makeStyles((theme) => ({
     color: "#666",
     "& .MuiOutlinedInput-notchedOutline": {
       borderColor: "#ccc",
-    }
+    },
   },
   // Table Styles
   tableHeader: {
@@ -194,8 +197,8 @@ const useStyles = makeStyles((theme) => ({
     borderBottom: "1px solid #000",
     borderRight: "1px solid #fff",
     "&:last-child": {
-        borderRight: "none",
-    }
+      borderRight: "none",
+    },
   },
   tableCell: {
     fontSize: "0.95rem",
@@ -230,8 +233,22 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     height: "50vh",
-  }
+  },
 }));
+
+const MONTH_NAMES = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+];
+
+const TIME_OPTIONS = Array.from({ length: 24 }, (_, hour) => {
+  const value = `${String(hour).padStart(2, "0")}:00`;
+  const label = new Date(2000, 0, 1, hour).toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+  });
+  return { value, label };
+});
 
 const EventAdmin = () => {
   const classes = useStyles();
@@ -241,27 +258,34 @@ const EventAdmin = () => {
 
   const [allEvents, setAllEvents] = useState<EventData[]>([]);
   const [editedEvent, setEditedEvent] = useState<EventData | null>(null);
+  const [editedEventSlots, setEditedEventSlots] = useState<SlotData[]>([]);
   const [openEventFormPopup, setOpenEventFormPopup] = useState(false);
   const [popupMode, setPopupMode] = useState<"add" | "edit">("add");
   const [title, setTitle] = useState("");
-  
+
   // Search/Filter UI placeholders
   const [searchTerm, setSearchTerm] = useState("");
   const [filterMonth, setFilterMonth] = useState("Any Month");
+  const [filterStartTime, setFilterStartTime] = useState("");
+  const [filterEndTime, setFilterEndTime] = useState("");
   const [eventView, setEventView] = useState<"active" | "past">("active");
 
+  // Snackbar notification
+  const { enqueueSnackbar } = useSnackbar();
+
   const getEventEndDate = (event: EventData) => {
-    const eventDates = Array.isArray(event.dates) && event.dates.length > 0
-      ? event.dates.map((timestamp: Timestamp) => timestamp.toDate())
-      : event.date
-        ? [event.date.toDate()]
-        : [];
+    const eventDates =
+      Array.isArray(event.dates) && event.dates.length > 0
+        ? event.dates.map((timestamp: Timestamp) => timestamp.toDate())
+        : event.date
+          ? [event.date.toDate()]
+          : [];
 
     if (eventDates.length === 0) return null;
 
-    return eventDates.reduce((latest, date) => (
-      date.getTime() > latest.getTime() ? date : latest
-    ));
+    return eventDates.reduce((latest, date) =>
+      date.getTime() > latest.getTime() ? date : latest,
+    );
   };
 
   const isPastEvent = (event: EventData) => {
@@ -298,13 +322,17 @@ const EventAdmin = () => {
     if (!router.isReady || !project) return;
 
     const eventsRef = collection(db, "events");
-    const q = query(eventsRef, where("projectId", "==", project), orderBy("date"));
+    const q = query(
+      eventsRef,
+      where("projectId", "==", project),
+      orderBy("date"),
+    );
 
     const unsubscribe = onSnapshot(
       q,
       (querySnapshot) => {
         const data = querySnapshot.docs.map(
-          (doc) => ({ id: doc.id, ...doc.data() } as EventData),
+          (doc) => ({ id: doc.id, ...doc.data() }) as EventData,
         );
         setAllEvents(data);
       },
@@ -322,21 +350,67 @@ const EventAdmin = () => {
 
     // Apply simple search filter
     if (searchTerm) {
-        const lowerTerm = searchTerm.toLowerCase();
-        events = events.filter(e => 
-            e.name?.toLowerCase().includes(lowerTerm) || 
-            e.projectName?.toLowerCase().includes(lowerTerm) ||
-            title.toLowerCase().includes(lowerTerm)
-        );
+      const lowerTerm = searchTerm.toLowerCase();
+      events = events.filter(
+        (e) =>
+          e.name?.toLowerCase().includes(lowerTerm) ||
+          e.projectName?.toLowerCase().includes(lowerTerm) ||
+          title.toLowerCase().includes(lowerTerm),
+      );
     }
-    
+
+    // Apply month filter
+    if (filterMonth !== "Any Month") {
+      const monthIndex = MONTH_NAMES.indexOf(filterMonth);
+      events = events.filter((e) => {
+        const matchesPrimary = e.date.toDate().getMonth() === monthIndex;
+        const matchesAny =
+          Array.isArray(e.dates) &&
+          e.dates.some((d) => d.toDate().getMonth() === monthIndex);
+        return matchesPrimary || matchesAny;
+      });
+    }
+
+    // Apply start/end time filters
+    if (filterStartTime) {
+      events = events.filter((e) => e.startTime >= filterStartTime);
+    }
+    if (filterEndTime) {
+      events = events.filter((e) => e.endTime <= filterEndTime);
+    }
+
     return events;
-  }, [allEvents, eventView, searchTerm, title]);
+  }, [
+    allEvents,
+    eventView,
+    searchTerm,
+    title,
+    filterMonth,
+    filterStartTime,
+    filterEndTime,
+  ]);
+
+  const handleFilterStartTimeChange = (value: string) => {
+    setFilterStartTime(value);
+    if (value && filterEndTime && filterEndTime <= value) {
+      setFilterEndTime("");
+    }
+  };
+
+  const handleFilterEndTimeChange = (value: string) => {
+    setFilterEndTime(value);
+    if (value && filterStartTime && filterStartTime >= value) {
+      setFilterStartTime("");
+    }
+  };
 
   const fetchVolunteerData = async (eventToExport: EventData) => {
     if (!eventToExport) return;
     try {
-      const volunteerRef = collection(db, `events/${eventToExport.id}/volunteers`)
+      const volunteerRef = collection(
+        db,
+        `events/${eventToExport.id}/volunteers`,
+      );
       const volunteersSnapshot = await getDocs(volunteerRef);
       const volunteerData = volunteersSnapshot.docs.map((doc) => ({
         uid: doc.id,
@@ -344,7 +418,6 @@ const EventAdmin = () => {
       }));
 
       return volunteerData as VolunteerData[];
-
     } catch (error) {
       console.error("Error fetching volunteer data:", error);
       return undefined;
@@ -353,24 +426,97 @@ const EventAdmin = () => {
 
   const handleExportCSV = async (eventToExport: EventData) => {
     const volunteers = await fetchVolunteerData(eventToExport);
-    exportToCSV(volunteers? volunteers : []);
+    exportToCSV(volunteers ? volunteers : []);
   };
 
-  const handleOpenEventFormPopup = (mode: "add" | "edit", eventToEdit: EventData | null) => {
+  // The form edits role capacities, which now live on slot documents rather
+  // than on the event itself, so they have to be fetched alongside the event.
+  const loadSlotsFor = async (eventId?: string) => {
+    if (!eventId) {
+      setEditedEventSlots([]);
+      return;
+    }
+    try {
+      const snap = await getDocs(collection(db, "events", eventId, "slots"));
+      setEditedEventSlots(snap.docs.map((d) => d.data() as SlotData));
+    } catch (error) {
+      console.error("Error fetching slots:", error);
+      setEditedEventSlots([]);
+    }
+  };
+
+  const handleOpenEventFormPopup = async (
+    mode: "add" | "edit",
+    eventToEdit: EventData | null,
+  ) => {
     setPopupMode(mode);
     setEditedEvent(eventToEdit);
+    await loadSlotsFor(eventToEdit?.id);
     setOpenEventFormPopup(true);
   };
 
-  const handleDuplicateEvent = (eventToDuplicate: EventData) => {
+  const handleDuplicateEvent = async (eventToDuplicate: EventData) => {
     setPopupMode("add");
     setEditedEvent(eventToDuplicate);
+    // Duplication reuses the edit form's load path, so the source event's
+    // capacities have to come along with it.
+    await loadSlotsFor(eventToDuplicate.id);
     setOpenEventFormPopup(true);
+  };
+
+  /**
+   * Reconcile events/{id}/slots against the event's dates and role capacities.
+   * Existing slots keep their `remaining` count so editing an event never
+   * discards signups; slots for removed dates or roles are deleted.
+   */
+  const syncSlots = async (
+    eventId: string,
+    dates: Date[],
+    roles: { role: string; capacity: number }[],
+  ) => {
+    const slotsRef = collection(db, "events", eventId, "slots");
+    const existing = await getDocs(slotsRef);
+    const existingById = new Map(existing.docs.map((d) => [d.id, d.data()]));
+
+    const batch = writeBatch(db);
+    const wanted = new Set<string>();
+
+    dates.forEach((dateObj) => {
+      const date = dateKeyOf(dateObj);
+      roles.forEach(({ role, capacity }) => {
+        const id = slotId(date, role);
+        wanted.add(id);
+        const prev = existingById.get(id);
+        if (prev) {
+          // Preserve signups by carrying the taken count across a capacity change.
+          const taken = Math.max(0, (prev.capacity ?? 0) - (prev.remaining ?? 0));
+          batch.update(doc(slotsRef, id), {
+            capacity,
+            remaining: Math.max(0, capacity - taken),
+          });
+        } else {
+          batch.set(doc(slotsRef, id), {
+            date,
+            role,
+            capacity,
+            remaining: capacity,
+          });
+        }
+      });
+    });
+
+    existing.docs.forEach((d) => {
+      if (!wanted.has(d.id)) batch.delete(d.ref);
+    });
+
+    await batch.commit();
   };
 
   const handleEventAction = async (
     mode: "add" | "edit" | "delete",
-    eventData: Partial<EventData>,
+    eventData: Partial<EventData> & {
+      roles?: { role: string; capacity: number }[];
+    },
     eventId?: string,
   ) => {
     if (!project || !location) return;
@@ -378,29 +524,53 @@ const EventAdmin = () => {
 
     try {
       if (mode === "delete" && eventId) {
-        const eventRef = doc(db, collectionPath, eventId);
-        await deleteDoc(eventRef);
-        // alert("Event deleted successfully!");
+        // Firestore does not cascade. Without this, every slot and volunteer
+        // document survives its parent, unreachable but still stored.
+        const batch = writeBatch(db);
+        for (const sub of ["slots", "volunteers"]) {
+          const subSnap = await getDocs(
+            collection(db, collectionPath, eventId, sub),
+          );
+          subSnap.forEach((d) => batch.delete(d.ref));
+        }
+        batch.delete(doc(db, collectionPath, eventId));
+        await batch.commit();
+        enqueueSnackbar("Event successfully deleted", {
+          variant: "success",
+          autoHideDuration: 3000,
+        });
         return;
       }
 
+      const { roles = [], ...eventFields } = eventData;
+
       let allEventDates: Date[] = [];
-      if (eventData.dates && Array.isArray(eventData.dates) && eventData.dates.length > 0) {
+      if (
+        eventData.dates &&
+        Array.isArray(eventData.dates) &&
+        eventData.dates.length > 0
+      ) {
         // Ensure they are Date objects
-        allEventDates = eventData.dates.map((d: any) => d.toDate ? d.toDate() : new Date(d));
+        allEventDates = eventData.dates.map((d: any) =>
+          d.toDate ? d.toDate() : new Date(d),
+        );
       } else if (eventData.date) {
         // Fallback for single date creation
-        const d = eventData.date instanceof Date ? eventData.date : (eventData.date as any).toDate();
+        const d =
+          eventData.date instanceof Date
+            ? eventData.date
+            : (eventData.date as any).toDate();
         allEventDates = [d];
       } else {
-        alert("Failed to save: No dates selected.");
+        enqueueSnackbar("Failed to save: No dates selected", {
+          variant: "error",
+          autoHideDuration: 3000,
+        });
         return;
       }
       allEventDates.sort((a, b) => a.getTime() - b.getTime());
       const primaryDate = allEventDates[0];
       let calendarArr: String[] = [];
-      const flatOpenings = eventData.openings || {};
-      const nestedOpenings: Record<string, any> = {};
 
       allEventDates.forEach((dateObj) => {
         // add all months of the event to our calendar array
@@ -408,63 +578,83 @@ const EventAdmin = () => {
         if (calendarArr.indexOf(calendarString) == -1) {
           calendarArr.push(calendarString);
         }
-        
-        const dateKey = dateObj.toISOString().split('T')[0];
-        const firstKey = Object.keys(flatOpenings)[0];
-        if (firstKey && firstKey.startsWith('20')) {
-          nestedOpenings[dateKey] = flatOpenings[dateKey] || {};
-        } else {
-          nestedOpenings[dateKey] = { ...flatOpenings };
-        }
       });
 
       const dataToSave = {
-        ...eventData,
+        ...eventFields,
         // Save the array of Timestamps
-        dates: allEventDates.map(d => Timestamp.fromDate(d)),
+        dates: allEventDates.map((d) => Timestamp.fromDate(d)),
         // Save primary date for compatibility
-        date: Timestamp.fromDate(primaryDate), 
-        // Save the nested openings structure
-        openings: nestedOpenings, 
+        date: Timestamp.fromDate(primaryDate),
+        // Counts live on slot documents; this stays as a denormalized role list.
+        volunteerTypes: roles.map((r) => r.role),
         projectId: project,
         projectName: title,
         location: location as string,
         calendar: calendarArr,
       };
 
+      let savedEventId = eventId;
+
       if (mode === "add") {
-        await addDoc(collection(db, collectionPath), dataToSave);
+        const created = await addDoc(
+          collection(db, collectionPath),
+          dataToSave,
+        );
+        savedEventId = created.id;
+        enqueueSnackbar("Event successfully created", {
+          variant: "success",
+          autoHideDuration: 3000,
+        });
       } else if (mode === "edit" && eventId) {
         const eventRef = doc(db, collectionPath, eventId);
         await setDoc(eventRef, dataToSave, { merge: true });
+        enqueueSnackbar("Event successfully updated", {
+          variant: "success",
+          autoHideDuration: 3000,
+        });
+      }
+
+      if (savedEventId) {
+        await syncSlots(savedEventId, allEventDates, roles);
       }
       setOpenEventFormPopup(false);
     } catch (error) {
       console.error(`Error ${mode}ing event:`, error);
-      alert(`Failed to ${mode} event. Please try again.`);
+      enqueueSnackbar("Error handling event", {
+        variant: "error",
+        autoHideDuration: 3000,
+      });
     }
   };
 
   // Helper to format Time
   const formatTime = (date: Date) => {
-    return date.toLocaleTimeString("en-US", { hour: 'numeric', minute: '2-digit' });
+    return date.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+    });
   };
 
   const parseTimeStr = (baseDate: Date, timeString?: string) => {
-    if (!timeString) return baseDate; 
+    if (!timeString) return baseDate;
 
     const dateCopy = new Date(baseDate);
-    const [hours, minutes] = timeString.split(':').map(Number); 
-    
+    const [hours, minutes] = timeString.split(":").map(Number);
+
     dateCopy.setHours(hours);
     dateCopy.setMinutes(minutes);
-    
+
     return dateCopy;
   };
 
   // Helper to format Date
   const formatDate = (date: Date) => {
-    return date.toLocaleDateString("en-US", { month: 'short', day: 'numeric', year: 'numeric' });
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
   };
 
   if (!router.isReady) {
@@ -477,7 +667,7 @@ const EventAdmin = () => {
 
   return (
     <div className={classes.root}>
-      <Button 
+      <Button
         className={classes.backBtn}
         startIcon={<ArrowBackIosNewIcon />}
         onClick={() => router.back()}
@@ -490,8 +680,12 @@ const EventAdmin = () => {
           {title} - Add Events
         </Typography>
         <div className={classes.subHeaderRow}>
-            <div><LocationOnIcon /> {location}</div>
-            <div><ContactPageIcon /> Contact</div>
+          <div>
+            <LocationOnIcon /> {location}
+          </div>
+          <div>
+            <ContactPageIcon /> Contact
+          </div>
         </div>
       </div>
 
@@ -499,11 +693,11 @@ const EventAdmin = () => {
       <div className={classes.sectionTitleRow}>
         <Typography className={classes.eventsTitle}>Events</Typography>
         <Button
-            className={classes.addButton}
-            onClick={() => handleOpenEventFormPopup("add", null)}
-            startIcon={<span>+</span>}
+          className={classes.addButton}
+          onClick={() => handleOpenEventFormPopup("add", null)}
+          startIcon={<span>+</span>}
         >
-            Add New Event
+          Add New Event
         </Button>
       </div>
 
@@ -524,161 +718,237 @@ const EventAdmin = () => {
 
       {/* SEARCH & FILTERS TOOLBAR */}
       <div className={classes.toolbar}>
-        <TextField 
-            placeholder="Search..."
-            variant="outlined"
-            size="small"
-            className={classes.searchField}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <SearchIcon style={{ color: '#ccc' }} />
-                  </InputAdornment>
-                ),
-            }}
+        <TextField
+          placeholder="Search..."
+          variant="outlined"
+          size="small"
+          className={classes.searchField}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <SearchIcon style={{ color: "#ccc" }} />
+              </InputAdornment>
+            ),
+          }}
         />
 
         <div className={classes.filtersContainer}>
-            <span className={classes.filterLabel}>Filters:</span>
-            
-            <Select
-                value={filterMonth}
-                onChange={(e) => setFilterMonth(e.target.value as string)}
-                displayEmpty
-                className={classes.filterSelect}
-                variant="outlined"
-            >
-                <MenuItem value="Any Month">Any Month</MenuItem>
-                <MenuItem value="January">January</MenuItem>
-                <MenuItem value="February">February</MenuItem>
-            </Select>
+          <span className={classes.filterLabel}>Filters:</span>
 
-            <Select
-                value="Any Start Time"
-                displayEmpty
-                className={classes.filterSelect}
-                variant="outlined"
-                disabled
-            >
-                <MenuItem value="Any Start Time">Any Start Time</MenuItem>
-            </Select>
+          <Select
+            value={filterMonth}
+            onChange={(e) => setFilterMonth(e.target.value as string)}
+            displayEmpty
+            className={classes.filterSelect}
+            variant="outlined"
+          >
+            <MenuItem value="Any Month">Any Month</MenuItem>
+            {MONTH_NAMES.map((month) => (
+              <MenuItem key={month} value={month}>
+                {month}
+              </MenuItem>
+            ))}
+          </Select>
 
-            <Select
-                value="Any End Time"
-                displayEmpty
-                className={classes.filterSelect}
-                variant="outlined"
-                disabled
-            >
-                <MenuItem value="Any End Time">Any End Time</MenuItem>
-            </Select>
+          <Select
+            value={filterStartTime}
+            onChange={(e) => handleFilterStartTimeChange(e.target.value as string)}
+            displayEmpty
+            className={classes.filterSelect}
+            variant="outlined"
+          >
+            <MenuItem value="">Any Start Time</MenuItem>
+            {TIME_OPTIONS.map((opt) => (
+              <MenuItem
+                key={opt.value}
+                value={opt.value}
+                disabled={!!filterEndTime && opt.value >= filterEndTime}
+              >
+                {opt.label}
+              </MenuItem>
+            ))}
+          </Select>
+
+          <Select
+            value={filterEndTime}
+            onChange={(e) => handleFilterEndTimeChange(e.target.value as string)}
+            displayEmpty
+            className={classes.filterSelect}
+            variant="outlined"
+          >
+            <MenuItem value="">Any End Time</MenuItem>
+            {TIME_OPTIONS.map((opt) => (
+              <MenuItem
+                key={opt.value}
+                value={opt.value}
+                disabled={!!filterStartTime && opt.value <= filterStartTime}
+              >
+                {opt.label}
+              </MenuItem>
+            ))}
+          </Select>
         </div>
       </div>
 
       {/* DATA TABLE */}
-      <TableContainer component={Paper} elevation={0} sx={{ 
-        border: "1px solid #85754D",
-        borderRadius: filteredEvents.length > 0 ? "8px" : "8px 8px 0 0", 
-        overflow: 'hidden'
-    }}>
+      <TableContainer
+        component={Paper}
+        elevation={0}
+        sx={{
+          border: "1px solid #85754D",
+          borderRadius: filteredEvents.length > 0 ? "8px" : "8px 8px 0 0",
+          overflow: "hidden",
+        }}
+      >
         <Table>
-            <TableHead>
-                <TableRow className={classes.tableHeader}>
-                    <TableCell className={classes.tableHeaderCell}>Event Name</TableCell>
-                    <TableCell className={classes.tableHeaderCell}>Start Date</TableCell>
-                    <TableCell className={classes.tableHeaderCell}>Start Time</TableCell>
-                    <TableCell className={classes.tableHeaderCell}>End Time</TableCell>
-                    <TableCell className={classes.tableHeaderCell} align="right">Options</TableCell>
-                </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredEvents.map((ev) => {
+          <TableHead>
+            <TableRow className={classes.tableHeader}>
+              <TableCell className={classes.tableHeaderCell}>
+                Event Name
+              </TableCell>
+              <TableCell className={classes.tableHeaderCell}>
+                Start Date
+              </TableCell>
+              <TableCell className={classes.tableHeaderCell}>
+                Start Time
+              </TableCell>
+              <TableCell className={classes.tableHeaderCell}>
+                End Time
+              </TableCell>
+              <TableCell className={classes.tableHeaderCell} align="right">
+                Options
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredEvents.map((ev) => {
               const eventDate = ev.date.toDate();
-              
+
               const startTime = parseTimeStr(eventDate, ev.startTime);
               const endTime = parseTimeStr(eventDate, ev.endTime);
 
               return (
                 <TableRow key={ev.id} hover className={classes.tableRow}>
-                    <TableCell className={classes.tableCell} style={{ fontWeight: 600 }}>
-                        {ev.name || title || "Event Name"}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                        {formatDate(eventDate)}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                        {formatTime(startTime)}
-                    </TableCell>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  <TableCell
+                    className={classes.tableCell}
+                    style={{ fontWeight: 600 }}
+                  >
+                    {ev.name || title || "Event Name"}
+                  </TableCell>
+
+                  <TableCell className={classes.tableCell}>
+                    {formatDate(eventDate)}
+                    {ev.dates?.length > 1 && (
+                      <Tooltip
+                        title={ev.dates
+                          .map((t) => formatDate(t.toDate()))
+                          .join(", ")}
+                      >
+                        <span
+                          style={{
+                            color: "#666",
+                            cursor: "help",
+                            display: "flex",
+                            marginLeft: 10,
+                          }}
+                        >
+                          +{ev.dates.length - 1} more
+                        </span>
+                      </Tooltip>
+                    )}
+                  </TableCell>
+
+                  <TableCell className={classes.tableCell}>
+                    {formatTime(startTime)}
+                  </TableCell>
+
+                  <TableCell className={classes.tableCell}>
+                    {formatTime(endTime)}
+                  </TableCell>
+
+                  <TableCell className={classes.tableCell} align="right">
+                    <IconButton
+                      size="small"
+                      onClick={() => handleExportCSV(ev)}
+                      title="Export"
+                    >
+                      <DownloadIcon fontSize="small" />
+                    </IconButton>
+
+                    <IconButton
+                      size="small"
+                      onClick={() =>
+                        router.push({
+                          pathname: "/calendar/[event]/attendees",
+                          query: { event: ev.id },
+                        })
+                      }
+                      title="View Attendees"
+                    >
+                      <ContactPageIcon fontSize="small" />
+                    </IconButton>
+
+                    <IconButton
+                      size="small"
+                      onClick={() => handleOpenEventFormPopup("edit", ev)}
+                      title="Edit"
+                    >
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+
+                    <IconButton
+                      size="small"
+                      onClick={() => handleDuplicateEvent(ev)}
+                      title="Duplicate"
+                    >
+                      <ContentCopyIcon fontSize="small" />
+                    </IconButton>
+
+                    <IconButton
+                      size="small"
+                      onClick={() => {
+                        if (
+                          window.confirm(
+                            "Are you sure you want to delete this event?"
+                          )
+                        ) {
+                          handleEventAction("delete", {}, ev.id);
+                        }
+                      }}
+                      title="Delete"
+                      color="error"
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
                     
-                    <TableCell className={classes.tableCell}>
-                        {formatTime(endTime)}
-                    </TableCell>
-                        <TableCell className={classes.tableCell} align="right">
-                            <IconButton 
-                                size="small" 
-                                onClick={() => handleExportCSV(ev)}
-                                title="Export"
-                            >
-                                <DownloadIcon fontSize="small" />
-                            </IconButton>
-
-                          <IconButton
-                            size = "small"
-                            onClick={() => 
-                              router.push({
-                                pathname: `/calendar/[event]/attendees`, 
-                                query: {event: ev.id}, 
-                              })
-                            }
-                            title = "view attendees"
-                          
-                          >
-                            <ContactPageIcon fontSize="small" />
-                
-                        </IconButton>
-                            <IconButton 
-                                size="small" 
-                                onClick={() => handleOpenEventFormPopup("edit", ev)}
-                                title="Edit"
-                            >
-                                <EditIcon fontSize="small" />
-
-    
-                            </IconButton>
-                                <IconButton 
-                                  size="small" 
-                                  onClick={() => handleDuplicateEvent(ev)}
-                                  title="Duplicate"
-                                >
-                                  <ContentCopyIcon fontSize="small" />
-                                </IconButton>
-                            <IconButton 
-                                size="small" 
-                                onClick={() => {
-                                    if(window.confirm("Are you sure you want to delete this event?")) {
-                                        handleEventAction("delete", {}, ev.id)
-                                    }
-                                }}
-                                title="Delete"
-                                color="error"
-                            >
-                                <DeleteIcon fontSize="small" />
-                            </IconButton>
-                        </TableCell>
-                    </TableRow>
-                  );
-                })}
-            </TableBody>
+                    
+                    
+                    
+                    
         </Table>
       </TableContainer>
 
       {/* EMPTY STATE */}
       {filteredEvents.length === 0 && (
-          <div className={classes.emptyStateBox}>
-              No events have been created yet. Click on “Add New Event” to create an event.
-          </div>
+        <div className={classes.emptyStateBox}>
+          No events have been created yet. Click on “Add New Event” to create an
+          event.
+        </div>
       )}
 
       {/* FOOTER NOTE (This is currently not accurate information, but was in figma design doc) */}
@@ -691,6 +961,7 @@ const EventAdmin = () => {
         close={() => setOpenEventFormPopup(false)}
         mode={popupMode}
         event={editedEvent}
+        slots={editedEventSlots}
         handleEventAction={handleEventAction}
       />
     </div>

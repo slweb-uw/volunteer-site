@@ -43,6 +43,8 @@ export default function SignInPopup({ open, close }: SignInPopupProps) {
   const [errorMessage, setErrorMessage] = useState("");
   const [content, setContent] = useState(CONTENT.LOGIN);
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
+
   const handleHelpButtonClickLocation = () => {
     handleHelpButtonClick(router, "fromSignIn");
     close();
@@ -53,9 +55,17 @@ export default function SignInPopup({ open, close }: SignInPopupProps) {
   }, [open]);
 
   const handleSignInWithProvider = async (provider: any) => {
+    const providerName = provider.providerId
+      .substring(0, provider.providerId.indexOf("."))
+      .toUpperCase();
     try {
       await signInWithPopup(auth, provider);
       close();
+
+      enqueueSnackbar(`Sign in successful via ${providerName}`, {
+        variant: "success",
+        autoHideDuration: 3000,
+      });
     } catch (error) {
       if (
         error instanceof FirebaseError &&
@@ -66,6 +76,11 @@ export default function SignInPopup({ open, close }: SignInPopupProps) {
           "An account already exists with the same email address but different sign-in credentials. Please try signing-in using: " +
             option,
         );
+      } else {
+        enqueueSnackbar(`Error signing in with ${providerName}`, {
+          variant: "error",
+          autoHideDuration: 3000,
+        });
       }
     }
   };
@@ -140,8 +155,8 @@ function LoginContent({
         formState.email,
         formState.password,
       );
-      enqueueSnackbar(`Sucessfully logged in ${formState.email}`, {
-        autoHideDuration: 4000,
+      enqueueSnackbar(`Successfully logged in ${formState.email}`, {
+        autoHideDuration: 3000,
         variant: "success",
       });
       close();
@@ -286,7 +301,7 @@ function SignupContent({
       enqueueSnackbar(
         `Successfully registered ${user.user.email}, check email for verification`,
         {
-          autoHideDuration: 5000,
+          autoHideDuration: 3000,
           variant: "success",
         },
       );

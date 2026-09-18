@@ -12,6 +12,7 @@ import {
   InputAdornment
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
+import { SlotData } from "new-types";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddCircleIcon from "@mui/icons-material/AddCircleOutline";
@@ -153,7 +154,7 @@ const daysOfWeek = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
 const getFirstDayOfMonth = (year: number, month: number) => new Date(year, month, 1).getDay();
 
-const SignupEventPopup = ({ open, close, mode, event, handleEventAction }) => {
+const SignupEventPopup = ({ open, close, mode, event, slots, handleEventAction }) => {
   const classes = useStyles();
 
   const [eventName, setEventName] = useState("");
@@ -198,19 +199,16 @@ const SignupEventPopup = ({ open, close, mode, event, handleEventAction }) => {
         setCurrentDateView(new Date(`${singleDate}T12:00:00`));
       }
 
-      // Handling Volunteers
-      if (event.openings && Object.keys(event.openings).length > 0) {
-        let rolesSource = event.openings;
-        const keys = Object.keys(event.openings);
-        
-        if (typeof event.openings[keys[0]] === 'object' && event.openings[keys[0]] !== null) {
-            rolesSource = event.openings[keys[0]];
-        }
-
-        const vArray = Object.entries(rolesSource).map(([type, qty]) => ({
-          type,
-          qty: Number(qty),
-        }));
+      // Handling Volunteers — role capacities come from the event's slot docs.
+      // Capacity is uniform across an event's dates, so one date's slots
+      // describe the whole event. Remaining counts are never edited here.
+      if (slots && slots.length > 0) {
+        const firstDate = slots
+          .map((s: SlotData) => s.date)
+          .sort()[0];
+        const vArray = slots
+          .filter((s: SlotData) => s.date === firstDate)
+          .map((s: SlotData) => ({ type: s.role, qty: s.capacity }));
         setVolunteerData(vArray);
       } else {
         setVolunteerData([]);
@@ -232,7 +230,7 @@ const SignupEventPopup = ({ open, close, mode, event, handleEventAction }) => {
       setNewRoleName("");
       setCurrentDateView(new Date());
     }
-  }, [mode, event, open]);
+  }, [mode, event, slots, open]);
 
   // Calendar Handlers
   const handleMonthChange = (direction: number) => {
@@ -294,12 +292,13 @@ const SignupEventPopup = ({ open, close, mode, event, handleEventAction }) => {
         return;
     }
 
-    // Prepare Openings Map
-    const openings = volunteerData.reduce((acc, item) => {
-        acc[item.type] = item.qty;
-        return acc;
-    }, {});
-    
+    // Roles and their capacities. EventAdmin fans these out into one slot
+    // document per date-and-role pair.
+    const roles = volunteerData.map((item) => ({
+        role: item.type,
+        capacity: item.qty,
+    }));
+
     const dateObjects = selectedDates.map(ds => {
         const [y, m, d] = ds.split('-').map(Number);
         return new Date(y, m - 1, d, 12, 0, 0); 
@@ -313,7 +312,7 @@ const SignupEventPopup = ({ open, close, mode, event, handleEventAction }) => {
       requiredTraining,
       startTime,
       endTime,
-      openings,
+      roles,
       dates: dateObjects,
       date: dateObjects[0], // Legacy, some lookups still use singular date.
     };

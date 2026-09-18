@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { db } from "firebaseClient";
+import { db, auth } from "firebaseClient";
 import {
   addDoc,
   collection,
@@ -32,6 +32,7 @@ import {
 } from "@mui/material";
 import HelpIcon from "@mui/icons-material/HelpOutline";
 import AuthorizationMessage from "./AuthorizationMessage";
+import { useSnackbar } from "notistack";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -127,6 +128,8 @@ const label: any = {
 };
 
 const AdminPage = () => {
+  //snackbar notification
+  const { enqueueSnackbar } = useSnackbar();
   const classes = useStyles();
   const { user, isAdmin, isLoading } = useAuth();
   const [admins, setAdmins] = useState([]);
@@ -192,7 +195,7 @@ const AdminPage = () => {
     };
   }, []);
 
-  const addUser = (e) => {
+  const addUser = async (e) => {
     e.preventDefault();
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     setExistentEmail(false);
@@ -203,9 +206,11 @@ const AdminPage = () => {
       return;
     }
 
-    var existentEmail;
+    let existentEmail;
     if (activeSection === "Admins") {
       existentEmail = admins.find((admin) => admin.email === newUserEmail);
+    } else if (activeSection == "Leads") {
+      existentEmail = leads.find((lead) => lead.email === newUserEmail);
     } else {
       existentEmail = volunteers.find(
         (volunteer) => volunteer.email === newUserEmail,
@@ -216,32 +221,111 @@ const AdminPage = () => {
       setNewUserEmail("");
       return;
     }
+    const roleMap = { Admins: "admin", Leads: "lead", Volunteers: "volunteer" };
+    const token = await auth.currentUser?.getIdToken();
+    // query endpoint to check if email that we are changing role of exists + set custom claims if it does
+    const res = await fetch("/api/set-roles", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        email: newUserEmail,
+        role: roleMap[activeSection],
+        authorized: true
+      }),
+    });
 
-    addDoc(collection(db, activeSection), {
-      email: newUserEmail,
-      timestamp: serverTimestamp(),
-    })
-      .then(() => {
-        console.log("User added successfully!");
-        setNewUserEmail("");
-      })
-      .catch((error) => {
-        console.error("Error adding user", error);
+    let accountExists = true;
+    if (!res.ok) {
+      const { error } = await res.json();
+      if (res.status === 404) {
+        // no account yet — still queue the role, it'll apply once they sign up
+        accountExists = false;
+        enqueueSnackbar(
+          "No account found for this email yet — the role will be applied automatically once they sign up.",
+          {
+            variant: "warning",
+            autoHideDuration: 5000,
+          },
+        );
+      } else {
+        enqueueSnackbar(`Error Adding User: ${error}`, {
+          variant: "error",
+          autoHideDuration: 3000,
+        });
+        return;
+      }
+    }
+    // add to collection to display who has which role
+    try {
+      await addDoc(collection(db, activeSection), {
+        email: newUserEmail,
+        timestamp: serverTimestamp(),
       });
+      setNewUserEmail("");
+      if (accountExists) {
+        enqueueSnackbar(
+          "User added — notify them their role has changed. It may take up to an hour to apply, or they can sign out and back in to apply it immediately.",
+          {
+            variant: "success",
+            autoHideDuration: 6000,
+          },
+        );
+      }
+    } catch (error) {
+      console.error("Error adding user", error);
+      enqueueSnackbar("Error adding user to directory", {
+        variant: "error",
+        autoHideDuration: 3000,
+      });
+    }
   };
 
-  const removeUser = (userEmail) => {
-    const usersRef = collection(db, activeSection);
-    getDocs(query(usersRef, where("email", "==", userEmail)))
-      .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          deleteDoc(doc.ref);
-        });
-        console.log("User removed successfully!");
-      })
-      .catch((error) => {
-        console.error("Error removing user: ", error);
+  const removeUser = async (userEmail) => {
+    const token = await auth.currentUser?.getIdToken();
+    const res = await fetch("/api/set-roles", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ email: userEmail, role: null, authorized: false }),
+    });
+
+    if (!res.ok && res.status !== 404) {
+      const { error } = await res.json();
+      enqueueSnackbar(`Error Removing User: ${error}`, {
+        variant: "error",
+        autoHideDuration: 3000,
       });
+      return;
+    }
+    const usersRef = collection(db, activeSection);
+    try {
+      const querySnapshot = await getDocs(
+        query(usersRef, where("email", "==", userEmail)),
+      );
+      await Promise.all(querySnapshot.docs.map((doc) => deleteDoc(doc.ref)));
+      if (res.status === 404) {
+        enqueueSnackbar("User role removed successfully (Note: an account hasn't been created with this email)", {
+          variant: "success",
+          autoHideDuration: 3000,
+        });
+      }else {
+        enqueueSnackbar("User removed successfully", {
+          variant: "success",
+          autoHideDuration: 3000,
+        });
+      }
+    } catch (error) {
+      console.error("Error removing user: ", error);
+      enqueueSnackbar("Error removing user from directory", {
+        variant: "error",
+        autoHideDuration: 3000,
+      });
+    }
   };
 
   if (isLoading) {
