@@ -3,6 +3,8 @@ import { Box, Typography, Button, Divider } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { EventData, SlotData, VolunteerData } from '../new-types';
 import { useEffect } from "react";
+import { useAuth } from "auth";
+
 
 interface VolunteerSignupGridProps {
   eventData: EventData;
@@ -51,6 +53,9 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
   relevantDates,
   targetDay
 }) => {
+
+const { isAdmin, isLead, isLoading } = useAuth();
+const canManage = !isLoading && (isAdmin || isLead);
   const scrollToTarget = () => {
     const element = document.getElementById(`${targetDay}`);
     element?.scrollIntoView({ behavior: "smooth", block: "end", inline: "center" });
@@ -185,13 +190,14 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
               const isFull = spotsOpen <= 0;
               const pastEvent = isPastDate(dateStr);
               const isCurrentUserSignedUp = cellVolunteers.some((v) => v.uid === currentUserId);
-              const isDisabled = pastEvent || (isFull && !isCurrentUserSignedUp);
-
+              const isDisabled =
+              !canManage && (pastEvent || (isFull && !isCurrentUserSignedUp));
               let buttonText = 'BE THE FIRST!';
               if (pastEvent) buttonText = 'PAST EVENT';
               else if (isCurrentUserSignedUp) buttonText = 'EDIT MY SIGNUP';
               else if (isFull) buttonText = 'FULL';
               else if (cellVolunteers.length > 0) buttonText = `JOIN : ${spotsOpen} spot(s) left`;
+              if (canManage) buttonText = "MANAGE VOLUNTEERS";
 
               return (
                 <Box

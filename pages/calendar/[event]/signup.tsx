@@ -193,79 +193,125 @@ const Event = ({
     setEditedVolunteer(null);
     router.replace(router.asPath, undefined, { scroll: false });
   };
-
   const handleAddVolunteer = async (volunteerData: VolunteerData) => {
-    if (!selectedRole || !user || !selectedDateSignup) return;
-
-    const dateKey = dateKeyOf(selectedDateSignup);
-    // COMPOSITE KEY: uid + date ensures uniqueness per day, but allows multiple days
-    const docId = `${user.uid}_${dateKey}`;
-    const volunteerRef = doc(db, `events/${eventID}/volunteers`, docId);
-    const slotRef = doc(
-      db,
-      `events/${eventID}/slots`,
-      slotId(dateKey, selectedRole),
-    );
+    if (!selectedRole || !user?.email || !selectedDateSignup) return;
+  
     try {
+      const canManage = isAdmin || isLead;
+      const requestedEmail = volunteerData.email.trim().toLowerCase();
+      const ownEmail = user.email.trim().toLowerCase();
+  
+      let targetUid = user.uid;
+      let targetEmail = user.email;
+  
+      if (requestedEmail !== ownEmail) {
+        if (!canManage) {
+          throw new Error("You can only register yourself.");
+        }
+  
+        const token = await user.getIdToken(true);
+        const response = await fetch("/api/lookup-volunteer", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ email: requestedEmail }),
+        });
+  
+        const target = await response.json();
+  
+        if (!response.ok) {
+          throw new Error(target.error || "Volunteer lookup failed.");
+        }
+  
+        targetUid = target.uid;
+        targetEmail = target.email;
+      }
+  
+      const dateKey = dateKeyOf(selectedDateSignup);
+      const volunteerRef = doc(
+        db,
+        `events/${eventID}/volunteers`,
+        `${targetUid}_${dateKey}`,
+      );
+      const slotRef = doc(
+        db,
+        `events/${eventID}/slots`,
+        slotId(dateKey, selectedRole),
+      );
+  
       await runTransaction(db, async (transaction) => {
-        // All reads must precede all writes inside a transaction.
         const slotDoc = await transaction.get(slotRef);
+        const existingVolunteerDoc = await transaction.get(volunteerRef);
+  
         if (!slotDoc.exists()) {
           throw new Error("This role is not available for this date.");
         }
-
-        const existingVolunteerDoc = await transaction.get(volunteerRef);
+  
+        // Preserve the existing duplicate-registration protection.
         if (existingVolunteerDoc.exists()) {
-          throw new Error("You are already signed up for this date.");
+          throw new Error("This person is already registered for this date.");
         }
-
+  
         const { remaining } = slotDoc.data() as SlotData;
+  
         if (remaining < 1) {
           throw new Error("No spots left for this position.");
         }
-
+  
         transaction.update(slotRef, { remaining: remaining - 1 });
-
+  
         transaction.set(volunteerRef, {
           ...volunteerData,
+          uid: targetUid,
+          email: targetEmail,
           role: selectedRole,
           date: selectedDateSignup,
-          uid: user.uid,
         });
       });
-      handleCloseVolunteerPopup();
+  
       enqueueSnackbar("Signup successfully created", {
         variant: "success",
-        autoHideDuration: 3000,
       });
-    } catch (e: any) {
-      enqueueSnackbar(`Signup failed: ${e.message}`, {
-        variant: "error",
-        autoHideDuration: 3000,
-      });
+  
+      if (canManage) {
+        await router.replace(router.asPath, undefined, { scroll: false });
+      } else {
+        handleCloseVolunteerPopup();
+      }
+    } catch (error) {
+      enqueueSnackbar(
+        error instanceof Error ? error.message : "Signup failed.",
+        { variant: "error" },
+      );
     }
   };
-
   const handleOpenVolunteerPopup = (type: string, date: string) => {
-    setSelectedDateSignup(date); // Capture the date context
-
-    // check if they are already registered for THIS date
-    const recordForDate = getCurrentUserRecordForDate(date);
-
-    if (recordForDate) {
-      setEditedVolunteer(recordForDate);
-      setSelectedRole(recordForDate.role);
-    } else {
-      setEditedVolunteer(null);
-      setSelectedRole(type);
-    }
+    setSelectedDateSignup(date);
+  
+    // Managers use the role they clicked, regardless of their own signup.
+    const record =
+      isAdmin || isLead ? null : getCurrentUserRecordForDate(date);
+  
+    setEditedVolunteer(record ?? null);
+    setSelectedRole(record?.role ?? type);
     setOpenVolunteerPopup(true);
   };
-
   const handleDeleteVolunteer = async (
     volunteerData: VolunteerData,
     mode: string,
   ) => {
+    if (
+      !user ||
+      (!(isAdmin || isLead) && volunteerData.uid !== user.uid)
+    ) {
+      enqueueSnackbar("You can only withdraw yourself.", {
+        variant: "error",
+      });
+      return;
+    }
+
     if (!volunteerData.date) {
       enqueueSnackbar(
         "Deletion failed: Missing date information for this record",
@@ -317,8 +363,12 @@ const Event = ({
         transaction.update(slotRef, { remaining: remaining + 1 });
         transaction.delete(volunteerRef);
       });
-      handleCloseVolunteerPopup();
-      enqueueSnackbar("Signup successfully removed", {
+      if (mode === "remove") {
+        // Refresh registrations and keep the popup open.
+        await router.replace(router.asPath, undefined, { scroll: false });
+      } else {
+        handleCloseVolunteerPopup();
+      }      enqueueSnackbar("Signup successfully removed", {
         variant: "success",
         autoHideDuration: 3000,
       });
@@ -329,6 +379,38 @@ const Event = ({
       });
     }
   };
+
+
+  const handleRemoveByEmail = async (enteredEmail: string) => {
+    if (!user || !(isAdmin || isLead) || !selectedDateSignup) return;
+  
+    const matches = volunteer.filter(
+      (record) =>
+        record.email?.trim().toLowerCase() ===
+          enteredEmail.trim().toLowerCase() &&
+        record.date &&
+        dateKeyOf(record.date) === dateKeyOf(selectedDateSignup),
+    );
+  
+    if (matches.length !== 1) {
+      enqueueSnackbar(
+        matches.length === 0
+          ? "No registration found for that email on this date."
+          : "Multiple registrations match this email. Please review them first.",
+        { variant: "error" },
+      );
+      return;
+    }
+  
+    await handleDeleteVolunteer(matches[0], "remove");
+  };
+
+
+
+
+
+
+
 
   return (
     <div className={classes.page}>
@@ -443,6 +525,8 @@ const Event = ({
           addVolunteer={handleAddVolunteer}
           volunteer={editedVolunteer}
           onDeleteVolunteer={handleDeleteVolunteer}
+          onRemoveVolunteerByEmail={handleRemoveByEmail}
+
         />
       )}
     </div>
