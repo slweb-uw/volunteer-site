@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import AttendeesPopup from "components/AttendeesPopup";
 import makeStyles from "@mui/styles/makeStyles";
 import { db } from "firebaseClient";
 import {
@@ -885,19 +886,7 @@ const EventAdmin = () => {
                       <DownloadIcon fontSize="small" />
                     </IconButton>
 
-                    <IconButton
-                      size="small"
-                      onClick={() =>
-                        router.push({
-                          pathname: "/calendar/[event]/attendees",
-                          query: { event: ev.id },
-                        })
-                      }
-                      title="View Attendees"
-                    >
-                      <ContactPageIcon fontSize="small" />
-                    </IconButton>
-
+                    <AttendeesPopup eventId={ev.id} eventName={ev.name} />
                     <IconButton
                       size="small"
                       onClick={() => handleOpenEventFormPopup("edit", ev)}
