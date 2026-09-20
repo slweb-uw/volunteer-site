@@ -1,4 +1,5 @@
 import useEvents from "hooks/useEvents";
+import { useAuth } from "auth";
 import { useEffect, useMemo, useState } from "react";
 import { Button, Typography, Card, CardActionArea, IconButton } from "@mui/material";
 import createStyles from "@mui/styles/createStyles";
@@ -173,6 +174,8 @@ export default function EventsView({
 }
 
 function CalendarView({ curDate, events }: { curDate: Date; events: any }) {
+  const { isAdmin, isLead, isLoading } = useAuth();
+  const canManage = !isLoading && (isAdmin || isLead);
   const dates = useMemo(
     () => getDaysInMonth(curDate.getMonth(), curDate.getFullYear()),
     [curDate],
@@ -223,18 +226,18 @@ function CalendarView({ curDate, events }: { curDate: Date; events: any }) {
             <div style={{ display: "flex", flexDirection: "column", gap: 8}}>
               {getEventsForDate(date, events).map((event) => {
                 const pastEvent = isPastDay(date);
-
+                const disablePastEvent = pastEvent && !canManage;
                 return (
                   <Card
                     key={`${event.id}-${date.toISOString()}`}
                     style={{
                       boxShadow: "none",
-                      backgroundColor: pastEvent ? "#e5e5e5" : "#C5B4E3",
+                      backgroundColor: disablePastEvent ? "#e5e5e5" : "#C5B4E3",
                       padding: "4px",
-                      opacity: pastEvent ? 0.7 : 1,
+                      opacity: disablePastEvent ? 0.7 : 1,
                     }}
                   >
-                    {pastEvent ? (
+                    {disablePastEvent ? (
                       <CardActionArea disabled sx={{ cursor: "not-allowed", px: 1, py: 0.5 }}>
                         <Typography variant="subtitle1" style={{ fontWeight: 600, color: "#666" }}>
                           {event.name}
