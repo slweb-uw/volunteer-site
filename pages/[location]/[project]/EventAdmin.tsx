@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import AttendeesPopup from "components/AttendeesPopup";
 import makeStyles from "@mui/styles/makeStyles";
 import { db } from "firebaseClient";
 import {
@@ -831,12 +832,21 @@ const EventAdmin = () => {
 
               return (
                 <TableRow key={ev.id} hover className={classes.tableRow}>
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
                   <TableCell
                     className={classes.tableCell}
                     style={{ fontWeight: 600 }}
                   >
                     {ev.name || title || "Event Name"}
                   </TableCell>
+
                   <TableCell className={classes.tableCell}>
                     {formatDate(eventDate)}
                     {ev.dates?.length > 1 && (
@@ -858,6 +868,7 @@ const EventAdmin = () => {
                       </Tooltip>
                     )}
                   </TableCell>
+
                   <TableCell className={classes.tableCell}>
                     {formatTime(startTime)}
                   </TableCell>
@@ -865,6 +876,7 @@ const EventAdmin = () => {
                   <TableCell className={classes.tableCell}>
                     {formatTime(endTime)}
                   </TableCell>
+
                   <TableCell className={classes.tableCell} align="right">
                     <IconButton
                       size="small"
@@ -873,6 +885,8 @@ const EventAdmin = () => {
                     >
                       <DownloadIcon fontSize="small" />
                     </IconButton>
+
+                    <AttendeesPopup eventId={ev.id} eventName={ev.name} />
                     <IconButton
                       size="small"
                       onClick={() => handleOpenEventFormPopup("edit", ev)}
@@ -880,6 +894,7 @@ const EventAdmin = () => {
                     >
                       <EditIcon fontSize="small" />
                     </IconButton>
+
                     <IconButton
                       size="small"
                       onClick={() => handleDuplicateEvent(ev)}
@@ -887,12 +902,13 @@ const EventAdmin = () => {
                     >
                       <ContentCopyIcon fontSize="small" />
                     </IconButton>
+
                     <IconButton
                       size="small"
                       onClick={() => {
                         if (
                           window.confirm(
-                            "Are you sure you want to delete this event?",
+                            "Are you sure you want to delete this event?"
                           )
                         ) {
                           handleEventAction("delete", {}, ev.id);
@@ -908,6 +924,11 @@ const EventAdmin = () => {
               );
             })}
           </TableBody>
+                    
+                    
+                    
+                    
+                    
         </Table>
       </TableContainer>
 
