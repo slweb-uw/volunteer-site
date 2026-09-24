@@ -229,7 +229,7 @@ function LoginContent({
           handleSignInWithProvider(googleProvider);
         }}
         startIcon={
-          <Image
+          <img
             alt="Google Icon"
             height={16}
             width={16}

@@ -26,7 +26,7 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
       >
         WELCOME STUDENT VOLUNTEERS
       </Typography>
-      <Image
+      <img
         src={Goldbar}
         width={535}
         height={10}
@@ -78,7 +78,7 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
               marginTop: "1em",
             }}
           >
-            <Image
+            <img
               style={{
                 margin: "0px",
                 borderRadius: "10px",
