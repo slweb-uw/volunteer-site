@@ -1,4 +1,5 @@
 import useEvents from "hooks/useEvents";
+import { useAuth } from "auth";
 import { useEffect, useMemo, useState } from "react";
 import { Button, Typography, Card, CardActionArea, IconButton } from "@mui/material";
 import createStyles from "@mui/styles/createStyles";
@@ -14,9 +15,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import router from "next/router";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "firebaseClient";
-import { useAuth
-  
- } from "auth";
+
 const useStyles = makeStyles(() => ({
   pageContainer: {
     padding: "2rem 4rem",
@@ -236,13 +235,13 @@ function CalendarView({
             <div style={{ display: "flex", flexDirection: "column", gap: 8}}>
               {getEventsForDate(date, events).map((event) => {
                 const pastEvent = isPastDay(date);
-
+                const disablePastEvent = pastEvent && !canManage;
                 return (
                   <Card
                     key={`${event.id}-${date.toISOString()}`}
                     style={{
                       boxShadow: "none",
-                      backgroundColor: pastEvent ? "#e5e5e5" : "#C5B4E3",
+                      backgroundColor: disablePastEvent ? "#e5e5e5" : "#C5B4E3",
                       padding: "4px",
                       opacity: pastEvent && !canManage ? 0.7 : 1,
                     }}
