@@ -14,7 +14,9 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import router from "next/router";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "firebaseClient";
-
+import { useAuth
+  
+ } from "auth";
 const useStyles = makeStyles(() => ({
   pageContainer: {
     padding: "2rem 4rem",
@@ -97,6 +99,9 @@ export default function EventsView({
     projectId,
   );
 
+  const {isLead, isAdmin, isLoading} = useAuth();
+  const canManage = !isLoading && (isAdmin || isLead);
+
   const [projectName, setProjectName] = useState("");
   const [projectAddress, setProjectAddress] = useState("");
   const styles = useStyles();
@@ -167,12 +172,20 @@ export default function EventsView({
       </div>
 
       {/* Calendar Grid */}
-      <CalendarView curDate={curDate} events={events}/>
+      <CalendarView curDate={curDate} events={events} canManage={canManage}/>
     </div>
   );
 }
 
-function CalendarView({ curDate, events }: { curDate: Date; events: any }) {
+function CalendarView({
+  curDate,
+  events,
+  canManage,
+}: {
+  curDate: Date;
+  events: any;
+  canManage: boolean;
+}) {
   const dates = useMemo(
     () => getDaysInMonth(curDate.getMonth(), curDate.getFullYear()),
     [curDate],
@@ -231,10 +244,10 @@ function CalendarView({ curDate, events }: { curDate: Date; events: any }) {
                       boxShadow: "none",
                       backgroundColor: pastEvent ? "#e5e5e5" : "#C5B4E3",
                       padding: "4px",
-                      opacity: pastEvent ? 0.7 : 1,
+                      opacity: pastEvent && !canManage ? 0.7 : 1,
                     }}
                   >
-                    {pastEvent ? (
+                    {pastEvent && !canManage ? (
                       <CardActionArea disabled sx={{ cursor: "not-allowed", px: 1, py: 0.5 }}>
                         <Typography variant="subtitle1" style={{ fontWeight: 600, color: "#666" }}>
                           {event.name}
@@ -263,6 +276,11 @@ function CalendarView({ curDate, events }: { curDate: Date; events: any }) {
                             <span>{timeToLocaleTime(event.startTime)}</span>-
                             <span>{timeToLocaleTime(event.endTime)}</span>
                           </Typography>
+                          {pastEvent && (
+                            <Typography variant="caption" style={{ fontWeight: 700 }}>
+                              Past event
+                            </Typography>
+                          )}
                         </CardActionArea>
                       </Link>
                     )}

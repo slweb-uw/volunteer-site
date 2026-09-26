@@ -29,8 +29,8 @@ const ServiceLearningPage: NextPage<Props> = ({ classes }) => {
       >
         Preparation and Reflection
       </Typography>
-      <Image
-        src={Goldbar}
+      <img
+        src={Goldbar.src}
         style={{ marginBottom: "30px" }}
         width={405}
         height={10}

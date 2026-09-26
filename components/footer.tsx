@@ -40,8 +40,8 @@ const Footer: React.FC<{}> = () => {
 
   return (
     <footer className={useStyles().footer}>
-      <Image
-        src={LogoUrl}
+      <img
+        src="/uw-text-logo.png"        
         alt="University of Washington logo"
         sizes="100vw"
         className={useStyles().logo}
