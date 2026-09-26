@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Footer: React.FC<{}> = () => {
-  const { isAdmin } = useAuth();
+  const { isAdmin, isLead } = useAuth();
 
   return (
     <footer className={useStyles().footer}>
@@ -58,10 +58,18 @@ const Footer: React.FC<{}> = () => {
           experience on this website.
         </i>
       </Typography>
+      {(isAdmin || isLead) && (
+        <Link
+          href="/invitePreceptor"
+          style={{ color: "white", paddingTop: "100px", fontWeight: 600 }}
+        >
+          Invite a Preceptor
+        </Link>
+      )}
       {isAdmin && (
         <Link
           href="/userManager"
-          style={{ color: "white", paddingTop: "100px", fontWeight: 600 }}
+          style={{ color: "white", paddingTop: isLead ? "0" : "100px", fontWeight: 600 }}
         >
           User Manager
         </Link>
