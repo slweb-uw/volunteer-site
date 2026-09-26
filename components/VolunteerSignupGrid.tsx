@@ -56,6 +56,7 @@ const VolunteerSignupGrid: React.FC<VolunteerSignupGridProps> = ({
 
 const { isAdmin, isLead, isLoading } = useAuth();
 const canManage = !isLoading && (isAdmin || isLead);
+console.log(canManage);
   const scrollToTarget = () => {
     const element = document.getElementById(`${targetDay}`);
     element?.scrollIntoView({ behavior: "smooth", block: "end", inline: "center" });
