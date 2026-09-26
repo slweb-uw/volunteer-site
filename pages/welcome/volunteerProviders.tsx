@@ -26,7 +26,7 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
       >
         WELCOME VOLUNTEER PROVIDERS
       </Typography>
-      <Image
+      <img
         src={Goldbar}
         width={535}
         height={10}
@@ -147,7 +147,7 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
               marginTop: "1em",
             }}
           >
-            <Image
+            <img
               style={{
                 objectFit: "cover",
                 margin: "0px",

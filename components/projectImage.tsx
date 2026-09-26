@@ -20,7 +20,7 @@ const ProjectImage: React.FC<Props> = (props) => {
     <>
       {loading ? (
         <Skeleton width={300} height={600}>
-          <Image
+          <img
             style={style}
             width={300}
             height={300}
@@ -30,7 +30,7 @@ const ProjectImage: React.FC<Props> = (props) => {
           />
         </Skeleton>
       ) : (
-        <Image
+        <img
           style={style}
           width={300}
           height={300}

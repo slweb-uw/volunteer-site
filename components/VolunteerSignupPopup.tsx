@@ -12,7 +12,7 @@ import {
     Select,
     MenuItem
   } from '@mui/material';
-
+import { useAuth } from "auth";
 import { volunteerTypes } from 'components/AddModifyEventModal';
 import { VolunteerData } from 'new-types';
 
@@ -47,7 +47,7 @@ const useStyles = makeStyles({
     },
 });
 
-const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, position, addVolunteer, onDeleteVolunteer, volunteer }) => {
+const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, position, addVolunteer, onDeleteVolunteer, onRemoveVolunteerByEmail, volunteer }) => {
     const classes = useStyles();
     const [displayName, setDisplayName] = useState(name ? name : ''); //TODO Set default state to name
     const [phoneNumber, setPhoneNumber] = useState(phone ? phone : ''); //TODO Set default state to phone number if provided
@@ -55,26 +55,58 @@ const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, position, 
     const [studentDiscipline, setStudentDiscipline] = useState('');
     const [certified, setCertified] = useState(true); //TODO Set default state to false, true only for debugging.
     const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
-    useEffect(() => {
-      if (volunteer) {
-        setPhoneNumber(volunteer.phoneNumber || '');
-        setComments(volunteer.comments || '');
-        setStudentDiscipline(volunteer.studentDiscipline || '');
-        // setCertified(volunteer.certified || false);
-        setCertified(true); 
-        // TODO there's a bug that doesn't let you re-sign up after withdrawing - pretty sure it has to do with certified, 
-        // since it's fixed when certified is always set to true.
-        setFormattedPhoneNumber(formatPhoneNumber(volunteer.phoneNumber || ''));
-      }
-    }, [volunteer]);
 
+    const { isAdmin, isLead, isLoading } = useAuth();
+    const canManage = !isLoading && (isAdmin || isLead);
+
+    const [enteredEmail, setEnteredEmail] = useState(email || "");
+    const [isBusy, setIsBusy] = useState(false);
+
+    const targetEmail = canManage ? enteredEmail.trim() : email || "";
+    
+    useEffect(() => {
+      if (!open) return;
+    
+      const initialPhone = String(volunteer?.phoneNumber || phone || "");
+    
+      setEnteredEmail(email || "");
+      setDisplayName(volunteer?.name || name || "");
+      setPhoneNumber(initialPhone);
+      setFormattedPhoneNumber(formatPhoneNumber(initialPhone));
+      setComments(volunteer?.comments || "");
+      setStudentDiscipline(volunteer?.studentDiscipline || "");
+      setCertified(true);
+    }, [open, email, name, phone, volunteer]);
+
+
+    const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setEnteredEmail(event.target.value);
+    
+      // Do not reuse the previous person's details for a different email.
+      setDisplayName("");
+      setPhoneNumber("");
+      setFormattedPhoneNumber("");
+      setStudentDiscipline("");
+      setComments("");
+    };
+    
+    const runAction = async (action: () => Promise<unknown>) => {
+      if (isBusy) return;
+    
+      setIsBusy(true);
+      try {
+        await action();
+      } finally {
+        setIsBusy(false);
+      }
+    };
     const validatePhoneNumber = (phoneNumber) => {
-      const cleaned = phoneNumber.replace(/\D/g, '');
+      const cleaned = String(phoneNumber || "").replace(/\D/g, "");      
       return /^[0-9]{10}$/.test(cleaned);
     };   
 
     function formatPhoneNumber(phoneNumber) {
-      const cleaned = phoneNumber.replace(/\D/g, '');
+      const cleaned = String(phoneNumber || "").replace(/\D/g, "");
       const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
       if (match) {
           return `(${match[1]}) ${match[2]}-${match[3]}`;
@@ -91,37 +123,55 @@ const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, position, 
     };
 
     const isPhoneNumberValid = validatePhoneNumber(phoneNumber);
-    const isSubmitDisabled = !(email && displayName && studentDiscipline && certified);
-    const handleSubmit = () => {
-      if (isPhoneNumberValid) {
-        const volunteerData: VolunteerData = {
-            uid,
-            email,
-            name: displayName,
-            phoneNumber,
-            studentDiscipline,
-            comments
-        };
-        addVolunteer(volunteerData);
-        handleClose();
-      } else {
-        alert('Invalid phone number!');
-      }
-    };
+    const isSubmitDisabled =
+    isBusy ||
+    isLoading ||
+    !(targetEmail && displayName && studentDiscipline && certified);
+  
+  const handleSubmit = async () => {
+    if (isSubmitDisabled) return;
+  
+    if (!isPhoneNumberValid) {
+      alert("Invalid phone number!");
+      return;
+    }
+  
+    await runAction(() =>
+      addVolunteer({
+        email: targetEmail,
+        name: displayName,
+        phoneNumber,
+        studentDiscipline,
+        comments,
+      }),
+    );
+  };
 
   return (
-    <Dialog open={open} onClose={handleClose}>
-      <DialogTitle className={classes.title}>Volunteer Information</DialogTitle>
+  <Dialog
+    open={open}
+    onClose={() => {
+      if (!isBusy) handleClose();
+    }}
+  >      
+<DialogTitle className={classes.title}>Volunteer Information</DialogTitle>
       <Typography variant="body1" align="center"> Sign up for {position} </Typography>
       <DialogContent>
-        <TextField
+      <TextField
         label="Email"
-        value={email}
+        type="email"
+        value={canManage ? enteredEmail : email || ""}
+        onChange={handleEmailChange}
         className={classes.emailLabel}
         fullWidth
         margin="normal"
-        disabled
-        />
+        disabled={!canManage || isBusy}
+        helperText={
+          canManage
+            ? "Signup and removal apply to this email for the selected event date."
+            : undefined
+        }
+      />
         <div className={classes.selectContainer}>
           <Typography style={{ marginRight: '15px' }}>
             Student Discipline <span>*</span>
@@ -185,30 +235,50 @@ const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, position, 
           (*) Required fields
         </Typography>
         <div className={classes.buttonContainer}>
-            {volunteer ? (
-            <div style = {{display: "flex", gap: "1rem", justifyContent: "flex-start"}}>
-              <Button variant="contained" color="secondary" onClick={handleClose}>
-                Cancel
-              </Button>
-              <Button variant="outlined" onClick={() => onDeleteVolunteer(volunteer)} style={{color: "#c62828", borderColor: "#c62828"}}>
-                Withdraw
-              </Button>
-              <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isSubmitDisabled}>
-                Save
-              </Button>
-            </div>
-            ):(
-              <div style = {{display: "flex", gap: "1rem", justifyContent: "flex-start"}}>
-                <Button variant="contained" color="secondary" onClick={handleClose}>
-                  Cancel
-                </Button>
-                <Button variant="contained" color="primary" onClick={handleSubmit} disabled={isSubmitDisabled}>
-                  Signup
-                </Button>
-              </div>
-              
-            )}
-        </div>
+  <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
+    <Button
+      variant="contained"
+      color="secondary"
+      onClick={handleClose}
+      disabled={isBusy}
+    >
+      Cancel
+    </Button>
+
+    {!canManage && volunteer && (
+      <Button
+        variant="outlined"
+        color="error"
+        onClick={() => runAction(() => onDeleteVolunteer(volunteer))}
+        disabled={isBusy || isLoading}
+      >
+        Withdraw
+      </Button>
+    )}
+
+    <Button
+      variant="contained"
+      color="primary"
+      onClick={handleSubmit}
+      disabled={isSubmitDisabled}
+    >
+      {volunteer ? "Save" : "Signup"}
+    </Button>
+
+    {canManage && (
+      <Button
+        variant="outlined"
+        color="error"
+        onClick={() =>
+          runAction(() => onRemoveVolunteerByEmail(targetEmail))
+        }
+        disabled={isBusy || !targetEmail}
+      >
+        Remove volunteer
+      </Button>
+    )}
+  </div>
+</div>
       </DialogContent>
     </Dialog>
   );
