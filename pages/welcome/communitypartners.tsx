@@ -41,7 +41,7 @@ const Communitypartners = ({ classes }) => {
               marginTop: "1em",
             }}
           >
-            <Image
+            <img
               style={{
                 borderRadius: "10px",
                 height: "auto",

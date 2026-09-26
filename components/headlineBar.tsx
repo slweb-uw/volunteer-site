@@ -8,7 +8,7 @@ const HeadlineBar: React.FC<{
 }> = ({ color, width, height }) => {
   var url = `/${color}bar.png`;
   return (
-    <Image
+    <img
       src={url}
       alt={`${color} bar`}
       width={width}

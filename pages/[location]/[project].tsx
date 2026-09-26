@@ -177,7 +177,7 @@ const Event = ({
 
       <Grid container spacing={6}>
         <Grid item sm={12} md={6} className={classes.detailsImageContainer}>
-          <Image
+          <img
             className={classes.detailsImage}
             width={500}
             height={500}

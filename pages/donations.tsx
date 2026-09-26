@@ -78,7 +78,7 @@ const Donations: NextPage<Props> = ({ classes }) => {
               textAlign: "center",
             }}
           >
-            <Image
+            <img
               style={{
                 height: "auto",
                 width: "auto",

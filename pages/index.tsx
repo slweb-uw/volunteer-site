@@ -293,7 +293,7 @@ const App: React.FC<{}> = () => {
                 textAlign: "center",
               }}
             >
-              <Image
+              <img
                 style={{
                   width: "100%",
                   maxWidth: "30em",
@@ -332,7 +332,7 @@ const App: React.FC<{}> = () => {
                 textAlign: "center",
               }}
             >
-              <Image
+              <img
                 style={{
                   width: "100%",
                   maxWidth: "30em",
@@ -454,7 +454,7 @@ const App: React.FC<{}> = () => {
                 textAlign: "center",
               }}
             >
-              <Image
+              <img
                 style={{
                   width: "100%",
                   maxWidth: "30em",
@@ -514,7 +514,7 @@ const App: React.FC<{}> = () => {
                   alignItems="center"
                 >
                   <Grid item>
-                    <Image src={ProfileIcon} alt="profile icon" />
+                    <img src={ProfileIcon} alt="profile icon" />
                   </Grid>
                   <Grid item>
                     <Typography
@@ -574,7 +574,7 @@ const App: React.FC<{}> = () => {
                   alignItems="center"
                 >
                   <Grid item>
-                    <Image src={MailIcon} alt="mail icon" />
+                    <img src={MailIcon} alt="mail icon" />
                   </Grid>
                   <Grid item>
                     <Typography
