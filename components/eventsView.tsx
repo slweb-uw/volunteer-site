@@ -15,9 +15,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import router from "next/router";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "firebaseClient";
-import { useAuth
-  
- } from "auth";
+
 const useStyles = makeStyles(() => ({
   pageContainer: {
     padding: "2rem 4rem",
