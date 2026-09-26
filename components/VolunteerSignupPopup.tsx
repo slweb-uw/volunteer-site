@@ -47,7 +47,7 @@ const useStyles = makeStyles({
     },
 });
 
-const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, position, addVolunteer, onDeleteVolunteer, onRemoveVolunteerByEmail, volunteer }) => {
+const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, position, addVolunteer, updateVolunteer, onDeleteVolunteer, onRemoveVolunteerByEmail, volunteer }) => {
     const classes = useStyles();
     const [displayName, setDisplayName] = useState(name ? name : ''); //TODO Set default state to name
     const [phoneNumber, setPhoneNumber] = useState(phone ? phone : ''); //TODO Set default state to phone number if provided
@@ -136,14 +136,19 @@ const VolunteerPopup = ({ open, handleClose, email, name, uid, phone, position, 
       return;
     }
   
+    const volunteerData = {
+      email: targetEmail,
+      name: displayName,
+      phoneNumber,
+      studentDiscipline,
+      comments,
+    };
+
+    // An existing record only ever changes details here -- switching role
+    // or date means withdrawing and signing up again, so that the counters
+    // on both slots move.
     await runAction(() =>
-      addVolunteer({
-        email: targetEmail,
-        name: displayName,
-        phoneNumber,
-        studentDiscipline,
-        comments,
-      }),
+      volunteer ? updateVolunteer(volunteerData) : addVolunteer(volunteerData),
     );
   };
 

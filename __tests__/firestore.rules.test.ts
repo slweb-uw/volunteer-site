@@ -4,12 +4,21 @@ import {
   assertSucceeds,
   RulesTestEnvironment,
 } from "@firebase/rules-unit-testing";
-import { doc, getDoc, setDoc, deleteDoc, updateDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  deleteDoc,
+  updateDoc,
+  runTransaction,
+  writeBatch,
+} from "firebase/firestore";
 import { readFileSync } from "fs";
 import { resolve } from "path";
 
 let testEnv: RulesTestEnvironment;
 
+// demo-test is just a mock project (tests should be project agnostic anyways)
 beforeAll(async () => {
   testEnv = await initializeTestEnvironment({
     projectId: "demo-test",
@@ -29,266 +38,321 @@ afterEach(async () => {
   await testEnv.clearFirestore();
 });
 
-// helpers
-const adminCtx = () =>
-  testEnv.authenticatedContext("admin-uid", { role: "admin" });
-const leadCtx = () =>
-  testEnv.authenticatedContext("lead-uid", { role: "lead" });
-const userCtx = () => testEnv.authenticatedContext("user-uid", { role: null });
-const unauthCtx = () => testEnv.unauthenticatedContext();
+const VOL_UID = "vol-uid";
+const OTHER_UID = "other-uid";
+const DATE = "2026-09-01";
 
-// Program collections (Alaska, Idaho, Montana, Seattle, Spokane, Wyoming)
+// The six states a caller can be in. `noClaims` is the first-sign-in window:
+// a real account whose token has not yet picked up anything from
+// /api/reconcile-role. `unauthorized` is a non-UW address, or someone an admin
+// has removed.
+const admin = () =>
+  testEnv.authenticatedContext("admin-uid", { role: "admin", authorized: true }).firestore();
+const lead = () =>
+  testEnv.authenticatedContext("lead-uid", { role: "lead", authorized: true }).firestore();
+const volunteer = () =>
+  testEnv.authenticatedContext(VOL_UID, { role: null, authorized: true }).firestore();
+const unauthorized = () =>
+  testEnv.authenticatedContext("nonuw-uid", { role: null, authorized: false }).firestore();
+const noClaims = () => testEnv.authenticatedContext("brand-new-uid").firestore();
+const anon = () => testEnv.unauthenticatedContext().firestore();
 
-describe("program collections", () => {
-  const collections = [
-    "Alaska",
-    "Idaho",
-    "Montana",
-    "Seattle",
-    "Spokane",
-    "Wyoming",
-  ];
+const EVENT = "evt1";
+const SLOT = `${DATE}__Student`;
+const slotPath = `events/${EVENT}/slots/${SLOT}`;
+const volPath = (uid: string) => `events/${EVENT}/volunteers/${uid}_${DATE}`;
 
-  for (const col of collections) {
-    describe(col, () => {
-      it("allows anyone to read", async () => {
-        await assertSucceeds(
-          getDoc(doc(unauthCtx().firestore(), `${col}/doc1`)),
-        );
-      });
+async function seed(remaining = 5, capacity = 5) {
+  await testEnv.withSecurityRulesDisabled(async (ctx) => {
+    const db = ctx.firestore();
+    await setDoc(doc(db, `events/${EVENT}`), { name: "Clinic", projectId: "p1" });
+    await setDoc(doc(db, slotPath), {
+      date: DATE,
+      role: "Student",
+      capacity,
+      remaining,
+    });
+  });
+}
 
-      it("allows admin to write", async () => {
-        await assertSucceeds(
-          setDoc(doc(adminCtx().firestore(), `${col}/doc1`), { name: "test" }),
-        );
-      });
+async function seedVolunteer(uid: string) {
+  await testEnv.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), volPath(uid)), {
+      uid,
+      name: "Someone",
+      email: "s@uw.edu",
+      role: "Student",
+      date: DATE,
+    });
+  });
+}
 
-      it("denies lead from writing", async () => {
-        await assertFails(
-          setDoc(doc(leadCtx().firestore(), `${col}/doc1`), { name: "test" }),
-        );
-      });
+// The authorized axis -- the whole point of the rewrite.
 
-      it("denies signed-in non-admin from writing", async () => {
-        await assertFails(
-          setDoc(doc(userCtx().firestore(), `${col}/doc1`), { name: "test" }),
-        );
-      });
+describe("authorized gate", () => {
+  beforeEach(() => seed());
 
-      it("denies unauthenticated from writing", async () => {
-        await assertFails(
-          setDoc(doc(unauthCtx().firestore(), `${col}/doc1`), { name: "test" }),
-        );
-      });
+  it("lets an authorized volunteer read slots", async () => {
+    await assertSucceeds(getDoc(doc(volunteer(), slotPath)));
+  });
+
+  it("denies slot reads to a signed-in but unauthorized user", async () => {
+    await assertFails(getDoc(doc(unauthorized(), slotPath)));
+  });
+
+  it("denies slot reads during the first-sign-in window (no claims yet)", async () => {
+    await assertFails(getDoc(doc(noClaims(), slotPath)));
+  });
+
+  it("denies volunteer-record reads to an unauthorized user", async () => {
+    await seedVolunteer(OTHER_UID);
+    await assertFails(getDoc(doc(unauthorized(), volPath(OTHER_UID))));
+  });
+
+  it("denies volunteer-record reads to anonymous visitors", async () => {
+    await seedVolunteer(OTHER_UID);
+    await assertFails(getDoc(doc(anon(), volPath(OTHER_UID))));
+  });
+
+  it("keeps the event document publicly readable", async () => {
+    await assertSucceeds(getDoc(doc(anon(), `events/${EVENT}`)));
+  });
+});
+
+// Slot arithmetic -- the only place in the rules doing real work.
+
+describe("slot counter", () => {
+  it("allows a signup decrement of one", async () => {
+    await seed(5);
+    await assertSucceeds(updateDoc(doc(volunteer(), slotPath), { remaining: 4 }));
+  });
+
+  it("allows a withdrawal increment of one", async () => {
+    await seed(4);
+    await assertSucceeds(updateDoc(doc(volunteer(), slotPath), { remaining: 5 }));
+  });
+
+  it("denies a jump of more than one", async () => {
+    await seed(5);
+    await assertFails(updateDoc(doc(volunteer(), slotPath), { remaining: 3 }));
+  });
+
+  it("denies dropping below zero", async () => {
+    await seed(0);
+    await assertFails(updateDoc(doc(volunteer(), slotPath), { remaining: -1 }));
+  });
+
+  it("denies rising above capacity", async () => {
+    await seed(5, 5);
+    await assertFails(updateDoc(doc(volunteer(), slotPath), { remaining: 6 }));
+  });
+
+  it("denies a volunteer editing capacity", async () => {
+    await seed(5, 5);
+    await assertFails(updateDoc(doc(volunteer(), slotPath), { capacity: 99 }));
+  });
+
+  it("denies a volunteer widening capacity alongside a legal decrement", async () => {
+    await seed(5, 5);
+    await assertFails(
+      updateDoc(doc(volunteer(), slotPath), { capacity: 99, remaining: 4 }),
+    );
+  });
+
+  it("denies a non-integer count", async () => {
+    await seed(5);
+    await assertFails(updateDoc(doc(volunteer(), slotPath), { remaining: 4.5 }));
+  });
+
+  it("denies an unauthorized user decrementing", async () => {
+    await seed(5);
+    await assertFails(updateDoc(doc(unauthorized(), slotPath), { remaining: 4 }));
+  });
+
+  it("lets staff set capacity and count freely (the syncSlots path)", async () => {
+    await seed(5, 5);
+    await assertSucceeds(
+      updateDoc(doc(lead(), slotPath), { capacity: 10, remaining: 10 }),
+    );
+  });
+
+  it("denies a volunteer creating or deleting a slot", async () => {
+    await seed();
+    await assertFails(
+      setDoc(doc(volunteer(), `events/${EVENT}/slots/${DATE}__Invented`), {
+        date: DATE,
+        role: "Invented",
+        capacity: 99,
+        remaining: 99,
+      }),
+    );
+    await assertFails(deleteDoc(doc(volunteer(), slotPath)));
+  });
+
+  // Known and accepted: rules are evaluated per document, so nothing binds the
+  // counter to the roster. An authorized user can move the count on its own.
+  // Asserted here so the gap stays visible rather than being mistaken for
+  // coverage we have.
+  it("KNOWN GAP: a bare decrement with no signup is allowed", async () => {
+    await seed(5);
+    await assertSucceeds(updateDoc(doc(volunteer(), slotPath), { remaining: 4 }));
+  });
+});
+
+// Volunteer records -- ownership.
+
+describe("volunteer records", () => {
+  beforeEach(() => seed());
+
+  it("lets a volunteer create their own record", async () => {
+    await assertSucceeds(
+      setDoc(doc(volunteer(), volPath(VOL_UID)), {
+        uid: VOL_UID,
+        name: "Me",
+        email: "me@uw.edu",
+        role: "Student",
+        date: DATE,
+      }),
+    );
+  });
+
+  it("denies a record whose payload uid disagrees with the document id", async () => {
+    await assertFails(
+      setDoc(doc(volunteer(), volPath(VOL_UID)), {
+        uid: OTHER_UID,
+        name: "Me",
+        email: "me@uw.edu",
+        role: "Student",
+        date: DATE,
+      }),
+    );
+  });
+
+  it("denies writing someone else's record", async () => {
+    await assertFails(
+      setDoc(doc(volunteer(), volPath(OTHER_UID)), {
+        uid: OTHER_UID,
+        name: "Not me",
+        email: "x@uw.edu",
+        role: "Student",
+        date: DATE,
+      }),
+    );
+  });
+
+  it("lets a volunteer delete their own record but not another's", async () => {
+    await seedVolunteer(VOL_UID);
+    await seedVolunteer(OTHER_UID);
+    await assertFails(deleteDoc(doc(volunteer(), volPath(OTHER_UID))));
+    await assertSucceeds(deleteDoc(doc(volunteer(), volPath(VOL_UID))));
+  });
+
+  it("denies an unauthorized user creating a record even under their own id", async () => {
+    await assertFails(
+      setDoc(doc(unauthorized(), `events/${EVENT}/volunteers/nonuw-uid_${DATE}`), {
+        uid: "nonuw-uid",
+        name: "No",
+        email: "x@gmail.com",
+        role: "Student",
+        date: DATE,
+      }),
+    );
+  });
+
+  it("lets staff write any record", async () => {
+    await assertSucceeds(
+      setDoc(doc(admin(), volPath(OTHER_UID)), {
+        uid: OTHER_UID,
+        name: "Anyone",
+        email: "a@uw.edu",
+        role: "Student",
+        date: DATE,
+      }),
+    );
+  });
+});
+
+// The event document no longer carries a volunteer-writable field.
+
+describe("event document", () => {
+  beforeEach(() => seed());
+
+  it("denies a volunteer updating the event", async () => {
+    await assertFails(updateDoc(doc(volunteer(), `events/${EVENT}`), { name: "hacked" }));
+  });
+
+  it("denies a volunteer writing the retired openings field", async () => {
+    await assertFails(updateDoc(doc(volunteer(), `events/${EVENT}`), { openings: 4 }));
+  });
+
+  it("lets staff create, update and delete", async () => {
+    await assertSucceeds(updateDoc(doc(lead(), `events/${EVENT}`), { name: "new" }));
+    await assertSucceeds(deleteDoc(doc(admin(), `events/${EVENT}`)));
+  });
+});
+
+// The real multi-document shapes from signup.tsx and EventAdmin.tsx. Per-document
+// tests can all pass while these fail.
+
+describe("real client transactions", () => {
+  it("permits the signup transaction (slot decrement + record create)", async () => {
+    await seed(5);
+    const db = volunteer();
+    await assertSucceeds(
+      runTransaction(db, async (tx) => {
+        const slot = await tx.get(doc(db, slotPath));
+        tx.update(doc(db, slotPath), { remaining: slot.data()!.remaining - 1 });
+        tx.set(doc(db, volPath(VOL_UID)), {
+          uid: VOL_UID,
+          name: "Me",
+          email: "me@uw.edu",
+          role: "Student",
+          date: DATE,
+        });
+      }),
+    );
+  });
+
+  it("permits the withdrawal transaction (slot increment + record delete)", async () => {
+    await seed(4);
+    await seedVolunteer(VOL_UID);
+    const db = volunteer();
+    await assertSucceeds(
+      runTransaction(db, async (tx) => {
+        const slot = await tx.get(doc(db, slotPath));
+        tx.update(doc(db, slotPath), { remaining: slot.data()!.remaining + 1 });
+        tx.delete(doc(db, volPath(VOL_UID)));
+      }),
+    );
+  });
+
+  it("permits the admin event teardown batch (event + slots + volunteers)", async () => {
+    await seed();
+    await seedVolunteer(OTHER_UID);
+    const db = admin();
+    const batch = writeBatch(db);
+    batch.delete(doc(db, slotPath));
+    batch.delete(doc(db, volPath(OTHER_UID)));
+    batch.delete(doc(db, `events/${EVENT}`));
+    await assertSucceeds(batch.commit());
+  });
+});
+
+// Role directories -- these hold the pre-assigned email lists.
+
+describe("role directories", () => {
+  for (const col of ["Admins", "Leads", "Volunteers"]) {
+    it(`${col}: admin only`, async () => {
+      await assertSucceeds(setDoc(doc(admin(), `${col}/d1`), { email: "a@uw.edu" }));
+      await assertFails(getDoc(doc(lead(), `${col}/d1`)));
+      await assertFails(getDoc(doc(volunteer(), `${col}/d1`)));
+      await assertFails(getDoc(doc(anon(), `${col}/d1`)));
     });
   }
-});
 
-// Events
-
-describe("events", () => {
-  it("allows anyone to read", async () => {
-    await assertSucceeds(getDoc(doc(unauthCtx().firestore(), "events/evt1")));
-  });
-
-  it("allows admin to create", async () => {
-    await assertSucceeds(
-      setDoc(doc(adminCtx().firestore(), "events/evt1"), { openings: 5 }),
-    );
-  });
-
-  it("allows lead to create", async () => {
-    await assertSucceeds(
-      setDoc(doc(leadCtx().firestore(), "events/evt1"), { openings: 5 }),
-    );
-  });
-
-  it("denies signed-in user from creating", async () => {
-    await assertFails(
-      setDoc(doc(userCtx().firestore(), "events/evt1"), { openings: 5 }),
-    );
-  });
-
-  it("allows admin to delete", async () => {
-    await testEnv.withSecurityRulesDisabled(async (ctx) => {
-      await setDoc(doc(ctx.firestore(), "events/evt1"), { openings: 5 });
-    });
-    await assertSucceeds(deleteDoc(doc(adminCtx().firestore(), "events/evt1")));
-  });
-
-  it("allows lead to delete", async () => {
-    await testEnv.withSecurityRulesDisabled(async (ctx) => {
-      await setDoc(doc(ctx.firestore(), "events/evt1"), { openings: 5 });
-    });
-    await assertSucceeds(deleteDoc(doc(leadCtx().firestore(), "events/evt1")));
-  });
-
-  it("denies user from deleting", async () => {
-    await testEnv.withSecurityRulesDisabled(async (ctx) => {
-      await setDoc(doc(ctx.firestore(), "events/evt1"), { openings: 5 });
-    });
-    await assertFails(deleteDoc(doc(userCtx().firestore(), "events/evt1")));
-  });
-
-  it("denies unauthenticated from deleting", async () => {
-    await testEnv.withSecurityRulesDisabled(async (ctx) => {
-      await setDoc(doc(ctx.firestore(), "events/evt1"), { openings: 5 });
-    });
-    await assertFails(deleteDoc(doc(unauthCtx().firestore(), "events/evt1")));
-  });
-
-  it("allows signed-in user to decrement openings only", async () => {
-    await testEnv.withSecurityRulesDisabled(async (ctx) => {
-      await setDoc(doc(ctx.firestore(), "events/evt1"), { openings: 5 });
-    });
-    await assertSucceeds(
-      updateDoc(doc(userCtx().firestore(), "events/evt1"), { openings: 4 }),
-    );
-  });
-
-  it("denies signed-in user from setting openings below 0", async () => {
-    await testEnv.withSecurityRulesDisabled(async (ctx) => {
-      await setDoc(doc(ctx.firestore(), "events/evt1"), { openings: 0 });
-    });
-    await assertFails(
-      updateDoc(doc(userCtx().firestore(), "events/evt1"), { openings: -1 }),
-    );
-  });
-
-  it("denies signed-in user from updating fields other than openings", async () => {
-    await testEnv.withSecurityRulesDisabled(async (ctx) => {
-      await setDoc(doc(ctx.firestore(), "events/evt1"), {
-        openings: 5,
-        title: "old",
-      });
-    });
-    await assertFails(
-      updateDoc(doc(userCtx().firestore(), "events/evt1"), { title: "hacked" }),
-    );
-  });
-
-  it("allows lead to update any field", async () => {
-    await testEnv.withSecurityRulesDisabled(async (ctx) => {
-      await setDoc(doc(ctx.firestore(), "events/evt1"), { openings: 5, title: "old" });
-    });
-    await assertSucceeds(
-      updateDoc(doc(leadCtx().firestore(), "events/evt1"), { title: "updated" }),
-    );
-  });
-
-  it("denies unauthenticated from updating", async () => {
-    await testEnv.withSecurityRulesDisabled(async (ctx) => {
-      await setDoc(doc(ctx.firestore(), "events/evt1"), { openings: 5 });
-    });
-    await assertFails(
-      updateDoc(doc(unauthCtx().firestore(), "events/evt1"), { openings: 4 }),
-    );
-  });
-});
-
-// Events / volunteers subcollection
-
-describe("events/volunteers subcollection", () => {
-  it("denies unauthenticated read", async () => {
-    await assertFails(
-      getDoc(doc(unauthCtx().firestore(), "events/evt1/volunteers/vol1")),
-    );
-  });
-
-  it("allows signed-in user to read", async () => {
-    await assertSucceeds(
-      getDoc(doc(userCtx().firestore(), "events/evt1/volunteers/vol1")),
-    );
-  });
-
-  it("allows user to write their own volunteer doc (uid_suffix format)", async () => {
-    await assertSucceeds(
-      setDoc(
-        doc(userCtx().firestore(), "events/evt1/volunteers/user-uid_slot1"),
-        { name: "me" },
-      ),
-    );
-  });
-
-  it("denies user from writing another user's volunteer doc", async () => {
-    await assertFails(
-      setDoc(
-        doc(userCtx().firestore(), "events/evt1/volunteers/other-uid_slot1"),
-        { name: "not me" },
-      ),
-    );
-  });
-
-  it("allows admin to write any volunteer doc", async () => {
-    await assertSucceeds(
-      setDoc(
-        doc(adminCtx().firestore(), "events/evt1/volunteers/anyone_slot1"),
-        { name: "anyone" },
-      ),
-    );
-  });
-
-  it("allows lead to write any volunteer doc", async () => {
-    await assertSucceeds(
-      setDoc(
-        doc(leadCtx().firestore(), "events/evt1/volunteers/anyone_slot1"),
-        { name: "anyone" },
-      ),
-    );
-  });
-});
-
-// role collections (Admin, Leads, Volunteers)
-
-describe("role collections", () => {
-  const roleCols = ["Admins", "Leads", "Volunteers"];
-
-  for (const col of roleCols) {
-    describe(col, () => {
-      it("allows admin to read", async () => {
-        await assertSucceeds(
-          getDoc(doc(adminCtx().firestore(), `${col}/doc1`)),
-        );
-      });
-
-      it("allows admin to write", async () => {
-        await assertSucceeds(
-          setDoc(doc(adminCtx().firestore(), `${col}/doc1`), {
-            email: "a@b.com",
-          }),
-        );
-      });
-
-      it("denies lead from reading", async () => {
-        await assertFails(getDoc(doc(leadCtx().firestore(), `${col}/doc1`)));
-      });
-
-      it("denies lead from writing", async () => {
-        await assertFails(
-          setDoc(doc(leadCtx().firestore(), `${col}/doc1`), { email: "a@b.com" }),
-        );
-      });
-
-      it("denies signed-in user from reading", async () => {
-        await assertFails(getDoc(doc(userCtx().firestore(), `${col}/doc1`)));
-      });
-
-      it("denies unauthenticated from reading", async () => {
-        await assertFails(getDoc(doc(unauthCtx().firestore(), `${col}/doc1`)));
-      });
-    });
-  }
-});
-
-// cache
-describe("cache", () => {
-  it("allows anyone to read", async () => {
-    await assertSucceeds(getDoc(doc(unauthCtx().firestore(), "cache/doc1")));
-  });
-
-  it("denies anyone from writing", async () => {
-    await assertFails(
-      setDoc(doc(adminCtx().firestore(), "cache/doc1"), { data: "x" }),
-    );
+  it("program listings are public to read and admin-only to write", async () => {
+    await assertSucceeds(getDoc(doc(anon(), "Seattle/p1")));
+    await assertSucceeds(setDoc(doc(admin(), "Seattle/p1"), { Title: "t" }));
+    await assertFails(setDoc(doc(lead(), "Seattle/p1"), { Title: "t" }));
   });
 });
