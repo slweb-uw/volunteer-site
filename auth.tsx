@@ -50,6 +50,14 @@ export function AuthProvider({ children }: any) {
       try {
         // fetch user custom claim integrated within JWT token
         const authToken = await user.getIdTokenResult();
+
+        // Keep the account signed in so it can resend/check verification,
+        // but do not grant access yet.
+        if (!user.emailVerified || authToken.claims.email_verified !== true) {
+          setUser(user);
+          nookies.set(undefined, "token", "", {});
+          return;
+        }
         let role = authToken.claims.role; // 'admin' || 'lead' || 'volunteer' || undefined (aka student)
 
         // no role on the token yet — check if one was pre-assigned by email
