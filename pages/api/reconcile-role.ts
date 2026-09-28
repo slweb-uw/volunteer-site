@@ -29,6 +29,12 @@ export default async function handler(
     return res.status(401).json({ error: "Invalid token" });
   }
 
+  if (decoded.email_verified !== true) {
+    return res.status(403).json({
+      error: "Please verify your email before accessing this feature.",
+    });
+  }
+
 
   if (!decoded.email) {
     return res.status(200).json({ role: null });
