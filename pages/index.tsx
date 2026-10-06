@@ -1,5 +1,4 @@
 import React, { useEffect, PropsWithChildren, ComponentProps } from "react";
-import Image from "next/image";
 import MobileOutReachSrc from "../public/Mobile_Outreach_Clinic_resized.jpg";
 import ServeWithUsSrc from "../public/serve.jpg";
 import CommunityPartnersSrc from "../public/communityPartners.jpg";
@@ -300,8 +299,7 @@ const App: React.FC<{}> = () => {
                   height: "auto",
                   borderRadius: "10px",
                 }}
-                src={MobileOutReachSrc}
-                priority
+                src={MobileOutReachSrc.src}
                 alt="doctor caring for mom with child"
               />
             </div>
@@ -339,9 +337,8 @@ const App: React.FC<{}> = () => {
                   height: "auto",
                   borderRadius: "10px",
                 }}
-                src={ServeWithUsSrc}
-                placeholder="blur"
-                alt="doctor caring for mom with child"
+                src={ServeWithUsSrc.src}
+                alt="two students in gloves providing foot care to a patient"
               />
             </div>
           </Grid>
@@ -461,7 +458,7 @@ const App: React.FC<{}> = () => {
                   height: "auto",
                   borderRadius: "10px",
                 }}
-                src={CommunityPartnersSrc}
+                src={CommunityPartnersSrc.src}
                 alt="Two students smiling"
               />
             </div>
@@ -514,7 +511,7 @@ const App: React.FC<{}> = () => {
                   alignItems="center"
                 >
                   <Grid item>
-                    <img src={ProfileIcon} alt="profile icon" />
+                    <img src={ProfileIcon.src} alt="profile icon" />
                   </Grid>
                   <Grid item>
                     <Typography
@@ -574,7 +571,7 @@ const App: React.FC<{}> = () => {
                   alignItems="center"
                 >
                   <Grid item>
-                    <img src={MailIcon} alt="mail icon" />
+                    <img src={MailIcon.src} alt="mail icon" />
                   </Grid>
                   <Grid item>
                     <Typography

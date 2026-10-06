@@ -2,7 +2,6 @@ import { useRouter } from "next/router"
 import { useAuth } from "auth"
 import { useState } from "react"
 import { GetServerSideProps, InferGetServerSidePropsType } from "next"
-import Image from "next/image"
 import makeStyles from "@mui/styles/makeStyles"
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined"
 

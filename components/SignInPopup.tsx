@@ -23,7 +23,6 @@ import makeStyles from "@mui/styles/makeStyles";
 import HelpIcon from "@mui/icons-material/Help";
 import { useRouter } from "next/router";
 import { handleHelpButtonClick } from "helpers/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { FirebaseError } from "firebase/app";
 import { useSnackbar } from "notistack";

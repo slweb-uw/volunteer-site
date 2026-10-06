@@ -3,7 +3,6 @@ import Typography from "@mui/material/Typography";
 import makeStyles from "@mui/styles/makeStyles";
 import { useAuth } from "auth";
 import Link from "next/link";
-import Image from "next/image";
 import LogoUrl from "public/uw-text-logo.png"
 
 const useStyles = makeStyles((theme) => ({
