@@ -23,6 +23,9 @@ import { volunteerTypes } from "components/AddModifyEventModal";
 import { useRouter } from "next/router";
 import { useMediaQuery } from "@mui/material";
 import { ProjectData } from "new-types";
+import { useAuth } from "auth";
+import DownloadIcon from "@mui/icons-material/Download";
+import Papa from "papaparse";
 
 type EventsProps = {
   location: Location;
@@ -171,7 +174,178 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
   }, [organizationFilter, studentTypeFilter, signUpAvailableFilter]);
 
   const isMobile = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+  const { user, isAdmin, isLead, isLoading } = useAuth();
+const canExport = !isLoading && Boolean(user) && (isAdmin || isLead);
 
+const [exporting, setExporting] = useState(false);
+const [exportMessage, setExportMessage] = useState("");
+
+const downloadVolunteers = async () => {
+  if (!canExport || exporting || !router.isReady) return;
+
+  setExporting(true);
+  setExportMessage("");
+
+  try {
+    // Query using the filters selected when Download was clicked.
+    // This avoids exporting stale results while the page is refreshing.
+    let projectsQuery = query(collection(db, location));
+
+    if (organizationFilter) {
+      projectsQuery = query(
+        projectsQuery,
+        where("Organization", "==", organizationFilter),
+      );
+    }
+
+    if (studentTypeFilter) {
+      projectsQuery = query(
+        projectsQuery,
+        where(
+          "Types of Volunteers Needed",
+          "array-contains",
+          studentTypeFilter,
+        ),
+      );
+    }
+
+    if (signUpAvailableFilter) {
+      projectsQuery = query(
+        projectsQuery,
+        where("SignupActive", "==", true),
+      );
+    }
+
+    // Match the page's ordering query, including its field-existence behavior.
+    projectsQuery = query(
+      projectsQuery,
+      orderBy(sortField, getOrder(sortField)),
+    );
+
+    const projectsSnapshot = await getDocs(projectsQuery);
+    const projectNames = new Map<string, string>();
+
+    projectsSnapshot.docs.forEach((project) => {
+      projectNames.set(project.id, project.data().Title ?? "");
+    });
+
+    if (projectNames.size === 0) {
+      setExportMessage("No projects match the selected filters.");
+      return;
+    }
+
+    const eventsSnapshot = await getDocs(
+      query(
+        collection(db, "events"),
+        where("location", "==", location),
+      ),
+    );
+
+    const matchingEvents = eventsSnapshot.docs.filter((event) =>
+      projectNames.has(event.data().projectId),
+    );
+
+    type ExportRow = {
+      Month: string;
+      Date: string;
+      Location: string;
+      Project: string;
+      Event: string;
+      Role: string;
+      Name: string;
+      Email: string;
+      Phone: string;
+      Discipline: string;
+      Comments: string;
+    };
+
+    const rows: ExportRow[] = [];
+
+    // Read sequentially to avoid a burst of requests for large exports.
+    for (const event of matchingEvents) {
+      const eventData = event.data();
+      const volunteersSnapshot = await getDocs(
+        collection(db, "events", event.id, "volunteers"),
+      );
+
+      for (const volunteer of volunteersSnapshot.docs) {
+        const data = volunteer.data();
+
+        const rawDate =
+          typeof data.date === "string"
+            ? data.date
+            : data.date?.toDate?.().toISOString() ?? "";
+
+        const validDate =
+          rawDate !== "" && Number.isFinite(Date.parse(rawDate));
+
+        // Use the signup's occurrence date, matching the attendee table.
+        const date = validDate ? rawDate.split("T")[0] : "";
+
+        rows.push({
+          Month: date ? date.slice(0, 7) : "Unknown",
+          Date: date,
+          Location: location,
+          Project: projectNames.get(eventData.projectId) ?? "",
+          Event: String(eventData.name ?? ""),
+          Role: String(data.role ?? ""),
+          Name: String(data.name ?? ""),
+          Email: String(data.email ?? ""),
+          Phone: String(data.phoneNumber ?? ""),
+          Discipline: String(data.studentDiscipline ?? ""),
+          Comments: String(data.comments ?? ""),
+        });
+      }
+    }
+
+    if (rows.length === 0) {
+      setExportMessage("No volunteer signups match the selected filters.");
+      return;
+    }
+
+    // YYYY-MM-DD sorts chronologically and keeps each month together.
+    // Missing dates appear last.
+    rows.sort(
+      (a, b) =>
+        (a.Date || "9999-99-99").localeCompare(b.Date || "9999-99-99") ||
+        a.Project.localeCompare(b.Project) ||
+        a.Event.localeCompare(b.Event) ||
+        a.Name.localeCompare(b.Name),
+    );
+
+    const csv = Papa.unparse(rows, {
+      escapeFormulae: true,
+    });
+
+    const blob = new Blob(["\uFEFF", csv], {
+      type: "text/csv;charset=utf-8;",
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = `volunteers-${location}-${new Date()
+      .toISOString()
+      .slice(0, 10)}.csv`;
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    // Allow the browser time to start the download.
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+    setExportMessage(`Downloaded ${rows.length} volunteer signups.`);
+  } catch (error) {
+    console.error("Could not export volunteers:", error);
+    setExportMessage(
+      "Could not download volunteers. Please try again.",
+    );
+  } finally {
+    setExporting(false);
+  }
+};
   return (
     <div>
       <div
@@ -251,6 +425,29 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
               Events calendar
             </Button>
           </Grid>
+          {canExport && (
+          <Grid item xs={12} md={4}>
+            <Button
+              variant="contained"
+              startIcon={<DownloadIcon />}
+              onClick={downloadVolunteers}
+              disabled={exporting || !router.isReady}
+              fullWidth
+            >
+              {exporting ? "Downloading…" : "Download volunteers"}
+            </Button>
+
+            {exportMessage && (
+              <Typography
+                variant="body2"
+                role="status"
+                sx={{ mt: 1 }}
+              >
+                {exportMessage}
+              </Typography>
+            )}
+          </Grid>
+        )}
           <Grid container item xs={12} md={6} alignItems="center" spacing={2}>
             <Grid container item xs={12} md={6} spacing={1} alignItems="center">
               <Grid item>
