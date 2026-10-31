@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 
 const HeadlineBar: React.FC<{
   color: string;
@@ -8,7 +7,7 @@ const HeadlineBar: React.FC<{
 }> = ({ color, width, height }) => {
   var url = `/${color}bar.png`;
   return (
-    <Image
+    <img
       src={url}
       alt={`${color} bar`}
       width={width}

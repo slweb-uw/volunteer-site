@@ -1,6 +1,5 @@
 import { NextPage } from "next";
 import { CssBaseline, Typography, Select, MenuItem, Grid, Button } from "@mui/material";
-import Image from "next/image";
 import FootCareUrl from "public/Foot Care 2.jpg"
 import createStyles from '@mui/styles/createStyles';
 import withStyles from '@mui/styles/withStyles';
@@ -78,14 +77,14 @@ const Donations: NextPage<Props> = ({ classes }) => {
               textAlign: "center",
             }}
           >
-            <Image
+            <img
               style={{
                 height: "auto",
                 width: "auto",
                 borderRadius: "5px",
                 maxWidth: "90%"
               }}
-              src={FootCareUrl}
+              src={FootCareUrl.src}
               alt="person holding home care kit"
             />
           </div>

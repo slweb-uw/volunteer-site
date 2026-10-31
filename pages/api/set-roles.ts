@@ -23,10 +23,7 @@ export default async function handler(
   } catch (error) {
     return res.status(401).json({ error: "Invalid token" });
   }
-  const { email, role, authorized } = req.body;
-  if (typeof authorized != "boolean") {
-    return res.status(400).json({error: "Invalid authorized flag"})
-  }
+  const { email, role } = req.body;
   // check if email is non-null and role is valid value
   if (!email || typeof email != "string") {
     return res.status(400).json({ error: "Invalid email" });
@@ -34,6 +31,13 @@ export default async function handler(
   if (role != null && !["admin", "lead", "volunteer"].includes(role)) {
     return res.status(400).json({ error: "Invalid role" });
   }
+
+  // Derived here rather than taken from the request so the two can never
+  // disagree. Anyone holding a role is authorized by that fact; everyone else
+  // falls back to the @uw.edu rule, which is what keeps demoting a UW student
+  // from locking them out of the site entirely.
+  const authorized =
+    role != null || email.toLowerCase().endsWith("@uw.edu");
   // validate email actually exists in Firebase
   try {
     // throws an error if user not found by email

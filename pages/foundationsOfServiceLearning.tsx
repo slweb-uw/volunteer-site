@@ -3,7 +3,6 @@ import { CssBaseline, Typography, Grid } from "@mui/material";
 import createStyles from '@mui/styles/createStyles';
 import withStyles from '@mui/styles/withStyles';
 import IconBreadcrumbs from "components/breadcrumbs";
-import Image from "next/image";
 import Goldbar from "public/goldbar.png"
 
 interface Props {
@@ -29,8 +28,8 @@ const ServiceLearningPage: NextPage<Props> = ({ classes }) => {
       >
         Preparation and Reflection
       </Typography>
-      <Image
-        src={Goldbar}
+      <img
+        src={Goldbar.src}
         style={{ marginBottom: "30px" }}
         width={405}
         height={10}

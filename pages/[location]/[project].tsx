@@ -2,7 +2,6 @@ import { useRouter } from "next/router"
 import { useAuth } from "auth"
 import { useState } from "react"
 import { GetServerSideProps, InferGetServerSidePropsType } from "next"
-import Image from "next/image"
 import makeStyles from "@mui/styles/makeStyles"
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined"
 
@@ -177,7 +176,7 @@ const Event = ({
 
       <Grid container spacing={6}>
         <Grid item sm={12} md={6} className={classes.detailsImageContainer}>
-          <Image
+          <img
             className={classes.detailsImage}
             width={500}
             height={500}

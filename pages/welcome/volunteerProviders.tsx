@@ -1,5 +1,4 @@
 import { NextPage } from "next";
-import Image from "next/image";
 import VolunteerProvideersUrl from "public/volunteerProviders.jpg";
 import { CssBaseline, Typography, Grid, Link } from "@mui/material";
 import createStyles from "@mui/styles/createStyles";
@@ -26,8 +25,8 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
       >
         WELCOME VOLUNTEER PROVIDERS
       </Typography>
-      <Image
-        src={Goldbar}
+      <img
+        src={Goldbar.src}
         width={535}
         height={10}
         alt="UW gold bar"
@@ -147,7 +146,7 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
               marginTop: "1em",
             }}
           >
-            <Image
+            <img
               style={{
                 objectFit: "cover",
                 margin: "0px",
@@ -156,7 +155,7 @@ const VolunteerProviders: NextPage<Props> = ({ classes }) => {
                 maxWidth: "500px",
                 height: "auto",
               }}
-              src={VolunteerProvideersUrl}
+              src={VolunteerProvideersUrl.src}
               alt="Volunteer Provider Sample Image"
             />
           </div>

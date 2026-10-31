@@ -48,21 +48,20 @@ export function AuthProvider({ children }: any) {
       }
 
       try {
-        // fetch user custom claim integrated within JWT token
-        const authToken = await user.getIdTokenResult();
+ // Read claims now and refresh them after role reconciliation.
+        let claims = (await user.getIdTokenResult()).claims;
 
         // Keep the account signed in so it can resend/check verification,
         // but do not grant access yet.
-        if (!user.emailVerified || authToken.claims.email_verified !== true) {
+        if (!user.emailVerified || claims.email_verified !== true) {
           setUser(user);
           nookies.set(undefined, "token", "", {});
           return;
         }
-        let role = authToken.claims.role; // 'admin' || 'lead' || 'volunteer' || undefined (aka student)
 
         // no role on the token yet — check if one was pre-assigned by email
         // before this account existed, and apply it if so
-        if (authToken.claims.authorized === undefined) {
+        if (claims.authorized === undefined) {
           try {
             const idToken = await user.getIdToken();
             const res = await fetch("/api/reconcile-role", {
@@ -73,28 +72,19 @@ export function AuthProvider({ children }: any) {
               },
             });
             if (res.ok) {
-              const freshToken = await user.getIdTokenResult(true);
-              role = freshToken.claims.role;
+              claims = (await user.getIdTokenResult(true)).claims;
             }
           } catch (error) {
             console.error("Error reconciling role:", error);
           }
         }
 
-        if (role === "admin") {
-          setIsAdmin(true);
-          setIsAuthorized(true);
-        } else if (role === "lead") {
-          setIsLead(true);
-          setIsAuthorized(true);
-        } else if (role === "volunteer") {
-          setIsAuthorized(true);
-        } else if (user.email?.toLowerCase().endsWith("@uw.edu")) {
-          setIsAuthorized(true);
-        } else {
-          // non-uw account that isn't authorized
-          setIsAuthorized(false);
-        }
+        // `authorized` is set server-side alongside every role, so holding one
+        // already implies access -- the role only decides which staff powers
+        // apply on top of it.
+        setIsAdmin(claims.role === "admin");
+        setIsLead(claims.role === "lead");
+        setIsAuthorized(claims.authorized === true);
 
         const token = await user.getIdToken();
         setUser(user);
