@@ -48,11 +48,16 @@ export function AuthProvider({ children }: any) {
       }
 
       try {
-        // Fetch the user's custom claims from the JWT. Reassigned from the
-        // refreshed token below so the checks at the end read post-reconcile
-        // claims rather than the ones that triggered reconcile in the first
-        // place. role is 'admin' | 'lead' | 'volunteer' | undefined (aka student)
+ // Read claims now and refresh them after role reconciliation.
         let claims = (await user.getIdTokenResult()).claims;
+
+        // Keep the account signed in so it can resend/check verification,
+        // but do not grant access yet.
+        if (!user.emailVerified || claims.email_verified !== true) {
+          setUser(user);
+          nookies.set(undefined, "token", "", {});
+          return;
+        }
 
         // no role on the token yet — check if one was pre-assigned by email
         // before this account existed, and apply it if so

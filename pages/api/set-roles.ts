@@ -17,7 +17,7 @@ export default async function handler(
   try {
     const decoded = await firebaseAdmin.auth().verifyIdToken(token);
     // authenticated but not authorized
-    if (decoded.role != "admin") {
+    if (decoded.email_verified !== true || decoded.role !== "admin") {
       return res.status(403).json({ error: "Forbidden" });
     }
   } catch (error) {

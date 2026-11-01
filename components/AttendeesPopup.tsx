@@ -69,6 +69,16 @@ export default function AttendeesPopup({
         });
 
         if (!cancelled) {
+          records.sort((a, b) => {
+            const aDate = Date.parse(a.date ?? "");
+            const bDate = Date.parse(b.date ?? "");
+          
+            if (Number.isNaN(aDate)) return Number.isNaN(bDate) ? 0 : 1;
+            if (Number.isNaN(bDate)) return -1;
+          
+            return bDate - aDate;
+          });
+          
           setAttendees(records);
         }
       } catch (error) {

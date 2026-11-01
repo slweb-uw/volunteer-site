@@ -11,7 +11,7 @@ import type {} from "@mui/lab/themeAugmentation"
 import "../global.css"
 import { Theme } from "@mui/material/styles"
 import { CssBaseline } from "@mui/material"
-
+import EmailVerificationBanner from "components/EmailVerificationBanner";
 declare module "@mui/styles" {
   interface DefaultTheme extends Theme {}
 }
@@ -51,9 +51,10 @@ function MyApp({ Component, pageProps }: AppProps) {
         <AuthProvider>
           <CssBaseline>
             <ThemeProvider theme={v5theme}>
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
+            <Layout>
+              <EmailVerificationBanner />
+              <Component {...pageProps} />
+            </Layout>
             </ThemeProvider>
           </CssBaseline>
         </AuthProvider>
