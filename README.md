@@ -43,7 +43,13 @@ Then start the emulator and run the tests in a second terminal:
 
 ```plaintext
 docker run --rm -p 8080:8080 -v "$PWD:/app" firebase-emulator
-yarn test
+yarn test:rules
+```
+
+If you have Java 11+ installed, you can skip Docker. This is what CI runs:
+
+```plaintext
+npx firebase-tools@15.27.0 emulators:exec --only firestore --project demo-test "yarn test:rules"
 ```
 
 The `-v` mount is required: the image ships no application code, so the
@@ -61,6 +67,30 @@ silently fall back to a real project if the emulator is not running.
 
 The emulator UI is enabled on port 4000 but is not published by default. Add
 `-p 4000:4000` and a `"host": "0.0.0.0"` under `emulators.ui` to browse the data.
+
+## CI and running checks locally
+
+Every pull request to `main` or `development` runs the checks in
+`.github/workflows/ci.yml`. Run the same commands locally before opening a PR:
+
+| Check | Command | Notes |
+| --- | --- | --- |
+| Lint | `yarn lint` | Errors fail CI. Warnings don't. |
+| Type check | `yarn typecheck` | Fails only if your change adds type errors (see below). |
+| Unit tests | `yarn test:unit` | Fast, no emulator or network. Tests live in `__tests__/unit/`. |
+| Rules tests | `yarn test:rules` | Needs the Firestore emulator (see Testing above). |
+| Build + smoke | `yarn build && bash scripts/smoke.sh` | Starts the built app and checks key pages respond. |
+
+**Why `yarn typecheck` and not `tsc`:** the codebase has a backlog of type
+errors, and `next.config.js` lets builds ignore them. `yarn typecheck`
+compares error counts per file against `.tsc-baseline.json`, so new errors
+fail CI without the old ones blocking anyone. If you fix type errors, run
+`yarn typecheck --update` and commit the updated baseline. `yarn tscheck`
+still lists every error.
+
+CI uses placeholder Firebase settings and a throwaway key generated for each
+run. It never touches a real Firebase project, and no secrets are stored in
+GitHub.
 
 Structure: NextJS automatically handles page routing. The app is server-side
 rendered (meaning we render the page on the server and send the result to the
