@@ -93,6 +93,9 @@
     "child_process": false
   },
   "engines": {
-    "node": ">= 16.0.0"
+    "node": ">=18.17.0"
+  },
+  "resolutions": {
+    "@types/node": "22.9.3"
   }
 }
