@@ -381,7 +381,6 @@ const AddModifyEventModal = ({
     reader.onerror = (error) => {
       console.error("Image reader error: ", error);
     };
-    console.log(imageFile);
   };
 
   // Updates or create project
