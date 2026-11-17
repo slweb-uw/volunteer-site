@@ -94,7 +94,7 @@ export default function EmailVerificationBanner() {
       protected features.
       <Stack direction="row" spacing={1} sx={{ mt: 1, flexWrap: "wrap" }}>
         <Button disabled={busy} onClick={checkVerification}>
-          I've verified my email
+          I&apos;ve verified my email
         </Button>
         <Button disabled={busy} onClick={resendVerification}>
           Resend verification email

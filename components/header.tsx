@@ -107,15 +107,16 @@ const Header: React.FC<{}> = () => {
   };
 
   const links: React.ReactNode[] = [
-    <Link href="/" className={classes.navtitle} tabIndex={0}>
+    <Link key="home" href="/" className={classes.navtitle} tabIndex={0}>
       Home
     </Link>,
-    <Divider />,
-    <Link href="/opportunities" className={classes.navtitle} tabIndex={0}>
+    <Divider key="divider-1" />,
+    <Link key="opportunities" href="/opportunities" className={classes.navtitle} tabIndex={0}>
       Opportunities
     </Link>,
-    <Divider />,
+    <Divider key="divider-2" />,
     <a
+      key="training"
       className={classes.navtitle}
       href="https://canvas.uw.edu/courses/1693188/pages/training-modules?module_item_id=18595279"
       target="_blank"
@@ -124,12 +125,13 @@ const Header: React.FC<{}> = () => {
       Training
     </a>,
     //*NOTE: Resources name was changed to Links*/
-    <Divider />,
-    <Link href="/resources" className={classes.navtitle} tabIndex={0}>
+    <Divider key="divider-3" />,
+    <Link key="links" href="/resources" className={classes.navtitle} tabIndex={0}>
       Links
     </Link>,
-    <Divider />,
+    <Divider key="divider-4" />,
     <a
+      key="protocols"
       href="https://canvas.uw.edu/courses/1693188/pages/protocols?module_item_id=18595280"
       className={classes.navtitle}
       target="_blank"
@@ -137,15 +139,15 @@ const Header: React.FC<{}> = () => {
     >
       Protocols
     </a>,
-    <Divider />,
-    <Link href="/donations" className={classes.navtitle} tabIndex={0}>
+    <Divider key="divider-5" />,
+    <Link key="donations" href="/donations" className={classes.navtitle} tabIndex={0}>
       Donations
     </Link>,
-    <Divider />,
-    <Link href="/help" className={classes.navtitle} tabIndex={0}>
+    <Divider key="divider-6" />,
+    <Link key="help" href="/help" className={classes.navtitle} tabIndex={0}>
       Help
     </Link>,
-    <Divider />,
+    <Divider key="divider-7" />,
     // sign in and out
     user ? (
       <>

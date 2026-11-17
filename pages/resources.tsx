@@ -607,7 +607,7 @@ const Resources: NextPage<Props> = ({ classes }) => {
                 href="https://www.providence.org/locations/wa/st-lukes"
                 className={classes.resource}
               >
-                St. Luke's Rehabilitation Medical Center
+                St. Luke&apos;s Rehabilitation Medical Center
               </ResourceLink>{" "}
             </Typography>
             <Typography>

@@ -165,7 +165,7 @@ const HelpPage: NextPage<Props> = ({ classes }) => {
                 alt="Find project step 2"
             />    
             <Typography style={{ textAlign: "center", marginTop: "2rem", marginBottom: "5rem" }}>
-             Don't worry if the page is blank, it's not broken! Make sure a valid location is selected in the Location drop-down menu.
+             Don&apos;t worry if the page is blank, it&apos;s not broken! Make sure a valid location is selected in the Location drop-down menu.
             </Typography>
             <img
                 style={{
@@ -235,7 +235,7 @@ const HelpPage: NextPage<Props> = ({ classes }) => {
               /> 
               <Typography style={{ textAlign: "center", marginTop: "2rem", marginBottom: "5rem" }}>
               Here, you can view all of the details listed about the specific volunteer opportunity. For further details, you can visit the specific opportunity’s website link. <br /> 
-              If you are ready to join, you can find the project lead's contact information in the Project Lead Contact List. 
+              If you are ready to join, you can find the project lead&apos;s contact information in the Project Lead Contact List. 
               </Typography>
         </MuiAccordionDetails>
       </MuiAccordion>
@@ -267,7 +267,7 @@ const HelpPage: NextPage<Props> = ({ classes }) => {
              Note: Page may look different depending on user type.
             </Typography>
             <Typography style={{ textAlign: "left", marginTop: ".5rem", marginBottom: "5rem" }}>
-             Once you are on the signup page, you're screen should look similar to the above image. <br />
+             Once you are on the signup page, you&apos;re screen should look similar to the above image. <br />
              Here is the breakdown of each section: <br />
              1. Opprutunity title <br />
              2. Available events <br />
