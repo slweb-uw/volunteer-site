@@ -10,12 +10,6 @@
     "tscheck": "tsc",
     "lint": "next lint",
     "start": "next start",
-    "codegen:dev": "nodemon -e ts --ignore generated -x ts-node --project tsconfig.node.json ./scripts/codegen_dev.ts",
-    "codegen:staging": "ts-node --project tsconfig.node.json ./scripts/codegen_staging.ts",
-    "codegen:prod": "ts-node --project tsconfig.node.json ./scripts/codegen_prod.ts",
-    "migrate:dev": "nodemon -e ts --ignore generated -x ts-node --project tsconfig.node.json ./scripts/migrate_dev.ts",
-    "migrate:staging": "ts-node --project tsconfig.node.json ./scripts/migrate_staging.ts",
-    "migrate:prod": "ts-node --project tsconfig.node.json ./scripts/migrate_prod.ts",
     "test": "jest"
   },
   "dependencies": {

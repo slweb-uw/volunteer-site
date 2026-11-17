@@ -77,7 +77,6 @@ const Events: React.FC<EventsProps> = ({ location, classes }) => {
   };
 
   const hndlSignUpAvailableFilter = (enabled: boolean) => {
-    console.log("Sign Up Available Switch Toggled", enabled);
     setSignUpAvailableFilter(enabled);
   };
 
