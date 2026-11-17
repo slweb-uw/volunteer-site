@@ -14,17 +14,8 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "lh3.googleusercontent.com",
-      },
-      {
-        protocol: "https",
-        hostname: "firebasestorage.googleapis.com",
-        pathname: "**",
-      },
-    ],
+    // Serve images as-is instead of through Vercel's Image Optimization (#215)
+    unoptimized: true,
   },
   async rewrites() {
     return [

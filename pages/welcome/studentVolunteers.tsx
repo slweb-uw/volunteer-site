@@ -3,7 +3,6 @@ import { CssBaseline, Typography, Grid } from "@mui/material";
 import createStyles from "@mui/styles/createStyles";
 import withStyles from "@mui/styles/withStyles";
 import IconBreadcrumbs from "components/breadcrumbs";
-import Image from "next/image";
 import StudentVolunteersUrl from "public/studentVolunteers.png";
 import Goldbar from "public/goldbar.png";
 
@@ -27,7 +26,7 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
         WELCOME STUDENT VOLUNTEERS
       </Typography>
       <img
-        src={Goldbar}
+        src={Goldbar.src}
         width={535}
         height={10}
         alt="UW gold bar"
@@ -84,7 +83,7 @@ const StudentVolunteers: NextPage<Props> = ({ classes }) => {
                 borderRadius: "10px",
                 objectFit: "cover",
               }}
-              src={StudentVolunteersUrl}
+              src={StudentVolunteersUrl.src}
               width={466}
               height={255}
               alt="Student Volunteer Sample Image"

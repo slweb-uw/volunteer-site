@@ -3,7 +3,6 @@ import createStyles from "@mui/styles/createStyles";
 import withStyles from "@mui/styles/withStyles";
 import IconBreadcrumbs from "components/breadcrumbs";
 import Link from "next/link";
-import Image from "next/image";
 import CommunityPartners from "public/communityPartners.jpg";
 interface Props {
   classes?: any;
@@ -46,7 +45,7 @@ const Communitypartners = ({ classes }) => {
                 borderRadius: "10px",
                 height: "auto",
               }}
-              src={CommunityPartners}
+              src={CommunityPartners.src}
               width={415}
               alt="a masked vaccine volunteer holding a green sign"
             />

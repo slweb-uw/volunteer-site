@@ -23,7 +23,6 @@ import makeStyles from "@mui/styles/makeStyles";
 import HelpIcon from "@mui/icons-material/Help";
 import { useRouter } from "next/router";
 import { handleHelpButtonClick } from "helpers/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { FirebaseError } from "firebase/app";
 import { useSnackbar } from "notistack";
@@ -150,15 +149,22 @@ function LoginContent({
     e.preventDefault();
     setLoginError(null);
     try {
-      await signInWithEmailAndPassword(
+      const { user } = await signInWithEmailAndPassword(
         auth,
         formState.email,
         formState.password,
       );
-      enqueueSnackbar(`Successfully logged in ${formState.email}`, {
-        autoHideDuration: 3000,
-        variant: "success",
-      });
+      
+      enqueueSnackbar(
+        user.emailVerified
+          ? `Successfully logged in ${formState.email}`
+          : "Please verify your email before continuing. Use the verification banner to resend or check.",
+        {
+          autoHideDuration: user.emailVerified ? 3000 : 6000,
+          variant: user.emailVerified ? "success" : "info",
+        },
+      );
+      
       close();
     } catch (err) {
       setLoginError("Invalid email or password");
@@ -242,9 +248,9 @@ function LoginContent({
 
       <Typography className={classes.authLink}>
         Don't have an account?
-        <Link href="." onClick={openSignup}>
+        <Button type="button" variant="text" onClick={openSignup}>
           Register
-        </Link>
+        </Button>
       </Typography>
     </div>
   );
@@ -367,9 +373,9 @@ function SignupContent({
       </form>
       <Typography className={classes.authLink}>
         Already have an account?
-        <Link href="." onClick={openLogin}>
-          Sign in
-        </Link>
+        <Button type="button" variant="text" onClick={openLogin}>
+        Sign in
+      </Button>
       </Typography>
     </div>
   );
@@ -417,9 +423,9 @@ function ForgotPasswordContent({ openLogin }: { openLogin: () => void }) {
 
       <Typography className={classes.authLink}>
         Go back to
-        <Link href="." onClick={openLogin}>
-          Login
-        </Link>
+        <Button type="button" variant="text" onClick={openLogin}>
+        Login
+      </Button>
       </Typography>
     </form>
   );
