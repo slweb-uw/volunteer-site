@@ -16,7 +16,9 @@
     "migrate:dev": "nodemon -e ts --ignore generated -x ts-node --project tsconfig.node.json ./scripts/migrate_dev.ts",
     "migrate:staging": "ts-node --project tsconfig.node.json ./scripts/migrate_staging.ts",
     "migrate:prod": "ts-node --project tsconfig.node.json ./scripts/migrate_prod.ts",
-    "test": "jest"
+    "test": "jest",
+    "test:unit": "jest --selectProjects unit",
+    "test:rules": "jest --selectProjects rules"
   },
   "dependencies": {
     "@emotion/react": "^11.7.1",
