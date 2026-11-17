@@ -8,6 +8,7 @@
     "build": "next build",
     "export": "next export",
     "tscheck": "tsc",
+    "typecheck": "node scripts/check-type-errors.js",
     "lint": "next lint",
     "start": "next start",
     "codegen:dev": "nodemon -e ts --ignore generated -x ts-node --project tsconfig.node.json ./scripts/codegen_dev.ts",
