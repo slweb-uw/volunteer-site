@@ -44,3 +44,6 @@ tsconfig.tsbuildinfo
 # firebase emulator
 .firebase/
 *-debug.log
+
+# smoke test server output (scripts/smoke.sh)
+smoke-server.log

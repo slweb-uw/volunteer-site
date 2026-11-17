@@ -1,0 +1,108 @@
+# Checks that run on every pull request. Each job can be run locally with the
+# command in its last step (see README, "CI and running checks locally").
+name: CI
+
+on:
+  pull_request:
+    branches: [main, development]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+# A new push to the same branch cancels the run still in progress.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn lint
+
+  typecheck:
+    name: Type check (no new errors)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      # Fails only if a change adds type errors; see scripts/check-type-errors.js.
+      - run: yarn typecheck
+
+  unit:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn test:unit
+
+  rules:
+    name: Firestore rules tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+      # The Firestore emulator needs Java.
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - run: yarn install --frozen-lockfile
+      # Same firebase-tools version as the Dockerfile. "demo-test" is a fake
+      # project ID, so no Firebase credentials are needed.
+      - run: npx --yes firebase-tools@15.27.0 emulators:exec --only firestore --project demo-test "yarn test:rules"
+
+  build:
+    name: Build and smoke test
+    runs-on: ubuntu-latest
+    # Placeholder Firebase settings: enough for the app to build and serve
+    # pages, never real credentials. Nothing here talks to a real project.
+    env:
+      NEXT_PUBLIC_API_KEY: ci-placeholder-api-key
+      NEXT_PUBLIC_AUTH_DOMAIN: ci-placeholder.firebaseapp.com
+      NEXT_PUBLIC_PROJECT_ID: ci-placeholder
+      NEXT_PUBLIC_STORAGE_BUCKET: ci-placeholder.appspot.com
+      NEXT_PUBLIC_MESSAGING_SENDER_ID: "000000000000"
+      NEXT_PUBLIC_APP_ID: 1:000000000000:web:ci
+      FB_CLIENT_EMAIL: ci@ci-placeholder.iam.gserviceaccount.com
+      FB_PROJECT_ID: ci-placeholder
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      # firebaseAdmin.ts parses the private key when it loads, so a placeholder
+      # string fails. Generate a throwaway key that exists only for this run.
+      - name: Generate a throwaway admin key
+        run: |
+          openssl genrsa 2048 2>/dev/null > "$RUNNER_TEMP/ci-key.pem"
+          {
+            echo "FB_PRIVATE_KEY<<KEY_EOF"
+            cat "$RUNNER_TEMP/ci-key.pem"
+            echo "KEY_EOF"
+          } >> "$GITHUB_ENV"
+      - run: yarn build
+      - run: bash scripts/smoke.sh

@@ -247,7 +247,7 @@ function LoginContent({
       </Button>
 
       <Typography className={classes.authLink}>
-        Don't have an account?
+        Don&apos;t have an account?
         <Button type="button" variant="text" onClick={openSignup}>
           Register
         </Button>

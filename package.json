@@ -8,6 +8,7 @@
     "build": "next build",
     "export": "next export",
     "tscheck": "tsc",
+    "typecheck": "node scripts/check-type-errors.js",
     "lint": "next lint",
     "start": "next start",
     "codegen:dev": "nodemon -e ts --ignore generated -x ts-node --project tsconfig.node.json ./scripts/codegen_dev.ts",
@@ -16,7 +17,9 @@
     "migrate:dev": "nodemon -e ts --ignore generated -x ts-node --project tsconfig.node.json ./scripts/migrate_dev.ts",
     "migrate:staging": "ts-node --project tsconfig.node.json ./scripts/migrate_staging.ts",
     "migrate:prod": "ts-node --project tsconfig.node.json ./scripts/migrate_prod.ts",
-    "test": "jest"
+    "test": "jest",
+    "test:unit": "jest --selectProjects unit",
+    "test:rules": "jest --selectProjects rules"
   },
   "dependencies": {
     "@emotion/react": "^11.7.1",
@@ -93,6 +96,9 @@
     "child_process": false
   },
   "engines": {
-    "node": ">= 16.0.0"
+    "node": ">=18.17.0"
+  },
+  "resolutions": {
+    "@types/node": "22.9.3"
   }
 }
