@@ -27,7 +27,7 @@ const Communitypartners = ({ classes }) => {
         WELCOME COMMUNITY PARTNERS
       </Typography>
       <img
-        src={"../goldbar.png"}
+        src="/goldbar.png"
         style={{ width: "550px", height: "10px", marginBottom: "30px" }}
       />
       <Grid container spacing={2}>

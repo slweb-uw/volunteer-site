@@ -3,7 +3,6 @@ import Typography from "@mui/material/Typography";
 import makeStyles from "@mui/styles/makeStyles";
 import { useAuth } from "auth";
 import Link from "next/link";
-import LogoUrl from "public/uw-text-logo.png"
 
 const useStyles = makeStyles((theme) => ({
   logo: {
@@ -40,9 +39,8 @@ const Footer: React.FC<{}> = () => {
   return (
     <footer className={useStyles().footer}>
       <img
-        src="/uw-text-logo.png"        
+        src="/uw-text-logo.png"
         alt="University of Washington logo"
-        sizes="100vw"
         className={useStyles().logo}
       />
       <Typography className={useStyles().text} gutterBottom>

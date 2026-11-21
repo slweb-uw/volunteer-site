@@ -97,7 +97,7 @@ const LocationPage = () => {
           </Tooltip>
         </div>
       </div>
-      <img src={"../goldbar.png"} alt="" className={classes.bar} style={{}} />
+      <img src="/goldbar.png" alt="" className={classes.bar} style={{}} />
       <div
         style={{
           marginTop: "2em",
