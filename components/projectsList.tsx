@@ -241,8 +241,11 @@ const downloadVolunteers = async () => {
       ),
     );
 
-    const matchingEvents = eventsSnapshot.docs.filter((event) =>
-      projectNames.has(event.data().projectId),
+    // Archived events were deleted by an admin; their rosters are kept in the
+    // volunteer log (admin records lookup), not in this export.
+    const matchingEvents = eventsSnapshot.docs.filter(
+      (event) =>
+        !event.data().archived && projectNames.has(event.data().projectId),
     );
 
     type ExportRow = {

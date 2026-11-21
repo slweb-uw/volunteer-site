@@ -58,12 +58,25 @@ const Footer: React.FC<{}> = () => {
         </i>
       </Typography>
       {isAdmin && (
-        <Link
-          href="/userManager"
-          style={{ color: "white", paddingTop: "100px", fontWeight: 600 }}
-        >
-          User Manager
-        </Link>
+        <>
+          <Link
+            href="/userManager"
+            style={{ color: "white", paddingTop: "100px", fontWeight: 600 }}
+          >
+            User Manager
+          </Link>
+          <Link
+            href="/recordsLookup"
+            style={{
+              color: "white",
+              paddingTop: "100px",
+              paddingLeft: "2rem",
+              fontWeight: 600,
+            }}
+          >
+            Volunteer Records
+          </Link>
+        </>
       )}
     </footer>
   );

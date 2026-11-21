@@ -28,6 +28,7 @@ ROUTES="
 /resources 200
 /standardOfCare 200
 /userManager 200
+/recordsLookup 200
 /AuthorizationMessage 200
 /welcome/categoriesOfService 200
 /welcome/communitypartners 200

@@ -14,9 +14,16 @@ import {
   query,
   where,
   orderBy,
+  serverTimestamp,
   writeBatch,
 } from "firebase/firestore";
 import { slotId, dateKeyOf } from "helpers/slots";
+import {
+  LOG_COLLECTION,
+  actorRoleOf,
+  buildLogEntry,
+  snapshotEvent,
+} from "helpers/volunteerLog";
 import { useAuth } from "auth";
 import { useRouter } from "next/router";
 import {
@@ -332,9 +339,11 @@ const EventAdmin = () => {
     const unsubscribe = onSnapshot(
       q,
       (querySnapshot) => {
-        const data = querySnapshot.docs.map(
-          (doc) => ({ id: doc.id, ...doc.data() }) as EventData,
-        );
+        // Archived events (deleted but kept because they had signups) are
+        // hidden here; their records live on in the volunteer log.
+        const data = querySnapshot.docs
+          .map((doc) => ({ id: doc.id, ...doc.data() }) as EventData)
+          .filter((event) => !event.archived);
         setAllEvents(data);
       },
       (error) => console.error("Error fetching events:", error),
@@ -525,6 +534,51 @@ const EventAdmin = () => {
 
     try {
       if (mode === "delete" && eventId) {
+        // An event with signups is archived, not deleted: its roster is the
+        // record of who volunteered, and we may need to produce it (#225). It
+        // disappears from every list but nothing is removed. An event nobody
+        // signed up for has nothing to keep, so it is deleted as before.
+        const volunteersSnap = await getDocs(
+          collection(db, collectionPath, eventId, "volunteers"),
+        );
+        if (!volunteersSnap.empty) {
+          if (!user) throw new Error("You must be signed in.");
+          const eventRef = doc(db, collectionPath, eventId);
+          const stored = (await getDoc(eventRef)).data() ?? {};
+          const eventDate =
+            (stored.dates?.[0] ?? stored.date)?.toDate?.() ?? new Date();
+
+          const archive = writeBatch(db);
+          archive.update(eventRef, {
+            archived: true,
+            archivedAt: serverTimestamp(),
+            archivedBy: user.email ?? "",
+          });
+          archive.set(
+            doc(collection(db, LOG_COLLECTION)),
+            buildLogEntry({
+              action: "event_archived",
+              at: serverTimestamp(),
+              actor: {
+                uid: user.uid,
+                email: user.email ?? "",
+                role: actorRoleOf({ isAdmin, isLead }),
+              },
+              subject: { uid: "", email: "" },
+              volunteer: null,
+              eventId,
+              shiftDate: eventDate,
+              event: snapshotEvent(stored),
+            }),
+          );
+          await archive.commit();
+          enqueueSnackbar(
+            `Event removed. It has ${volunteersSnap.size} signup${volunteersSnap.size === 1 ? "" : "s"}, which are kept in the volunteer records.`,
+            { variant: "success", autoHideDuration: 5000 },
+          );
+          return;
+        }
+
         // Firestore does not cascade. Without this, every slot and volunteer
         // document survives its parent, unreachable but still stored.
         const batch = writeBatch(db);
