@@ -35,6 +35,11 @@ type EventData = {
   projectName: string;
   startTime: string;
   endTime: string;
+  // Optional IANA zone (e.g. "America/Boise") overriding the location's zone
+  // for startTime/endTime. See helpers/timezones.ts.
+  timeZone?: string;
+  // Set instead of deleting an event that has signups (records retention).
+  archived?: boolean;
 };
 
 // One signup counter, stored at events/{eventId}/slots/{date}__{role}.
