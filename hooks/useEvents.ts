@@ -35,12 +35,16 @@ export default function useEvents(location: string, projectId?: string) {
 
       const qSnap = await getDocs(q);
       const data: EventData[] = [];
-      qSnap.forEach((doc) =>
+      qSnap.forEach((doc) => {
+        // Archived events (deleted but kept because they had signups) stay off
+        // the calendar. Filtered here because a Firestore `!=` query would also
+        // drop events that have no `archived` field.
+        if (doc.data().archived) return;
         data.push({
           id: doc.id,
           ...doc.data(),
-        } as EventData),
-      );
+        } as EventData);
+      });
       setEvents(data);
     };
     fetchData();

@@ -11,8 +11,22 @@ import RichTextField from "../../../components/richTextField";
 import Box from "@mui/material/Box";
 import VolunteerPopup from "components/VolunteerSignupPopup";
 import { firebaseAdmin } from "firebaseAdmin";
-import { doc, runTransaction, updateDoc, DocumentData } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  runTransaction,
+  serverTimestamp,
+  DocumentData,
+} from "firebase/firestore";
 import { db } from "firebaseClient";
+import {
+  LOG_COLLECTION,
+  actorRoleOf,
+  buildLogEntry,
+  diffSnapshots,
+  snapshotEvent,
+  snapshotVolunteer,
+} from "helpers/volunteerLog";
 import AuthorizationMessage from "pages/AuthorizationMessage";
 import VolunteerSignupGrid from "../../../components/VolunteerSignupGrid";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
@@ -193,6 +207,15 @@ const Event = ({
     setEditedVolunteer(null);
     router.replace(router.asPath, undefined, { scroll: false });
   };
+  // Every signup change also writes an entry to the append-only volunteer log,
+  // in the same transaction (#225). Only called after `user` has been checked.
+  const logActor = () => ({
+    uid: user!.uid,
+    email: user!.email ?? "",
+    role: actorRoleOf({ isAdmin, isLead }),
+  });
+  const newLogRef = () => doc(collection(db, LOG_COLLECTION));
+
   const handleAddVolunteer = async (volunteerData: VolunteerData) => {
     if (!selectedRole || !user?.email || !selectedDateSignup) return;
   
@@ -269,6 +292,20 @@ const Event = ({
           role: selectedRole,
           date: selectedDateSignup,
         });
+
+        transaction.set(
+          newLogRef(),
+          buildLogEntry({
+            action: "signup",
+            at: serverTimestamp(),
+            actor: logActor(),
+            subject: { uid: targetUid, email: targetEmail },
+            volunteer: snapshotVolunteer({ ...volunteerData, role: selectedRole }),
+            eventId: eventID,
+            shiftDate: dateKey,
+            event: snapshotEvent(eventData),
+          }),
+        );
       });
   
       enqueueSnackbar("Signup successfully created", {
@@ -289,7 +326,8 @@ const Event = ({
   };
 
   // Editing a signup rewrites only the volunteer's own details, so it never
-  // moves the slot counter and does not need a transaction. Role and date stay
+  // moves the slot counter. It is a transaction so the change and its log entry
+  // (what changed, from what to what) are written together. Role and date stay
   // out of the payload on purpose: they are what slotId() is derived from, and
   // changing them here would leave the count stranded on the old slot.
   const handleUpdateVolunteer = async (volunteerData: VolunteerData) => {
@@ -302,14 +340,54 @@ const Event = ({
     const volunteerRef = doc(db, `events/${eventID}/volunteers`, docId);
 
     try {
-      // updateDoc rather than setDoc(merge): if the record was withdrawn in
-      // another tab this fails, where a merge would recreate it without the
-      // matching slot decrement.
-      await updateDoc(volunteerRef, {
+      const shiftDate = dateKeyOf(editedVolunteer.date);
+      const subjectUid = editedVolunteer.uid;
+      const edited = {
         name: volunteerData.name,
         phoneNumber: volunteerData.phoneNumber,
         studentDiscipline: volunteerData.studentDiscipline,
         comments: volunteerData.comments ?? "",
+      };
+
+      await runTransaction(db, async (transaction) => {
+        const current = await transaction.get(volunteerRef);
+        // Update, not set(merge): if the record was withdrawn in another tab
+        // this fails, where a merge would recreate it without the matching slot
+        // decrement.
+        if (!current.exists()) {
+          throw Object.assign(new Error("Signup not found."), {
+            code: "not-found",
+          });
+        }
+
+        const stored = current.data();
+        const before = snapshotVolunteer(stored);
+        const after = snapshotVolunteer({ ...stored, ...edited });
+        const changes = diffSnapshots(before, after, [
+          "name",
+          "phoneNumber",
+          "studentDiscipline",
+          "comments",
+        ]);
+
+        transaction.update(volunteerRef, edited);
+        // An edit that changes nothing is not worth a record.
+        if (Object.keys(changes).length > 0) {
+          transaction.set(
+            newLogRef(),
+            buildLogEntry({
+              action: "update",
+              at: serverTimestamp(),
+              actor: logActor(),
+              subject: { uid: subjectUid, email: String(stored.email ?? "") },
+              volunteer: after,
+              changes,
+              eventId: eventID,
+              shiftDate,
+              event: snapshotEvent(eventData),
+            }),
+          );
+        }
       });
       handleCloseVolunteerPopup();
       enqueueSnackbar("Signup successfully updated", {
@@ -403,6 +481,25 @@ const Event = ({
 
         transaction.update(slotRef, { remaining: remaining + 1 });
         transaction.delete(volunteerRef);
+
+        // The signup is gone after this, so the log keeps the only copy of it.
+        const stored = volunteerDoc.data();
+        transaction.set(
+          newLogRef(),
+          buildLogEntry({
+            action: mode === "remove" ? "remove" : "withdraw",
+            at: serverTimestamp(),
+            actor: logActor(),
+            subject: {
+              uid: volunteerData.uid,
+              email: String(stored.email ?? volunteerData.email ?? ""),
+            },
+            volunteer: snapshotVolunteer(stored),
+            eventId: eventID,
+            shiftDate: dateKey,
+            event: snapshotEvent(eventData),
+          }),
+        );
       });
       if (mode === "remove") {
         // Refresh registrations and keep the popup open.

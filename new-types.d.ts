@@ -35,6 +35,8 @@ type EventData = {
   projectName: string;
   startTime: string;
   endTime: string;
+  // Set instead of deleting an event that has signups (records retention).
+  archived?: boolean;
 };
 
 // One signup counter, stored at events/{eventId}/slots/{date}__{role}.
