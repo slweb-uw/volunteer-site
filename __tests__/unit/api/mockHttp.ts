@@ -31,6 +31,10 @@ export function mockRes(): MockRes {
     res.body = body;
     return res;
   };
+  res.send = (body: unknown) => {
+    res.body = body;
+    return res;
+  };
   res.setHeader = (name: string, value: string) => {
     res.headersSet[name] = value;
     return res;

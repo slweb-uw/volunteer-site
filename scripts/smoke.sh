@@ -37,6 +37,7 @@ ROUTES="
 /api/set-roles 405
 /api/reconcile-role 405
 /api/lookup-volunteer 405
+/api/calendar/Atlantis.ics 404
 "
 
 npx next start -p "$PORT" > smoke-server.log 2>&1 &
