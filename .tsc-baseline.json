@@ -1,5 +1,5 @@
 {
-  "total": 218,
+  "total": 217,
   "files": {
     "auth.tsx": 4,
     "components/SharePopup.tsx": 6,
@@ -9,7 +9,6 @@
     "components/VolunteerSignupPopup.tsx": 20,
     "components/breadcrumbs.tsx": 1,
     "components/donateCard.tsx": 1,
-    "components/eventsView.tsx": 1,
     "components/footer.tsx": 2,
     "components/header.tsx": 1,
     "components/interprofessionalTag.tsx": 1,
