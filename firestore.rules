@@ -109,6 +109,49 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // Volunteer log (#225): an append-only record of signups, edits,
+    // withdrawals, removals and event archives, kept so we can answer public
+    // records requests. Entries are written from the browser in the same
+    // transaction as the change they describe. Nobody can edit or delete one,
+    // admins included; only the Admin SDK (the backfill script) bypasses this.
+    //
+    // Rules cannot tie a log write to the volunteer write beside it, so this
+    // proves who wrote the entry and stops forgery of the actor, the role and
+    // the time. It cannot force a determined user to log at all.
+    function logActorRole() {
+      return isAdmin() ? "admin" : (isLead() ? "lead" : "volunteer");
+    }
+    function isValidLogEntry() {
+      let d = request.resource.data;
+      return d.keys().hasOnly(["action", "at", "actorUid", "actorEmail", "actorRole",
+          "subjectUid", "subjectEmail", "volunteer", "changes", "eventId",
+          "shiftDate", "shiftYear", "event"])
+        && d.keys().hasAll(["action", "at", "actorUid", "actorEmail", "actorRole",
+          "subjectUid", "subjectEmail", "volunteer", "changes", "eventId",
+          "shiftDate", "shiftYear", "event"])
+        && d.actorUid == request.auth.uid
+        && d.actorRole == logActorRole()
+        && d.actorEmail == request.auth.token.get("email", "").lower()
+        && d.at == request.time
+        && d.eventId is string
+        && d.shiftDate is string && d.shiftDate.size() == 10
+        && d.shiftYear is int
+        && d.event is map
+        && (d.volunteer == null || d.volunteer is map)
+        && (d.changes == null || d.changes is map);
+    }
+    match /volunteerLog/{entryId} {
+      allow read: if isAdmin();
+      // "backfill" is deliberately absent: only the script writes those.
+      allow create: if (isStaff() || isAuthorized()) && isValidLogEntry()
+        && ((isStaff()
+              && request.resource.data.action in
+                ["signup", "update", "withdraw", "remove", "event_archived"])
+            || (request.resource.data.subjectUid == request.auth.uid
+              && request.resource.data.action in ["signup", "update", "withdraw"]));
+      allow update, delete: if false;
+    }
+
     // caches permissions
     match /cache/{docId} {
       allow read: if true;

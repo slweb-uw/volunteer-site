@@ -12,6 +12,8 @@ import {
   updateDoc,
   runTransaction,
   writeBatch,
+  serverTimestamp,
+  Timestamp,
 } from "firebase/firestore";
 import { readFileSync } from "fs";
 import { resolve } from "path";
@@ -335,6 +337,187 @@ describe("real client transactions", () => {
     batch.delete(doc(db, volPath(OTHER_UID)));
     batch.delete(doc(db, `events/${EVENT}`));
     await assertSucceeds(batch.commit());
+  });
+});
+
+// The volunteer log (#225): append-only, written beside the change it records.
+// Entries carry the actor's email, which the rules check against the token, so
+// these contexts include one (the contexts above predate the log).
+
+const asUser = (uid: string, role: string | null, email: string, authorized = true) =>
+  testEnv.authenticatedContext(uid, { role, authorized, email }).firestore();
+const logAdmin = () => asUser("admin-uid", "admin", "admin@uw.edu");
+const logLead = () => asUser("lead-uid", "lead", "lead@uw.edu");
+const logVol = () => asUser(VOL_UID, null, "vol@uw.edu");
+
+const logEntry = (over: Record<string, unknown> = {}) => ({
+  action: "signup",
+  at: serverTimestamp(),
+  actorUid: VOL_UID,
+  actorEmail: "vol@uw.edu",
+  actorRole: "volunteer",
+  subjectUid: VOL_UID,
+  subjectEmail: "vol@uw.edu",
+  volunteer: { name: "Me", phoneNumber: "1", studentDiscipline: "", comments: "", role: "Student" },
+  changes: null,
+  eventId: EVENT,
+  shiftDate: DATE,
+  shiftYear: 2026,
+  event: { name: "Clinic", projectId: "p1", projectName: "P", location: "Seattle", address: "", startTime: "09:00", endTime: "10:00" },
+  ...over,
+});
+const staffLogEntry = (who: "admin" | "lead", over: Record<string, unknown> = {}) =>
+  logEntry({
+    actorUid: `${who}-uid`,
+    actorEmail: `${who}@uw.edu`,
+    actorRole: who,
+    ...over,
+  });
+
+const logPath = (id = "l1") => `volunteerLog/${id}`;
+
+describe("volunteer log: creating entries", () => {
+  it("lets a volunteer log their own signup, edit and withdrawal", async () => {
+    for (const action of ["signup", "update", "withdraw"]) {
+      await assertSucceeds(setDoc(doc(logVol(), logPath(action)), logEntry({ action })));
+    }
+  });
+
+  it("lets staff log removals and archives, and signups for someone else", async () => {
+    await assertSucceeds(
+      setDoc(doc(logLead(), logPath("a")), staffLogEntry("lead", { action: "remove", subjectUid: OTHER_UID, subjectEmail: "o@uw.edu" })),
+    );
+    await assertSucceeds(
+      setDoc(doc(logAdmin(), logPath("b")), staffLogEntry("admin", { action: "signup", subjectUid: OTHER_UID, subjectEmail: "o@uw.edu" })),
+    );
+    await assertSucceeds(
+      setDoc(doc(logLead(), logPath("c")), staffLogEntry("lead", { action: "event_archived", subjectUid: "", subjectEmail: "", volunteer: null })),
+    );
+  });
+
+  it("refuses a volunteer logging for someone else", async () => {
+    await assertFails(
+      setDoc(doc(logVol(), logPath()), logEntry({ subjectUid: OTHER_UID, subjectEmail: "o@uw.edu" })),
+    );
+  });
+
+  it("refuses a volunteer logging a removal or an archive", async () => {
+    await assertFails(setDoc(doc(logVol(), logPath("r")), logEntry({ action: "remove" })));
+    await assertFails(setDoc(doc(logVol(), logPath("e")), logEntry({ action: "event_archived" })));
+  });
+
+  it("refuses a forged actor, role, email or time", async () => {
+    await assertFails(setDoc(doc(logVol(), logPath("1")), logEntry({ actorUid: OTHER_UID })));
+    await assertFails(setDoc(doc(logVol(), logPath("2")), logEntry({ actorRole: "admin" })));
+    await assertFails(setDoc(doc(logVol(), logPath("3")), logEntry({ actorEmail: "boss@uw.edu" })));
+    await assertFails(
+      setDoc(doc(logVol(), logPath("4")), logEntry({ at: Timestamp.fromDate(new Date("2020-01-01")) })),
+    );
+  });
+
+  it("refuses unknown actions, and backfill even from an admin", async () => {
+    await assertFails(setDoc(doc(logVol(), logPath("x")), logEntry({ action: "purge" })));
+    await assertFails(setDoc(doc(logAdmin(), logPath("y")), staffLogEntry("admin", { action: "backfill" })));
+  });
+
+  it("refuses extra or missing fields", async () => {
+    await assertFails(setDoc(doc(logVol(), logPath("p")), logEntry({ note: "hi" })));
+    const { shiftYear, ...missing } = logEntry();
+    await assertFails(setDoc(doc(logVol(), logPath("q")), missing));
+  });
+
+  it("refuses callers who are not authorized or not signed in", async () => {
+    await assertFails(setDoc(doc(asUser(VOL_UID, null, "vol@uw.edu", false), logPath("u")), logEntry()));
+    await assertFails(setDoc(doc(anon(), logPath("v")), logEntry()));
+    await assertFails(
+      setDoc(doc(testEnv.authenticatedContext(VOL_UID, { email: "vol@uw.edu" }).firestore(), logPath("w")), logEntry()),
+    );
+  });
+});
+
+describe("volunteer log: append-only and admin-read", () => {
+  async function seedLog() {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), logPath()), { ...logEntry(), at: Timestamp.now() });
+    });
+  }
+
+  it("lets nobody edit or delete an entry, admins included", async () => {
+    await seedLog();
+    for (const db of [logVol(), logLead(), logAdmin()]) {
+      await assertFails(updateDoc(doc(db, logPath()), { shiftYear: 2000 }));
+      await assertFails(deleteDoc(doc(db, logPath())));
+      await assertFails(setDoc(doc(db, logPath()), logEntry()));
+    }
+  });
+
+  it("lets only admins read the log", async () => {
+    await seedLog();
+    await assertSucceeds(getDoc(doc(logAdmin(), logPath())));
+    await assertFails(getDoc(doc(logLead(), logPath())));
+    await assertFails(getDoc(doc(logVol(), logPath())));
+    await assertFails(getDoc(doc(anon(), logPath())));
+  });
+});
+
+describe("volunteer log: written with the change it records", () => {
+  it("permits signup: slot decrement + volunteer record + log entry", async () => {
+    await seed(5);
+    const db = logVol();
+    await assertSucceeds(
+      runTransaction(db, async (tx) => {
+        const slot = await tx.get(doc(db, slotPath));
+        tx.update(doc(db, slotPath), { remaining: slot.data()!.remaining - 1 });
+        tx.set(doc(db, volPath(VOL_UID)), { uid: VOL_UID, name: "Me", email: "vol@uw.edu", role: "Student", date: DATE });
+        tx.set(doc(db, logPath("s1")), logEntry());
+      }),
+    );
+  });
+
+  it("permits a lead removing a volunteer: slot increment + delete + log entry", async () => {
+    await seed(4);
+    await seedVolunteer(OTHER_UID);
+    const db = logLead();
+    await assertSucceeds(
+      runTransaction(db, async (tx) => {
+        const slot = await tx.get(doc(db, slotPath));
+        tx.update(doc(db, slotPath), { remaining: slot.data()!.remaining + 1 });
+        tx.delete(doc(db, volPath(OTHER_UID)));
+        tx.set(doc(db, logPath("r1")), staffLogEntry("lead", { action: "remove", subjectUid: OTHER_UID, subjectEmail: "s@uw.edu" }));
+      }),
+    );
+  });
+
+  it("fails the whole signup if the log entry is forged: nothing is written", async () => {
+    await seed(5);
+    const db = logVol();
+    await assertFails(
+      runTransaction(db, async (tx) => {
+        const slot = await tx.get(doc(db, slotPath));
+        tx.update(doc(db, slotPath), { remaining: slot.data()!.remaining - 1 });
+        tx.set(doc(db, volPath(VOL_UID)), { uid: VOL_UID, name: "Me", email: "vol@uw.edu", role: "Student", date: DATE });
+        tx.set(doc(db, logPath("bad")), logEntry({ actorRole: "admin" }));
+      }),
+    );
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      const slot = await getDoc(doc(ctx.firestore(), slotPath));
+      expect(slot.data()!.remaining).toBe(5);
+      expect((await getDoc(doc(ctx.firestore(), volPath(VOL_UID)))).exists()).toBe(false);
+    });
+  });
+
+  it("permits a lead archiving an event with signups (event update + log entry)", async () => {
+    await seed();
+    await seedVolunteer(OTHER_UID);
+    const db = logLead();
+    const batch = writeBatch(db);
+    batch.update(doc(db, `events/${EVENT}`), { archived: true, archivedBy: "lead@uw.edu" });
+    batch.set(doc(db, logPath("arch")), staffLogEntry("lead", { action: "event_archived", subjectUid: "", subjectEmail: "", volunteer: null }));
+    await assertSucceeds(batch.commit());
+    // The roster is untouched.
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      expect((await getDoc(doc(ctx.firestore(), volPath(OTHER_UID)))).exists()).toBe(true);
+    });
   });
 });
 
